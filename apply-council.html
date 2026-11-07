@@ -160,29 +160,67 @@
     </form>
   </main>
 
-  <!-- หน้าต่างแจ้งเตือนส่งใบสมัครสำเร็จ -->
-  <div id="successModal" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded border border-slate-300 max-w-md w-full p-6 shadow-lg text-center space-y-4">
-      <div class="w-12 h-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-2xl mx-auto">
-        <i class="fa-solid fa-check"></i>
+  <!-- หน้าต่างแจ้งเตือนส่งใบสมัครสำเร็จ พร้อมบัตรเชิญเข้ากลุ่ม LINE -->
+  <div id="successModal" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto hidden">
+    <div class="bg-white rounded-xl border border-slate-300 max-w-md w-full p-4 sm:p-6 shadow-2xl text-center space-y-3.5 my-auto max-h-[92vh] overflow-y-auto">
+      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto shadow-sm">
+        <i class="fa-solid fa-circle-check"></i>
       </div>
       <div>
-        <h4 class="text-base font-bold text-slate-900">บันทึกใบสมัครสำเร็จ</h4>
-        <p class="text-xs text-slate-600 mt-1">ระบบได้จัดเก็บข้อมูลใบสมัครเลือกตั้งประธานสภานักเรียนเรียบร้อยแล้ว</p>
+        <h4 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">บันทึกใบสมัครสำเร็จเรียบร้อย!</h4>
+        <p class="text-xs text-slate-500 mt-0.5">ระบบได้จัดเก็บข้อมูลใบสมัครเลือกตั้งประธานสภานักเรียนแล้ว</p>
       </div>
 
-      <div class="bg-slate-50 border border-slate-200 p-3 rounded text-left text-xs space-y-1">
-        <div><strong>รหัสใบสมัคร:</strong> <span id="modalAppId" class="font-mono text-[#16325c]"></span></div>
-        <div><strong>ชื่อพรรค:</strong> <span id="modalPartyName"></span></div>
-        <div><strong>สถานะ:</strong> <span class="badge-pending">รอการตรวจสอบคุณสมบัติ</span></div>
+      <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-left text-xs space-y-1">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-600">รหัสใบสมัคร:</span>
+          <span id="modalAppId" class="font-mono font-bold text-[#16325c]"></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-600">ชื่อพรรค:</span>
+          <span id="modalPartyName" class="font-bold text-slate-800"></span>
+        </div>
+        <div class="flex justify-between items-center pt-0.5">
+          <span class="text-slate-600">สถานะ:</span>
+          <span class="badge-pending">รอการตรวจสอบคุณสมบัติ</span>
+        </div>
       </div>
 
-      <div class="space-y-2 pt-2">
-        <a id="modalPrintBtn" href="#" target="_blank" class="btn-gov-primary w-full text-xs">
+      <!-- กล่องแจ้งเตือนเข้ากลุ่ม LINE ผู้สมัคร (โดดเด่นมาก) -->
+      <div class="bg-emerald-50/70 border-2 border-[#06c755] rounded-xl p-3 sm:p-4 text-center space-y-2.5 shadow-sm">
+        <div class="flex items-center justify-center space-x-1.5 text-[#06c755] font-bold text-sm sm:text-base">
+          <i class="fa-brands fa-line text-2xl text-[#06c755]"></i>
+          <span class="text-slate-900" id="modalLineTitle">กรุณาเข้ากลุ่ม LINE ผู้สมัคร</span>
+        </div>
+        <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed" id="modalLineDesc">
+          เพื่อติดตามประกาศหมายเลขผู้สมัคร กำหนดการประชุมชี้แจง และประสานงานกับคณะกรรมการจัดการเลือกตั้ง
+        </p>
+
+        <!-- QR Code -->
+        <div class="inline-block p-1.5 bg-white rounded-lg border border-emerald-200 shadow-sm">
+          <img id="modalLineQr" src="assets/images/line-group-qr.jpg" alt="QR Code กลุ่ม LINE ผู้สมัคร" class="w-32 h-32 sm:w-36 sm:h-36 object-contain mx-auto">
+        </div>
+
+        <!-- ปุ่มกดเข้า LINE โดยตรง -->
+        <div>
+          <a id="modalLineLink" href="https://line.me/ti/g/KhLtg2M7vA" target="_blank" rel="noopener noreferrer"
+             class="w-full bg-[#06c755] hover:bg-[#05b34c] text-white font-bold py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 text-xs sm:text-sm shadow-md transition transform active:scale-95">
+            <i class="fa-brands fa-line text-xl"></i>
+            <span>คลิกที่นี่เพื่อเข้าร่วมกลุ่ม LINE</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+          </a>
+        </div>
+        <div class="text-[10px] text-slate-400">
+          * หรือสแกน QR Code ด้านบนด้วยแอปพลิเคชัน LINE
+        </div>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <a id="modalPrintBtn" href="#" target="_blank" class="btn-gov-primary w-full text-xs py-2 flex items-center justify-center shadow-sm">
           <i class="fa-solid fa-print mr-1.5"></i> พิมพ์แบบฟอร์มใบสมัครกระดาษ A4
         </a>
-        <a href="index.html" class="btn-gov-outline w-full text-xs block text-center">
-          กลับสู่หน้าหลัก
+        <a href="index.html" class="btn-gov-outline w-full text-xs py-1.5 block text-center">
+          <i class="fa-solid fa-house mr-1 text-slate-500"></i> กลับสู่หน้าหลัก
         </a>
       </div>
     </div>
@@ -362,6 +400,14 @@
       document.getElementById('modalAppId').innerText = result.id;
       document.getElementById('modalPartyName').innerText = result.partyName;
       document.getElementById('modalPrintBtn').href = `print-application.html?type=council&id=${result.id}`;
+
+      const lineUrl = cfg.lineGroupUrl || 'https://line.me/ti/g/KhLtg2M7vA';
+      const lineQr = cfg.lineGroupQr || 'assets/images/line-group-qr.jpg';
+      if (document.getElementById('modalLineLink')) document.getElementById('modalLineLink').href = lineUrl;
+      if (document.getElementById('modalLineQr')) document.getElementById('modalLineQr').src = lineQr;
+      if (document.getElementById('modalLineTitle') && cfg.lineGroupTitle) document.getElementById('modalLineTitle').innerText = cfg.lineGroupTitle;
+      if (document.getElementById('modalLineDesc') && cfg.lineGroupDesc) document.getElementById('modalLineDesc').innerText = cfg.lineGroupDesc;
+
       document.getElementById('successModal').classList.remove('hidden');
 
       showToast('บันทึกใบสมัครเรียบร้อยแล้ว', 'success');
@@ -412,6 +458,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       renderPositionForms();
+      if (new URLSearchParams(window.location.search).get('testmodal') === '1') {
+        const cfg = WDSDB.getConfig();
+        document.getElementById('modalAppId').innerText = 'SC-2570-001';
+        document.getElementById('modalPartyName').innerText = 'พรรคพัฒนาวชิรธรรม';
+        document.getElementById('modalPrintBtn').href = 'print-application.html?type=council&id=SC-2570-001';
+        const lineUrl = cfg.lineGroupUrl || 'https://line.me/ti/g/KhLtg2M7vA';
+        const lineQr = cfg.lineGroupQr || 'assets/images/line-group-qr.jpg';
+        if (document.getElementById('modalLineLink')) document.getElementById('modalLineLink').href = lineUrl;
+        if (document.getElementById('modalLineQr')) document.getElementById('modalLineQr').src = lineQr;
+        if (document.getElementById('modalLineTitle') && cfg.lineGroupTitle) document.getElementById('modalLineTitle').innerText = cfg.lineGroupTitle;
+        if (document.getElementById('modalLineDesc') && cfg.lineGroupDesc) document.getElementById('modalLineDesc').innerText = cfg.lineGroupDesc;
+        document.getElementById('successModal').classList.remove('hidden');
+      }
     });
   </script>
 </body>

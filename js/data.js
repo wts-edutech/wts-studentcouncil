@@ -159,7 +159,11 @@ const DEFAULT_SITE_CONFIG = {
   docsCardTitle: 'รายการแบบฟอร์มเอกสารทางการที่ต้องนำส่ง',
   docsCardSubtitle: 'ขนาดกระดาษ A4',
   documentsList: DEFAULT_DOCUMENTS_LIST,
-  timeline: DEFAULT_TIMELINE
+  timeline: DEFAULT_TIMELINE,
+  lineGroupUrl: 'https://line.me/ti/g/KhLtg2M7vA',
+  lineGroupQr: 'assets/images/line-group-qr.jpg',
+  lineGroupTitle: 'กรุณาเข้ากลุ่ม LINE ผู้สมัคร',
+  lineGroupDesc: 'เพื่อติดตามประกาศหมายเลขผู้สมัคร กำหนดการประชุมชี้แจง และประสานงานกับคณะกรรมการจัดการเลือกตั้ง'
 };
 
 // ข้อมูลคณะสี 5 สีของโรงเรียน
@@ -521,6 +525,12 @@ const WDSDB = {
           }
           return doc;
         });
+      }
+      if (!merged.lineGroupUrl) {
+        merged.lineGroupUrl = 'https://line.me/ti/g/KhLtg2M7vA';
+      }
+      if (!merged.lineGroupQr) {
+        merged.lineGroupQr = 'assets/images/line-group-qr.jpg';
       }
       return merged;
     } catch (e) {

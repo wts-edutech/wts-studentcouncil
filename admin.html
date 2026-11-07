@@ -415,6 +415,46 @@
                 </div>
               </div>
 
+              <!-- กล่องการตั้งค่ากลุ่ม LINE ผู้สมัคร (แสดงเมื่อยื่นใบสมัครสำเร็จ) -->
+              <div class="border-2 border-[#06c755]/50 rounded p-4 bg-emerald-50/40 space-y-4 shadow-sm">
+                <h4 class="font-bold text-emerald-950 border-b border-emerald-200 pb-2 flex items-center justify-between">
+                  <span class="flex items-center text-sm">
+                    <i class="fa-brands fa-line text-2xl text-[#06c755] mr-2"></i> กลุ่ม LINE สำหรับผู้สมัครรับเลือกตั้ง (แสดงทันทีเมื่อสมัครเสร็จ)
+                  </span>
+                  <span class="text-[11px] bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full border border-emerald-300">แจ้งเตือนอัตโนมัติ</span>
+                </h4>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+                  <div class="sm:col-span-2 space-y-3">
+                    <div>
+                      <label class="block font-semibold text-slate-700 mb-1 text-xs">ลิงก์เข้าร่วมกลุ่ม LINE (URL) <span class="text-red-600">*</span></label>
+                      <input type="url" id="cfg_lineGroupUrl" class="gov-input w-full font-mono text-xs text-slate-800" placeholder="https://line.me/ti/g/...">
+                      <div class="text-[10px] text-slate-400 mt-0.5">ลิงก์สำหรับให้นักเรียนกดเข้ากลุ่ม LINE เช่น https://line.me/ti/g/KhLtg2M7vA</div>
+                    </div>
+                    <div>
+                      <label class="block font-semibold text-slate-700 mb-1 text-xs">หัวข้อการแจ้งเตือน</label>
+                      <input type="text" id="cfg_lineGroupTitle" class="gov-input w-full text-xs" placeholder="กรุณาเข้ากลุ่ม LINE ผู้สมัคร">
+                    </div>
+                    <div>
+                      <label class="block font-semibold text-slate-700 mb-1 text-xs">คำอธิบายแนะนำการเข้ากลุ่ม</label>
+                      <input type="text" id="cfg_lineGroupDesc" class="gov-input w-full text-xs" placeholder="เพื่อติดตามประกาศหมายเลขผู้สมัคร กำหนดการประชุมชี้แจง และประสานงานกับคณะกรรมการจัดการเลือกตั้ง">
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col items-center bg-white border border-emerald-200 p-3 rounded-lg shadow-sm">
+                    <label class="block font-semibold text-slate-700 mb-1.5 text-center text-xs">รูปภาพ QR Code กลุ่ม LINE</label>
+                    <div class="w-28 h-28 p-1 flex items-center justify-center overflow-hidden mb-2 bg-slate-50 border border-slate-200 rounded">
+                      <img id="settingLineQrPreview" src="assets/images/line-group-qr.jpg" class="w-full h-full object-contain" alt="QR Code LINE">
+                    </div>
+                    <input type="file" id="settingLineQrFile" accept="image/*" class="hidden" onchange="previewLineQrUpload(this)">
+                    <input type="hidden" id="settingLineQrData" value="">
+                    <button type="button" onclick="document.getElementById('settingLineQrFile').click()" class="gov-btn gov-btn-gray text-[11px] w-full py-1">
+                      <i class="fa-solid fa-upload mr-1"></i> เปลี่ยนรูป QR Code
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <!-- กล่องที่ 2: ปีการศึกษาและข้อความประกาศ -->
               <div class="border border-slate-300 rounded p-4 bg-slate-50/70 space-y-4">
                 <h4 class="font-bold text-[#1a365d] border-b border-slate-200 pb-2 flex items-center">
@@ -899,6 +939,14 @@
       document.getElementById('cfg_councilEmail').value = cfg.councilEmail || '';
       document.getElementById('cfg_schoolWebsite').value = cfg.schoolWebsite || '';
       document.getElementById('cfg_councilOfficeHours').value = cfg.councilOfficeHours || '';
+
+      // โหลดค่ากลุ่ม LINE สำหรับผู้สมัคร
+      document.getElementById('cfg_lineGroupUrl').value = cfg.lineGroupUrl || 'https://line.me/ti/g/KhLtg2M7vA';
+      document.getElementById('cfg_lineGroupTitle').value = cfg.lineGroupTitle || 'กรุณาเข้ากลุ่ม LINE ผู้สมัคร';
+      document.getElementById('cfg_lineGroupDesc').value = cfg.lineGroupDesc || 'เพื่อติดตามประกาศหมายเลขผู้สมัคร กำหนดการประชุมชี้แจง และประสานงานกับคณะกรรมการจัดการเลือกตั้ง';
+      const qrImg = cfg.lineGroupQr || 'assets/images/line-group-qr.jpg';
+      document.getElementById('settingLineQrPreview').src = qrImg;
+      document.getElementById('settingLineQrData').value = qrImg;
 
       // โหลดค่าหน้าระเบียบและเกณฑ์การรับสมัคร (Tab 2)
       document.getElementById('cfg_rulesHeaderTitle').value = cfg.rulesHeaderTitle || '';
@@ -1509,6 +1557,19 @@
       );
     }
 
+    function previewLineQrUpload(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('settingLineQrPreview').src = e.target.result;
+          document.getElementById('settingLineQrData').value = e.target.result;
+          showToast('เปลี่ยนรูปภาพ QR Code กลุ่ม LINE แล้ว (กดบันทึกเพื่อใช้งาน)', 'info');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
     function resetHeroBannerDefault() {
       const defaultHero = typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg';
       document.getElementById('settingHeroBannerPreview').src = defaultHero;
@@ -1574,6 +1635,10 @@
         councilEmail: document.getElementById('cfg_councilEmail').value.trim(),
         schoolWebsite: document.getElementById('cfg_schoolWebsite').value.trim(),
         councilOfficeHours: document.getElementById('cfg_councilOfficeHours').value.trim(),
+        lineGroupUrl: document.getElementById('cfg_lineGroupUrl').value.trim(),
+        lineGroupTitle: document.getElementById('cfg_lineGroupTitle').value.trim(),
+        lineGroupDesc: document.getElementById('cfg_lineGroupDesc').value.trim(),
+        lineGroupQr: document.getElementById('settingLineQrData').value || 'assets/images/line-group-qr.jpg',
         rulesHeaderTitle: document.getElementById('cfg_rulesHeaderTitle').value.trim(),
         rulesHeaderSubtitle: document.getElementById('cfg_rulesHeaderSubtitle').value.trim(),
         rulesSection1Title: document.getElementById('cfg_rulesSection1Title').value.trim(),
