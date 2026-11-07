@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
 };
 
 // ตราสัญลักษณ์เริ่มต้น (ตราโรงเรียนวชิรธรรมสาธิต พื้นหลังโปร่งใส, ตราสภานักเรียน, ตราคณะสี)
-const DEFAULT_SCHOOL_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQAAAM4UlEQVR4nM2ZaYxcVXbHf/e92vfu6q5yL3Z76W684Q3bYEww4JlggoBEZLLAAJEyMxpNtk/RJF8y+RQ0EpHmSz6NCCIiEUGjkDgBlIHxDHjweMG73e62e3MvbndV11713qt6790bVbUxGAimbQbNKZVUqnp1z+/de87/3HueUErxm2wav+GmfVkDKeWiVBlHjimpzOY3X8q4ntsGQ4EsYlvjCiaw6lfQ7LDyR+/BE1gmhGgHxC2PL24nBpWq41JUjfwr2G6YSuE4prOTcuYMvX3tBBM9RNoeR5ASQmhf/QzadlnZ9f2U8ocYHfFSKnXR2RdkdtZmcuJ1duzZRM2okOr+C3Th+yoBFa6sAMeYGXqLUydyGPVVlEs1lq1OcWWmilE0KJcOs/W+AslUm7Lt+wmE+8VXAtgMi8zls2r+0qtMz0xRrrVhmordX/8G6zfvEnPTEyo3fomgKjJ+fJYr42+wfvsWVq5Zuq9bAySnOvrOEE/bpPL9jF2Mcey9Gt293cyMHlOrV6XQ8iH61kmWb1xHwFdEq/wnjplWnmC3WErSLBnQdW0y0yeoZn/GyIUJZjJhAuFOLGueC2cOsufRR/jpa//C8IVRop11xLr56mGgA/J45Ogb6WXv3H6Pr3i/sb+mpJSuEAkWsssLjF5RyU0j7DP6Ah8HN20GO07V6I75gP1Nn5vFYBmHdJaC309GmoRoFtRSNXJLMKCUZfu+fVG7q35mbdTCqNfBVmLga4pGnfsSOHXcgC68jor/NB0fOMfLuD+iMLFCtxbFUlIBfsvFrf83Atm8Ij8f/65nBcOdG2pc9ykAqgE+aFOYkDz7+fXbu/rpwTIvcxVGsUoGtux8XKzb/CY6hIWyT1T0pVmx6mnh6E5rQv7A/balVoyflpc9ziKnZSZolbf3uZ9m550khhEDXPYTD4NMa+PwB7tr7HWEE7mZlWmDnh9kUOkYqVEEsQWy+MKArTZh9Rcmz3+HoqdMUrAahrk2sv++bBIORFrxhFZgeG2Ehv4DEJRpv49Hv/piq7CASsjl/9hDy1J+i5t9SUjpfHqBbn1Ni+AdKXfoHjg+bjMwo+gdW0b/7L+npu2NxPpTE61ylLzVO3DsPjtX6OhTtFGsefp7Esm5qbpCLlw3coe/B2AvKccq3DyiVjZr6D4zpdzgx7DI0rvHI7m4CPX/EwIY9raVt8SmJUS1RLDiUsldxGmYr+zRNo713p3CSj9O/Ks5MLsL5MT+VkZdxMwdvmtE3n0ElKVoxCsHfJVNO8cR9USYqm+he9yiBQOijWXZMqrMjzM82yM5MUjdK138LR5OkN/wBhnczWwZClMRm8rHnMMybB+NNAYXw4V++j84Vg+zbCaenE/Ts+BZdvatvGF3ljqjIwn+xulORtN5D5I/Dx+Isnh4U4cFnsOng3jV1lvXvItC956ZV5SaAzdB3CNqn8M2/wvDlLPFtf8WadTtuGNVRdfSJl0hEykRjAbo6NUL5N1CO8ZEjodG5cpfIRfdRzl7Ge/55PNaYupkOfy6gbL5Kp5S4/CLF+bMcKe1jy92PiaazG26jUVZ28RimElhKoy51rNwRHLt8g3evL8C6B74tDpe24NbPo537e9zamGptepcOKKE6qvSpf8bMH+d/zm3gme+9IJpad6MpatlRJjIBxqYTXGy+Z+KMzkWwzGaW3ujc7w1z/9M/EoemVkPlBAz9EFmbUs1YXxKgbBRQ0y9Tz7zJyele9j79PF7vJ8qTUrjFs6p66SeYsh1TxTCJY5DAklFq429hF05/ahkjoXZS9/4dFxZSsPA2jL/UrNFL280oc1aZV95kPLOGyOC36EgPfiqalZK484dJxSRta9ciVbOEeRCqealE00uQO4lKbEJ8LBma0rT2zj3iV1efUWOF1+j1HSfYM6WEPyk+F7B5px/q2kLdxWz7NtFla0ku3yb8geAn4BQy+77CmEUYWYLUry2nWAQUULcUmjeAmjug6P7aDc6boXLX/c+JufE7VEWfBT1M+Nr/P7XEUkmulCbVQu2qan6WyuED8yRnzG5Wrn9IxGJtnzHHEtecQlXPopwctm1giDZykX3U9B5s20KvTyNzx1DmfOuGPmnBUIyedfeLi51JJrXCYlIql/nqZWU61Y8Am7NmhQv828Q/cuDCftXAYi5+hml1norx2eVIli8pe+E8VVOjWI9SstrJhB9jPBdjwhwg1+ggb+mUDS/Vq6dxKpOfImxm76w1rk5bvySjZjCdGi+8/Tfq9eyLSKE+WuJmfIT0CD0b4vx85GXGT51Xnq021Z4x3hh6TT2x+SkR9IWux1Er9tDIVySFhTrSFSjNpW4dJ1e0iPkNXMqtY6mmOYQ1k1BTFZqZek2imnDz1rQ6WNhPwZ1jojzMT/a/qiLbdOLaerzCf2MMRkiKgBZWfeuWUSuNEJZhEqkws/pR9o9ZamvbAwyk17ci1CqMqsrQjzGm3qFRMbGVZ3EJ/Quk4huQpSHq1hxSaWgaOMXLTNou6bv/XEU7B4VpG2ScabV/9iXK3gWUI7jYOE1ks4auCfoCA3g1z42AQREjJVeREROEY0GKEw4hN4QmFCP6+wyPn+RZvq96Ex2iNPUu9VoVV0tDUKILhVIa0hPH0SLooTR6S5IW9wK6rmPVTRYuH0UPxtSh3EEO229SzBp4HD8Jf5JGQIHPRpceNkZ3IK4p4HVAHQ/97GRaXmB+No8PE73HoDixQK1iEgi7mA0DkTuqQtnX8TWqRGPNjNVQWnP5NFxKmFwiFDDwCgclJKqV1TaKCUShgFZMMz47RI4iZl4SiNuoYIyktZysPc3dXQ+RDqwQn3kmUUjm3FF1oPyvmLF5XBykUhjZOg0LljXWsH58iE1qGOHREFK/pixNiGt9mlavRr8Gtjjm4kU2UkqOaRv5VXuQfKSM3+9D1zSkVIScJNviD3Jv+iER9bb9/0JdUlmqkZkWGEpQL9lULllkzhXQf8/h5HYfH2QHuTpsEC71cN/6vWwe2ELQH1kU52uJJBEYRoVTF0/w7vk3qHfkSK4KYIclhZkSmYMLpO5LEugI4LqKsptlpHaMB7Tf+fxTXTkzpw788odM7yvgVB1mfrFA7kyZcKefZbu7iAx6EEJHaALpSGzLpm64yLoOtsB1BZpHIbwKzSNRPtU6JFUnqjQqLtH+MMZ4ncm3p2m4krb1CdL3dBJwI8ifhvmzp/6WdG/39Y3wpwCby5A/cFK9c+4V5h8qULRKlGcqONLGnrGxii4dW5O03RlHC4KyXSrDBtWrDbr3duAJLWa0tMBtuFRmK2RPFEjtTlKbNCiOlKhdsfC0ezENh54dvaQaaXzHAjywZS87vvm48Hi9n38ulo7Dwhsn1Pvv/Tcza2coD9Swgw1cvUH+SAXHdhBejeiKMHbVIbE2xsLZErF0mPBAGC2kkT9awa01aNg2juPQvilJI1+nXnaojNdIr1uOmpP0zffSfjnIrkcepvfhncITCX6xg7uqWlgHLqjRXxxllHGmuubIdmfxLPdBSFGvNvDGva0w0AVkRirUp0ySdyWIb0hw5WcZwt0+vJ0BlAWaTyOR6qRxUac0VGBLY5DgOYc72law6onfIrDrDqFHAkvrLKiigXtwVNWPTnClcJWrWpZMW5lRX4ZaukHsziCiw8XRTSpZCywXT8yDrz1II9cgFk0SF2nKYwbZk/MkSwHW1ZeTyPvoVVE6Up14HtuCZ9tKoYX8t9D6aCpG1cT9+YgSJ+fAsjGdBmXXpCxrZGSRK26eObdAWZiEehL0rOxl7P0TaNJPUkTpEgm6tHaSKkRM+YnoPvzNKqGDfHYX+oZeofk8t9ebUbaD8/aQ0t+fQmtdvqhuqKaYLKqc09wFpSPoK9oRRy63NLApOa3f3UUtFFK2mu2NmA/tu3vwdCevZ+tttd+E14Pn4Q3CGexUzmQeQj7czjB6PNwCdg+P4T80hRIeGooWiE/oFK0a52pZtj64g0DOaIHKTd14dw0IEQ5c33t+id0tdV2KJj84r4x8kWUDK9CloO3FE9AVZzLhsPC/J1jb0U3EHyZTr6L/4Xbad60VzSOC0PUvBHZLDcwPB26W8eC8wZX9x3BSF4j6I3iUh6iSJP1hClIxm8vQn+6l0x/CzZgITVsS2C0BXjdNI72ln8RECTmRxSnZDC1MsbOrnagvyNbeAUq1EkKCTHjRtq64JbiWq1v5U9OZ1tMu/E9ux39PP5FQkLXJrusbBqEUsWAYeWcanrsXra/zlp/k3PJzEqFr6L1JIZ6M09CEih2ZbKZr693M1Fqbj+CT24WnLXqrLm4P8EPTvB68T24XjiaUPltsboBQy+OEfn8HWqK5w7k9u61HYR83aTVwT04o5fOit0fQVnbeVOO+UkCakK7bPMMiPEuTks+zLxXw12H/B9RdfOS6eRKwAAAAAElFTkSuQmCC";
+const DEFAULT_SCHOOL_LOGO = "assets/images/school-logo-transparent.png";
 const DEFAULT_LOGO_2 = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffffff' stroke='%231e3a8a' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='42' fill='%23eff6ff' stroke='%233b82f6' stroke-width='1.5'/%3E%3Cpolygon points='50,20 58,38 78,38 62,50 68,68 50,57 32,68 38,50 22,38 42,38' fill='%231e3a8a' stroke='%23c59b27' stroke-width='1.5'/%3E%3Ctext x='50' y='86' font-family='sans-serif' font-size='8.5' font-weight='bold' fill='%231e3a8a' text-anchor='middle'%3Eสภานักเรียน%3C/text%3E%3C/svg%3E";
 const DEFAULT_LOGO_3 = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffffff' stroke='%23b45309' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='42' fill='%23fffbeb' stroke='%23f59e0b' stroke-width='1.5'/%3E%3Ccircle cx='35' cy='42' r='8' fill='%231d4ed8'/%3E%3Ccircle cx='50' cy='34' r='8' fill='%23eab308'/%3E%3Ccircle cx='65' cy='42' r='8' fill='%23dc2626'/%3E%3Ccircle cx='42' cy='56' r='8' fill='%23ea580c'/%3E%3Ccircle cx='58' cy='56' r='8' fill='%2316a34a'/%3E%3Ctext x='50' y='86' font-family='sans-serif' font-size='8.5' font-weight='bold' fill='%2392400e' text-anchor='middle'%3E5 คณะสี%3C/text%3E%3C/svg%3E";
 
@@ -163,7 +163,83 @@ const DEFAULT_SITE_CONFIG = {
   lineGroupUrl: 'https://line.me/ti/g/KhLtg2M7vA',
   lineGroupQr: 'assets/images/line-group-qr.jpg',
   lineGroupTitle: 'กรุณาเข้ากลุ่ม LINE ผู้สมัคร',
-  lineGroupDesc: 'เพื่อติดตามประกาศหมายเลขผู้สมัคร กำหนดการประชุมชี้แจง และประสานงานกับคณะกรรมการจัดการเลือกตั้ง'
+  lineGroupDesc: 'เพื่อติดตามประกาศหมายเลขผู้สมัคร กำหนดการประชุมชี้แจง และประสานงานกับคณะกรรมการจัดการเลือกตั้ง',
+  councilSignatures: [
+    {
+      id: 1,
+      headerText: '',
+      hasStatusCheck: false,
+      statusLabel: 'ผ่านคุณสมบัติ',
+      signatureLabel: 'ลงชื่อ......................................................ผู้สมัครประธาน',
+      signerType: 'applicant',
+      signerName: '',
+      positionText: '',
+      showDate: true,
+      dateText: 'วันที่........เดือน...................พ.ศ. 2569'
+    },
+    {
+      id: 2,
+      headerText: '',
+      hasStatusCheck: false,
+      statusLabel: 'ผ่านคุณสมบัติ',
+      signatureLabel: 'ลงชื่อ......................................................ครูที่ปรึกษาพรรค',
+      signerType: 'advisor',
+      signerName: '',
+      positionText: '',
+      showDate: true,
+      dateText: 'วันที่........เดือน...................พ.ศ. 2569'
+    },
+    {
+      id: 3,
+      headerText: 'สำหรับงานส่งเสริมประชาธิปไตย',
+      hasStatusCheck: true,
+      statusLabel: 'ผ่านคุณสมบัติ',
+      signatureLabel: 'ลงชื่อ......................................................ผู้ตรวจรับ',
+      signerType: 'custom',
+      signerName: '',
+      positionText: 'หัวหน้ากลุ่มบริหารกิจการนักเรียน',
+      showDate: false,
+      dateText: ''
+    }
+  ],
+  colorSignatures: [
+    {
+      id: 1,
+      headerText: '',
+      hasStatusCheck: false,
+      statusLabel: 'ผ่านคุณสมบัติ',
+      signatureLabel: 'ลงชื่อ......................................................ผู้สมัครประธานสี',
+      signerType: 'applicant',
+      signerName: '',
+      positionText: '',
+      showDate: true,
+      dateText: 'วันที่........เดือน...................พ.ศ. 2569'
+    },
+    {
+      id: 2,
+      headerText: '',
+      hasStatusCheck: false,
+      statusLabel: 'ผ่านคุณสมบัติ',
+      signatureLabel: 'ลงชื่อ......................................................ครูที่ปรึกษาคณะสี',
+      signerType: 'advisor',
+      signerName: '',
+      positionText: '',
+      showDate: true,
+      dateText: 'วันที่........เดือน...................พ.ศ. 2569'
+    },
+    {
+      id: 3,
+      headerText: 'สำหรับงานส่งเสริมกิจกรรมคณะสี',
+      hasStatusCheck: true,
+      statusLabel: 'ผ่านคุณสมบัติ',
+      signatureLabel: 'ลงชื่อ......................................................ผู้ตรวจรับ',
+      signerType: 'custom',
+      signerName: '',
+      positionText: 'หัวหน้ากลุ่มบริหารกิจการนักเรียน',
+      showDate: false,
+      dateText: ''
+    }
+  ]
 };
 
 // ข้อมูลคณะสี 5 สีของโรงเรียน
@@ -531,6 +607,15 @@ const WDSDB = {
       }
       if (!merged.lineGroupQr) {
         merged.lineGroupQr = 'assets/images/line-group-qr.jpg';
+      }
+      if (!merged.schoolLogo || typeof merged.schoolLogo !== 'string' || merged.schoolLogo.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ') || (merged.schoolLogo.startsWith('data:image/png;base64,iVBORw') && merged.schoolLogo.length < 5000)) {
+        merged.schoolLogo = DEFAULT_SCHOOL_LOGO;
+      }
+      if (!merged.councilSignatures || !Array.isArray(merged.councilSignatures) || merged.councilSignatures.length === 0) {
+        merged.councilSignatures = JSON.parse(JSON.stringify(DEFAULT_SITE_CONFIG.councilSignatures));
+      }
+      if (!merged.colorSignatures || !Array.isArray(merged.colorSignatures) || merged.colorSignatures.length === 0) {
+        merged.colorSignatures = JSON.parse(JSON.stringify(DEFAULT_SITE_CONFIG.colorSignatures));
       }
       return merged;
     } catch (e) {

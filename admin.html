@@ -247,7 +247,7 @@
                   <div class="flex flex-col items-center bg-white border border-slate-300 p-3 rounded shadow-sm">
                     <label class="block font-semibold text-[#1a365d] mb-2 text-center text-xs">1. ตราสัญลักษณ์โรงเรียน (หลัก)</label>
                     <div class="w-20 h-20 p-1 flex items-center justify-center overflow-hidden mb-2">
-                      <img id="settingLogoPreview" src="" class="w-full h-full object-contain" alt="ตราโรงเรียน 1">
+                      <img id="settingLogoPreview" src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราโรงเรียน 1" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
                     </div>
                     <input type="file" id="settingLogoFile" accept="image/*" class="hidden" onchange="previewLogoUpload(this, 1)">
                     <input type="hidden" id="settingLogoData" value="">
@@ -712,6 +712,51 @@
                 </div>
               </div>
 
+              <!-- กล่องที่ 8: ตั้งค่าช่องลงนามและผู้เซ็นเอกสารท้ายใบสมัคร (Signatures & Signers Management) -->
+              <div class="border-2 border-indigo-200 rounded p-4 bg-indigo-50/40 space-y-4 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-indigo-200 pb-2 gap-2">
+                  <div>
+                    <h4 class="font-bold text-[#1a365d] flex items-center text-sm">
+                      <i class="fa-solid fa-file-signature mr-2 text-indigo-700 text-base"></i> ตั้งค่าช่องลงนามและผู้เซ็นเอกสารท้ายใบสมัคร (A4)
+                    </h4>
+                    <p class="text-[11px] text-slate-500 mt-0.5">กำหนดข้อความ ตำแหน่งผู้ตรวจรับ และสามารถกดเพิ่มหรือลดคนเซ็นเอกสารได้ตามต้องการ</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button type="button" onclick="addSignatureCard()" class="gov-btn gov-btn-blue text-[11px]">
+                      <i class="fa-solid fa-user-plus mr-1"></i> เพิ่มผู้เซ็นเอกสาร
+                    </button>
+                  </div>
+                </div>
+
+                <!-- แท็บสลับฟอร์ม: สภานักเรียน vs ประธานคณะสี -->
+                <div class="flex border-b border-slate-300 gap-1 bg-slate-200/60 p-1 rounded-t">
+                  <button type="button" id="sigSubTabCouncil" onclick="switchSignatureSubTab('council')" class="px-3 py-1.5 text-xs font-bold rounded bg-white text-[#1a365d] shadow-sm flex items-center">
+                    <i class="fa-solid fa-landmark mr-1.5 text-blue-700"></i> ใบสมัครสภานักเรียน (10 ตำแหน่ง)
+                  </button>
+                  <button type="button" id="sigSubTabColor" onclick="switchSignatureSubTab('color')" class="px-3 py-1.5 text-xs font-semibold rounded text-slate-600 hover:text-slate-900 flex items-center">
+                    <i class="fa-solid fa-flag mr-1.5 text-amber-600"></i> ใบสมัครประธานคณะสี (5 สี)
+                  </button>
+                </div>
+
+                <!-- รายการช่องเซ็นเอกสาร (Dynamic Cards) -->
+                <div id="signaturesAdminList" class="space-y-3">
+                  <!-- Rendered by JS -->
+                </div>
+
+                <!-- ตัวอย่างการแสดงผลท้ายเอกสาร A4 จำลอง (Signatures Live Preview) -->
+                <div class="mt-4 pt-3 border-t border-indigo-100">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-slate-700 flex items-center">
+                      <i class="fa-solid fa-eye text-amber-600 mr-1.5"></i> ตัวอย่างช่องลงนามจริงที่จะพิมพ์ออกกระดาษ A4:
+                    </span>
+                    <span id="sigPreviewCountLabel" class="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-mono">3 ช่องลงนาม</span>
+                  </div>
+                  <div id="signaturesAdminPreviewBox" class="bg-white p-3 border-2 border-dashed border-slate-300 rounded shadow-inner">
+                    <!-- Dynamic Preview Rendered by JS -->
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             <!-- คอลัมน์ขวา: ตัวอย่างการแสดงผลหน้าบ้านสดๆ (Live Preview) (4 cols) -->
@@ -728,7 +773,7 @@
                     <div class="relative z-10 space-y-1">
                       <div class="flex items-center justify-center space-x-2">
                         <div class="w-11 h-11 overflow-hidden flex items-center justify-center">
-                          <img id="previewLiveLogo" src="" class="w-full h-full object-contain">
+                          <img id="previewLiveLogo" src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
                         </div>
                         <div id="previewLiveLogo2Box" class="w-11 h-11 overflow-hidden flex items-center justify-center">
                           <img id="previewLiveLogo2" src="" class="w-full h-full object-contain">
@@ -863,6 +908,9 @@
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
     let currentDocuments = [];  // รายการเอกสารหน้าดาวน์โหลดแบบฟอร์มเอกสาร (documents.html)
+    let currentCouncilSignatures = []; // รายการผู้ลงนามใบสมัครสภานักเรียน
+    let currentColorSignatures = [];   // รายการผู้ลงนามใบสมัครประธานคณะสี
+    let activeSignatureSubTab = 'council'; // 'council' | 'color'
 
     function updateStatsDashboard() {
       const councils = WDSDB.getCouncilList();
@@ -994,12 +1042,18 @@
       }));
       renderDocumentsAdminTable();
 
-      const logo = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
-      removeImageBackground(logo, (cleanLogo) => {
-        document.getElementById('settingLogoPreview').src = cleanLogo;
-        document.getElementById('settingLogoData').value = cleanLogo;
-        updateLivePreview();
-      });
+      // โหลดการตั้งค่าช่องลงนามผู้เซ็นเอกสาร (Signatures)
+      currentCouncilSignatures = JSON.parse(JSON.stringify(cfg.councilSignatures || []));
+      currentColorSignatures = JSON.parse(JSON.stringify(cfg.colorSignatures || []));
+      renderSignaturesAdminList();
+
+      let logo = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      if (!logo || typeof logo !== 'string' || logo.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ')) {
+        logo = DEFAULT_SCHOOL_LOGO;
+      }
+      document.getElementById('settingLogoPreview').src = logo;
+      document.getElementById('settingLogoData').value = logo;
+      updateLivePreview();
 
       const logo2 = cfg.schoolLogo2 !== undefined ? cfg.schoolLogo2 : DEFAULT_LOGO_2;
       if (logo2) {
@@ -1337,6 +1391,193 @@
       renderDocumentsAdminTable();
     }
 
+    // ====== ฟังก์ชันจัดการช่องลงนามและผู้เซ็นเอกสารท้ายใบสมัคร (Signatures Management) ======
+    function switchSignatureSubTab(subTab) {
+      activeSignatureSubTab = subTab;
+      const cBtn = document.getElementById('sigSubTabCouncil');
+      const kBtn = document.getElementById('sigSubTabColor');
+      if (subTab === 'council') {
+        cBtn.className = 'px-3 py-1.5 text-xs font-bold rounded bg-white text-[#1a365d] shadow-sm flex items-center';
+        kBtn.className = 'px-3 py-1.5 text-xs font-semibold rounded text-slate-600 hover:text-slate-900 flex items-center';
+      } else {
+        kBtn.className = 'px-3 py-1.5 text-xs font-bold rounded bg-white text-[#1a365d] shadow-sm flex items-center';
+        cBtn.className = 'px-3 py-1.5 text-xs font-semibold rounded text-slate-600 hover:text-slate-900 flex items-center';
+      }
+      renderSignaturesAdminList();
+    }
+
+    function getActiveSignaturesList() {
+      return activeSignatureSubTab === 'council' ? currentCouncilSignatures : currentColorSignatures;
+    }
+
+    function renderSignaturesAdminList() {
+      const list = getActiveSignaturesList();
+      const container = document.getElementById('signaturesAdminList');
+      if (!container) return;
+
+      if (!list || list.length === 0) {
+        container.innerHTML = '<div class="p-4 text-center text-slate-400 bg-white border border-slate-200 rounded text-xs">ยังไม่มีช่องลงนาม กดปุ่ม "เพิ่มผู้เซ็นเอกสาร" ด้านบน</div>';
+        renderSignaturesAdminPreview();
+        return;
+      }
+
+      container.innerHTML = list.map((sig, idx) => `
+        <div class="border border-slate-300 rounded-lg p-3 bg-white shadow-sm space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-full bg-[#1a365d] text-white flex items-center justify-center font-bold text-xs">
+                ${idx + 1}
+              </span>
+              <span class="font-bold text-slate-800 text-xs">
+                ช่องลงนามที่ ${idx + 1}: ${escapeHTML(sig.signatureLabel ? sig.signatureLabel.split('...').pop().trim() || 'ผู้ลงนาม' : 'ผู้ลงนาม')}
+              </span>
+            </div>
+            <button type="button" onclick="removeSignatureCard(${idx})" class="gov-btn bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs px-2.5 py-1" title="ลบช่องลงนามนี้">
+              <i class="fa-solid fa-trash-can mr-1"></i> ลบช่องนี้
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">หัวข้อกล่องลงนาม (ปล่อยว่างได้)</label>
+              <input type="text" value="${escapeHTML(sig.headerText || '')}" oninput="updateSignatureField(${idx}, 'headerText', this.value)" class="gov-input w-full text-xs" placeholder="เช่น สำหรับงานส่งเสริมกิจกรรมคณะสี">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ข้อความบรรทัดลงชื่อ <span class="text-red-500">*</span></label>
+              <input type="text" value="${escapeHTML(sig.signatureLabel || '')}" oninput="updateSignatureField(${idx}, 'signatureLabel', this.value)" class="gov-input w-full text-xs" placeholder="เช่น ลงชื่อ......................................................ผู้สมัคร">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">การแสดงชื่อผู้ลงนามในวงเล็บ</label>
+              <select onchange="updateSignatureField(${idx}, 'signerType', this.value)" class="gov-input w-full text-xs font-semibold">
+                <option value="applicant" ${sig.signerType === 'applicant' ? 'selected' : ''}>👤 ดึงชื่อผู้สมัครอัตโนมัติ (ตามข้อมูลในใบสมัคร)</option>
+                <option value="advisor" ${sig.signerType === 'advisor' ? 'selected' : ''}>👨‍🏫 ดึงชื่อครูที่ปรึกษาอัตโนมัติ (ตามข้อมูลในใบสมัคร)</option>
+                <option value="custom" ${sig.signerType === 'custom' ? 'selected' : ''}>✍️ กำหนดชื่อเอง หรือเว้นว่างให้เซ็นสด</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ชื่อ-สกุล (กรณีต้องการระบุชื่อตายตัว หรือเว้นว่าง)</label>
+              <input type="text" value="${escapeHTML(sig.signerName || '')}" oninput="updateSignatureField(${idx}, 'signerName', this.value)" class="gov-input w-full text-xs" placeholder="เช่น นายธีรภัทร ชาญวิชัย (หรือเว้นว่าง)" ${sig.signerType !== 'custom' ? 'disabled style="background-color: #f8fafc;"' : ''}>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ตำแหน่งหรือสังกัดใต้ชื่อ (ในวงเล็บ)</label>
+              <input type="text" value="${escapeHTML(sig.positionText || '')}" oninput="updateSignatureField(${idx}, 'positionText', this.value)" class="gov-input w-full text-xs" placeholder="เช่น (หัวหน้ากลุ่มบริหารกิจการนักเรียน) หรือ (ผู้อำนวยการโรงเรียน)">
+            </div>
+
+            <div class="space-y-2 pt-1">
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" ${sig.hasStatusCheck ? 'checked' : ''} onchange="updateSignatureField(${idx}, 'hasStatusCheck', this.checked)" class="rounded text-[#1a365d]">
+                <span class="font-semibold text-slate-700">มีช่องติ๊ก [ ] ผ่านคุณสมบัติ [ ] ไม่ผ่าน</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" ${sig.showDate ? 'checked' : ''} onchange="updateSignatureField(${idx}, 'showDate', this.checked)" class="rounded text-[#1a365d]">
+                <span class="font-semibold text-slate-700">มีบรรทัดวันที่ (วันที่........เดือน...................พ.ศ. 2569)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      renderSignaturesAdminPreview();
+    }
+
+    function updateSignatureField(idx, field, value) {
+      const list = getActiveSignaturesList();
+      if (list[idx]) {
+        list[idx][field] = value;
+        if (field === 'signerType') {
+          renderSignaturesAdminList();
+        } else {
+          renderSignaturesAdminPreview();
+        }
+      }
+    }
+
+    function addSignatureCard() {
+      const list = getActiveSignaturesList();
+      const nextNum = list.length + 1;
+      list.push({
+        id: nextNum,
+        headerText: '',
+        hasStatusCheck: false,
+        statusLabel: 'ผ่านคุณสมบัติ',
+        signatureLabel: `ลงชื่อ......................................................ผู้ตรวจรับคนที่ ${nextNum}`,
+        signerType: 'custom',
+        signerName: '',
+        positionText: 'รองผู้อำนวยการ / คณะกรรมการ',
+        showDate: true,
+        dateText: 'วันที่........เดือน...................พ.ศ. 2569'
+      });
+      renderSignaturesAdminList();
+      showToast(`เพิ่มช่องลงนามคนที่ ${nextNum} เรียบร้อยแล้ว สามารถแก้ไขรายละเอียดได้ทันที`, 'info');
+    }
+
+    function removeSignatureCard(idx) {
+      const list = getActiveSignaturesList();
+      if (list.length <= 1) {
+        showToast('ต้องมีช่องลงนามอย่างน้อย 1 ช่อง', 'error');
+        return;
+      }
+      list.splice(idx, 1);
+      renderSignaturesAdminList();
+      showToast('ลบช่องลงนามเรียบร้อยแล้ว', 'info');
+    }
+
+    function renderSignaturesAdminPreview() {
+      const list = getActiveSignaturesList();
+      const previewBox = document.getElementById('signaturesAdminPreviewBox');
+      const countLabel = document.getElementById('sigPreviewCountLabel');
+      if (!previewBox) return;
+
+      if (countLabel) countLabel.innerText = `${list.length} ช่องลงนาม`;
+
+      const colCount = list.length;
+      let gridColsClass = 'grid-cols-3';
+      if (colCount === 1) gridColsClass = 'grid-cols-1 max-w-xs mx-auto';
+      else if (colCount === 2) gridColsClass = 'grid-cols-2';
+      else if (colCount === 3) gridColsClass = 'grid-cols-3';
+      else if (colCount === 4) gridColsClass = 'grid-cols-4';
+      else gridColsClass = 'grid-cols-3 sm:grid-cols-' + Math.min(colCount, 5);
+
+      const boxesHtml = list.map((sig, idx) => {
+        let displayName = '......................................................';
+        if (sig.signerType === 'applicant') {
+          displayName = activeSignatureSubTab === 'council' ? 'นายชินภัทร รัตนเวช' : 'นายธีรภัทร ชาญวิชัย';
+        } else if (sig.signerType === 'advisor') {
+          displayName = activeSignatureSubTab === 'council' ? 'นายอภิสิทธิ์ มั่นคง' : 'นางวันทนา วงศ์วาน';
+        } else if (sig.signerType === 'custom') {
+          displayName = sig.signerName ? sig.signerName : '......................................................';
+        }
+
+        const hasHeader = Boolean(sig.headerText);
+        const hasStatus = Boolean(sig.hasStatusCheck);
+
+        return `
+          <div class="border border-black p-2 flex flex-col justify-between h-28 text-[11px] text-center ${hasHeader ? 'bg-slate-50' : 'bg-white'}">
+            ${hasHeader ? `<div class="font-bold text-[10px] leading-tight text-slate-800">${escapeHTML(sig.headerText)}</div>` : ''}
+            ${hasStatus ? `
+              <div class="text-[10px] leading-tight text-slate-700">
+                [ ✓ ] ${escapeHTML(sig.statusLabel || 'ผ่านคุณสมบัติ')} &nbsp;&nbsp; [ ] ไม่ผ่าน
+              </div>
+            ` : ''}
+            <div class="leading-tight text-slate-800">${escapeHTML(sig.signatureLabel || 'ลงชื่อ......................................................')}</div>
+            <div class="leading-tight text-slate-700">( ${escapeHTML(displayName)} )</div>
+            ${sig.positionText ? `<div class="text-[9px] leading-tight text-slate-600">(${escapeHTML(sig.positionText)})</div>` : ''}
+            ${sig.showDate ? `<div class="leading-tight text-[10px] text-slate-500">${escapeHTML(sig.dateText || 'วันที่........เดือน...................พ.ศ. 2569')}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      previewBox.innerHTML = `
+        <div class="grid ${gridColsClass} gap-2">
+          ${boxesHtml}
+        </div>
+      `;
+    }
+
     function updateLivePreview() {
       const name = document.getElementById('cfg_schoolName').value || 'โรงเรียนตัวอย่าง';
       const year = document.getElementById('cfg_academicYear').value || '2570';
@@ -1345,7 +1586,10 @@
       const affil = document.getElementById('cfg_affiliation').value || 'สพฐ.';
       const dates = document.getElementById('cfg_regPeriod').value || '-';
       const phone = document.getElementById('cfg_schoolPhone').value || '-';
-      const logo = document.getElementById('settingLogoData').value || DEFAULT_SCHOOL_LOGO;
+      let logo = document.getElementById('settingLogoData').value || DEFAULT_SCHOOL_LOGO;
+      if (!logo || typeof logo !== 'string' || logo.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ')) {
+        logo = DEFAULT_SCHOOL_LOGO;
+      }
       const logo2 = document.getElementById('settingLogo2Data').value;
       const logo3 = document.getElementById('settingLogo3Data').value;
       const heroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg');
@@ -1674,6 +1918,8 @@
           fileUrl: (doc.fileUrl || '').trim(),
           customContent: (doc.customContent || '').trim()
         })),
+        councilSignatures: currentCouncilSignatures,
+        colorSignatures: currentColorSignatures,
         timeline: cleanedTimeline
       };
 

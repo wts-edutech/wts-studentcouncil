@@ -44,7 +44,10 @@ function applySiteConfig() {
 
   // 2. แทนที่รูปตราโรงเรียนและตราสัญลักษณ์ทั้งหมด (และลบพื้นหลังสีขาวของตราให้อัตโนมัติ)
   const fallbackLogo = 'assets/images/school-logo-transparent.png';
-  const logo1 = cfg.schoolLogo || fallbackLogo;
+  let logo1 = cfg.schoolLogo || fallbackLogo;
+  if (!logo1 || typeof logo1 !== 'string' || logo1.includes('iVBORw0KGgoAAASUhEUgAAACgAAAAyCAYAAAAus5mQ') || (logo1.startsWith('data:image/png;base64,iVBORw') && logo1.length < 5000)) {
+    logo1 = fallbackLogo;
+  }
   const logo2 = cfg.schoolLogo2 !== undefined ? cfg.schoolLogo2 : (typeof DEFAULT_LOGO_2 !== 'undefined' ? DEFAULT_LOGO_2 : '');
   const logo3 = cfg.schoolLogo3 !== undefined ? cfg.schoolLogo3 : (typeof DEFAULT_LOGO_3 !== 'undefined' ? DEFAULT_LOGO_3 : '');
 
@@ -60,8 +63,12 @@ function applySiteConfig() {
         el.classList.remove('hidden');
         if (el.tagName === 'IMG') {
           el.src = cleanSrc;
+          el.onerror = function() {
+            this.onerror = null;
+            this.src = fallbackLogo;
+          };
         } else {
-          el.innerHTML = `<img src="${cleanSrc}" class="w-full h-full object-contain" alt="${altText}" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">`;
+          el.innerHTML = `<img src="${cleanSrc}" class="w-full h-full object-contain" alt="${altText}" onerror="this.onerror=null; this.src='${fallbackLogo}';">`;
         }
       });
     };

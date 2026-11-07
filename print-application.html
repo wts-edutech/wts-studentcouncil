@@ -91,17 +91,77 @@
       }
     }
 
+    // ฟังก์ชันสร้างช่องผู้ลงนามแบบไดนามิก (Dynamic Signatures Grid)
+    function renderSignaturesGrid(signatures, d, type, cfg) {
+      if (!signatures || !signatures.length) return '';
+
+      const colCount = signatures.length;
+      let gridColsClass = 'grid-cols-3';
+      if (colCount === 1) gridColsClass = 'grid-cols-1 max-w-xs mx-auto';
+      else if (colCount === 2) gridColsClass = 'grid-cols-2';
+      else if (colCount === 3) gridColsClass = 'grid-cols-3';
+      else if (colCount === 4) gridColsClass = 'grid-cols-4';
+      else gridColsClass = 'grid-cols-3';
+
+      const year = cfg.academicYear ? (parseInt(cfg.academicYear, 10) - 1).toString() : '2569';
+
+      const boxesHtml = signatures.map((sig, idx) => {
+        let displayName = '......................................................';
+        if (sig.signerType === 'applicant') {
+          if (type === 'council') {
+            displayName = d?.members?.president?.fullname || '......................................................';
+          } else {
+            displayName = d?.leader?.fullname || '......................................................';
+          }
+        } else if (sig.signerType === 'advisor') {
+          displayName = d?.advisorName || '......................................................';
+        } else if (sig.signerType === 'custom') {
+          displayName = sig.signerName ? sig.signerName : '......................................................';
+        }
+
+        const dateStr = sig.showDate ? (sig.dateText || `วันที่........เดือน...................พ.ศ. ${year}`) : '';
+        const hasHeader = Boolean(sig.headerText);
+        const hasStatus = Boolean(sig.hasStatusCheck);
+        const isApproved = d?.status === 'approved';
+
+        return `
+          <div class="border border-black p-2 flex flex-col justify-between h-28 text-[11px] ${hasHeader ? 'bg-slate-50' : ''}">
+            ${hasHeader ? `<div class="font-bold text-[10px] leading-tight">${sig.headerText}</div>` : ''}
+            ${hasStatus ? `
+              <div class="text-[10px] leading-tight">
+                [ ${isApproved ? '✓' : ' '} ] ${sig.statusLabel || 'ผ่านคุณสมบัติ'} &nbsp;&nbsp; [ ] ไม่ผ่าน
+              </div>
+            ` : ''}
+            <div class="leading-tight">${sig.signatureLabel || 'ลงชื่อ......................................................'}</div>
+            <div class="leading-tight">( ${displayName} )</div>
+            ${sig.positionText ? `<div class="text-[9px] leading-tight">(${sig.positionText})</div>` : ''}
+            ${sig.showDate ? `<div class="leading-tight text-[10px]">${dateStr}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <!-- Signatures (Dynamic ${colCount} Columns) -->
+        <div class="grid ${gridColsClass} gap-2 text-center text-[11px]">
+          ${boxesHtml}
+        </div>
+      `;
+    }
+
     // ฟอร์มสภานักเรียน A4
     function renderCouncilDocument(container, d, cfg) {
       const isFilled = !!d;
       const m = d?.members || {};
       const pres = m.president || {};
-      const logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      let logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      if (!logo1 || typeof logo1 !== 'string' || logo1.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ')) {
+        logo1 = DEFAULT_SCHOOL_LOGO;
+      }
       const logo2 = cfg.schoolLogo2 !== undefined ? cfg.schoolLogo2 : DEFAULT_LOGO_2;
       const logo3 = cfg.schoolLogo3 !== undefined ? cfg.schoolLogo3 : DEFAULT_LOGO_3;
       const logosHtml = [logo1, logo2, logo3].filter(Boolean).map(src => `
         <div class="w-15 h-15 flex items-center justify-center overflow-hidden" style="width: 3.8rem; height: 3.8rem;">
-          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์">
+          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
         </div>
       `).join('');
 
@@ -206,29 +266,8 @@
           <strong>คำรับรองและข้อตกลง:</strong> ข้าพเจ้าและสมาชิกพรรคทุกคน ขอรับรองว่ามีคุณสมบัติตรงตามระเบียบการเลือกตั้งประธานสภานักเรียน ประจำปีการศึกษา ${cfg.academicYear} และขอให้คำมั่นสัญญาว่าจะปฏิบัติหน้าที่ด้วยความซื่อสัตย์ สุจริต และ <strong>ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.councilAgreementYear}</strong> ทุกประการ
         </div>
 
-        <!-- Signatures (3 Columns) -->
-        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
-          <div class="border border-black p-2 flex flex-col justify-between h-28">
-            <div>ลงชื่อ......................................................ผู้สมัครประธาน</div>
-            <div>( ${pres.fullname || '......................................................'} )</div>
-            <div>วันที่........เดือน...................พ.ศ. 2569</div>
-          </div>
-
-          <div class="border border-black p-2 flex flex-col justify-between h-28">
-            <div>ลงชื่อ......................................................ครูที่ปรึกษาพรรค</div>
-            <div>( ${d?.advisorName || '......................................................'} )</div>
-            <div>วันที่........เดือน...................พ.ศ. 2569</div>
-          </div>
-
-          <div class="border border-black p-2 flex flex-col justify-between h-28 bg-slate-50">
-            <div class="font-bold text-[10px]">สำหรับงานส่งเสริมประชาธิปไตย</div>
-            <div class="text-[10px]">
-              [ ${d?.status === 'approved' ? '✓' : ' '} ] ผ่านคุณสมบัติ &nbsp;&nbsp; [ ] ไม่ผ่าน
-            </div>
-            <div>ลงชื่อ......................................................ผู้ตรวจรับ</div>
-            <div class="text-[9px]">(หัวหน้ากลุ่มบริหารกิจการนักเรียน)</div>
-          </div>
-        </div>
+        <!-- Signatures (Dynamic Columns) -->
+        ${renderSignaturesGrid(cfg.councilSignatures || [], d, 'council', cfg)}
       `;
     }
 
@@ -266,12 +305,15 @@
       const isFilled = !!d;
       const leader = d?.leader || {};
       const members = d?.members || [];
-      const logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      let logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      if (!logo1 || typeof logo1 !== 'string' || logo1.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ')) {
+        logo1 = DEFAULT_SCHOOL_LOGO;
+      }
       const logo2 = cfg.schoolLogo2 !== undefined ? cfg.schoolLogo2 : DEFAULT_LOGO_2;
       const logo3 = cfg.schoolLogo3 !== undefined ? cfg.schoolLogo3 : DEFAULT_LOGO_3;
       const logosHtml = [logo1, logo2, logo3].filter(Boolean).map(src => `
         <div class="w-15 h-15 flex items-center justify-center overflow-hidden" style="width: 3.8rem; height: 3.8rem;">
-          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์">
+          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
         </div>
       `).join('');
 
@@ -376,29 +418,8 @@
           <strong>คำรับรองและข้อตกลง:</strong> ข้าพเจ้าและคณะทำงานทุกคน ขอรับรองว่ามีคุณสมบัติตรงตามระเบียบการเลือกตั้งประธานคณะสี ประจำปีการศึกษา ${cfg.academicYear} และขอให้คำมั่นสัญญาว่าจะส่งเสริมความสามัคคี พัฒนากิจกรรมคณะสี และ <strong>ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.colorAgreementYear}</strong> ทุกประการ
         </div>
 
-        <!-- Signatures (3 Columns) -->
-        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
-          <div class="border border-black p-2 flex flex-col justify-between h-28">
-            <div>ลงชื่อ......................................................ผู้สมัครประธานสี</div>
-            <div>( ${leader.fullname || '......................................................'} )</div>
-            <div>วันที่........เดือน...................พ.ศ. 2569</div>
-          </div>
-
-          <div class="border border-black p-2 flex flex-col justify-between h-28">
-            <div>ลงชื่อ......................................................ครูที่ปรึกษาคณะสี</div>
-            <div>( ${d?.advisorName || '......................................................'} )</div>
-            <div>วันที่........เดือน...................พ.ศ. 2569</div>
-          </div>
-
-          <div class="border border-black p-2 flex flex-col justify-between h-28 bg-slate-50">
-            <div class="font-bold text-[10px]">สำหรับงานส่งเสริมกิจกรรมคณะสี</div>
-            <div class="text-[10px]">
-              [ ${d?.status === 'approved' ? '✓' : ' '} ] ผ่านคุณสมบัติ &nbsp;&nbsp; [ ] ไม่ผ่าน
-            </div>
-            <div>ลงชื่อ......................................................ผู้ตรวจรับ</div>
-            <div class="text-[9px]">(หัวหน้ากลุ่มบริหารกิจการนักเรียน)</div>
-          </div>
-        </div>
+        <!-- Signatures (Dynamic Columns) -->
+        ${renderSignaturesGrid(cfg.colorSignatures || [], d, 'color', cfg)}
       `;
     }
 

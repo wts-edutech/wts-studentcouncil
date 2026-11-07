@@ -150,12 +150,15 @@
       const title = document.getElementById('docModalTitle');
       const container = document.getElementById('docModalContent');
       const cfg = WDSDB.getConfig();
-      const logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      let logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      if (!logo1 || typeof logo1 !== 'string' || logo1.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ')) {
+        logo1 = DEFAULT_SCHOOL_LOGO;
+      }
       const logo2 = cfg.schoolLogo2 !== undefined ? cfg.schoolLogo2 : DEFAULT_LOGO_2;
       const logo3 = cfg.schoolLogo3 !== undefined ? cfg.schoolLogo3 : DEFAULT_LOGO_3;
       const logosHtml = [logo1, logo2, logo3].filter(Boolean).map(src => `
         <div class="w-14 h-14 flex items-center justify-center overflow-hidden">
-          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์">
+          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
         </div>
       `).join('');
 
@@ -374,12 +377,15 @@
       const title = document.getElementById('docModalTitle');
       const container = document.getElementById('docModalContent');
 
-      const logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      let logo1 = cfg.schoolLogo || DEFAULT_SCHOOL_LOGO;
+      if (!logo1 || typeof logo1 !== 'string' || logo1.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ')) {
+        logo1 = DEFAULT_SCHOOL_LOGO;
+      }
       const logo2 = cfg.schoolLogo2 !== undefined ? cfg.schoolLogo2 : DEFAULT_LOGO_2;
       const logo3 = cfg.schoolLogo3 !== undefined ? cfg.schoolLogo3 : DEFAULT_LOGO_3;
       const logosHtml = [logo1, logo2, logo3].filter(Boolean).map(src => `
         <div class="w-14 h-14 flex items-center justify-center overflow-hidden">
-          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์">
+          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
         </div>
       `).join('');
 
