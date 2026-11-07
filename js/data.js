@@ -131,7 +131,8 @@ const DEFAULT_SITE_CONFIG = {
   minGpaMember: 2.50,
   minGpaColor: 2.50,
   schoolAddress: 'เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
-  schoolPhone: '0990499557',
+  contactPerson: 'คุณครูสีวลี ยืนยาว',
+  schoolPhone: '0990499597',
   councilOfficeHours: 'กรุณาติดต่อในวันและเวลาราชการ (วันจันทร์ ถึง วันศุกร์ | ตั้งแต่เวลา 08.30 - 16.30 น.)',
   councilEmail: 'wtstudentcouncil@gclass.wt.ac.th',
   councilPhone: '084-3530359 (ประธานสภานักเรียน)',
@@ -616,6 +617,12 @@ const WDSDB = {
       }
       if (!merged.colorSignatures || !Array.isArray(merged.colorSignatures) || merged.colorSignatures.length === 0) {
         merged.colorSignatures = JSON.parse(JSON.stringify(DEFAULT_SITE_CONFIG.colorSignatures));
+      }
+      if (!merged.contactPerson) {
+        merged.contactPerson = 'คุณครูสีวลี ยืนยาว';
+      }
+      if (!merged.schoolPhone || merged.schoolPhone === '0990499557') {
+        merged.schoolPhone = '0990499597';
       }
       return merged;
     } catch (e) {

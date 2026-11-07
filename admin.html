@@ -393,8 +393,12 @@
                     <input type="text" id="cfg_schoolAddress" oninput="updateLivePreview()" class="gov-input w-full">
                   </div>
                   <div>
-                    <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์กลุ่มบริหารกิจการนักเรียน</label>
-                    <input type="text" id="cfg_schoolPhone" oninput="updateLivePreview()" class="gov-input w-full">
+                    <label class="block font-semibold text-slate-700 mb-1">ครูผู้ประสานงาน / ผู้รับผิดชอบ (แสดงท้ายเว็บ)</label>
+                    <input type="text" id="cfg_contactPerson" oninput="updateLivePreview()" class="gov-input w-full" placeholder="คุณครูสีวลี ยืนยาว">
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ (แสดงท้ายเว็บ)</label>
+                    <input type="text" id="cfg_schoolPhone" oninput="updateLivePreview()" class="gov-input w-full" placeholder="0990499597">
                   </div>
                   <div>
                     <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ประธานสภานักเรียน</label>
@@ -982,7 +986,8 @@
       document.getElementById('cfg_minGpaPresident').value = cfg.minGpaPresident || 2.75;
       document.getElementById('cfg_minGpaMember').value = cfg.minGpaMember || 2.50;
       document.getElementById('cfg_schoolAddress').value = cfg.schoolAddress || '';
-      document.getElementById('cfg_schoolPhone').value = cfg.schoolPhone || '';
+      document.getElementById('cfg_contactPerson').value = cfg.contactPerson || 'คุณครูสีวลี ยืนยาว';
+      document.getElementById('cfg_schoolPhone').value = cfg.schoolPhone || '0990499597';
       document.getElementById('cfg_councilPhone').value = cfg.councilPhone || '';
       document.getElementById('cfg_councilEmail').value = cfg.councilEmail || '';
       document.getElementById('cfg_schoolWebsite').value = cfg.schoolWebsite || '';
@@ -1586,6 +1591,7 @@
       const affil = document.getElementById('cfg_affiliation').value || 'สพฐ.';
       const dates = document.getElementById('cfg_regPeriod').value || '-';
       const phone = document.getElementById('cfg_schoolPhone').value || '-';
+      const contactPerson = document.getElementById('cfg_contactPerson')?.value || 'คุณครูสีวลี ยืนยาว';
       let logo = document.getElementById('settingLogoData').value || DEFAULT_SCHOOL_LOGO;
       if (!logo || typeof logo !== 'string' || logo.includes('iVBORw0KGgoAAAANSUhEUgAAACgAAAAyCAYAAAAus5mQ')) {
         logo = DEFAULT_SCHOOL_LOGO;
@@ -1610,7 +1616,7 @@
       document.getElementById('previewLiveNotice').innerText = notice;
       document.getElementById('previewLiveAffil').innerText = affil;
       document.getElementById('previewLiveDates').innerText = dates;
-      document.getElementById('previewLivePhone').innerText = phone;
+      document.getElementById('previewLivePhone').innerText = contactPerson ? `${phone} (${contactPerson})` : phone;
       document.getElementById('previewLiveLogo').src = logo;
 
       const box2 = document.getElementById('previewLiveLogo2Box');
@@ -1874,6 +1880,7 @@
         minGpaPresident: parseFloat(document.getElementById('cfg_minGpaPresident').value),
         minGpaMember: parseFloat(document.getElementById('cfg_minGpaMember').value),
         schoolAddress: document.getElementById('cfg_schoolAddress').value.trim(),
+        contactPerson: document.getElementById('cfg_contactPerson').value.trim(),
         schoolPhone: document.getElementById('cfg_schoolPhone').value.trim(),
         councilPhone: document.getElementById('cfg_councilPhone').value.trim(),
         councilEmail: document.getElementById('cfg_councilEmail').value.trim(),
