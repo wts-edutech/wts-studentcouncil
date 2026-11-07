@@ -279,39 +279,84 @@
           </div>
         `;
       } else if (type === 'regulation') {
-        title.innerText = 'ประกาศและเกณฑ์การรับสมัคร';
+        title.innerText = 'แบบรับทราบระเบียบการเลือกตั้ง (พร้อมแบบเซ็นรับทราบ)';
         container.innerHTML = `
-          <div class="text-center mb-6">
+          <div class="text-center mb-5">
             <div class="flex justify-center items-center space-x-2 mb-2">
               ${logosHtml}
             </div>
-            <h3 class="text-base font-bold">ประกาศ${cfg.schoolName}</h3>
-            <p class="text-xs">เรื่อง การรับสมัครเลือกตั้งประธานสภานักเรียนและประธานคณะสี ประจำปีการศึกษา ${cfg.academicYear}</p>
+            <h3 class="text-base font-bold">แบบรับทราบระเบียบและข้อตกลงการเลือกตั้งผู้นำนักเรียน</h3>
+            <p class="text-xs">การเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา ${cfg.academicYear}</p>
+            <p class="text-xs">${cfg.schoolName} สังกัด${cfg.affiliation}</p>
           </div>
 
-          <div class="space-y-3 text-xs leading-relaxed">
-            <p style="text-indent: 2rem;">
-              เพื่อให้การดำเนินกิจกรรมส่งเสริมประชาธิปไตยในโรงเรียน และการขับเคลื่อนกิจกรรมคณะสี ประจำปีการศึกษา ${cfg.academicYear} เป็นไปด้วยความเรียบร้อย จึงกำหนดคุณสมบัติและระเบียบไว้ดังนี้:
+          <div class="text-right text-xs mb-3">
+            เขียนที่ ${cfg.schoolName}<br>
+            วันที่.........เดือน........................พ.ศ. 2569
+          </div>
+
+          <div class="space-y-3.5 text-xs leading-relaxed">
+            <p style="text-indent: 2.5rem;">
+              ข้าพเจ้า (นาย / นางสาว)................................................................................................................................
+              นักเรียนชั้นมัธยมศึกษาปีที่ 4 /............ เลขประจำตัวนักเรียน.............................. เบอร์โทรศัพท์...........................................
+              มีความประสงค์จะลงสมัครรับเลือกตั้งผู้นำนักเรียน ในตำแหน่ง:
             </p>
 
-            <h5 class="font-bold text-xs mt-3">หมวดที่ 1: คุณสมบัติของผู้สมัครสภานักเรียน</h5>
-            <ol class="list-decimal pl-6 space-y-1">
-              <li>เป็นนักเรียนชั้นมัธยมศึกษาปีที่ 4 ${cfg.schoolName}</li>
-              <li>รวมตัวกันเป็นพรรคการเมือง จำนวน 10 ตำแหน่งครบถ้วน</li>
-              <li>ผู้สมัครตำแหน่งประธานและเลขานุการ มี GPAX ม.4 เทอม 1 ไม่ต่ำกว่า ${cfg.minGpaPresident} ส่วนตำแหน่งอื่นไม่ต่ำกว่า ${cfg.minGpaMember}</li>
-              <li>คะแนนความประพฤติคงเหลือ ณ วันสมัคร ไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน</li>
-              <li>ต้องมีครูที่ปรึกษาพรรคอย่างน้อย 1 ท่านลงนามรับรอง</li>
-              <li>ต้องยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.councilAgreementYear}</li>
-            </ol>
+            <div class="pl-8 space-y-1 text-xs">
+              <div>[ &nbsp; ] ผู้สมัครและคณะกรรมการพรรคสภานักเรียน ชื่อพรรค...................................................................................</div>
+              <div>[ &nbsp; ] ผู้สมัครประธานคณะสี / คณะทำงาน คณะสี..........................................................................................</div>
+            </div>
 
-            <h5 class="font-bold text-xs mt-3">หมวดที่ 2: คุณสมบัติของผู้สมัครประธานคณะสี</h5>
-            <ol class="list-decimal pl-6 space-y-1">
-              <li>เป็นนักเรียนชั้น ม.4 ที่มีชื่อในสังกัดคณะสีนั้นๆ (อัญชัน, นนทรี, ปาริชาต, เอื้องช่อแสด, อินทนิล)</li>
-              <li>ผลการเรียนเฉลี่ยสะสม ม.4 เทอม 1 ไม่ต่ำกว่า ${cfg.minGpaMember}</li>
-              <li>คะแนนความประพฤติคงเหลือ ไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน</li>
-              <li>ต้องมีครูที่ปรึกษาคณะสีลงนามรับรอง</li>
-              <li>ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.colorAgreementYear}</li>
-            </ol>
+            <p style="text-indent: 2.5rem;">
+              ข้าพเจ้าขอทำหนังสือฉบับนี้ไว้ต่อ${cfg.departmentName} เพื่อแสดงว่า <strong>ข้าพเจ้าได้ศึกษา ทำความเข้าใจ และรับทราบระเบียบ ข้อตกลง และเกณฑ์คุณสมบัติการเลือกตั้ง ประจำปีการศึกษา ${cfg.academicYear} อย่างครบถ้วนชัดเจน</strong> โดยขอให้คำรับรองและตกลงปฏิบัติตามเงื่อนไข ดังต่อไปนี้:
+            </p>
+
+            <div class="bg-slate-50 border border-slate-300 rounded p-2.5 text-[11px] space-y-1.5 leading-normal">
+              <div><strong>1. ด้านคุณสมบัติ:</strong> ข้าพเจ้ามีผลการเรียนเฉลี่ยสะสม (GPAX) และคะแนนความประพฤติคงเหลือไม่ต่ำกว่าเกณฑ์ที่โรงเรียนกำหนด (คะแนนพฤติกรรมไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน) พร้อมยินยอมให้ตรวจสอบประวัติทุกขั้นตอน</div>
+              <div><strong>2. ด้านวินัยและข้อตกลง:</strong> ข้าพเจ้ายินยอมปฏิบัติตามข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.councilAgreementYear} และระเบียบสถานศึกษาอย่างเคร่งครัด</div>
+              <div><strong>3. ด้านการรณรงค์หาเสียง:</strong> ข้าพเจ้าจะหาเสียงด้วยความสุภาพ ถูกต้องตามระเบียบ ไม่กระทำการที่ก่อให้เกิดความแตกแยก และยุติการหาเสียงตามเวลาที่คณะกรรมการกำหนด</div>
+              <div><strong>4. การยอมรับผลการพิจารณา:</strong> หากตรวจพบว่าข้าพเจ้ามีคุณสมบัติไม่ครบถ้วน หรือฝ่าฝืนระเบียบ ข้าพเจ้ายินยอมให้ตัดสิทธิ์การรับสมัครหรือถอนชื่อจากการเลือกตั้งโดยไม่มีเงื่อนไข</div>
+            </div>
+
+            <div class="pt-2 space-y-2">
+              <div class="font-bold text-xs text-center border-b border-slate-300 pb-1">
+                การลงนามรับทราบและยินยอมปฏิบัติตามระเบียบ (แบบเซ็นรับทราบ)
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 text-center text-xs">
+                <!-- ผู้สมัคร -->
+                <div class="border border-slate-300 rounded p-2 bg-white space-y-1">
+                  <div class="text-[11px] font-semibold text-slate-700">ผู้สมัครรับเลือกตั้ง</div>
+                  <div class="pt-3">ลงชื่อ............................................................</div>
+                  <div>(............................................................)</div>
+                  <div class="text-[10px] text-slate-500">วันที่.........เดือน........................พ.ศ...........</div>
+                </div>
+
+                <!-- ผู้ปกครอง -->
+                <div class="border border-slate-300 rounded p-2 bg-white space-y-1">
+                  <div class="text-[11px] font-semibold text-slate-700">บิดา / มารดา / ผู้ปกครองรับทราบ</div>
+                  <div class="pt-3">ลงชื่อ............................................................</div>
+                  <div>(............................................................)</div>
+                  <div class="text-[10px] text-slate-500">วันที่.........เดือน........................พ.ศ...........</div>
+                </div>
+
+                <!-- ครูที่ปรึกษา -->
+                <div class="border border-slate-300 rounded p-2 bg-white space-y-1">
+                  <div class="text-[11px] font-semibold text-slate-700">ครูที่ปรึกษาพรรค / คณะสี</div>
+                  <div class="pt-3">ลงชื่อ............................................................</div>
+                  <div>(............................................................)</div>
+                  <div class="text-[10px] text-slate-500">วันที่.........เดือน........................พ.ศ...........</div>
+                </div>
+
+                <!-- คณะกรรมการจัดการเลือกตั้ง -->
+                <div class="border border-slate-300 rounded p-2 bg-white space-y-1">
+                  <div class="text-[11px] font-semibold text-slate-700">คณะกรรมการจัดการเลือกตั้ง (ผู้ตรวจรับ)</div>
+                  <div class="pt-3">ลงชื่อ............................................................</div>
+                  <div>(............................................................)</div>
+                  <div class="text-[10px] text-slate-500">วันที่.........เดือน........................พ.ศ...........</div>
+                </div>
+              </div>
+            </div>
           </div>
         `;
       }
@@ -353,8 +398,8 @@
             `;
           } else if (doc.actionType === 'regulation') {
             actionBtnHtml = `
-              <button onclick="previewDocument('regulation')" class="btn-gov-outline text-xs py-1.5 px-3 whitespace-nowrap">
-                <i class="fa-solid fa-eye mr-1"></i> ${btnText}
+              <button onclick="previewDocument('regulation')" class="btn-gov-primary text-xs py-1.5 px-3 whitespace-nowrap">
+                <i class="fa-solid fa-print mr-1"></i> ${btnText}
               </button>
             `;
           } else if (doc.actionType === 'print_council') {
@@ -403,8 +448,8 @@
             `;
           } else if (doc.actionType === 'regulation') {
             actionBtnHtml = `
-              <button onclick="previewDocument('regulation')" class="btn-gov-outline w-full text-xs py-2 px-3 text-center flex items-center justify-center">
-                <i class="fa-solid fa-eye mr-1.5"></i> ${btnText}
+              <button onclick="previewDocument('regulation')" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center">
+                <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </button>
             `;
           } else if (doc.actionType === 'print_council') {
@@ -451,7 +496,14 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', renderDocumentsPage);
+    window.addEventListener('DOMContentLoaded', () => {
+      renderDocumentsPage();
+      const params = new URLSearchParams(window.location.search);
+      const previewType = params.get('preview');
+      if (previewType) {
+        setTimeout(() => previewDocument(previewType), 100);
+      }
+    });
   </script>
 </body>
 </html>

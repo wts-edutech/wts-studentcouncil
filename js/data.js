@@ -82,10 +82,10 @@ const DEFAULT_DOCUMENTS_LIST = [
   },
   {
     id: 3,
-    title: 'ประกาศและระเบียบการเลือกตั้ง ปีการศึกษา 2570 ฉบับเต็ม',
-    desc: 'ระเบียบว่าด้วยคุณสมบัติ ข้อตกลงสภานักเรียน 2570 และข้อตกลงคณะสี 2570',
-    signer: 'ผู้อำนวยการโรงเรียน',
-    btnText: 'ดูประกาศ',
+    title: 'แบบรับทราบระเบียบการเลือกตั้ง (พร้อมแบบเซ็นรับทราบ)',
+    desc: 'แบบฟอร์มแสดงความยินยอมและรับทราบระเบียบ ข้อตกลง และเกณฑ์คุณสมบัติการเลือกตั้ง พร้อมลงลายมือชื่อรับทราบ',
+    signer: 'ผู้สมัคร, ผู้ปกครอง และครูที่ปรึกษา',
+    btnText: 'เปิดพิมพ์ A4',
     actionType: 'regulation'
   },
   {
@@ -505,6 +505,22 @@ const WDSDB = {
       }
       if (!merged.applyColorBullets || !Array.isArray(merged.applyColorBullets) || merged.applyColorBullets.length === 0) {
         merged.applyColorBullets = DEFAULT_APPLY_COLOR_BULLETS;
+      }
+      if (!merged.documentsList || !Array.isArray(merged.documentsList) || merged.documentsList.length === 0) {
+        merged.documentsList = DEFAULT_DOCUMENTS_LIST;
+      } else {
+        merged.documentsList = merged.documentsList.map(doc => {
+          if (doc.actionType === 'regulation' && (!doc.title.includes('เซ็นรับทราบ') && !doc.title.includes('แบบรับทราบ'))) {
+            return {
+              ...doc,
+              title: 'แบบรับทราบระเบียบการเลือกตั้ง (พร้อมแบบเซ็นรับทราบ)',
+              desc: 'แบบฟอร์มแสดงความยินยอมและรับทราบระเบียบ ข้อตกลง และเกณฑ์คุณสมบัติการเลือกตั้ง พร้อมลงนามรับทราบ',
+              signer: 'ผู้สมัคร, ผู้ปกครอง และครูที่ปรึกษา',
+              btnText: 'เปิดพิมพ์ A4'
+            };
+          }
+          return doc;
+        });
       }
       return merged;
     } catch (e) {
