@@ -203,9 +203,6 @@ function applySiteConfig() {
 
   // 6. เรนเดอร์รายการระเบียบและเกณฑ์การรับสมัคร (Tab 2) และหน้าการ์ดยื่นใบสมัคร (Tab 3)
   renderRulesAndApplyContent(cfg);
-
-  // 7. เรนเดอร์ส่วนข้อมูลสหวิทยาเขตนวสิรินครินทร์ แผนที่ และที่ตั้งโรงเรียนด้านล่างเว็บไซต์
-  renderSchoolInfoFooter(cfg);
 }
 
 function renderRulesAndApplyContent(cfg) {

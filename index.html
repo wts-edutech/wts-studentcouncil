@@ -362,9 +362,6 @@
 
   </main>
 
-  <!-- ส่วนข้อมูลสหวิทยาเขตนวสิรินครินทร์ แผนที่ และที่ตั้งโรงเรียน -->
-  <section id="schoolNetworkAndMapSection"></section>
-
   <!-- ส่วนท้ายเว็บไซต์ -->
   <footer class="bg-[#eef3f1] text-slate-600 text-xs py-4 border-t border-slate-200">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-2">
@@ -397,14 +394,6 @@
           }
         }
       });
-      const mapSec = document.getElementById('schoolNetworkAndMapSection');
-      if (mapSec) {
-        if (tabName === 'home') {
-          mapSec.classList.remove('hidden');
-        } else {
-          mapSec.classList.add('hidden');
-        }
-      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
