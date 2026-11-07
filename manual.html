@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์ | โรงเรียนวชิรธรรมสาธิต</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ตกแต่งพิเศษสำหรับหน้าคู่มือ */
+    .manual-step-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .manual-nav-pill {
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.15s ease-in-out;
+      border: 1px solid #cbd5e1;
+      background-color: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .manual-nav-pill:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .manual-nav-pill.active {
+      background-color: #065f46;
+      color: #ffffff;
+      border-color: #064e3b;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .callout-box {
+      border-left: 4px solid;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .callout-info {
+      border-color: #0284c7;
+      background-color: #f0f9ff;
+      color: #0369a1;
+    }
+    .callout-warning {
+      border-color: #d97706;
+      background-color: #fffbeb;
+      color: #92400e;
+    }
+    .callout-success {
+      border-color: #059669;
+      background-color: #ecfdf5;
+      color: #065f46;
+    }
+    .callout-danger {
+      border-color: #dc2626;
+      background-color: #fef2f2;
+      color: #991b1b;
+    }
+
+    /* Print Stylesheet สำหรับการสั่งพิมพ์คู่มือเป็นเอกสารทางการ A4 */
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt !important;
+        line-height: 1.5 !important;
+      }
+      .no-print, header, nav, .print-hide, .manual-nav-pill-group, footer, #quickJumpBar {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .manual-section {
+        display: block !important;
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+      }
+      .gov-card {
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        margin-bottom: 16px !important;
+        background: #ffffff !important;
+      }
+      .gov-card-header {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+        border-bottom: 1px solid #94a3b8 !important;
+      }
+      a {
+        text-decoration: none !important;
+        color: inherit !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 15mm 15mm 15mm 15mm;
+      }
+    }
+    @media screen {
+      .print-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-formal bg-slate-100 text-slate-800">
+
+  <!-- แถบสังกัดหน่วยงานระดับบน -->
+  <div class="bg-slate-900 text-slate-300 text-[11px] sm:text-xs py-1.5 px-3 sm:px-4 border-b border-slate-800 no-print">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="truncate max-w-[240px] sm:max-w-none">
+        <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • สพม.กทม.2
+      </div>
+      <div class="text-[10px] sm:text-xs text-slate-400">
+        ปีการศึกษา <span data-cfg="academicYear">2570</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- หัวแบนเนอร์ทางการ (Gov Header) -->
+  <header class="gov-header-bar text-white py-2.5 sm:py-3 px-3 sm:px-6 shadow-md no-print">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 sm:gap-3">
+      <div class="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto">
+        <a href="index.html" class="text-white hover:text-amber-300 transition text-xs sm:text-sm flex items-center flex-shrink-0 bg-white/10 hover:bg-white/20 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded">
+          <i class="fa-solid fa-chevron-left mr-1"></i> <span class="hidden xs:inline">กลับ</span>หน้าหลัก
+        </a>
+        <div class="flex items-center space-x-1.5 sm:space-x-2 pl-2 border-l border-slate-500/50">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center overflow-hidden flex-shrink-0" data-cfg-logo>
+            <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราโรงเรียน">
+          </div>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center overflow-hidden flex-shrink-0 hidden" data-cfg-logo2></div>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center overflow-hidden flex-shrink-0 hidden" data-cfg-logo3></div>
+        </div>
+        <div class="leading-tight min-w-0">
+          <h1 class="text-xs sm:text-lg font-bold text-white tracking-tight truncate sm:overflow-visible">คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์</h1>
+          <p class="text-[9.5px] sm:text-xs text-slate-200 truncate sm:overflow-visible">
+            <span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- ปุ่มดำเนินการด่วนส่วนหัว -->
+      <div class="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end pt-1.5 sm:pt-0 border-t border-slate-700/60 sm:border-t-0">
+        <button onclick="window.print()" class="flex-1 sm:flex-initial justify-center bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-3 py-1.5 rounded text-[11px] sm:text-xs flex items-center shadow-sm transition">
+          <i class="fa-solid fa-print mr-1.5"></i> สั่งพิมพ์คู่มือ A4
+        </button>
+        <a href="admin.html" class="flex-1 sm:flex-initial justify-center bg-slate-800 hover:bg-slate-700 text-white font-semibold px-3 py-1.5 rounded text-[11px] sm:text-xs flex items-center border border-slate-600 shadow-sm transition">
+          <i class="fa-solid fa-gear mr-1.5 text-emerald-400"></i> แผงหลังบ้าน (CMS)
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- หัวกระดาษพิมพ์เฉพาะเวลาสั่งพิมพ์ (Print-Only Official Cover) -->
+  <div class="print-only p-6 border-b-2 border-slate-800 text-center mb-6">
+    <div class="flex justify-center items-center space-x-3 mb-2">
+      <img src="assets/images/school-logo-transparent.png" style="width: 60px; height: 60px; object-fit: contain;" alt="ตราโรงเรียน">
+    </div>
+    <h1 class="text-lg font-bold">คู่มือการใช้งานระบบรับสมัครเลือกตั้งผู้นำนักเรียนออนไลน์</h1>
+    <h2 class="text-sm font-semibold">การเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span></h2>
+    <p class="text-xs text-slate-600 mt-1"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • <span data-cfg="departmentName">กลุ่มบริหารบุคคล งานส่งเสริมประชาธิปไตยในโรงเรียน</span></p>
+    <div class="text-[10px] text-slate-500 mt-1">วันที่พิมพ์เอกสาร: <span id="printDateSpan"></span></div>
+  </div>
+
+  <!-- แถบเลือกกลุ่มผู้ใช้งาน / ตัวกรองคู่มือแบบแท็บแคปซูล (Sticky Navigation) -->
+  <div class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm no-print" id="quickJumpBar">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-2.5">
+      <div class="flex items-center justify-between gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none manual-nav-pill-group">
+        <div class="flex items-center space-x-1.5 sm:space-x-2 flex-nowrap">
+          <span class="text-xs font-bold text-slate-500 mr-1 hidden md:inline">เลือกมุมมอง:</span>
+          <button onclick="filterManualSection('all')" id="pill-all" class="manual-nav-pill active">
+            <i class="fa-solid fa-list-check"></i> ทั้งหมด (ฉบับสมบูรณ์)
+          </button>
+          <button onclick="filterManualSection('candidate')" id="pill-candidate" class="manual-nav-pill">
+            <i class="fa-solid fa-user-graduate text-emerald-600"></i> สำหรับผู้สมัคร / นักเรียน
+          </button>
+          <button onclick="filterManualSection('advisor')" id="pill-advisor" class="manual-nav-pill">
+            <i class="fa-solid fa-chalkboard-user text-blue-600"></i> สำหรับครูที่ปรึกษา
+          </button>
+          <button onclick="filterManualSection('admin')" id="pill-admin" class="manual-nav-pill">
+            <i class="fa-solid fa-shield-halved text-amber-600"></i> สำหรับคณะกรรมการ / แอดมิน
+          </button>
+          <button onclick="filterManualSection('faq')" id="pill-faq" class="manual-nav-pill">
+            <i class="fa-solid fa-circle-question text-purple-600"></i> คำถามที่พบบ่อย (FAQ)
+          </button>
+        </div>
+        <div class="flex-shrink-0 pl-2">
+          <a href="index.html#rules" class="text-xs text-[#065f46] hover:underline font-semibold flex items-center">
+            <i class="fa-regular fa-file-lines mr-1"></i> ระเบียบการฉบับเต็ม
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- เนื้อหาหลักคู่มือ -->
+  <main class="max-w-6xl mx-auto px-3 sm:px-6 py-5 sm:py-7 flex-grow w-full space-y-6">
+
+    <!-- แถบสรุปด่วน 3 บทบาทการทำงาน (Overview Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 no-print" id="overviewRolesGrid">
+      <div onclick="filterManualSection('candidate')" class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 cursor-pointer hover:shadow-md transition">
+        <div class="flex items-center space-x-3 mb-2">
+          <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-emerald-900">ผู้สมัคร / นักเรียน</h3>
+            <p class="text-[11px] text-emerald-700">สภานักเรียน 10 คน | ประธานคณะสี 15 คน</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          ตรวจคุณสมบัติ, เตรียมเอกสารและรูปถ่าย, กรอกใบสมัครออนไลน์, สแกนเข้า LINE ผู้สมัคร และพิมพ์ใบสมัคร A4 นำส่งโรงเรียน
+        </p>
+        <div class="mt-3 text-xs font-semibold text-emerald-800 flex items-center">
+          ดูขั้นตอนสำหรับนักเรียน <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i>
+        </div>
+      </div>
+
+      <div onclick="filterManualSection('advisor')" class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 cursor-pointer hover:shadow-md transition">
+        <div class="flex items-center space-x-3 mb-2">
+          <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+            <i class="fa-solid fa-chalkboard-user"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-blue-900">ครูที่ปรึกษาพรรค / สี</h3>
+            <p class="text-[11px] text-blue-700">ข้าราชการครู หรือครูอัตราจ้าง</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          ตรวจสอบความถูกต้องของสมาชิกในทีม ตรวจสอบเกรดเฉลี่ยและคะแนนพฤติกรรม และลงลายมือชื่อรับรองในใบสมัคร A4
+        </p>
+        <div class="mt-3 text-xs font-semibold text-blue-800 flex items-center">
+          ดูขั้นตอนสำหรับครูที่ปรึกษา <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i>
+        </div>
+      </div>
+
+      <div onclick="filterManualSection('admin')" class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 cursor-pointer hover:shadow-md transition">
+        <div class="flex items-center space-x-3 mb-2">
+          <div class="w-10 h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-amber-900">คณะกรรมการ / หลังบ้าน</h3>
+            <p class="text-[11px] text-amber-700">กลุ่มบริหารบุคคล • ส่งเสริมประชาธิปไตย</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          ตรวจสอบใบสมัคร อนุมัติ/ขอแก้ไข กำหนดหมายเลขผู้สมัคร ส่งออกข้อมูล Excel แก้ไขข้อมูลเว็บ จัดการผู้ลงนาม และอัปโหลดเอกสาร
+        </p>
+        <div class="mt-3 text-xs font-semibold text-amber-800 flex items-center">
+          ดูขั้นตอนสำหรับคณะกรรมการ <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ส่วนที่ 1: ภาพรวมระบบและขั้นตอนการเลือกตั้ง -->
+    <!-- ========================================== -->
+    <section class="manual-section gov-card" id="sec-overview">
+      <div class="gov-card-header flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-circle-info text-blue-600"></i>
+          <span class="font-bold text-sm sm:text-base text-slate-900">ส่วนที่ 1: ภาพรวมระบบและขั้นตอนการจัดการเลือกตั้ง</span>
+        </div>
+        <span class="text-xs text-slate-500 font-normal">กระบวนการ 5 ขั้นตอนหลัก</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <p class="text-slate-800">
+          ระบบรับสมัครและจัดการเลือกตั้งประธานสภานักเรียนและประธานคณะสี <strong data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</strong> พัฒนาขึ้นโดย <strong data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</strong> เพื่อส่งเสริมให้นักเรียนได้เรียนรู้และฝึกฝนกระบวนการประชาธิปไตยตามหลักการที่โปร่งใส ถูกต้องตามระเบียบ และมีประสิทธิภาพ
+        </p>
+
+        <!-- ไทม์ไลน์ 5 ขั้นตอน -->
+        <div class="mt-3 border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+          <h4 class="font-bold text-slate-900 text-sm flex items-center">
+            <i class="fa-regular fa-calendar-check text-emerald-700 mr-2"></i> ปฏิทินการดำเนินงาน 5 ขั้นตอนหลัก
+          </h4>
+          
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs inline-flex items-center justify-center mb-1.5">1</span>
+                <div class="font-bold text-slate-900 text-xs">ยื่นใบสมัครออนไลน์</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">เปิดรับสมัครผ่านเว็บไซต์ตามกำหนดเวลาที่โรงเรียนประกาศ</div>
+              </div>
+              <div class="mt-2 text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">นักเรียนดำเนินการ</div>
+            </div>
+
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-800 font-bold text-xs inline-flex items-center justify-center mb-1.5">2</span>
+                <div class="font-bold text-slate-900 text-xs">ตรวจคุณสมบัติ & จับสลากเบอร์</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">ส่งเอกสาร A4 ตัวจริง ตรวจคุณสมบัติ และจับสลากหมายเลขผู้สมัคร</div>
+              </div>
+              <div class="mt-2 text-[10px] text-blue-700 font-semibold bg-blue-50 px-2 py-0.5 rounded">กรรมการ & ผู้สมัคร</div>
+            </div>
+
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-800 font-bold text-xs inline-flex items-center justify-center mb-1.5">3</span>
+                <div class="font-bold text-slate-900 text-xs">หาเสียงเลือกตั้ง</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">นำเสนอนโยบายและประชาสัมพันธ์ตามข้อกำหนดของโรงเรียน</div>
+              </div>
+              <div class="mt-2 text-[10px] text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded">พรรค & ทีมงาน</div>
+            </div>
+
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between bg-gradient-to-b from-emerald-50 to-white">
+              <div>
+                <span class="w-6 h-6 rounded-full bg-emerald-700 text-white font-bold text-xs inline-flex items-center justify-center mb-1.5">4</span>
+                <div class="font-bold text-emerald-950 text-xs">วันลงคะแนนเสียง</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">นักเรียนทุกระดับชั้นใช้สิทธิลงคะแนนเสียงเลือกตั้ง ณ คูหา</div>
+              </div>
+              <div class="mt-2 text-[10px] text-emerald-800 font-semibold bg-emerald-100 px-2 py-0.5 rounded">นักเรียนทุกคน</div>
+            </div>
+
+            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-800 font-bold text-xs inline-flex items-center justify-center mb-1.5">5</span>
+                <div class="font-bold text-slate-900 text-xs">ประกาศผล & รับรอง</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">นับคะแนน ประกาศผล และส่งมอบงานคณะกรรมการสภานักเรียน</div>
+              </div>
+              <div class="mt-2 text-[10px] text-purple-700 font-semibold bg-purple-50 px-2 py-0.5 rounded">คณะกรรมการ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ส่วนที่ 2: คู่มือสำหรับผู้สมัคร / นักเรียน -->
+    <!-- ========================================== -->
+    <section class="manual-section gov-card" id="sec-candidate">
+      <div class="gov-card-header bg-[#065f46] text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-user-graduate"></i>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 2: คู่มือสำหรับผู้สมัครรับเลือกตั้งและนักเรียน (Candidate Guide)</span>
+        </div>
+        <span class="text-xs bg-emerald-800 px-2 py-0.5 rounded text-emerald-100 font-normal">ขั้นตอนที่ 1 - 6</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        
+        <!-- ขั้นตอนที่ 1: ตรวจคุณสมบัติ -->
+        <div class="border-b border-slate-200 pb-5 space-y-2">
+          <div class="flex items-center space-x-2.5">
+            <span class="manual-step-badge bg-emerald-700 text-white">1</span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900">ตรวจสอบคุณสมบัติของผู้สมัครและสมาชิกในทีม</h3>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <!-- กล่องสภานักเรียน -->
+            <div class="border border-emerald-300 rounded-lg p-3.5 bg-emerald-50/40 space-y-2">
+              <h4 class="font-bold text-emerald-900 text-xs sm:text-sm flex items-center">
+                <i class="fa-solid fa-building-columns mr-1.5 text-emerald-700"></i> สภานักเรียน (พรรค 10 คน)
+              </h4>
+              <ul class="list-disc pl-5 space-y-1 text-xs text-slate-700">
+                <li>กำลังศึกษาอยู่ในระดับชั้น <strong>มัธยมศึกษาปีที่ 4</strong> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></li>
+                <li>ต้องมีจำนวนสมาชิกในพรรคครบ <strong>10 ตำแหน่ง</strong> (ประธาน, รองประธาน, ฝ่ายวิชาการ 2 คน, ฝ่ายสันทนาการ 2 คน, ฝ่ายทั่วไป, ฝ่ายประชาสัมพันธ์ 2 คน, เลขานุการ)</li>
+                <li>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):
+                  <ul class="list-circle pl-4 space-y-0.5 mt-0.5">
+                    <li>ประธาน และเลขานุการ: <strong>ไม่ต่ำกว่า <span data-cfg="minGpaPresident">2.75</span></strong></li>
+                    <li>สมาชิกตำแหน่งอื่นๆ: <strong>ไม่ต่ำกว่า <span data-cfg="minGpaMember">2.50</span></strong></li>
+                  </ul>
+                </li>
+                <li>คะแนนความประพฤติคงเหลือ: <strong>ไม่ต่ำกว่า <span data-cfg="minBehaviorScore">80</span> คะแนน</strong> (ทุกคน)</li>
+                <li>มีข้าราชการครูหรือครูอัตราจ้างลงนามรับรองเป็น <strong>ครูที่ปรึกษาพรรค 1 ท่าน</strong></li>
+              </ul>
+            </div>
+
+            <!-- กล่องประธานคณะสี -->
+            <div class="border border-amber-300 rounded-lg p-3.5 bg-amber-50/40 space-y-2">
+              <h4 class="font-bold text-amber-900 text-xs sm:text-sm flex items-center">
+                <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> ประธานคณะสี 5 สี (ทีม 15 คน)
+              </h4>
+              <ul class="list-disc pl-5 space-y-1 text-xs text-slate-700">
+                <li>กำลังศึกษาอยู่ในระดับชั้น <strong>มัธยมศึกษาปีที่ 4</strong> และสังกัดในคณะสีนั้นจริง</li>
+                <li>คณะสี 5 สี: <strong>สีเขียว (ไผ่เขียว), สีแดง (ไชยพฤกษ์), สีม่วง (อินทนิล), สีฟ้า (ชัยพฤกษ์), สีส้ม (นนทรี)</strong></li>
+                <li>โครงสร้างคณะทำงาน <strong>15 ตำแหน่ง</strong> (ประธานคณะสี, รองประธาน, ฝ่ายกิจกรรม, ฝ่ายเชียร์และแปรอักษร, ฝ่ายพัสดุและสถานที่, ฝ่ายสารวัตรนักเรียน, เหรัญญิก, เลขานุการ ฯลฯ)</li>
+                <li>ผลการเรียนเฉลี่ยสะสม (GPAX): <strong>ไม่ต่ำกว่า <span data-cfg="minGpaMember">2.50</span></strong></li>
+                <li>คะแนนความประพฤติคงเหลือ: <strong>ไม่ต่ำกว่า <span data-cfg="minBehaviorScore">80</span> คะแนน</strong></li>
+                <li>มี <strong>ครูที่ปรึกษาคณะสี 1 ท่าน</strong> ลงนามรับรอง</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 2: เตรียมเอกสาร -->
+        <div class="border-b border-slate-200 pb-5 space-y-2">
+          <div class="flex items-center space-x-2.5">
+            <span class="manual-step-badge bg-emerald-700 text-white">2</span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900">เตรียมเอกสารและไฟล์ที่ต้องใช้ (Checklist)</h3>
+          </div>
+          <p class="text-xs text-slate-600">
+            ก่อนเริ่มกรอกแบบฟอร์มออนไลน์ ขอแนะนำให้ผู้สมัครจัดเตรียมข้อมูลและไฟล์เอกสารให้พร้อม ดังนี้:
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+            <div class="p-3 bg-white rounded border border-slate-200 space-y-1">
+              <div class="text-emerald-700 font-bold text-xs flex items-center">
+                <i class="fa-solid fa-image mr-1.5"></i> 1. ไฟล์รูปถ่ายหน้าตรง
+              </div>
+              <p class="text-[11px] text-slate-500">
+                รูปถ่ายชุดนักเรียนถูกต้องตามระเบียบ พื้นหลังสีขาวหรือสีฟ้า ไฟล์ JPG หรือ PNG ขนาดไม่เกิน 2MB
+              </p>
+            </div>
+
+            <div class="p-3 bg-white rounded border border-slate-200 space-y-1">
+              <div class="text-emerald-700 font-bold text-xs flex items-center">
+                <i class="fa-solid fa-users mr-1.5"></i> 2. ข้อมูลสมาชิกทุกคน
+              </div>
+              <p class="text-[11px] text-slate-500">
+                เลขประจำตัวนักเรียน 5 หลัก, ชื่อ-นามสกุล, ห้องเรียน, เกรดเฉลี่ยสะสม (GPAX), คะแนนความประพฤติ
+              </p>
+            </div>
+
+            <div class="p-3 bg-white rounded border border-slate-200 space-y-1">
+              <div class="text-emerald-700 font-bold text-xs flex items-center">
+                <i class="fa-solid fa-phone mr-1.5"></i> 3. ข้อมูลครูที่ปรึกษา
+              </div>
+              <p class="text-[11px] text-slate-500">
+                ชื่อ-นามสกุลครูที่ปรึกษา, กลุ่มสาระการเรียนรู้ และเบอร์โทรศัพท์ที่ติดต่อได้สะดวก
+              </p>
+            </div>
+
+            <div class="p-3 bg-white rounded border border-slate-200 space-y-1">
+              <div class="text-emerald-700 font-bold text-xs flex items-center">
+                <i class="fa-solid fa-file-contract mr-1.5"></i> 4. เอกสารดาวน์โหลด
+              </div>
+              <p class="text-[11px] text-slate-500">
+                ดาวน์โหลดแบบยินยอมผู้ปกครอง, ใบรับรองความประพฤติ และแบบรับทราบระเบียบ จากหน้าดาวน์โหลดเอกสาร
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 3: วิธียื่นสมัครออนไลน์ -->
+        <div class="border-b border-slate-200 pb-5 space-y-2">
+          <div class="flex items-center space-x-2.5">
+            <span class="manual-step-badge bg-emerald-700 text-white">3</span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900">วิธีการกรอกใบสมัครออนไลน์ (Online Application)</h3>
+          </div>
+          
+          <div class="space-y-3 pt-1">
+            <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3.1</div>
+              <div>
+                <strong>เลือกประเภทการสมัคร:</strong> เข้าสู่หน้าเว็บไซต์ เลือกแท็บ <strong>"ยื่นใบสมัครออนไลน์"</strong> จากนั้นเลือกว่าจะยื่นสมัคร <em>"สภานักเรียน"</em> หรือ <em>"ประธานคณะสี"</em>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3.2</div>
+              <div>
+                <strong>กรอกข้อมูลพรรคและคำขวัญ:</strong> กรอกชื่อพรรค, คำขวัญ/สโลแกน, นโยบายหลัก 3 ด้าน (วิชาการ, กิจกรรม, สวัสดิการนักเรียน)
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3.3</div>
+              <div>
+                <strong>กรอกข้อมูลผู้สมัครและอัปโหลดรูปถ่าย:</strong> กรอกข้อมูลประธานและสมาชิกในทีมให้ครบถ้วนทุกตำแหน่ง ตรวจสอบเลขประจำตัวนักเรียน เกรดเฉลี่ย และอัปโหลดรูปถ่ายหน้าตรงชุดนักเรียน
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3.4</div>
+              <div>
+                <strong>ตรวจสอบและกดส่งใบสมัคร:</strong> ตรวจทานข้อมูลทั้งหมดอีกครั้ง แล้วกดปุ่ม <strong>"ยืนยันและส่งใบสมัคร"</strong> ระบบจะบันทึกข้อมูลและสร้างรหัสใบสมัคร (Application ID) ให้โดยอัตโนมัติ
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 4: เข้ากลุ่ม LINE ผู้สมัคร -->
+        <div class="border-b border-slate-200 pb-5 space-y-2">
+          <div class="flex items-center space-x-2.5">
+            <span class="manual-step-badge bg-emerald-700 text-white">4</span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900">การเข้าร่วมกลุ่ม LINE ทางการของผู้สมัครรับเลือกตั้ง</h3>
+          </div>
+          
+          <div class="bg-[#06c755]/10 border border-[#06c755]/30 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
+            <div class="w-28 h-28 bg-white p-1 rounded-lg border border-slate-200 flex-shrink-0 shadow-sm flex items-center justify-center">
+              <img src="assets/images/line-group-qr.jpg" class="w-full h-full object-contain" alt="QR Code LINE Group" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
+            </div>
+            <div class="space-y-2 text-center sm:text-left flex-grow">
+              <div class="flex items-center justify-center sm:justify-start space-x-2">
+                <span class="bg-[#06c755] text-white text-xs px-2.5 py-0.5 rounded-full font-bold">LINE OpenChat / Group</span>
+                <span class="text-xs text-slate-600 font-semibold">กลุ่มทางการสำหรับการเลือกตั้ง</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm">เข้ากลุ่ม LINE ผู้สมัครทันทีหลังส่งใบสมัครสำเร็จ</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                เมื่อกดยื่นใบสมัคร ระบบจะมีหน้าต่างป๊อปอัปแจ้งเตือนให้เข้าร่วมกลุ่ม LINE ผู้สมัครทันที เพื่อรับการแจ้งเตือนวันนัดหมายประชุมชี้แจงระเบียบ, ตรวจสอบคุณสมบัติ, และการจับสลากหมายเลขผู้สมัคร
+              </p>
+              <div>
+                <a href="https://line.me/ti/g/KhLtg2M7vA" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 bg-[#06c755] hover:bg-[#05b34c] text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition">
+                  <i class="fa-brands fa-line text-base"></i>
+                  <span>แตะเพื่อเข้าร่วมกลุ่ม LINE ผู้สมัคร</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 5: ตรวจสอบสถานะ & พิมพ์ A4 -->
+        <div class="border-b border-slate-200 pb-5 space-y-2">
+          <div class="flex items-center space-x-2.5">
+            <span class="manual-step-badge bg-emerald-700 text-white">5</span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900">การตรวจสอบสถานะและพิมพ์ใบสมัครทางการขนาด A4</h3>
+          </div>
+          
+          <div class="space-y-3 pt-1 text-xs">
+            <div class="callout-box callout-info">
+              <strong>💡 เคล็ดลับ:</strong> สามารถพิมพ์ใบสมัครได้ทันทีหลังจากส่งใบสมัครสำเร็จ หรือจะกลับมาพิมพ์ย้อนหลังได้ตลอด 24 ชั่วโมง ผ่านแท็บ <strong>"ตรวจสอบสถานะ & พิมพ์ใบสมัคร A4"</strong>
+            </div>
+
+            <ol class="list-decimal pl-5 space-y-2 leading-relaxed">
+              <li>ไปที่หน้าแรกของระบบ แล้วเลือกแท็บ <strong>"ตรวจสอบสถานะ & พิมพ์ใบสมัคร A4"</strong></li>
+              <li>กรอก <strong>เลขประจำตัวนักเรียน 5 หลัก</strong> ของผู้สมัครประธาน หรือกรอก <strong>รหัสใบสมัคร</strong> ที่ได้รับ</li>
+              <li>กดปุ่ม <strong>"ค้นหาข้อมูล"</strong> ระบบจะแสดงการ์ดสรุปสถานะการสมัคร (รอการตรวจสอบ / อนุมัติ / รอแก้ไข)</li>
+              <li>กดปุ่ม <strong>"พิมพ์ใบสมัครฉบับทางการ (A4)"</strong> ระบบจะเปิดหน้าต่างเอกสารขนาดมาตรฐานกระดาษราชการ A4 พร้อมจัดพิมพ์อย่างสวยงาม</li>
+              <li>กดปุ่ม <strong>"พิมพ์เอกสาร / บันทึกเป็น PDF"</strong> หรือใช้คีย์ลัด <kbd class="px-1.5 py-0.5 bg-slate-200 rounded border border-slate-300 font-mono text-[10px]">Ctrl + P</kbd> (Windows) หรือ <kbd class="px-1.5 py-0.5 bg-slate-200 rounded border border-slate-300 font-mono text-[10px]">Cmd + P</kbd> (Mac)</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- ขั้นตอนที่ 6: นำส่งเอกสาร -->
+        <div class="space-y-2">
+          <div class="flex items-center space-x-2.5">
+            <span class="manual-step-badge bg-emerald-700 text-white">6</span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900">การลงลายมือชื่อและนำส่งเอกสารฉบับจริงต่อโรงเรียน</h3>
+          </div>
+          
+          <div class="callout-box callout-warning">
+            <strong>⚠️ ข้อสำคัญ:</strong> การสมัครออนไลน์จะสมบูรณ์เมื่อนำส่งเอกสารฉบับพิมพ์ที่ลงลายมือชื่อครบถ้วนต่อคณะกรรมการจัดการเลือกตั้งแล้วเท่านั้น
+          </div>
+
+          <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-2 text-xs">
+            <div class="font-bold text-slate-800">ขั้นตอนการลงนามและส่งเอกสาร:</div>
+            <ul class="list-disc pl-5 space-y-1 text-slate-600">
+              <li>ผู้สมัครประธาน ลงลายมือชื่อตัวบรรจงในช่อง <strong>"ผู้สมัคร"</strong></li>
+              <li>ครูที่ปรึกษาพรรค/คณะสี ลงลายมือชื่อในช่อง <strong>"ครูที่ปรึกษา"</strong></li>
+              <li>รวบรวมเอกสารแนบ: หนังสือยินยอมจากผู้ปกครอง, ใบรับรองคะแนนพฤติกรรม, แบบรับทราบระเบียบการเลือกตั้ง</li>
+              <li>นำส่งเอกสารทั้งหมด ณ <strong>กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน (ห้องสภานักเรียน อาคาร 1)</strong> ภายในเวลาที่กำหนด</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ส่วนที่ 3: คู่มือสำหรับครูที่ปรึกษาพรรค/สี -->
+    <!-- ========================================== -->
+    <section class="manual-section gov-card" id="sec-advisor">
+      <div class="gov-card-header bg-[#1e3a8a] text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 3: คู่มือสำหรับคุณครูที่ปรึกษาพรรคและคณะสี (Advisor Guide)</span>
+        </div>
+        <span class="text-xs bg-blue-900 px-2 py-0.5 rounded text-blue-100 font-normal">บทบาท & การลงนามรับรอง</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <p>
+          ครูที่ปรึกษามีบทบาทสำคัญในการเป็นผู้ให้คำปรึกษา แนะนำการทำงานเป็นทีม การจัดทำนโยบายที่เป็นไปได้จริงและสอดคล้องกับวิสัยทัศน์ของโรงเรียน รวมทั้งช่วยดูแลพฤติกรรมและการหาเสียงของนักเรียนให้อยู่ในกรอบระเบียบวินัย
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+          <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-1.5">
+            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <h4 class="font-bold text-slate-900 text-xs sm:text-sm">1. ตรวจสอบคุณสมบัติ</h4>
+            <p class="text-[11px] text-slate-600 leading-normal">
+              ตรวจสอบว่านักเรียนที่สังกัดในทีม มีระดับผลการเรียนสะสม (GPAX) และคะแนนความประพฤติผ่านเกณฑ์ที่โรงเรียนกำหนดจริง
+            </p>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-1.5">
+            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">
+              <i class="fa-solid fa-pen-nib"></i>
+            </div>
+            <h4 class="font-bold text-slate-900 text-xs sm:text-sm">2. ลงนามรับรองใน A4</h4>
+            <p class="text-[11px] text-slate-600 leading-normal">
+              ลงลายมือชื่อในช่อง <strong>"ครูที่ปรึกษา"</strong> บนใบสมัครฉบับพิมพ์ทางการขนาด A4 พร้อมระบุวันที่กำกับ
+            </p>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-1.5">
+            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">
+              <i class="fa-solid fa-handshake-angle"></i>
+            </div>
+            <h4 class="font-bold text-slate-900 text-xs sm:text-sm">3. กำกับดูแลการหาเสียง</h4>
+            <p class="text-[11px] text-slate-600 leading-normal">
+              ดูแลให้นักเรียนหาเสียงอย่างสร้างสรรค์ ไม่โจมตีผู้อื่น ไม่ติดป้ายในจุดห้าม และไม่ก่อให้เกิดความแตกแยกในสถานศึกษา
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ส่วนที่ 4: คู่มือสำหรับคณะกรรมการ / แอดมิน -->
+    <!-- ========================================== -->
+    <section class="manual-section gov-card" id="sec-admin">
+      <div class="gov-card-header bg-[#9a3412] text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 4: คู่มือสำหรับคณะกรรมการจัดการเลือกตั้งและผู้ดูแลระบบ (Admin CMS Guide)</span>
+        </div>
+        <span class="text-xs bg-orange-900 px-2 py-0.5 rounded text-orange-100 font-normal">ระบบหลังบ้าน</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        
+        <!-- 4.1 เข้าสู่ระบบหลังบ้าน -->
+        <div class="border-b border-slate-200 pb-4 space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-solid fa-key mr-2 text-amber-700"></i> 4.1 การเข้าสู่ระบบจัดการหลังบ้าน (Admin CMS)
+          </h3>
+          <p class="text-slate-600">
+            ครูและคณะกรรมการการจัดการเลือกตั้งสามารถเข้าสู่ระบบหลังบ้านได้ทาง:
+          </p>
+          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+            <li>คลิกปุ่ม <strong>"แก้ไขข้อมูลเว็บ (หลังบ้าน)"</strong> หรือ <strong>"แผงหลังบ้าน (CMS)"</strong> ที่อยู่แถบนำทางส่วนหัว หรือไปที่หน้า <a href="admin.html" class="text-blue-700 underline font-semibold">admin.html</a></li>
+            <li>กรอกรหัสผ่านผู้ดูแลระบบ (รหัสผ่านเริ่มต้นของระบบ: <code class="px-1.5 py-0.5 bg-slate-200 text-slate-800 rounded font-mono font-bold">admin1234</code>)</li>
+            <li>เมื่อเข้าสู่ระบบสำเร็จ จะพบแถบเมนู 5 แท็บหลักสำหรับบริหารจัดการทุกส่วนของระบบ</li>
+          </ul>
+        </div>
+
+        <!-- 4.2 การตรวจสอบใบสมัคร -->
+        <div class="border-b border-slate-200 pb-4 space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-solid fa-list-check mr-2 text-amber-700"></i> 4.2 การตรวจสอบใบสมัครและการอนุมัติ
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div class="p-3 bg-white rounded border border-slate-200 space-y-1.5">
+              <div class="font-bold text-slate-800 text-xs">แท็บสภานักเรียน / แท็บคณะสี</div>
+              <p class="text-[11px] text-slate-600">
+                ระบบจะแสดงรายชื่อทุกทีมที่ยื่นสมัคร พร้อมรหัสใบสมัคร ชื่อพรรค รายชื่อสมาชิก เกรดเฉลี่ย และคะแนนความประพฤติ
+              </p>
+              <div class="text-[11px] text-slate-500">
+                <strong>การเปลี่ยนสถานะ:</strong>
+                <span class="badge-pending">รอตรวจสอบ</span>
+                <span class="badge-approved">ผ่านคุณสมบัติ</span>
+                <span class="badge-rejected">ไม่ผ่าน</span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-white rounded border border-slate-200 space-y-1.5">
+              <div class="font-bold text-slate-800 text-xs">การระบุหมายเหตุและขอเอกสารเพิ่ม</div>
+              <p class="text-[11px] text-slate-600">
+                หากเอกสารไม่ครบถ้วน เช่น เกรดไม่ถึง หรือรูปถ่ายไม่ชัดเจน กรรมการสามารถพิมพ์หมายเหตุแจ้งเตือน เช่น <em>"กรุณาแนบใบ ปพ.1 ตัวจริงเพิ่มเติม"</em> ซึ่งนักเรียนจะเห็นข้อความนี้ทันทีเมื่อเช็กสถานะ
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.3 การบันทึกหมายเลขผู้สมัคร -->
+        <div class="border-b border-slate-200 pb-4 space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-solid fa-hashtag mr-2 text-amber-700"></i> 4.3 การบันทึกหมายเลขประจำตัวผู้สมัคร / หมายเลขพรรค
+          </h3>
+          <p class="text-slate-600">
+            หลังจากที่มีการจับสลากหมายเลขผู้สมัครอย่างเป็นทางการ กรรมการสามารถเปิดหน้ารายละเอียดใบสมัคร แล้วกรอก <strong>"หมายเลขผู้สมัคร / หมายเลขพรรค"</strong> (เช่น หมายเลข 1, หมายเลข 2) แล้วกดบันทึก ข้อมูลหมายเลขจะไปปรากฏในใบสมัคร A4 และหน้าตรวจสอบสถานะทันที
+          </p>
+        </div>
+
+        <!-- 4.4 การส่งออกข้อมูลเป็น Excel CSV -->
+        <div class="border-b border-slate-200 pb-4 space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-solid fa-file-excel mr-2 text-emerald-700"></i> 4.4 การส่งออกข้อมูลเป็นไฟล์ Excel (CSV Export)
+          </h3>
+          <p class="text-slate-600">
+            ในแท็บสภานักเรียนและแท็บคณะสี จะมีปุ่ม <strong>"ส่งออก Excel (CSV)"</strong> เมื่อคลิก ระบบจะดาวน์โหลดไฟล์ข้อมูลผู้สมัครครบทุกฟิลด์ (ชื่อทีม, หมายเลข, รายชื่อประธานและสมาชิก, ชั้นห้อง, GPAX, คะแนนพฤติกรรม, เบอร์โทรศัพท์ครูที่ปรึกษา) รองรับภาษาไทย UTF-8 เปิดดูใน Microsoft Excel ได้ทันที
+          </p>
+        </div>
+
+        <!-- 4.5 การจัดการตั้งค่าเว็บไซต์ CMS -->
+        <div class="border-b border-slate-200 pb-4 space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-solid fa-sliders mr-2 text-amber-700"></i> 4.5 การตั้งค่าข้อมูลเว็บไซต์และระบบ (Site Settings & CMS)
+          </h3>
+          <p class="text-slate-600">
+            ที่แท็บ <strong>"⚙️ ตั้งค่าข้อมูลเว็บไซต์และระบบ (CMS)"</strong> ผู้ดูแลระบบสามารถปรับแต่งเนื้อหาหน้าเว็บได้แบบ Real-time:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1 text-xs">
+            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+              <strong>ปีการศึกษา & ชื่อโรงเรียน:</strong> ปรับปี พ.ศ., สังกัด, และชื่อกลุ่มงาน
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+              <strong>ข้อความแถบประกาศ:</strong> ปรับข้อความตัววิ่ง/แถบประกาศหน้าแรก
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+              <strong>ข้อมูลการติดต่อท้ายเว็บ:</strong> ปรับชื่อครูประสานงาน (เช่น คุณครูสีวลี ยืนยาว) และเบอร์โทรศัพท์ (0990499597)
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+              <strong>ตราสัญลักษณ์ 3 ตำแหน่ง:</strong> อัปโหลดตราโรงเรียนและตราสัญลักษณ์เสริม
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+              <strong>เกณฑ์ GPAX และพฤติกรรม:</strong> ปรับเกณฑ์เกรดเฉลี่ยและคะแนนความประพฤติ
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+              <strong>ปฏิทิน 5 ขั้นตอน:</strong> แก้ไขวันที่ สถานที่ และกิจกรรมในแต่ละขั้นตอน
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.6 การจัดการช่องลงนามเอกสาร -->
+        <div class="border-b border-slate-200 pb-4 space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-solid fa-signature mr-2 text-amber-700"></i> 4.6 การจัดการช่องลงนามเอกสาร (Dynamic Signers Management)
+          </h3>
+          <p class="text-slate-600">
+            ระบบรองรับการเพิ่ม ลบ หรือแก้ไขช่องลงนามในใบสมัคร A4 ได้อย่างอิสระ:
+          </p>
+          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+            <li>สามารถแก้ไขชื่อผู้ลงนาม, ตำแหน่ง (เช่น หัวหน้ากลุ่มบริหารกิจการนักเรียน / รองผู้อำนวยการ), หรือเพิ่มช่องลงนามของกรรมการท่านอื่น</li>
+            <li>สามารถเปิด/ปิดช่องทำเครื่องหมาย <em>"[ ] ผ่านคุณสมบัติ [ ] ไม่ผ่าน"</em> หรือช่องวันที่ได้ตามต้องการ</li>
+            <li>แยกการตั้งค่าระหว่างใบสมัครสภานักเรียน และใบสมัครคณะสี 5 สีอย่างอิสระ</li>
+          </ul>
+        </div>
+
+        <!-- 4.7 การจัดการและอัปโหลดเอกสาร -->
+        <div class="border-b border-slate-200 pb-4 space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-solid fa-folder-plus mr-2 text-amber-700"></i> 4.7 การจัดการเอกสารดาวน์โหลด (Documents Manager)
+          </h3>
+          <p class="text-slate-600">
+            ที่แท็บ <strong>"📁 จัดการและอัปโหลดเอกสาร"</strong> กรรมการสามารถเพิ่มเอกสารที่จัดทำขึ้นเองเข้าสู่หน้า <a href="documents.html" class="text-blue-700 underline font-semibold">documents.html</a> ได้ 3 รูปแบบ:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
+            <div class="bg-white p-2.5 rounded border border-slate-200">
+              <strong>1. อัปโหลดไฟล์โดยตรง:</strong> แนบไฟล์ PDF, Word (.doc, .docx) เพื่อให้นักเรียนกดดาวน์โหลดได้ทันที
+            </div>
+            <div class="bg-white p-2.5 rounded border border-slate-200">
+              <strong>2. ใส่ลิงก์ภายนอก:</strong> แปะลิงก์ Google Drive, ลิงก์โฟลเดอร์โรงเรียน หรือเว็บประกาศ
+            </div>
+            <div class="bg-white p-2.5 rounded border border-slate-200">
+              <strong>3. สร้างแบบฟอร์ม A4:</strong> กรอกข้อความเพื่อให้ระบบสร้างหน้าพิมพ์ A4 อัตโนมัติ
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.8 การตั้งค่ากลุ่ม LINE -->
+        <div class="space-y-2">
+          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
+            <i class="fa-brands fa-line mr-2 text-emerald-600"></i> 4.8 การตั้งค่ากลุ่ม LINE ผู้สมัคร (URL & QR Code)
+          </h3>
+          <p class="text-slate-600">
+            ในแท็บ CMS สามารถอัปเดต <strong>"ลิงก์กลุ่ม LINE (LINE Group URL)"</strong> และ <strong>"อัปโหลดภาพ QR Code ใหม่"</strong> ได้ตลอดเวลา เพื่อให้สอดคล้องกับกลุ่ม LINE ประจำแต่ละปีการศึกษา
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ส่วนที่ 5: กฎระเบียบและข้อห้ามในการหาเสียง -->
+    <!-- ========================================== -->
+    <section class="manual-section gov-card" id="sec-rules">
+      <div class="gov-card-header bg-slate-800 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-scale-balanced text-amber-400"></i>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 5: กฎระเบียบและข้อห้ามในการหาเสียงเลือกตั้ง (Campaigning Code)</span>
+        </div>
+        <span class="text-xs text-slate-300 font-normal">ข้อบังคับประชาธิปไตยในโรงเรียน</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- สิ่งที่ต้องปฏิบัติ (Do's) -->
+          <div class="border border-emerald-300 bg-emerald-50/40 rounded-lg p-4 space-y-2">
+            <h4 class="font-bold text-emerald-900 text-xs sm:text-sm flex items-center">
+              <i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i> ข้อควรปฏิบัติในการหาเสียง
+            </h4>
+            <ul class="list-disc pl-5 space-y-1.5 text-xs text-slate-700">
+              <li>นำเสนอนโยบายที่เป็นประโยชน์ต่อส่วนรวม และสามารถปฏิบัติได้จริงในบริบทของโรงเรียน</li>
+              <li>ติดป้ายหาเสียงเฉพาะในจุดและบริเวณที่โรงเรียนและคณะกรรมการกำหนดไว้เท่านั้น</li>
+              <li>การแนะนำตัวและหาเสียงต้องไม่รบกวนเวลาเรียนของเพื่อนนักเรียนและครูผู้สอน</li>
+              <li>ให้ความเคารพซึ่งกันและกัน และส่งเสริมความสามัคคีระหว่างพรรคและคณะสี</li>
+              <li>เก็บและรื้อถอนป้ายหาเสียงให้เรียบร้อยหลังสิ้นสุดระยะเวลาการหาเสียง</li>
+            </ul>
+          </div>
+
+          <!-- สิ่งที่ห้ามปฏิบัติ (Don'ts) -->
+          <div class="border border-red-300 bg-red-50/40 rounded-lg p-4 space-y-2">
+            <h4 class="font-bold text-red-900 text-xs sm:text-sm flex items-center">
+              <i class="fa-solid fa-circle-xmark text-red-600 mr-2"></i> ข้อห้ามและบทลงโทษ
+            </h4>
+            <ul class="list-disc pl-5 space-y-1.5 text-xs text-slate-700">
+              <li><strong>ห้ามสัญญาว่าจะให้:</strong> ห้ามแจกเงิน สิ่งของ ขนม หรือผลประโยชน์ใดๆ เพื่อแลกคะแนนเสียง</li>
+              <li><strong>ห้ามโจมตีหรือให้ร้าย:</strong> ห้ามกล่าวว่าร้าย ใส่ความ หรือล้อเลียนผู้สมัครพรรคอื่น</li>
+              <li><strong>ห้ามทำลายทรัพย์สิน:</strong> ห้ามปลด ปลดทับ หรือทำลายป้ายหาเสียงของผู้อื่นโดยเด็ดขาด</li>
+              <li><strong>ห้ามหาเสียงเกินเวลา:</strong> ต้องยุติการหาเสียงล่วงหน้าก่อนวันเลือกตั้ง 24 ชั่วโมง ตามเวลาที่กำหนด</li>
+              <li><strong>บทลงโทษ:</strong> การฝ่าฝืนอาจถูกตัดสิทธิการรับสมัคร หรือตัดคะแนนความประพฤติตามระเบียบโรงเรียน</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ส่วนที่ 6: คำถามที่พบบ่อย (FAQ) -->
+    <!-- ========================================== -->
+    <section class="manual-section gov-card" id="sec-faq">
+      <div class="gov-card-header bg-[#4c1d95] text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-circle-question text-purple-300"></i>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 6: คำถามที่พบบ่อยและแนวทางแก้ไขปัญหา (FAQ)</span>
+        </div>
+        <span class="text-xs bg-purple-900 px-2 py-0.5 rounded text-purple-200 font-normal">6 ข้อสงสัยยอดนิยม</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        
+        <!-- FAQ 1 -->
+        <details class="group bg-white border border-slate-200 rounded-lg p-3 open:bg-purple-50/30 transition">
+          <summary class="font-bold text-slate-900 cursor-pointer list-none flex items-center justify-between">
+            <span class="flex items-center text-xs sm:text-sm">
+              <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold inline-flex items-center justify-center mr-2">Q1</span>
+              ยื่นใบสมัครออนไลน์ไปแล้ว พบว่ากรอกข้อมูลผิดพลาด สามารถแก้ไขได้อย่างไร?
+            </span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition text-xs"></i>
+          </summary>
+          <div class="mt-2.5 pt-2.5 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+            <p>
+              <strong>คำตอบ:</strong> เมื่อส่งใบสมัครแล้ว ผู้สมัครจะไม่สามารถแก้ไขข้อมูลเองทางหน้าเว็บได้ เพื่อป้องกันการเปลี่ยนแปลงข้อมูลโดยไม่ได้รับอนุญาต ให้นักเรียนติดต่อคณะกรรมการการเลือกตั้ง ณ ห้องส่งเสริมประชาธิปไตยฯ หรือติดต่อ <strong>คุณครูสีวลี ยืนยาว (โทร. 0990499597)</strong> โดยกรรมการสามารถแก้ไขข้อมูลหรือกดเปลี่ยนสถานะเป็น "ขอเอกสารเพิ่มเติม" เพื่อให้นักเรียนดำเนินการแก้ไขได้อย่างถูกต้อง
+            </p>
+          </div>
+        </details>
+
+        <!-- FAQ 2 -->
+        <details class="group bg-white border border-slate-200 rounded-lg p-3 open:bg-purple-50/30 transition">
+          <summary class="font-bold text-slate-900 cursor-pointer list-none flex items-center justify-between">
+            <span class="flex items-center text-xs sm:text-sm">
+              <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold inline-flex items-center justify-center mr-2">Q2</span>
+              ลืมสั่งพิมพ์ใบสมัคร A4 หลังจากกดส่ง สามารถพิมพ์ย้อนหลังได้หรือไม่?
+            </span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition text-xs"></i>
+          </summary>
+          <div class="mt-2.5 pt-2.5 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+            <p>
+              <strong>คำตอบ:</strong> สามารถพิมพ์ย้อนหลังได้ตลอดเวลา! เพียงเข้าไปที่หน้าแรกของระบบ เลือกแท็บ <strong>"ตรวจสอบสถานะ & พิมพ์ใบสมัคร A4"</strong> แล้วกรอกเลขประจำตัวนักเรียน 5 หลัก ของผู้สมัครประธาน ระบบจะค้นหาใบสมัครและมีปุ่ม <strong>"พิมพ์ใบสมัครฉบับทางการ (A4)"</strong> ให้ทันที
+            </p>
+          </div>
+        </details>
+
+        <!-- FAQ 3 -->
+        <details class="group bg-white border border-slate-200 rounded-lg p-3 open:bg-purple-50/30 transition">
+          <summary class="font-bold text-slate-900 cursor-pointer list-none flex items-center justify-between">
+            <span class="flex items-center text-xs sm:text-sm">
+              <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold inline-flex items-center justify-center mr-2">Q3</span>
+              รูปถ่ายที่ใช้อัปโหลดต้องเป็นรูปประเภทใด และขนาดเท่าไร?
+            </span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition text-xs"></i>
+          </summary>
+          <div class="mt-2.5 pt-2.5 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+            <p>
+              <strong>คำตอบ:</strong> ต้องเป็นรูปถ่ายหน้าตรง สวมเครื่องแบบนักเรียนโรงเรียนวชิรธรรมสาธิตถูกต้องตามระเบียบ พื้นหลังสีขาวหรือสีฟ้า ไม่สวมหมวก ไม่ใส่แว่นตาดำ ไฟล์รูปภาพรองรับ JPG, JPEG, PNG ขนาดไฟล์ไม่เกิน 2MB
+            </p>
+          </div>
+        </details>
+
+        <!-- FAQ 4 -->
+        <details class="group bg-white border border-slate-200 rounded-lg p-3 open:bg-purple-50/30 transition">
+          <summary class="font-bold text-slate-900 cursor-pointer list-none flex items-center justify-between">
+            <span class="flex items-center text-xs sm:text-sm">
+              <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold inline-flex items-center justify-center mr-2">Q4</span>
+              หากสมาชิกในทีมมีคะแนนความประพฤติต่ำกว่า 80 คะแนน จะสามารถสมัครได้หรือไม่?
+            </span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition text-xs"></i>
+          </summary>
+          <div class="mt-2.5 pt-2.5 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+            <p>
+              <strong>คำตอบ:</strong> ไม่สามารถสมัครได้ตามเกณฑ์คุณสมบัติข้อบังคับของโรงเรียน นักเรียนทุกคนในทีมต้องมีคะแนนความประพฤติคงเหลือไม่ต่ำกว่า 80 คะแนน หากไม่แน่ใจคะแนนคงเหลือ ให้ติดต่อครูประจำชั้นหรือกลุ่มบริหารกิจการนักเรียน เพื่อยื่นแบบคำร้องขอรับรองคะแนนพฤติกรรมก่อนทำการสมัคร
+            </p>
+          </div>
+        </details>
+
+        <!-- FAQ 5 -->
+        <details class="group bg-white border border-slate-200 rounded-lg p-3 open:bg-purple-50/30 transition">
+          <summary class="font-bold text-slate-900 cursor-pointer list-none flex items-center justify-between">
+            <span class="flex items-center text-xs sm:text-sm">
+              <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold inline-flex items-center justify-center mr-2">Q5</span>
+              ทำไมต้องเข้าร่วมกลุ่ม LINE ของผู้สมัคร?
+            </span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition text-xs"></i>
+          </summary>
+          <div class="mt-2.5 pt-2.5 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+            <p>
+              <strong>คำตอบ:</strong> กลุ่ม LINE ทางการ (<a href="https://line.me/ti/g/KhLtg2M7vA" target="_blank" class="text-emerald-700 underline font-semibold">https://line.me/ti/g/KhLtg2M7vA</a>) เป็นช่องทางการสื่อสารหลักที่คณะกรรมการใช้ในการส่งประกาศสำคัญ นัดหมายวันประชุมชี้แจงกฎกติกาการหาเสียง กำหนดการจับสลากหมายเลข และการแจ้งเตือนต่างๆ เพื่อให้ผู้สมัครทุกคนได้รับข้อมูลอย่างรวดเร็วและพร้อมกัน
+            </p>
+          </div>
+        </details>
+
+        <!-- FAQ 6 -->
+        <details class="group bg-white border border-slate-200 rounded-lg p-3 open:bg-purple-50/30 transition">
+          <summary class="font-bold text-slate-900 cursor-pointer list-none flex items-center justify-between">
+            <span class="flex items-center text-xs sm:text-sm">
+              <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold inline-flex items-center justify-center mr-2">Q6</span>
+              หากไม่มีเครื่องพิมพ์ที่บ้าน จะพิมพ์ใบสมัครและเอกสารประกอบได้อย่างไร?
+            </span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition text-xs"></i>
+          </summary>
+          <div class="mt-2.5 pt-2.5 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+            <p>
+              <strong>คำตอบ:</strong> นักเรียนสามารถบันทึกเอกสารเป็นไฟล์ PDF (เลือก Save as PDF ในหน้าต่างสั่งพิมพ์) แล้วนำมาขอใช้บริการพิมพ์ได้ที่ <strong>ห้องงานส่งเสริมประชาธิปไตยในโรงเรียน (ห้องสภานักเรียน อาคาร 1)</strong> หรือติดต่อคุณครูที่ปรึกษาพรรคเพื่อช่วยอำนวยความสะดวกในการจัดพิมพ์เอกสารได้
+            </p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ส่วนที่ 7: ข้อมูลการติดต่อและสนับสนุน -->
+    <!-- ========================================== -->
+    <section class="manual-section gov-card" id="sec-contact">
+      <div class="gov-card-header bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-headset text-emerald-400"></i>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 7: ช่องทางการติดต่อและขอความช่วยเหลือ (Support & Contact)</span>
+        </div>
+        <span class="text-xs text-slate-400 font-normal">งานส่งเสริมประชาธิปไตยในโรงเรียน</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <h4 class="font-bold text-slate-900 text-sm">หน่วยงานรับผิดชอบ</h4>
+            <p class="text-slate-600">
+              <strong data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</strong><br>
+              <strong data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</strong> สังกัดสำนักงานเขตพื้นที่การศึกษามัธยมศึกษากรุงเทพมหานคร เขต 2<br>
+              <span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span>
+            </p>
+          </div>
+
+          <div class="space-y-2 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+            <h4 class="font-bold text-slate-900 text-sm flex items-center">
+              <i class="fa-solid fa-address-book text-emerald-700 mr-2"></i> ครูผู้ประสานงานและข้อมูลติดต่อ
+            </h4>
+            <div class="space-y-1 text-slate-700">
+              <div><strong>ครูผู้ประสานงาน:</strong> <span data-cfg="contactPerson" class="font-semibold text-emerald-900">คุณครูสีวลี ยืนยาว</span></div>
+              <div><strong>โทรศัพท์ติดต่อ:</strong> <span data-cfg="schoolPhone" class="font-semibold text-emerald-900">0990499597</span></div>
+              <div><strong>ห้องทำงาน:</strong> ห้องงานส่งเสริมประชาธิปไตยในโรงเรียน (ห้องสภานักเรียน) อาคาร 1</div>
+              <div><strong>กลุ่ม LINE ผู้สมัคร:</strong> <a href="https://line.me/ti/g/KhLtg2M7vA" target="_blank" class="text-emerald-700 underline font-semibold">https://line.me/ti/g/KhLtg2M7vA</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ท้ายเว็บ (Footer) -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-5 mt-auto border-t border-slate-800 text-center no-print">
+    <div class="max-w-6xl mx-auto px-4 space-y-1.5">
+      <p class="text-slate-300 font-semibold">
+        คู่มือระบบรับสมัครเลือกตั้งประธานสภานักเรียนและประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
+      </p>
+      <p class="text-slate-500 text-[11px]">
+        <span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // ตั้งค่าวันที่พิมพ์เอกสาร
+    document.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+      const dateStr = `${now.getDate()} ${thaiMonths[now.getMonth()]} พ.ศ. ${now.getFullYear() + 543} เวลา ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
+      const dateEl = document.getElementById('printDateSpan');
+      if (dateEl) dateEl.innerText = dateStr;
+
+      // ตรวจสอบ hash parameter เพื่อเลื่อนหรือกรองอัตโนมัติ
+      const hash = window.location.hash.replace('#', '');
+      if (['candidate', 'advisor', 'admin', 'faq'].includes(hash)) {
+        filterManualSection(hash);
+      }
+    });
+
+    // ตัวกรองสลับมุมมองเนื้อหาคู่มือตามบทบาท
+    function filterManualSection(role) {
+      const pills = document.querySelectorAll('.manual-nav-pill');
+      pills.forEach(p => p.classList.remove('active'));
+
+      const activePill = document.getElementById(`pill-${role}`);
+      if (activePill) activePill.classList.add('active');
+
+      const secOverview = document.getElementById('sec-overview');
+      const secCandidate = document.getElementById('sec-candidate');
+      const secAdvisor = document.getElementById('sec-advisor');
+      const secAdmin = document.getElementById('sec-admin');
+      const secRules = document.getElementById('sec-rules');
+      const secFaq = document.getElementById('sec-faq');
+      const secContact = document.getElementById('sec-contact');
+
+      if (role === 'all') {
+        [secOverview, secCandidate, secAdvisor, secAdmin, secRules, secFaq, secContact].forEach(el => {
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (role === 'candidate') {
+        if (secOverview) secOverview.classList.remove('hidden');
+        if (secCandidate) secCandidate.classList.remove('hidden');
+        if (secAdvisor) secAdvisor.classList.add('hidden');
+        if (secAdmin) secAdmin.classList.add('hidden');
+        if (secRules) secRules.classList.remove('hidden');
+        if (secFaq) secFaq.classList.remove('hidden');
+        if (secContact) secContact.classList.remove('hidden');
+        secCandidate.scrollIntoView({ behavior: 'smooth' });
+      } else if (role === 'advisor') {
+        if (secOverview) secOverview.classList.remove('hidden');
+        if (secCandidate) secCandidate.classList.add('hidden');
+        if (secAdvisor) secAdvisor.classList.remove('hidden');
+        if (secAdmin) secAdmin.classList.add('hidden');
+        if (secRules) secRules.classList.remove('hidden');
+        if (secFaq) secFaq.classList.remove('hidden');
+        if (secContact) secContact.classList.remove('hidden');
+        secAdvisor.scrollIntoView({ behavior: 'smooth' });
+      } else if (role === 'admin') {
+        if (secOverview) secOverview.classList.remove('hidden');
+        if (secCandidate) secCandidate.classList.add('hidden');
+        if (secAdvisor) secAdvisor.classList.add('hidden');
+        if (secAdmin) secAdmin.classList.remove('hidden');
+        if (secRules) secRules.classList.remove('hidden');
+        if (secFaq) secFaq.classList.remove('hidden');
+        if (secContact) secContact.classList.remove('hidden');
+        secAdmin.scrollIntoView({ behavior: 'smooth' });
+      } else if (role === 'faq') {
+        if (secOverview) secOverview.classList.add('hidden');
+        if (secCandidate) secCandidate.classList.add('hidden');
+        if (secAdvisor) secAdvisor.classList.add('hidden');
+        if (secAdmin) secAdmin.classList.add('hidden');
+        if (secRules) secRules.classList.add('hidden');
+        if (secFaq) secFaq.classList.remove('hidden');
+        if (secContact) secContact.classList.remove('hidden');
+        secFaq.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
+</body>
+</html>

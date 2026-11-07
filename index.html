@@ -172,11 +172,16 @@
 
   <!-- แถบประกาศสำคัญทรงแคปซูล (อัปเดตตามที่แก้ไขในหลังบ้านได้ทันที) -->
   <div class="max-w-6xl mx-auto px-2.5 sm:px-6 pt-2.5 sm:pt-4 w-full">
-    <div class="bg-[#f8efe0] border border-[#ebd9be] rounded-xl sm:rounded-full py-1.5 px-2.5 sm:py-2 sm:px-4 text-[11px] sm:text-xs text-slate-800 flex items-start sm:items-center space-x-2 sm:space-x-2.5 shadow-sm">
-      <i class="fa-solid fa-bullhorn text-amber-700 text-xs sm:text-sm mt-0.5 sm:mt-0 flex-shrink-0"></i>
-      <span class="bg-[#155e43] text-white text-[9px] sm:text-[11px] font-semibold px-2 sm:px-3 py-0.5 rounded-full flex-shrink-0">ประกาศ</span>
-      <span class="text-slate-300 hidden sm:inline">|</span>
-      <span class="font-medium text-slate-800 leading-snug break-words" data-cfg="announcementText">เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569</span>
+    <div class="bg-[#f8efe0] border border-[#ebd9be] rounded-xl sm:rounded-full py-1.5 px-2.5 sm:py-2 sm:px-4 text-[11px] sm:text-xs text-slate-800 flex items-start sm:items-center justify-between shadow-sm gap-2">
+      <div class="flex items-start sm:items-center space-x-2 sm:space-x-2.5 flex-grow">
+        <i class="fa-solid fa-bullhorn text-amber-700 text-xs sm:text-sm mt-0.5 sm:mt-0 flex-shrink-0"></i>
+        <span class="bg-[#155e43] text-white text-[9px] sm:text-[11px] font-semibold px-2 sm:px-3 py-0.5 rounded-full flex-shrink-0">ประกาศ</span>
+        <span class="text-slate-300 hidden sm:inline">|</span>
+        <span class="font-medium text-slate-800 leading-snug break-words" data-cfg="announcementText">เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569</span>
+      </div>
+      <a href="manual.html" class="flex-shrink-0 text-[10.5px] sm:text-xs font-bold text-amber-900 bg-amber-200/90 hover:bg-amber-300 px-2.5 py-1 rounded-full flex items-center transition border border-amber-300 shadow-xs">
+        <i class="fa-solid fa-book-open mr-1 text-amber-800"></i> <span class="hidden sm:inline">อ่าน</span>คู่มือระบบ
+      </a>
     </div>
   </div>
 
@@ -212,12 +217,15 @@
           <div class="text-[11px] sm:text-xs text-slate-600">
             * ก่อนกรอกใบสมัคร กรุณาอ่านระเบียบคุณสมบัติ และเตรียมเอกสารยินยอมจากผู้ปกครอง
           </div>
-          <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
-            <button onclick="setActiveTab('rules')" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-3.5 sm:px-5 py-2 sm:py-2 text-[11px] sm:text-xs font-semibold flex items-center justify-center shadow-sm transition">
-              <i class="fa-regular fa-file-lines mr-1 sm:mr-2 text-slate-600"></i> อ่านระเบียบการ
+          <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5">
+            <button onclick="setActiveTab('rules')" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-3.5 sm:px-4 py-2 text-[11px] sm:text-xs font-semibold flex items-center justify-center shadow-sm transition">
+              <i class="fa-regular fa-file-lines mr-1 sm:mr-1.5 text-slate-600"></i> อ่านระเบียบการ
             </button>
-            <button onclick="setActiveTab('apply')" class="bg-[#0e4838] hover:bg-[#093529] text-white rounded-full px-3.5 sm:px-5 py-2 sm:py-2 text-[11px] sm:text-xs font-semibold flex items-center justify-center shadow-sm transition">
-              <i class="fa-solid fa-paper-plane mr-1.5 sm:mr-2 text-xs"></i> ไปที่หน้ากรอกใบสมัคร
+            <a href="manual.html" class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-full px-3.5 sm:px-4 py-2 text-[11px] sm:text-xs font-bold flex items-center justify-center shadow-sm transition">
+              <i class="fa-solid fa-book-open mr-1 sm:mr-1.5 text-amber-800"></i> คู่มือการใช้งานระบบ
+            </a>
+            <button onclick="setActiveTab('apply')" class="col-span-2 sm:col-span-1 bg-[#0e4838] hover:bg-[#093529] text-white rounded-full px-4 sm:px-5 py-2 text-[11px] sm:text-xs font-semibold flex items-center justify-center shadow-sm transition">
+              <i class="fa-solid fa-paper-plane mr-1.5 text-xs"></i> ไปที่หน้ากรอกใบสมัคร
             </button>
           </div>
         </div>

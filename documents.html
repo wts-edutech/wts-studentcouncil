@@ -362,6 +362,47 @@
             </div>
           </div>
         `;
+      } else if (type === 'manual') {
+        title.innerText = 'คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์';
+        container.innerHTML = `
+          <div class="text-center mb-6">
+            <div class="flex justify-center items-center space-x-2 mb-2">
+              ${logosHtml}
+            </div>
+            <h3 class="text-base font-bold">คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์</h3>
+            <p class="text-xs">การเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา ${cfg.academicYear}</p>
+            <p class="text-xs text-slate-500">${cfg.schoolName} • ${cfg.departmentName}</p>
+          </div>
+
+          <div class="space-y-4 text-xs leading-relaxed">
+            <div class="p-3 bg-amber-50 border border-amber-200 rounded text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div>
+                <strong>คู่มือฉบับเต็ม:</strong> คุณสามารถเปิดอ่านคู่มือฉบับสมบูรณ์ พร้อมตัวกรองตามบทบาทได้ที่หน้าเว็บคู่มือระบบ
+              </div>
+              <a href="manual.html" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded text-xs whitespace-nowrap shadow-sm">
+                เปิดหน้าคู่มือฉบับเต็ม <i class="fa-solid fa-arrow-right ml-1"></i>
+              </a>
+            </div>
+
+            <div class="border border-slate-200 rounded p-3 bg-slate-50 space-y-2">
+              <h4 class="font-bold text-slate-900 text-sm">ขั้นตอนหลักในการรับสมัครและจัดการเลือกตั้ง</h4>
+              <ol class="list-decimal pl-5 space-y-1.5 text-slate-700">
+                <li><strong>ตรวจสอบคุณสมบัติ:</strong> สภานักเรียน 10 คน / คณะสี 15 คน, GPAX ตามเกณฑ์, คะแนนความประพฤติคงเหลือไม่ต่ำกว่า 80 คะแนน</li>
+                <li><strong>เตรียมเอกสาร:</strong> รูปถ่ายชุดนักเรียน, หนังสือยินยอมผู้ปกครอง, ใบรับรองความประพฤติ และแบบรับทราบระเบียบ</li>
+                <li><strong>ยื่นใบสมัครออนไลน์:</strong> กรอกข้อมูลทีม สมาชิก นโยบาย และครูที่ปรึกษา ผ่านทางเว็บไซต์</li>
+                <li><strong>เข้าร่วมกลุ่ม LINE:</strong> สแกน QR Code เพื่อเข้ากลุ่ม LINE ผู้สมัครทันทีหลังสมัครเสร็จ</li>
+                <li><strong>พิมพ์ใบสมัครทางการ A4:</strong> ค้นหาด้วยเลขประจำตัว 5 หลัก แล้วพิมพ์ใบสมัคร A4</li>
+                <li><strong>ลงนามและนำส่งเอกสาร:</strong> ให้ผู้สมัครและครูที่ปรึกษาลงนาม แล้วนำส่งที่กลุ่มบริหารบุคคล (ห้องส่งเสริมประชาธิปไตยฯ อาคาร 1)</li>
+              </ol>
+            </div>
+
+            <div class="pt-4 text-center">
+              <a href="manual.html" class="btn-gov-primary text-xs py-2 px-4 inline-flex items-center shadow-sm">
+                <i class="fa-solid fa-book-open mr-1.5"></i> เปิดดูคู่มือการใช้งานระบบฉบับเต็ม (Manual Page)
+              </a>
+            </div>
+          </div>
+        `;
       }
 
       modal.classList.remove('hidden');
@@ -497,6 +538,12 @@
                 <i class="fa-solid fa-print mr-1"></i> ${btnText}
               </a>
             `;
+          } else if (doc.actionType === 'manual') {
+            actionBtnHtml = `
+              <a href="manual.html" class="btn-gov-primary text-xs py-1.5 px-3 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+                <i class="fa-solid fa-book-open mr-1"></i> ${btnText}
+              </a>
+            `;
           } else {
             actionBtnHtml = `
               <button onclick="previewDocument('consent')" class="btn-gov-outline text-xs py-1.5 px-3 whitespace-nowrap">
@@ -571,6 +618,12 @@
             actionBtnHtml = `
               <a href="print-application.html?type=color&blank=1" target="_blank" class="btn-gov-outline w-full text-xs py-2 px-3 text-center flex items-center justify-center">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
+              </a>
+            `;
+          } else if (doc.actionType === 'manual') {
+            actionBtnHtml = `
+              <a href="manual.html" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-book-open mr-1.5"></i> ${btnText}
               </a>
             `;
           } else {

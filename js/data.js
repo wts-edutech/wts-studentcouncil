@@ -103,6 +103,14 @@ const DEFAULT_DOCUMENTS_LIST = [
     signer: 'ผู้สมัครและครูที่ปรึกษาพรรค',
     btnText: 'พิมพ์ฟอร์ม',
     actionType: 'print_color'
+  },
+  {
+    id: 6,
+    title: 'คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์ (System User Manual)',
+    desc: 'คู่มือขั้นตอนการยื่นใบสมัครออนไลน์ การพิมพ์ฟอร์ม A4 บทบาทครูที่ปรึกษา และระบบหลังบ้าน',
+    signer: 'คณะกรรมการจัดการเลือกตั้ง',
+    btnText: 'เปิดอ่านคู่มือ',
+    actionType: 'manual'
   }
 ];
 
@@ -602,6 +610,17 @@ const WDSDB = {
           }
           return doc;
         });
+        const hasManual = merged.documentsList.some(d => d.actionType === 'manual' || (d.title && d.title.includes('คู่มือ')));
+        if (!hasManual) {
+          merged.documentsList.push({
+            id: 6,
+            title: 'คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์ (System User Manual)',
+            desc: 'คู่มือขั้นตอนการยื่นใบสมัครออนไลน์ การพิมพ์ฟอร์ม A4 บทบาทครูที่ปรึกษา และระบบหลังบ้าน',
+            signer: 'คณะกรรมการจัดการเลือกตั้ง',
+            btnText: 'เปิดอ่านคู่มือ',
+            actionType: 'manual'
+          });
+        }
       }
       if (!merged.lineGroupUrl) {
         merged.lineGroupUrl = 'https://line.me/ti/g/KhLtg2M7vA';
