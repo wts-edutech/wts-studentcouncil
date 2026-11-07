@@ -659,9 +659,9 @@
                     <thead class="bg-slate-200 text-slate-800 border-b border-slate-300">
                       <tr>
                         <th class="p-2 w-10 text-center">ลำดับ</th>
-                        <th class="p-2">ชื่อแบบฟอร์มเอกสาร & คำอธิบาย</th>
-                        <th class="p-2 w-44">ผู้มีหน้าที่ลงนาม</th>
-                        <th class="p-2 w-36">ข้อความปุ่ม & ประเภท</th>
+                        <th class="p-2 min-w-[200px]">ชื่อแบบฟอร์มเอกสาร & คำอธิบาย</th>
+                        <th class="p-2 w-36">ผู้มีหน้าที่ลงนาม</th>
+                        <th class="p-2 min-w-[250px]">ข้อความปุ่ม & รูปแบบเอกสาร / ไฟล์ดาวน์โหลด</th>
                         <th class="p-2 w-10 text-center">ลบ</th>
                       </tr>
                     </thead>
@@ -937,7 +937,12 @@
         desc: item.desc || '',
         signer: item.signer || '',
         btnText: item.btnText || 'เปิดพิมพ์ A4',
-        actionType: item.actionType || 'consent'
+        actionType: item.actionType || 'consent',
+        fileData: item.fileData || '',
+        fileName: item.fileName || '',
+        fileSize: item.fileSize || '',
+        fileUrl: item.fileUrl || '',
+        customContent: item.customContent || ''
       }));
       renderDocumentsAdminTable();
 
@@ -1079,6 +1084,14 @@
       updateLivePreview();
     }
 
+    function formatFileSize(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
     function renderDocumentsAdminTable() {
       const tbody = document.getElementById('documentsAdminTbody');
       if (!tbody) return;
@@ -1094,47 +1107,152 @@
         return;
       }
 
-      tbody.innerHTML = currentDocuments.map((doc, idx) => `
-        <tr class="hover:bg-slate-50 align-top">
-          <td class="p-2 text-center font-bold text-[#1a365d] pt-3">${idx + 1}</td>
-          <td class="p-1.5 space-y-1">
-            <input type="text" value="${escapeHTML(doc.title)}"
-              oninput="updateDocField(${idx}, 'title', this.value)"
-              placeholder="ชื่อแบบฟอร์มเอกสาร"
-              class="gov-input w-full text-xs font-bold py-1 px-2">
-            <input type="text" value="${escapeHTML(doc.desc)}"
-              oninput="updateDocField(${idx}, 'desc', this.value)"
-              placeholder="คำอธิบายใต้ชื่อเอกสาร"
-              class="gov-input w-full text-[11px] text-slate-600 py-1 px-2">
-          </td>
-          <td class="p-1.5">
-            <input type="text" value="${escapeHTML(doc.signer)}"
-              oninput="updateDocField(${idx}, 'signer', this.value)"
-              placeholder="ผู้มีหน้าที่ลงนาม"
-              class="gov-input w-full text-xs py-1 px-2">
-          </td>
-          <td class="p-1.5 space-y-1">
-            <input type="text" value="${escapeHTML(doc.btnText)}"
-              oninput="updateDocField(${idx}, 'btnText', this.value)"
-              placeholder="ข้อความปุ่ม"
-              class="gov-input w-full text-xs py-1 px-2">
-            <select onchange="updateDocField(${idx}, 'actionType', this.value)" class="gov-select w-full text-[11px] py-1 px-1.5">
-              <option value="consent" ${doc.actionType === 'consent' ? 'selected' : ''}>พิมพ์: หนังสือยินยอมผู้ปกครอง</option>
-              <option value="behavior" ${doc.actionType === 'behavior' ? 'selected' : ''}>พิมพ์: ใบรับรองคะแนนพฤติกรรม</option>
-              <option value="regulation" ${doc.actionType === 'regulation' ? 'selected' : ''}>ดู: ประกาศระเบียบการ</option>
-              <option value="print_council" ${doc.actionType === 'print_council' ? 'selected' : ''}>พิมพ์ฟอร์มเปล่า: สภานักเรียน</option>
-              <option value="print_color" ${doc.actionType === 'print_color' ? 'selected' : ''}>พิมพ์ฟอร์มเปล่า: ประธานคณะสี</option>
-            </select>
-          </td>
-          <td class="p-1.5 text-center pt-3">
-            <button type="button" onclick="removeDocumentAdminRow(${idx})"
-              class="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50 transition"
-              title="ลบรายการนี้">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = currentDocuments.map((doc, idx) => {
+        let extraInputHtml = '';
+        if (doc.actionType === 'custom_file') {
+          extraInputHtml = `
+            <div class="mt-1.5 p-2 bg-blue-50/80 border border-blue-200 rounded text-left space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold text-blue-900"><i class="fa-solid fa-file-arrow-up mr-1 text-blue-600"></i> ไฟล์ที่อัปโหลด:</span>
+                ${doc.fileData 
+                  ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded border border-emerald-300">✓ แนบไฟล์แล้ว (${doc.fileSize || 'มีข้อมูล'})</span>` 
+                  : `<span class="text-[9px] bg-amber-100 text-amber-800 font-semibold px-1.5 py-0.5 rounded border border-amber-300">ยังไม่ได้แนบไฟล์</span>`}
+              </div>
+              <input type="file" id="docFileInput_${idx}" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.zip" class="hidden" onchange="handleDocFileUpload(${idx}, this)">
+              <div class="flex gap-1 items-center">
+                <button type="button" onclick="document.getElementById('docFileInput_${idx}').click()" class="gov-btn gov-btn-blue text-[10.5px] py-1 px-2 flex-grow shadow-sm">
+                  <i class="fa-solid fa-cloud-arrow-up mr-1"></i> ${doc.fileData ? 'เปลี่ยนไฟล์เอกสาร' : 'เลือกไฟล์จากคอมพิวเตอร์ (PDF/Word)'}
+                </button>
+                ${doc.fileData ? `
+                  <a href="${doc.fileData}" target="_blank" download="${doc.fileName || 'document.pdf'}" class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] py-1 px-2 border border-slate-300" title="ทดสอบดาวน์โหลด">
+                    <i class="fa-solid fa-download"></i>
+                  </a>
+                  <button type="button" onclick="clearDocFile(${idx})" class="gov-btn bg-red-50 hover:bg-red-100 text-red-700 text-[10px] py-1 px-2 border border-red-200" title="ลบไฟล์แนบ">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                ` : ''}
+              </div>
+              ${doc.fileName 
+                ? `<div class="text-[10px] text-slate-700 font-medium truncate bg-white p-1 rounded border border-blue-100">📄 ${escapeHTML(doc.fileName)}</div>` 
+                : `<div class="text-[9.5px] text-slate-500">รองรับ PDF, Word, รูปภาพ (แนะนำขนาดไม่เกิน 3MB)</div>`}
+            </div>
+          `;
+        } else if (doc.actionType === 'custom_link') {
+          extraInputHtml = `
+            <div class="mt-1.5 p-2 bg-amber-50/80 border border-amber-200 rounded text-left space-y-1">
+              <span class="text-[10px] font-bold text-amber-900 block"><i class="fa-solid fa-link mr-1 text-amber-700"></i> ลิงก์ดาวน์โหลด (Google Drive / OneDrive / URL):</span>
+              <input type="url" value="${escapeHTML(doc.fileUrl || '')}"
+                oninput="updateDocField(${idx}, 'fileUrl', this.value)"
+                placeholder="https://drive.google.com/file/d/..."
+                class="gov-input w-full text-[10.5px] py-1 px-2 bg-white font-mono">
+              <div class="text-[9.5px] text-slate-500">ผู้ใช้กดปุ่มแล้วจะเปิดลิงก์ดาวน์โหลดนี้ทันที</div>
+            </div>
+          `;
+        } else if (doc.actionType === 'custom_text') {
+          extraInputHtml = `
+            <div class="mt-1.5 p-2 bg-purple-50/80 border border-purple-200 rounded text-left space-y-1">
+              <span class="text-[10px] font-bold text-purple-900 block"><i class="fa-solid fa-file-pen mr-1 text-purple-700"></i> เนื้อหาเอกสาร A4 สำหรับพิมพ์:</span>
+              <textarea rows="2"
+                oninput="updateDocField(${idx}, 'customContent', this.value)"
+                placeholder="พิมพ์เนื้อหาข้อความ ระเบียบ หรือเงื่อนไขที่ต้องการให้ปรากฏในหน้าพิมพ์ A4..."
+                class="gov-input w-full text-[10.5px] py-1 px-2 bg-white leading-normal">${escapeHTML(doc.customContent || '')}</textarea>
+            </div>
+          `;
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 align-top">
+            <td class="p-2 text-center font-bold text-[#1a365d] pt-3">${idx + 1}</td>
+            <td class="p-1.5 space-y-1">
+              <input type="text" value="${escapeHTML(doc.title)}"
+                oninput="updateDocField(${idx}, 'title', this.value)"
+                placeholder="ชื่อแบบฟอร์มเอกสาร"
+                class="gov-input w-full text-xs font-bold py-1 px-2 text-[#1a365d]">
+              <input type="text" value="${escapeHTML(doc.desc)}"
+                oninput="updateDocField(${idx}, 'desc', this.value)"
+                placeholder="คำอธิบายใต้ชื่อเอกสาร"
+                class="gov-input w-full text-[11px] text-slate-600 py-1 px-2">
+            </td>
+            <td class="p-1.5">
+              <input type="text" value="${escapeHTML(doc.signer)}"
+                oninput="updateDocField(${idx}, 'signer', this.value)"
+                placeholder="ผู้มีหน้าที่ลงนาม"
+                class="gov-input w-full text-xs py-1 px-2">
+            </td>
+            <td class="p-1.5 space-y-1">
+              <div class="flex gap-1.5 items-center">
+                <input type="text" value="${escapeHTML(doc.btnText)}"
+                  oninput="updateDocField(${idx}, 'btnText', this.value)"
+                  placeholder="ข้อความปุ่ม"
+                  class="gov-input w-full text-xs py-1 px-2 font-medium">
+              </div>
+              <select onchange="onDocActionTypeChange(${idx}, this.value)" class="gov-select w-full text-[11px] py-1 px-1.5 font-semibold text-slate-800 bg-white">
+                <option value="consent" ${doc.actionType === 'consent' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: หนังสือยินยอมผู้ปกครอง</option>
+                <option value="behavior" ${doc.actionType === 'behavior' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: ใบรับรองคะแนนพฤติกรรม</option>
+                <option value="regulation" ${doc.actionType === 'regulation' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: แบบรับทราบระเบียบการ</option>
+                <option value="print_council" ${doc.actionType === 'print_council' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์มเปล่า: สภานักเรียน</option>
+                <option value="print_color" ${doc.actionType === 'print_color' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์มเปล่า: ประธานคณะสี</option>
+                <option value="custom_file" ${doc.actionType === 'custom_file' ? 'selected' : ''}>📁 อัปโหลดไฟล์เอกสารเอง (PDF / Word / รูป)</option>
+                <option value="custom_link" ${doc.actionType === 'custom_link' ? 'selected' : ''}>🔗 ลิงก์ดาวน์โหลดภายนอก (Google Drive)</option>
+                <option value="custom_text" ${doc.actionType === 'custom_text' ? 'selected' : ''}>📝 สร้างแบบฟอร์ม A4 กำหนดเนื้อหาเอง</option>
+              </select>
+              ${extraInputHtml}
+            </td>
+            <td class="p-1.5 text-center pt-3">
+              <button type="button" onclick="removeDocumentAdminRow(${idx})"
+                class="text-red-600 hover:text-red-800 p-1.5 rounded hover:bg-red-50 transition"
+                title="ลบรายการนี้">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function onDocActionTypeChange(idx, val) {
+      if (!currentDocuments[idx]) return;
+      currentDocuments[idx].actionType = val;
+      if (val === 'custom_file' && (!currentDocuments[idx].btnText || currentDocuments[idx].btnText === 'เปิดพิมพ์ A4')) {
+        currentDocuments[idx].btnText = 'ดาวน์โหลดไฟล์';
+      } else if (val === 'custom_link' && (!currentDocuments[idx].btnText || currentDocuments[idx].btnText === 'เปิดพิมพ์ A4')) {
+        currentDocuments[idx].btnText = 'ดาวน์โหลดเอกสาร';
+      } else if (val === 'custom_text' && (!currentDocuments[idx].btnText || currentDocuments[idx].btnText === 'ดาวน์โหลดไฟล์')) {
+        currentDocuments[idx].btnText = 'เปิดพิมพ์ A4';
+      }
+      renderDocumentsAdminTable();
+    }
+
+    function handleDocFileUpload(idx, input) {
+      if (!currentDocuments[idx]) return;
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      if (file.size > 3.5 * 1024 * 1024) {
+        alert('ไฟล์มีขนาดเกิน 3.5MB แนะนำให้บีบอัดไฟล์ PDF หรือใช้ตัวเลือก "ลิงก์ดาวน์โหลดภายนอก (Google Drive)" แทนครับ');
+        input.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentDocuments[idx].fileData = e.target.result;
+        currentDocuments[idx].fileName = file.name;
+        currentDocuments[idx].fileSize = formatFileSize(file.size);
+        renderDocumentsAdminTable();
+        showToast(`แนบไฟล์ "${file.name}" เรียบร้อยแล้ว`, 'success');
+      };
+      reader.onerror = function() {
+        showToast('เกิดข้อผิดพลาดในการอ่านไฟล์', 'error');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearDocFile(idx) {
+      if (!currentDocuments[idx]) return;
+      currentDocuments[idx].fileData = '';
+      currentDocuments[idx].fileName = '';
+      currentDocuments[idx].fileSize = '';
+      renderDocumentsAdminTable();
+      showToast('ยกเลิกไฟล์แนบเรียบร้อยแล้ว', 'info');
     }
 
     function updateDocField(index, field, val) {
@@ -1146,14 +1264,19 @@
       const nextId = currentDocuments.length + 1;
       currentDocuments.push({
         id: nextId,
-        title: `เอกสารรายการที่ ${nextId}`,
-        desc: 'รายละเอียดแบบฟอร์มเอกสาร',
+        title: `แบบฟอร์มเอกสารดาวน์โหลด ${nextId}`,
+        desc: 'เอกสารทางการประกอบการรับสมัคร',
         signer: 'ผู้สมัครและครูที่ปรึกษา',
-        btnText: 'เปิดพิมพ์ A4',
-        actionType: 'consent'
+        btnText: 'ดาวน์โหลดไฟล์',
+        actionType: 'custom_file',
+        fileData: '',
+        fileName: '',
+        fileSize: '',
+        fileUrl: '',
+        customContent: ''
       });
       renderDocumentsAdminTable();
-      showToast(`เพิ่มรายการเอกสารลำดับที่ ${nextId} แล้ว`, 'info');
+      showToast(`เพิ่มรายการเอกสารลำดับที่ ${nextId} แล้ว สามารถเลือกไฟล์เอกสารได้ทันที`, 'info');
     }
 
     function removeDocumentAdminRow(index) {
@@ -1479,7 +1602,12 @@
           desc: (doc.desc || '').trim(),
           signer: (doc.signer || '').trim(),
           btnText: (doc.btnText || 'เปิดพิมพ์ A4').trim(),
-          actionType: doc.actionType || 'consent'
+          actionType: doc.actionType || 'consent',
+          fileData: doc.fileData || '',
+          fileName: doc.fileName || '',
+          fileSize: doc.fileSize || '',
+          fileUrl: (doc.fileUrl || '').trim(),
+          customContent: (doc.customContent || '').trim()
         })),
         timeline: cleanedTimeline
       };
