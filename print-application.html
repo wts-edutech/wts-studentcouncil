@@ -52,12 +52,14 @@
     </div>
   </div>
 
-  <!-- A4 Document Container -->
-  <div id="printArea" class="a4-page print-doc mx-auto bg-white">
-    <div id="documentContent">
-      <div class="text-center py-20 text-slate-400">
-        <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
-        <p>กำลังจัดเตรียมแบบฟอร์ม A4...</p>
+  <!-- A4 Document Container Wrapper (allows horizontal scroll on small mobile screens while maintaining strict A4 ratio) -->
+  <div class="w-full overflow-x-auto px-2 sm:px-0">
+    <div id="printArea" class="a4-page print-doc mx-auto bg-white shadow-md">
+      <div id="documentContent">
+        <div class="text-center py-20 text-slate-400">
+          <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
+          <p>กำลังจัดเตรียมแบบฟอร์ม A4...</p>
+        </div>
       </div>
     </div>
   </div>

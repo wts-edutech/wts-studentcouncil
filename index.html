@@ -11,32 +11,67 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .portal-nav-btn {
-      padding: 10px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #475569;
-      border-bottom: 3px solid transparent;
-      display: inline-flex;
-      align-items: center;
-      transition: all 0.15s ease-in-out;
-      white-space: nowrap;
+    .grid-nav-group {
+      display: grid !important;
+      grid-template-columns: repeat(5, 1fr) !important;
+      width: 100% !important;
     }
-    @media (min-width: 1280px) {
+    @media (min-width: 768px) {
+      .grid-nav-group {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        width: auto !important;
+        gap: 6px !important;
+      }
+    }
+    .portal-nav-btn {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 6px 1px !important;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      color: #475569 !important;
+      border-bottom: 2px solid transparent !important;
+      text-decoration: none !important;
+      text-align: center !important;
+      min-width: 0 !important;
+      width: 100% !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+    .portal-nav-btn i {
+      font-size: 13px !important;
+      margin-bottom: 2px !important;
+      display: block !important;
+    }
+    .nav-label-mobile { display: inline !important; font-size: 11px !important; white-space: nowrap !important; }
+    .nav-label-desktop { display: none !important; }
+    @media (min-width: 768px) {
+      .nav-label-mobile { display: none !important; }
+      .nav-label-desktop { display: inline !important; font-size: 13px !important; white-space: nowrap !important; }
       .portal-nav-btn {
-        padding: 11px 14px;
-        font-size: 13.5px;
+        flex-direction: row !important;
+        padding: 9px 12px !important;
+        border-bottom-width: 3px !important;
+        width: auto !important;
+      }
+      .portal-nav-btn i {
+        margin-bottom: 0 !important;
+        margin-right: 6px !important;
       }
     }
     .portal-nav-btn:hover {
-      color: #064e3b;
-      background-color: #f8fafc;
+      color: #064e3b !important;
+      background-color: #f8fafc !important;
     }
     .portal-nav-btn.active {
-      color: #0f2942;
-      font-weight: 700;
-      border-bottom-color: #065f46;
-      background-color: #ffffff;
+      color: #0f2942 !important;
+      font-weight: 700 !important;
+      border-bottom-color: #065f46 !important;
+      background-color: #ffffff !important;
     }
     .hero-banner-bg {
       background-color: #0b2444;
@@ -62,40 +97,40 @@
     <!-- แผ่น Gradient สไตล์คอมพิวเตอร์: ฝั่งซ้ายสีน้ำเงินเข้มสนิท ตัวหนังสือคมชัด ฝั่งขวาโปร่งใสโชว์ภาพอาคารเรียนและท้องฟ้าสดใส 100% -->
     <div class="absolute inset-0 bg-gradient-to-r from-[#071d36] via-[#071d36] via-[58%] sm:via-[52%] to-transparent pointer-events-none z-0"></div>
 
-    <div class="relative z-10 max-w-6xl mx-auto py-4 sm:py-8 px-3.5 sm:px-8">
-      <div class="max-w-[68%] sm:max-w-xl space-y-2 sm:space-y-3">
+    <div class="relative z-10 max-w-6xl mx-auto py-3 sm:py-6 px-3 sm:px-8">
+      <div class="max-w-[70%] sm:max-w-xl space-y-1.5 sm:space-y-2.5">
         <!-- แถวตราโรงเรียน + ชื่อโรงเรียน ไทย/อังกฤษ -->
-        <div class="flex items-center space-x-2.5 sm:space-x-3">
-          <div class="flex items-center space-x-2 flex-shrink-0">
-            <div class="w-11 h-11 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden flex-shrink-0 drop-shadow-md" data-cfg-logo>
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <div class="flex items-center space-x-1.5 flex-shrink-0">
+            <div class="w-9 h-9 sm:w-13 sm:h-13 flex items-center justify-center overflow-hidden flex-shrink-0 drop-shadow-md" data-cfg-logo>
               <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
             </div>
-            <div class="w-11 h-11 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo2>
+            <div class="w-9 h-9 sm:w-13 sm:h-13 flex items-center justify-center overflow-hidden hidden" data-cfg-logo2>
               <!-- Logo 2 -->
             </div>
-            <div class="w-11 h-11 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo3>
+            <div class="w-9 h-9 sm:w-13 sm:h-13 flex items-center justify-center overflow-hidden hidden" data-cfg-logo3>
               <!-- Logo 3 -->
             </div>
           </div>
-          <div class="border-l border-white/40 pl-2.5 sm:pl-3">
-            <div class="text-xs sm:text-lg font-bold tracking-wide text-white leading-tight drop-shadow-sm" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</div>
-            <div class="text-[8px] sm:text-[11px] tracking-[0.1em] sm:tracking-[0.12em] text-slate-200 font-medium uppercase mt-0.5" data-cfg="schoolNameEn">WACHIRATHAMSATIT SCHOOL</div>
+          <div class="border-l border-white/40 pl-2 sm:pl-3">
+            <div class="text-[11px] sm:text-base font-bold tracking-wide text-white leading-tight drop-shadow-sm" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</div>
+            <div class="text-[8px] sm:text-[10px] tracking-[0.1em] text-slate-200 font-medium uppercase mt-0.5" data-cfg="schoolNameEn">WACHIRATHAMSATIT SCHOOL</div>
           </div>
         </div>
 
         <!-- หัวข้อใหญ่ คณะกรรมการการจัดการเลือกตั้ง ประธานสภานักเรียน -->
         <div class="pt-0.5">
-          <h1 class="text-[13px] sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-snug sm:leading-tight drop-shadow-md">
+          <h1 class="text-xs sm:text-xl lg:text-2xl font-extrabold tracking-tight text-white leading-snug drop-shadow-md">
             คณะกรรมการการจัดการเลือกตั้ง<br class="hidden sm:inline">ประธานสภานักเรียน
           </h1>
-          <p class="text-[11px] sm:text-base font-medium text-slate-100 mt-0.5 sm:mt-1 drop-shadow-sm">
+          <p class="text-[10px] sm:text-sm font-medium text-slate-100 mt-0.5 drop-shadow-sm">
             และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
           </p>
-          <div class="w-10 sm:w-14 h-[2.5px] sm:h-[3px] bg-amber-400 rounded-full mt-1.5 sm:mt-2 mb-1.5 sm:mb-2"></div>
+          <div class="w-8 sm:w-12 h-[2px] sm:h-[3px] bg-amber-400 rounded-full mt-1 sm:mt-1.5 mb-1 sm:mt-1.5"></div>
         </div>
 
         <!-- กลุ่มงานด้านล่างแบนเนอร์ -->
-        <div class="text-[9px] sm:text-xs text-slate-200/95 space-y-0.5 leading-snug sm:leading-relaxed drop-shadow-sm">
+        <div class="text-[8.5px] sm:text-xs text-slate-200/95 space-y-0.5 leading-snug drop-shadow-sm">
           <p data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</p>
           <p class="hidden sm:block">ระบบรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span></p>
         </div>
@@ -103,81 +138,85 @@
     </div>
   </header>
 
-  <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (สำหรับนักเรียนและผู้เข้าชม) -->
+  <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (แสดงครบ 5 ปุ่ม 100% บนทุกหน้าจอ) -->
   <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-6xl mx-auto px-2 sm:px-4 flex items-center justify-start">
-      <div class="flex items-center space-x-0.5 sm:space-x-1 overflow-x-auto lg:overflow-x-visible no-scrollbar py-1" id="tabNavGroup" style="-webkit-overflow-scrolling: touch;">
+    <div class="max-w-6xl mx-auto px-1 sm:px-4">
+      <div class="grid-nav-group" id="tabNavGroup">
         <button onclick="setActiveTab('home')" id="btnTabHome" class="portal-nav-btn active">
-          <i class="fa-solid fa-house mr-1.5 text-[#0f2942]"></i>
+          <i class="fa-solid fa-house"></i>
           <span>หน้าแรก</span>
         </button>
         <button onclick="setActiveTab('rules')" id="btnTabRules" class="portal-nav-btn">
-          <i class="fa-regular fa-file-lines mr-1.5 text-slate-500"></i>
-          <span>ระเบียบการรับสมัคร</span>
+          <i class="fa-regular fa-file-lines"></i>
+          <span class="nav-label-desktop">ระเบียบการรับสมัคร</span>
+          <span class="nav-label-mobile">ระเบียบ</span>
         </button>
         <button onclick="setActiveTab('apply')" id="btnTabApply" class="portal-nav-btn">
-          <i class="fa-regular fa-pen-to-square mr-1.5 text-slate-500"></i>
-          <span>ยื่นใบสมัครออนไลน์</span>
+          <i class="fa-regular fa-pen-to-square"></i>
+          <span class="nav-label-desktop">ยื่นใบสมัครออนไลน์</span>
+          <span class="nav-label-mobile">สมัคร</span>
         </button>
         <button onclick="setActiveTab('status')" id="btnTabStatus" class="portal-nav-btn">
-          <i class="fa-solid fa-magnifying-glass mr-1.5 text-slate-500"></i>
-          <span>ตรวจสอบสถานะ & พิมพ์ A4</span>
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span class="nav-label-desktop">ตรวจสอบสถานะ & พิมพ์ A4</span>
+          <span class="nav-label-mobile">สถานะ</span>
         </button>
         <a href="documents.html" class="portal-nav-btn">
-          <i class="fa-solid fa-download mr-1.5 text-slate-500"></i>
-          <span>ดาวน์โหลดเอกสาร</span>
+          <i class="fa-solid fa-download"></i>
+          <span class="nav-label-desktop">ดาวน์โหลดเอกสาร</span>
+          <span class="nav-label-mobile">เอกสาร</span>
         </a>
       </div>
     </div>
   </nav>
 
   <!-- แถบประกาศสำคัญทรงแคปซูล (อัปเดตตามที่แก้ไขในหลังบ้านได้ทันที) -->
-  <div class="max-w-6xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 w-full">
-    <div class="bg-[#f8efe0] border border-[#ebd9be] rounded-2xl sm:rounded-full py-2 px-3 sm:px-4 text-xs sm:text-[13px] text-slate-800 flex items-start sm:items-center space-x-2 sm:space-x-2.5 shadow-sm">
-      <i class="fa-solid fa-bullhorn text-amber-700 text-sm mt-0.5 sm:mt-0 flex-shrink-0"></i>
-      <span class="bg-[#155e43] text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-3 py-0.5 rounded-full flex-shrink-0">ประกาศ</span>
+  <div class="max-w-6xl mx-auto px-2.5 sm:px-6 pt-2.5 sm:pt-4 w-full">
+    <div class="bg-[#f8efe0] border border-[#ebd9be] rounded-xl sm:rounded-full py-1.5 px-2.5 sm:py-2 sm:px-4 text-[11px] sm:text-xs text-slate-800 flex items-start sm:items-center space-x-2 sm:space-x-2.5 shadow-sm">
+      <i class="fa-solid fa-bullhorn text-amber-700 text-xs sm:text-sm mt-0.5 sm:mt-0 flex-shrink-0"></i>
+      <span class="bg-[#155e43] text-white text-[9px] sm:text-[11px] font-semibold px-2 sm:px-3 py-0.5 rounded-full flex-shrink-0">ประกาศ</span>
       <span class="text-slate-300 hidden sm:inline">|</span>
       <span class="font-medium text-slate-800 leading-snug break-words" data-cfg="announcementText">เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569</span>
     </div>
   </div>
 
   <!-- เนื้อหาหลัก -->
-  <main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 py-6 w-full">
+  <main class="flex-grow max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 w-full">
 
     <!-- TAB 1: หน้าแรก (ภาพรวม กำหนดการ ไทม์ไลน์ 5 การ์ดแนวนอน) -->
-    <div id="contentHome" class="space-y-6">
+    <div id="contentHome" class="space-y-4 sm:space-y-6">
       
-      <div class="py-2 space-y-5">
+      <div class="py-1 sm:py-2 space-y-3 sm:space-y-5">
         <!-- หัวข้อกำหนดการ พร้อมไอคอนปฏิทินสีเขียวอ่อน -->
-        <div class="flex items-start space-x-3.5">
-          <div class="w-12 h-12 rounded-full bg-[#e6f3ed] text-[#156548] flex items-center justify-center flex-shrink-0 text-xl shadow-sm border border-[#cce6da] mt-0.5">
+        <div class="flex items-start space-x-2.5 sm:space-x-3.5">
+          <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#e6f3ed] text-[#156548] flex items-center justify-center flex-shrink-0 text-sm sm:text-lg shadow-sm border border-[#cce6da] mt-0.5">
             <i class="fa-regular fa-calendar-check"></i>
           </div>
-          <div class="space-y-1">
-            <h2 class="text-lg sm:text-xl font-extrabold text-[#0f2942]">
+          <div class="space-y-0.5 sm:space-y-1">
+            <h2 class="text-sm sm:text-lg font-bold text-[#0f2942] leading-snug">
               กำหนดการเลือกตั้งผู้นำนักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
             </h2>
-            <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+            <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">
               <span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> ขอประกาศกำหนดการรับสมัครและจัดการเลือกตั้งประธานสภานักเรียน และประธานคณะสี (5 คณะสี) ประจำปีการศึกษา <span data-cfg="academicYear">2570</span> เพื่อให้นักเรียนและครูที่ปรึกษาเตรียมความพร้อมในการดำเนินการตามลำดับขั้นตอน ดังนี้
             </p>
           </div>
         </div>
 
         <!-- การ์ด 5 ขั้นตอนเรียงแนวนอนพร้อมเส้นเชื่อม -->
-        <div id="timelineCardsGrid" class="flex flex-col lg:flex-row items-stretch justify-between gap-3 lg:gap-0 pt-1">
+        <div id="timelineCardsGrid" class="flex flex-col lg:flex-row items-stretch justify-between gap-2 lg:gap-0 pt-1">
           <!-- เรนเดอร์ด้วย app.js -->
         </div>
 
         <!-- แถบปุ่มด้านล่างกำหนดการ -->
-        <div class="pt-3 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-          <div class="text-xs text-slate-600">
+        <div class="pt-2 sm:pt-3 flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center justify-between">
+          <div class="text-[11px] sm:text-xs text-slate-600">
             * ก่อนกรอกใบสมัคร กรุณาอ่านระเบียบคุณสมบัติ และเตรียมเอกสารยินยอมจากผู้ปกครอง
           </div>
           <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
-            <button onclick="setActiveTab('rules')" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-4 sm:px-5 py-2.5 sm:py-2 text-xs font-semibold flex items-center justify-center shadow-sm transition">
-              <i class="fa-regular fa-file-lines mr-1.5 sm:mr-2 text-slate-600"></i> อ่านระเบียบการ
+            <button onclick="setActiveTab('rules')" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-3.5 sm:px-5 py-2 sm:py-2 text-[11px] sm:text-xs font-semibold flex items-center justify-center shadow-sm transition">
+              <i class="fa-regular fa-file-lines mr-1 sm:mr-2 text-slate-600"></i> อ่านระเบียบการ
             </button>
-            <button onclick="setActiveTab('apply')" class="bg-[#0e4838] hover:bg-[#093529] text-white rounded-full px-4 sm:px-5 py-2.5 sm:py-2 text-xs font-semibold flex items-center justify-center shadow-sm transition">
+            <button onclick="setActiveTab('apply')" class="bg-[#0e4838] hover:bg-[#093529] text-white rounded-full px-3.5 sm:px-5 py-2 sm:py-2 text-[11px] sm:text-xs font-semibold flex items-center justify-center shadow-sm transition">
               <i class="fa-solid fa-paper-plane mr-1.5 sm:mr-2 text-xs"></i> ไปที่หน้ากรอกใบสมัคร
             </button>
           </div>

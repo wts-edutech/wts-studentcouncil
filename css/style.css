@@ -39,6 +39,52 @@ html {
   border-bottom: 1px solid #d0d7de;
 }
 
+/* ปรับแต่งปุ่มแท็บเมนูนำทางให้เห็นครบทุกปุ่มบนทุกขนาดหน้าจอโดยไม่ล้น */
+.portal-nav-btn {
+  padding: 8px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.15s ease-in-out;
+  white-space: nowrap;
+  flex: 1;
+}
+
+@media (min-width: 640px) {
+  .portal-nav-btn {
+    padding: 10px 12px;
+    font-size: 12.5px;
+    border-bottom-width: 3px;
+    flex-direction: row;
+    flex: initial;
+  }
+}
+
+@media (min-width: 1024px) {
+  .portal-nav-btn {
+    padding: 11px 16px;
+    font-size: 13.5px;
+  }
+}
+
+.portal-nav-btn:hover {
+  color: #064e3b;
+  background-color: #f8fafc;
+}
+
+.portal-nav-btn.active {
+  color: #0f2942;
+  font-weight: 700;
+  border-bottom-color: #065f46;
+  background-color: #ffffff;
+}
+
 /* การ์ดแบบราชการ เรียบร้อย ไม่ลอยฟุ้ง ไม่เว้ามนเกินไป */
 .gov-card {
   background: #ffffff;
@@ -50,14 +96,23 @@ html {
 .gov-card-header {
   background-color: #f6f8fa;
   border-bottom: 1px solid #d0d7de;
-  padding: 10px 14px;
+  padding: 8px 12px;
   font-weight: 600;
   color: #16325c;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
+  font-size: 13px;
+}
+
+@media (min-width: 640px) {
+  .gov-card-header {
+    padding: 10px 14px;
+    font-size: 14px;
+    gap: 6px;
+  }
 }
 
 /* ปุ่มแบบมาตรฐานระบบราชการ */

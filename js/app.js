@@ -149,15 +149,15 @@ function applySiteConfig() {
 
       if (isHighlightStep) {
         return `
-          <div class="flex-1 min-w-[180px] rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white p-4 shadow-md border border-emerald-800 flex flex-col justify-between relative">
+          <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white p-2.5 sm:p-4 shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative">
             <div>
-              <div class="flex items-start justify-between mb-2">
-                <span class="w-6 h-6 rounded-full bg-white text-[#064e3b] font-bold text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
-                <i class="fa-solid ${iconClass} text-white/90 text-xl"></i>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#064e3b] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
+                <i class="fa-solid ${iconClass} text-white/90 text-sm sm:text-xl"></i>
               </div>
-              <div class="text-xs font-bold text-[#fbbf24] mb-1.5">${escapeHTML(item.date || '')}</div>
-              <div class="font-bold text-sm leading-snug text-white mb-1">${escapeHTML(mainTitle)}</div>
-              <div class="text-xs text-emerald-100 leading-relaxed">${escapeHTML(subDesc)}</div>
+              <div class="text-[10.5px] sm:text-xs font-bold text-[#fbbf24] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
+              <div class="font-bold text-xs sm:text-sm leading-snug text-white mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
+              <div class="text-[10px] sm:text-xs text-emerald-100 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
             </div>
           </div>
           ${connectorHtml}
@@ -165,15 +165,15 @@ function applySiteConfig() {
       }
 
       return `
-        <div class="flex-1 min-w-[180px] rounded-xl bg-[#f8faf9] hover:bg-white transition p-4 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+        <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-4 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
           <div>
-            <div class="flex items-start justify-between mb-2">
-              <span class="w-6 h-6 rounded-full bg-[#0f2942] text-white font-bold text-xs flex items-center justify-center">${stepNum}</span>
-              <i class="fa-solid ${iconClass} text-[#156548] text-xl"></i>
+            <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+              <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">${stepNum}</span>
+              <i class="fa-solid ${iconClass} text-[#156548] text-sm sm:text-xl"></i>
             </div>
-            <div class="text-xs font-bold text-[#b4690e] mb-1.5">${escapeHTML(item.date || '')}</div>
-            <div class="font-bold text-sm leading-snug text-slate-900 mb-1">${escapeHTML(mainTitle)}</div>
-            <div class="text-xs text-slate-600 leading-relaxed">${escapeHTML(subDesc)}</div>
+            <div class="text-[10.5px] sm:text-xs font-bold text-[#b4690e] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
+            <div class="font-bold text-xs sm:text-sm leading-snug text-slate-900 mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
+            <div class="text-[10px] sm:text-xs text-slate-600 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
           </div>
         </div>
         ${connectorHtml}
