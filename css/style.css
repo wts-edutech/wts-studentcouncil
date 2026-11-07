@@ -454,3 +454,20 @@ button, a, input, select, textarea {
   border-radius: 3px;
   font-size: 12px;
 }
+
+/* ยกเลิกการแสดงเลขอาราบิกอัตโนมัติในส่วนระเบียบและเกณฑ์การรับสมัคร */
+#rulesCouncilOl, #rulesColorOl {
+  list-style: none !important;
+  list-style-type: none !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+#rulesCouncilOl > li, #rulesColorOl > li,
+#rulesCouncilOl > div, #rulesColorOl > div {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+#rulesCouncilOl li::before, #rulesColorOl li::before {
+  display: none !important;
+  content: none !important;
+}

@@ -213,16 +213,38 @@ function applySiteConfig() {
 }
 
 function renderRulesAndApplyContent(cfg) {
+  // ฟังก์ชันจัดรูปแบบบรรทัดระเบียบการและตัดเลขอาราบิกนำหน้า (1. , 2. ) ออก
+  const formatRuleItem = (line) => {
+    // ตัดเลขอาราบิกนำหน้า เช่น "1. ", "2. ", "10) " ออก
+    const cleanLine = String(line || '').replace(/^\s*\d+[\.\)]\s*/, '').trim();
+    if (!cleanLine) return '';
+
+    // จัดการระดับการย่อหน้าตามโครงสร้างหัวข้อย่อยแบบไทย
+    let indentClass = '';
+    let extraClass = '';
+    if (/^[๑-๙0-9]\.[๑-๙0-9]\.[๑-๙0-9]/.test(cleanLine)) {
+      indentClass = 'pl-6 sm:pl-8 text-slate-600 text-xs sm:text-[13px]';
+    } else if (/^[๑-๙0-9]\.[๑-๙0-9]/.test(cleanLine)) {
+      indentClass = 'pl-3 sm:pl-4';
+    } else if (cleanLine.startsWith('ดังต่อไปนี้')) {
+      indentClass = 'pl-6 sm:pl-8 text-slate-500 font-medium italic';
+    } else if (cleanLine.includes('คุณสมบัติของผู้สมัคร')) {
+      extraClass = 'font-bold text-slate-900 pt-1 border-t border-slate-100';
+    }
+
+    return `<div class="leading-relaxed ${indentClass} ${extraClass}">${formatTimelineTitle(cleanLine)}</div>`;
+  };
+
   // หมวดที่ 1: สภานักเรียน
   const councilRulesOl = document.getElementById('rulesCouncilOl');
   if (councilRulesOl && Array.isArray(cfg.rulesCouncilList)) {
-    councilRulesOl.innerHTML = cfg.rulesCouncilList.map(line => `<li class="leading-relaxed">${formatTimelineTitle(line)}</li>`).join('');
+    councilRulesOl.innerHTML = cfg.rulesCouncilList.map(formatRuleItem).filter(Boolean).join('');
   }
 
   // หมวดที่ 2: ประธานคณะสี
   const colorRulesOl = document.getElementById('rulesColorOl');
   if (colorRulesOl && Array.isArray(cfg.rulesColorList)) {
-    colorRulesOl.innerHTML = cfg.rulesColorList.map(line => `<li class="leading-relaxed">${formatTimelineTitle(line)}</li>`).join('');
+    colorRulesOl.innerHTML = cfg.rulesColorList.map(formatRuleItem).filter(Boolean).join('');
   }
 
   // รายการสรุปในการ์ดยื่นใบสมัครสภานักเรียน (Tab 3)
