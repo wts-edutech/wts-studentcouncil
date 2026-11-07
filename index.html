@@ -103,9 +103,9 @@
     </div>
   </header>
 
-  <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (พอดีทุกขนาดหน้าจอ ไม่มีเลื่อน) -->
+  <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (สำหรับนักเรียนและผู้เข้าชม) -->
   <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-6xl mx-auto px-2 sm:px-4 flex items-center justify-between gap-1">
+    <div class="max-w-6xl mx-auto px-2 sm:px-4 flex items-center justify-start">
       <div class="flex items-center space-x-0.5 sm:space-x-1 overflow-x-auto lg:overflow-x-visible no-scrollbar py-1" id="tabNavGroup" style="-webkit-overflow-scrolling: touch;">
         <button onclick="setActiveTab('home')" id="btnTabHome" class="portal-nav-btn active">
           <i class="fa-solid fa-house mr-1.5 text-[#0f2942]"></i>
@@ -126,14 +126,6 @@
         <a href="documents.html" class="portal-nav-btn">
           <i class="fa-solid fa-download mr-1.5 text-slate-500"></i>
           <span>ดาวน์โหลดเอกสาร</span>
-        </a>
-      </div>
-
-      <div class="py-1 flex-shrink-0 pl-1">
-        <a href="admin.html?tab=settings" class="bg-[#0e5a42] hover:bg-[#094230] text-white text-xs px-3 sm:px-4 py-1.5 rounded-full font-semibold flex items-center shadow-sm transition whitespace-nowrap">
-          <i class="fa-solid fa-gear sm:mr-1.5"></i>
-          <span class="hidden md:inline">แก้ไขข้อมูลเว็บ (หลังบ้าน)</span>
-          <span class="md:hidden ml-1">หลังบ้าน</span>
         </a>
       </div>
     </div>
@@ -375,8 +367,9 @@
         <p class="font-bold text-slate-800"><span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></p>
         <p class="text-slate-600 text-[11px] mt-0.5"><span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span> | โทรศัพท์: <span data-cfg="schoolPhone">0990499557</span></p>
       </div>
-      <div class="text-slate-600 text-xs font-medium">
-        ระบบรับสมัครเลือกตั้งผู้นำนักเรียน ปีการศึกษา <span data-cfg="academicYear">2570</span>
+      <div class="text-slate-600 text-xs font-medium flex items-center justify-center sm:justify-end space-x-2">
+        <span>ระบบรับสมัครเลือกตั้งผู้นำนักเรียน ปีการศึกษา <span data-cfg="academicYear">2570</span></span>
+        <a href="admin.html" class="text-slate-400 hover:text-slate-600 text-[11px] ml-1 transition" title="สำหรับผู้ดูแลระบบ/คณะกรรมการ" aria-label="ระบบหลังบ้าน"><i class="fa-solid fa-lock"></i></a>
       </div>
     </div>
   </footer>
