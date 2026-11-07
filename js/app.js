@@ -91,7 +91,7 @@ function applySiteConfig() {
       el.style.backgroundPosition = `${posX}% ${posY}%`;
       el.style.backgroundSize = zoom == 100 ? 'cover' : `${zoom}% auto`;
     } else {
-      el.style.backgroundPosition = `center center`;
+      el.style.backgroundPosition = `85% center`;
       el.style.backgroundSize = `cover`;
     }
   });

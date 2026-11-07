@@ -36,7 +36,7 @@
       background-color: #0b2444;
       background-image: url('assets/images/hero-bg-clean.jpg');
       background-size: cover;
-      background-position: center right;
+      background-position: 82% center;
       background-repeat: no-repeat;
       position: relative;
     }
@@ -53,45 +53,45 @@
 
   <!-- แบนเนอร์หัวเว็บไซต์โรงเรียน -->
   <header class="hero-banner-bg text-white border-b border-slate-800/30 shadow-md relative overflow-hidden">
-    <!-- แผ่น Dark Navy Gradient Overlay คลุมทับเพื่อให้อ่านตัวหนังสือชัดเจน 100% ทั้งบนมือถือและคอมพิวเตอร์ -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#06182c]/95 via-[#092240]/88 to-[#06182c]/96 sm:bg-gradient-to-r sm:from-[#092240]/95 sm:via-[#0b2444]/80 sm:to-transparent pointer-events-none z-0"></div>
+    <!-- แผ่น Gradient สไตล์คอมพิวเตอร์: ฝั่งซ้ายสีน้ำเงินเข้มสนิท ตัวหนังสือคมชัด ฝั่งขวาโปร่งใสโชว์ภาพอาคารเรียนและท้องฟ้าสดใส 100% -->
+    <div class="absolute inset-0 bg-gradient-to-r from-[#071d36] via-[#071d36] via-[58%] sm:via-[52%] to-transparent pointer-events-none z-0"></div>
 
-    <div class="relative z-10 max-w-6xl mx-auto py-5 sm:py-8 px-4 sm:px-8">
-      <div class="max-w-xl space-y-2.5 sm:space-y-3">
+    <div class="relative z-10 max-w-6xl mx-auto py-4 sm:py-8 px-3.5 sm:px-8">
+      <div class="max-w-[68%] sm:max-w-xl space-y-2 sm:space-y-3">
         <!-- แถวตราโรงเรียน + ชื่อโรงเรียน ไทย/อังกฤษ -->
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2.5 sm:space-x-3">
           <div class="flex items-center space-x-2 flex-shrink-0">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden flex-shrink-0 drop-shadow-md" data-cfg-logo>
+            <div class="w-11 h-11 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden flex-shrink-0 drop-shadow-md" data-cfg-logo>
               <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
             </div>
-            <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo2>
+            <div class="w-11 h-11 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo2>
               <!-- Logo 2 -->
             </div>
-            <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo3>
+            <div class="w-11 h-11 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo3>
               <!-- Logo 3 -->
             </div>
           </div>
-          <div class="border-l border-white/40 pl-3">
-            <div class="text-sm sm:text-lg font-bold tracking-wide text-white leading-tight drop-shadow-sm" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</div>
-            <div class="text-[9px] sm:text-[11px] tracking-[0.12em] text-slate-200 font-medium uppercase mt-0.5" data-cfg="schoolNameEn">WACHIRATHAMSATIT SCHOOL</div>
+          <div class="border-l border-white/40 pl-2.5 sm:pl-3">
+            <div class="text-xs sm:text-lg font-bold tracking-wide text-white leading-tight drop-shadow-sm" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</div>
+            <div class="text-[8px] sm:text-[11px] tracking-[0.1em] sm:tracking-[0.12em] text-slate-200 font-medium uppercase mt-0.5" data-cfg="schoolNameEn">WACHIRATHAMSATIT SCHOOL</div>
           </div>
         </div>
 
         <!-- หัวข้อใหญ่ คณะกรรมการการจัดการเลือกตั้ง ประธานสภานักเรียน -->
         <div class="pt-0.5">
-          <h1 class="text-base sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            คณะกรรมการการจัดการเลือกตั้ง<br>ประธานสภานักเรียน
+          <h1 class="text-[13px] sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-snug sm:leading-tight drop-shadow-md">
+            คณะกรรมการการจัดการเลือกตั้ง<br class="hidden sm:inline">ประธานสภานักเรียน
           </h1>
-          <p class="text-xs sm:text-base font-medium text-slate-100 mt-1 drop-shadow-sm">
+          <p class="text-[11px] sm:text-base font-medium text-slate-100 mt-0.5 sm:mt-1 drop-shadow-sm">
             และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
           </p>
-          <div class="w-12 sm:w-14 h-[3px] bg-amber-400 rounded-full mt-2 mb-2"></div>
+          <div class="w-10 sm:w-14 h-[2.5px] sm:h-[3px] bg-amber-400 rounded-full mt-1.5 sm:mt-2 mb-1.5 sm:mb-2"></div>
         </div>
 
         <!-- กลุ่มงานด้านล่างแบนเนอร์ -->
-        <div class="text-[10px] sm:text-xs text-slate-200/95 space-y-0.5 leading-relaxed drop-shadow-sm">
+        <div class="text-[9px] sm:text-xs text-slate-200/95 space-y-0.5 leading-snug sm:leading-relaxed drop-shadow-sm">
           <p data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</p>
-          <p>ระบบรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span></p>
+          <p class="hidden sm:block">ระบบรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span></p>
         </div>
       </div>
     </div>
@@ -100,36 +100,31 @@
   <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (ปรับขนาดสำหรับมือถือ) -->
   <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-6xl mx-auto px-2 sm:px-4 flex items-center justify-between gap-1">
-      <div class="flex items-center space-x-0.5 sm:space-x-1 overflow-x-auto no-scrollbar py-1" id="tabNavGroup" style="-webkit-overflow-scrolling: touch;">
+      <div class="flex items-center space-x-1 sm:space-x-1 overflow-x-auto no-scrollbar py-1" id="tabNavGroup" style="-webkit-overflow-scrolling: touch;">
         <button onclick="setActiveTab('home')" id="btnTabHome" class="portal-nav-btn active">
-          <i class="fa-solid fa-house mr-1 sm:mr-2 text-[#0f2942]"></i>
-          <span class="sm:hidden">หน้าแรก</span>
-          <span class="hidden sm:inline">หน้าแรก (ประกาศ & กำหนดการ)</span>
+          <i class="fa-solid fa-house mr-1.5 text-[#0f2942]"></i>
+          <span>หน้าแรก (ประกาศ & กำหนดการ)</span>
         </button>
         <button onclick="setActiveTab('rules')" id="btnTabRules" class="portal-nav-btn">
-          <i class="fa-regular fa-file-lines mr-1 sm:mr-2 text-slate-500"></i>
-          <span class="sm:hidden">ระเบียบการ</span>
-          <span class="hidden sm:inline">ระเบียบและเกณฑ์การรับสมัคร</span>
+          <i class="fa-regular fa-file-lines mr-1.5 text-slate-500"></i>
+          <span>ระเบียบและเกณฑ์การรับสมัคร</span>
         </button>
         <button onclick="setActiveTab('apply')" id="btnTabApply" class="portal-nav-btn">
-          <i class="fa-regular fa-pen-to-square mr-1 sm:mr-2 text-slate-500"></i>
-          <span class="sm:hidden">ยื่นใบสมัคร</span>
-          <span class="hidden sm:inline">ยื่นใบสมัครออนไลน์</span>
+          <i class="fa-regular fa-pen-to-square mr-1.5 text-slate-500"></i>
+          <span>ยื่นใบสมัครออนไลน์</span>
         </button>
         <button onclick="setActiveTab('status')" id="btnTabStatus" class="portal-nav-btn">
-          <i class="fa-solid fa-magnifying-glass mr-1 sm:mr-2 text-slate-500"></i>
-          <span class="sm:hidden">ตรวจสอบสถานะ</span>
-          <span class="hidden sm:inline">ตรวจสอบสถานะ & พิมพ์ใบสมัคร A4</span>
+          <i class="fa-solid fa-magnifying-glass mr-1.5 text-slate-500"></i>
+          <span>ตรวจสอบสถานะ & พิมพ์ใบสมัคร A4</span>
         </button>
         <a href="documents.html" class="portal-nav-btn">
-          <i class="fa-solid fa-download mr-1 sm:mr-2 text-slate-500"></i>
-          <span class="sm:hidden">เอกสาร</span>
-          <span class="hidden sm:inline">ดาวน์โหลดแบบฟอร์มเอกสาร</span>
+          <i class="fa-solid fa-download mr-1.5 text-slate-500"></i>
+          <span>ดาวน์โหลดแบบฟอร์มเอกสาร</span>
         </a>
       </div>
 
       <div class="py-1 flex-shrink-0 pl-1">
-        <a href="admin.html?tab=settings" class="bg-[#0e5a42] hover:bg-[#094230] text-white text-[11px] sm:text-xs px-2.5 sm:px-4 py-1.5 rounded-full font-semibold flex items-center shadow-sm transition whitespace-nowrap">
+        <a href="admin.html?tab=settings" class="bg-[#0e5a42] hover:bg-[#094230] text-white text-xs px-2.5 sm:px-4 py-1.5 rounded-full font-semibold flex items-center shadow-sm transition whitespace-nowrap">
           <i class="fa-solid fa-gear sm:mr-1.5"></i>
           <span class="hidden sm:inline">แก้ไขข้อมูลเว็บ (หลังบ้าน)</span>
           <span class="sm:hidden ml-1">หลังบ้าน</span>
