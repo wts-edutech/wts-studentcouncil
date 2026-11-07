@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ใบสมัครเลือกตั้งประธานสภานักเรียน | โรงเรียนวชิรธรรมสาธิต</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="flex flex-col min-h-screen font-formal bg-slate-100">
+
+  <!-- แถบสังกัด -->
+  <div class="bg-slate-900 text-slate-300 text-[11px] sm:text-xs py-1.5 px-3 sm:px-4 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="truncate max-w-[240px] sm:max-w-none"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • สพม.กทม.2</div>
+      <div class="text-[10px] sm:text-xs text-slate-400">ปีการศึกษา <span data-cfg="academicYear">2570</span></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="gov-header-bar text-white py-2.5 px-3 sm:px-6 shadow-sm">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <!-- แถบซ้าย: ปุ่มกลับ + ตรา + ชื่อแบบฟอร์ม -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+        <a href="index.html" class="bg-white/10 hover:bg-white/20 text-white rounded px-2.5 py-1 text-xs flex items-center flex-shrink-0 transition">
+          <i class="fa-solid fa-chevron-left mr-1"></i> หน้าหลัก
+        </a>
+        <div class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center overflow-hidden flex-shrink-0" data-cfg-logo>
+          <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน">
+        </div>
+        <div class="min-w-0 flex-1">
+          <h1 class="text-xs sm:text-base font-bold leading-tight truncate sm:whitespace-normal">ใบสมัครรับเลือกตั้งประธานสภานักเรียน</h1>
+          <p class="text-[10px] sm:text-xs text-slate-200 truncate"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • ปีการศึกษา <span data-cfg="academicYear">2570</span> (10 ตำแหน่ง)</p>
+        </div>
+      </div>
+
+      <!-- แถบขวา: ปุ่มทดสอบ -->
+      <div class="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-1.5 sm:pt-0 border-t border-white/10 sm:border-t-0">
+        <span class="text-[10px] text-amber-300 sm:hidden">
+          <i class="fa-solid fa-circle-check mr-1"></i>ระบบออนไลน์
+        </span>
+        <button type="button" onclick="fillDemoCouncilData()" class="text-[11px] sm:text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-2.5 sm:px-3 py-1 rounded border border-slate-600 transition flex items-center shadow-sm">
+          <i class="fa-solid fa-file-pen mr-1 text-amber-400"></i>
+          <span class="sm:hidden">ทดสอบกรอกข้อมูล</span>
+          <span class="hidden sm:inline">นำเข้าข้อมูลตัวอย่างเพื่อทดสอบ</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- คำชี้แจงทางการ -->
+  <div class="bg-blue-50 border-b border-blue-200 py-3 px-4 text-xs text-blue-950">
+    <div class="max-w-6xl mx-auto flex items-start space-x-2">
+      <i class="fa-solid fa-circle-info text-blue-700 mt-0.5"></i>
+      <div>
+        <strong>คำชี้แจงการกรอกข้อมูล:</strong> 
+        ให้ตัวแทนพรรคกรอกข้อมูลของผู้สมัครทั้ง 10 ตำแหน่งให้ครบถ้วนและตรงตามความเป็นจริง ผู้สมัครทุกคนต้องเป็นนักเรียนชั้น ม.4 มีคะแนนความประพฤติคงเหลือไม่ต่ำกว่า <span data-cfg="minBehaviorScore">80</span> คะแนน ผลการเรียนเฉลี่ยตามเกณฑ์ที่กำหนด และยินยอมรับข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2568</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Form -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
+    <form id="councilForm" onsubmit="handleSubmitCouncil(event)" class="space-y-6">
+
+      <!-- ส่วนที่ 1: ข้อมูลพรรค -->
+      <div class="gov-card">
+        <div class="gov-card-header">
+          <span>ส่วนที่ 1: ข้อมูลพรรคและครูที่ปรึกษาพรรค</span>
+          <span class="text-xs text-red-600">* ข้อมูลจำเป็น</span>
+        </div>
+
+        <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+          <div class="md:col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1">
+              ชื่อพรรค <span class="text-red-600">*</span>
+            </label>
+            <input type="text" id="partyName" required placeholder="เช่น พรรคก้าวใหม่ วชิรธรรม" class="gov-input w-full">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1">
+              สโลแกนหรือคำขวัญประจำพรรค <span class="text-red-600">*</span>
+            </label>
+            <input type="text" id="slogan" required placeholder="เช่น ร่วมคิด ร่วมทำ นำวชิรธรรมสู่อนาคต" class="gov-input w-full">
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">
+              ชื่อ-นามสกุล ครูที่ปรึกษาพรรค <span class="text-red-600">*</span>
+            </label>
+            <input type="text" id="advisorName" required placeholder="เช่น นายสมชาย ใจดี" class="gov-input w-full">
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">
+              เบอร์โทรศัพท์ติดต่อครูที่ปรึกษาพรรค <span class="text-red-600">*</span>
+            </label>
+            <input type="tel" id="advisorPhone" required placeholder="เช่น 081-234-5678" class="gov-input w-full">
+          </div>
+        </div>
+      </div>
+
+      <!-- ส่วนที่ 2: รายชื่อผู้สมัครครบทั้ง 10 ตำแหน่ง -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+          <h3 class="text-base font-bold text-[#16325c]">
+            ส่วนที่ 2: รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน (10 ตำแหน่ง)
+          </h3>
+          <span class="text-xs bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded font-semibold">
+            ครบทั้ง 10 ตำแหน่ง
+          </span>
+        </div>
+
+        <div id="positionsContainer" class="space-y-4">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- ส่วนที่ 3: ข้อตกลงของสภานักเรียน -->
+      <div class="gov-card">
+        <div class="gov-card-header">
+          <span>ส่วนที่ 3: ข้อตกลงและคำรับรองของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2568</span></span>
+        </div>
+
+        <div class="p-5 space-y-4 text-xs sm:text-sm">
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded text-slate-700 leading-relaxed space-y-1.5">
+            <p class="font-semibold text-slate-900">ข้าพเจ้าในนามตัวแทนพรรคและสมาชิกทุกคน ขอให้คำมั่นสัญญาและยอมรับข้อตกลงดังนี้:</p>
+            <ol class="list-decimal pl-5 space-y-1 text-xs">
+              <li>จะปฏิบัติหน้าที่ด้วยความซื่อสัตย์ เสียสละเพื่อส่วนรวม และรักษาเกียรติยศชื่อเสียงของ<span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></li>
+              <li>จะปฏิบัติตามกฎระเบียบ ข้อบังคับของโรงเรียน และระเบียบการเลือกตั้งอย่างเคร่งครัด</li>
+              <li>ข้อมูล ผลการเรียน คะแนนพฤติกรรม และเอกสารที่แนบมา เป็นความจริงทุกประการ หากตรวจพบว่ามีข้อความเท็จ ยินยอมให้ตัดสิทธิ์การสมัครทันที</li>
+              <li>ขอรับรองว่าสมาชิกทุกคนได้รับความยินยอมจากผู้ปกครองเป็นลายลักษณ์อักษรเรียบร้อยแล้ว</li>
+            </ol>
+          </div>
+
+          <label class="flex items-start space-x-2.5 cursor-pointer pt-1">
+            <input type="checkbox" id="globalAgreement" required class="mt-1 rounded text-[#16325c] border-slate-300">
+            <span class="font-semibold text-slate-800 text-xs sm:text-sm">
+              ข้าพเจ้าในนามตัวแทนพรรคและสมาชิกทุกคน ได้อ่าน ทำความเข้าใจ และ <strong class="text-[#16325c]">ยอมรับข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2568</span></strong> ทุกประการ
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ปุ่มบันทึก -->
+      <div class="flex items-center justify-between border-t border-slate-300 pt-4">
+        <a href="index.html" class="btn-gov-outline text-xs">
+          <i class="fa-solid fa-arrow-left mr-1.5"></i> ยกเลิก / กลับหน้าหลัก
+        </a>
+        <button type="submit" class="btn-gov-primary text-xs sm:text-sm">
+          <i class="fa-solid fa-paper-plane mr-1.5"></i> บันทึกและส่งใบสมัครสภานักเรียน
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- หน้าต่างแจ้งเตือนส่งใบสมัครสำเร็จ -->
+  <div id="successModal" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded border border-slate-300 max-w-md w-full p-6 shadow-lg text-center space-y-4">
+      <div class="w-12 h-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-2xl mx-auto">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <div>
+        <h4 class="text-base font-bold text-slate-900">บันทึกใบสมัครสำเร็จ</h4>
+        <p class="text-xs text-slate-600 mt-1">ระบบได้จัดเก็บข้อมูลใบสมัครเลือกตั้งประธานสภานักเรียนเรียบร้อยแล้ว</p>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 p-3 rounded text-left text-xs space-y-1">
+        <div><strong>รหัสใบสมัคร:</strong> <span id="modalAppId" class="font-mono text-[#16325c]"></span></div>
+        <div><strong>ชื่อพรรค:</strong> <span id="modalPartyName"></span></div>
+        <div><strong>สถานะ:</strong> <span class="badge-pending">รอการตรวจสอบคุณสมบัติ</span></div>
+      </div>
+
+      <div class="space-y-2 pt-2">
+        <a id="modalPrintBtn" href="#" target="_blank" class="btn-gov-primary w-full text-xs">
+          <i class="fa-solid fa-print mr-1.5"></i> พิมพ์แบบฟอร์มใบสมัครกระดาษ A4
+        </a>
+        <a href="index.html" class="btn-gov-outline w-full text-xs block text-center">
+          กลับสู่หน้าหลัก
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function renderPositionForms() {
+      const container = document.getElementById('positionsContainer');
+      const cfg = WDSDB.getConfig();
+      let html = '';
+
+      COUNCIL_POSITIONS.forEach((pos, idx) => {
+        const isLeader = pos.isLeader;
+        const num = idx + 1;
+        const minGpa = (pos.key === 'president' || pos.key === 'secretary') ? cfg.minGpaPresident : cfg.minGpaMember;
+        
+        html += `
+          <div class="gov-card">
+            <div class="gov-card-header">
+              <span class="text-xs sm:text-sm font-bold text-[#16325c]">
+                ลำดับที่ ${num}. ${pos.title}
+              </span>
+              <span class="text-xs text-slate-500">
+                (GPAX ขั้นต่ำ ${minGpa.toFixed(2)} | คะแนนพฤติกรรม ≥ ${cfg.minBehaviorScore})
+              </span>
+            </div>
+
+            <div class="p-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-start text-xs sm:text-sm">
+              <div class="md:col-span-3 flex flex-col items-center">
+                <div class="photo-box">
+                  <img id="preview_${pos.key}" src="" class="hidden w-full h-full object-cover">
+                  <div id="placeholder_${pos.key}" class="p-2 text-center text-slate-500 text-xs">
+                    <i class="fa-solid fa-user text-2xl text-slate-400 mb-1"></i>
+                    <div>รูปถ่าย 1.5 นิ้ว</div>
+                    <div class="text-[10px] text-slate-400">ชุดนักเรียน</div>
+                  </div>
+                </div>
+                <input type="file" id="file_${pos.key}" accept="image/*" class="hidden" onchange="previewMemberPhoto(this, '${pos.key}')">
+                <input type="hidden" id="photoData_${pos.key}" value="">
+                <button type="button" onclick="document.getElementById('file_${pos.key}').click()" 
+                  class="btn-gov-outline text-xs mt-2 py-1 px-2.5">
+                  <i class="fa-solid fa-camera mr-1"></i> แนบไฟล์รูป
+                </button>
+              </div>
+
+              <div class="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                <div class="sm:col-span-2 md:col-span-3">
+                  <label class="block font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล <span class="text-red-600">*</span></label>
+                  <input type="text" id="name_${pos.key}" required placeholder="เช่น นายธนกฤต ศิริวัฒนา" class="gov-input w-full">
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">ชั้น ม.4 ห้อง <span class="text-red-600">*</span></label>
+                  <select id="room_${pos.key}" required class="gov-select w-full">
+                    <option value="">เลือกห้อง</option>
+                    ${[1,2,3,4,5,6,7,8,9,10,11,12,13,14].map(r => `<option value="${r}">ม.4/${r}</option>`).join('')}
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">เลขประจำตัวนักเรียน <span class="text-red-600">*</span></label>
+                  <input type="text" id="studentId_${pos.key}" required pattern="[0-9]{5}" maxlength="5" placeholder="45xxx" class="gov-input w-full">
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">คะแนนพฤติกรรมคงเหลือ <span class="text-red-600">*</span></label>
+                  <input type="number" id="behaviorScore_${pos.key}" required min="${cfg.minBehaviorScore}" max="100" placeholder="${cfg.minBehaviorScore}-100" class="gov-input w-full">
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">เกรดเฉลี่ย ม.4 เทอม 1 <span class="text-red-600">*</span></label>
+                  <input type="number" step="0.01" min="${minGpa}" max="4.00" id="gpax_${pos.key}" required placeholder=">= ${minGpa}" class="gov-input w-full">
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ <span class="text-red-600">*</span></label>
+                  <input type="tel" id="phone_${pos.key}" required placeholder="เช่น 089-111-2233" class="gov-input w-full">
+                </div>
+
+                <div class="sm:col-span-2 md:col-span-3 pt-1">
+                  <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="agreed_${pos.key}" required class="rounded text-[#16325c] border-slate-300">
+                    <span class="text-xs text-slate-700">
+                      ผู้สมัครตำแหน่งนี้ ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.councilAgreementYear}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function previewMemberPhoto(input, key) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById(`preview_${key}`);
+          const placeholder = document.getElementById(`placeholder_${key}`);
+          const hiddenInput = document.getElementById(`photoData_${key}`);
+          
+          img.src = e.target.result;
+          img.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+          hiddenInput.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleSubmitCouncil(e) {
+      e.preventDefault();
+      const cfg = WDSDB.getConfig();
+
+      const partyName = document.getElementById('partyName').value.trim();
+      const slogan = document.getElementById('slogan').value.trim();
+      const advisorName = document.getElementById('advisorName').value.trim();
+      const advisorPhone = document.getElementById('advisorPhone').value.trim();
+
+      const membersData = {};
+
+      for (let pos of COUNCIL_POSITIONS) {
+        const key = pos.key;
+        const name = document.getElementById(`name_${key}`).value.trim();
+        const room = document.getElementById(`room_${key}`).value;
+        const studentId = document.getElementById(`studentId_${key}`).value.trim();
+        const behaviorScore = parseFloat(document.getElementById(`behaviorScore_${key}`).value);
+        const gpax = document.getElementById(`gpax_${key}`).value.trim();
+        const phone = document.getElementById(`phone_${key}`).value.trim();
+        const photo = document.getElementById(`photoData_${key}`).value;
+        const agreed = document.getElementById(`agreed_${key}`).checked;
+        const minGpa = (key === 'president' || key === 'secretary') ? cfg.minGpaPresident : cfg.minGpaMember;
+
+        if (behaviorScore < cfg.minBehaviorScore) {
+          alert(`คะแนนพฤติกรรมของ ${pos.title} (${name}) ต่ำกว่าเกณฑ์ที่กำหนด (ต้องไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน)`);
+          return;
+        }
+
+        if (parseFloat(gpax) < minGpa) {
+          alert(`เกรดเฉลี่ยของ ${pos.title} (${name}) ต่ำกว่าเกณฑ์ที่กำหนด (ต้องไม่ต่ำกว่า ${minGpa})`);
+          return;
+        }
+
+        membersData[key] = {
+          fullname: name,
+          grade: 'ม.4',
+          room: room,
+          studentId: studentId,
+          behaviorScore: behaviorScore,
+          gpax: gpax,
+          phone: phone,
+          photo: photo || THAI_STUDENT_MALE_PHOTO,
+          agreed: agreed
+        };
+      }
+
+      const payload = {
+        partyName,
+        slogan,
+        advisorName,
+        advisorPhone,
+        agreementAccepted: true,
+        agreementYear: cfg.councilAgreementYear,
+        members: membersData
+      };
+
+      const result = WDSDB.saveCouncilApplication(payload);
+
+      document.getElementById('modalAppId').innerText = result.id;
+      document.getElementById('modalPartyName').innerText = result.partyName;
+      document.getElementById('modalPrintBtn').href = `print-application.html?type=council&id=${result.id}`;
+      document.getElementById('successModal').classList.remove('hidden');
+
+      showToast('บันทึกใบสมัครเรียบร้อยแล้ว', 'success');
+    }
+
+    function fillDemoCouncilData() {
+      document.getElementById('partyName').value = 'พรรคพัฒนาวชิรธรรม';
+      document.getElementById('slogan').value = 'สร้างสรรค์ พัฒนา พาสู่อนาคตที่ดีกว่า';
+      document.getElementById('advisorName').value = 'นายอภิสิทธิ์ มั่นคง';
+      document.getElementById('advisorPhone').value = '081-998-8776';
+
+      const sampleNames = [
+        'นายชินภัทร รัตนเวช',
+        'นางสาวญาณิศา บุญโชติ',
+        'นายธีรเดช เจริญสุข',
+        'นางสาวกนกพร พิทักษ์ธรรม',
+        'นายพงศ์พิสิฐ พรประเสริฐ',
+        'นางสาววรรณิดา ดำรงศิลป์',
+        'นายจักรภัทร สุขสมบูรณ์',
+        'นางสาวปาริชาต รุ่งอรุณ',
+        'นายธนพล ศิริวัฒนา',
+        'นางสาวสุภัทรา ชาญชัย'
+      ];
+
+      COUNCIL_POSITIONS.forEach((pos, idx) => {
+        const key = pos.key;
+        document.getElementById(`name_${key}`).value = sampleNames[idx];
+        document.getElementById(`room_${key}`).value = (idx % 6 + 1).toString();
+        document.getElementById(`studentId_${key}`).value = (45200 + idx).toString();
+        document.getElementById(`behaviorScore_${key}`).value = (90 + (idx % 10)).toString();
+        document.getElementById(`gpax_${key}`).value = (3.20 + (idx * 0.08)).toFixed(2);
+        document.getElementById(`phone_${key}`).value = `089-${String(200+idx).padStart(3,'0')}-1234`;
+        document.getElementById(`agreed_${key}`).checked = true;
+        
+        const photo = (idx % 2 === 0) ? THAI_STUDENT_MALE_PHOTO : THAI_STUDENT_FEMALE_PHOTO;
+        document.getElementById(`photoData_${key}`).value = photo;
+        
+        const img = document.getElementById(`preview_${key}`);
+        const placeholder = document.getElementById(`placeholder_${key}`);
+        img.src = photo;
+        img.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      });
+
+      document.getElementById('globalAgreement').checked = true;
+      showToast('นำเข้าข้อมูลตัวอย่าง 10 ตำแหน่งเรียบร้อยแล้ว', 'info');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderPositionForms();
+    });
+  </script>
+</body>
+</html>

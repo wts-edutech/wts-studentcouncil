@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ใบสมัครเลือกตั้งประธานคณะสี | โรงเรียนวชิรธรรมสาธิต</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="flex flex-col min-h-screen font-formal bg-slate-100">
+
+  <!-- แถบสังกัด -->
+  <div class="bg-slate-900 text-slate-300 text-[11px] sm:text-xs py-1.5 px-3 sm:px-4 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="truncate max-w-[240px] sm:max-w-none"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • สพม.กทม.2</div>
+      <div class="text-[10px] sm:text-xs text-slate-400">ปีการศึกษา <span data-cfg="academicYear">2570</span></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="gov-header-bar text-white py-2.5 px-3 sm:px-6 shadow-sm">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <!-- แถบซ้าย: ปุ่มกลับ + ตรา + ชื่อแบบฟอร์ม -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+        <a href="index.html" class="bg-white/10 hover:bg-white/20 text-white rounded px-2.5 py-1 text-xs flex items-center flex-shrink-0 transition">
+          <i class="fa-solid fa-chevron-left mr-1"></i> หน้าหลัก
+        </a>
+        <div class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center overflow-hidden flex-shrink-0" data-cfg-logo>
+          <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน">
+        </div>
+        <div class="min-w-0 flex-1">
+          <h1 class="text-xs sm:text-base font-bold leading-tight truncate sm:whitespace-normal">ใบสมัครรับเลือกตั้งประธานคณะสี</h1>
+          <p class="text-[10px] sm:text-xs text-slate-200 truncate"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • ปีการศึกษา <span data-cfg="academicYear">2570</span> (5 คณะสี)</p>
+        </div>
+      </div>
+
+      <!-- แถบขวา: ปุ่มทดสอบ -->
+      <div class="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-1.5 sm:pt-0 border-t border-white/10 sm:border-t-0">
+        <span class="text-[10px] text-amber-300 sm:hidden">
+          <i class="fa-solid fa-circle-check mr-1"></i>ระบบออนไลน์
+        </span>
+        <button type="button" onclick="fillDemoColorData()" class="text-[11px] sm:text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-2.5 sm:px-3 py-1 rounded border border-slate-600 transition flex items-center shadow-sm">
+          <i class="fa-solid fa-file-pen mr-1 text-amber-400"></i>
+          <span class="sm:hidden">ทดสอบกรอกข้อมูล</span>
+          <span class="hidden sm:inline">นำเข้าข้อมูลตัวอย่างเพื่อทดสอบ</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- คำชี้แจงทางการ -->
+  <div class="bg-amber-50 border-b border-amber-200 py-3 px-4 text-xs text-amber-950">
+    <div class="max-w-6xl mx-auto flex items-start space-x-2">
+      <i class="fa-solid fa-circle-info text-amber-700 mt-0.5"></i>
+      <div>
+        <strong>คำชี้แจงการรับสมัครประธานคณะสี:</strong> 
+        ผู้สมัครต้องเป็นนักเรียนชั้น ม.4 ที่มีชื่อสังกัดในคณะสีที่สมัคร มีเกรดเฉลี่ยสะสม ม.4 เทอม 1 ไม่ต่ำกว่า <span data-cfg="minGpaMember">2.50</span> คะแนนพฤติกรรมไม่ต่ำกว่า <span data-cfg="minBehaviorScore">80</span> คะแนน และยินยอมรับข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Form -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
+    <form id="colorForm" onsubmit="handleSubmitColor(event)" class="space-y-6">
+
+      <!-- ส่วนที่ 1: เลือกคณะสี & ข้อมูลพรรค/ทีมงาน -->
+      <div class="gov-card">
+        <div class="gov-card-header">
+          <span>ส่วนที่ 1: เลือกคณะสีและข้อมูลทีมงาน</span>
+          <span class="text-xs text-red-600">* ข้อมูลจำเป็น</span>
+        </div>
+
+        <div class="p-5 space-y-4 text-xs sm:text-sm">
+          <div>
+            <label class="block font-semibold text-slate-800 mb-2">
+              เลือกคณะสีที่ประสงค์ลงสมัคร <span class="text-red-600">*</span>
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              
+              <label class="border border-slate-300 p-3 rounded cursor-pointer hover:bg-blue-50 transition text-center flex flex-col items-center">
+                <input type="radio" name="colorHouse" value="anchan" required class="mb-1 text-blue-600">
+                <span class="font-bold text-blue-800">1. คณะสีอัญชัน</span>
+                <span class="text-[11px] text-slate-500">สีน้ำเงิน</span>
+              </label>
+
+              <label class="border border-slate-300 p-3 rounded cursor-pointer hover:bg-yellow-50 transition text-center flex flex-col items-center">
+                <input type="radio" name="colorHouse" value="nontri" required class="mb-1 text-yellow-600">
+                <span class="font-bold text-yellow-800">2. คณะสีนนทรี</span>
+                <span class="text-[11px] text-slate-500">สีเหลือง</span>
+              </label>
+
+              <label class="border border-slate-300 p-3 rounded cursor-pointer hover:bg-red-50 transition text-center flex flex-col items-center">
+                <input type="radio" name="colorHouse" value="parichat" required class="mb-1 text-red-600">
+                <span class="font-bold text-red-800">3. คณะปาริชาต</span>
+                <span class="text-[11px] text-slate-500">สีแดง</span>
+              </label>
+
+              <label class="border border-slate-300 p-3 rounded cursor-pointer hover:bg-orange-50 transition text-center flex flex-col items-center">
+                <input type="radio" name="colorHouse" value="euang" required class="mb-1 text-orange-600">
+                <span class="font-bold text-orange-800">4. คณะสีเอื้องช่อแสด</span>
+                <span class="text-[11px] text-slate-500">สีแสด</span>
+              </label>
+
+              <label class="border border-slate-300 p-3 rounded cursor-pointer hover:bg-green-50 transition text-center flex flex-col items-center">
+                <input type="radio" name="colorHouse" value="inthanin" required class="mb-1 text-green-600">
+                <span class="font-bold text-green-800">5. คณะสีอินทนิล</span>
+                <span class="text-[11px] text-slate-500">สีเขียว</span>
+              </label>
+
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div class="md:col-span-2">
+              <label class="block font-semibold text-slate-700 mb-1">
+                ชื่อพรรค <span class="text-red-600">*</span>
+              </label>
+              <input type="text" id="colorPartyName" required placeholder="เช่น พรรคก้าวใหม่ วชิรธรรม" class="gov-input w-full">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block font-semibold text-slate-700 mb-1">
+                สโลแกนหรือคำขวัญประจำพรรค <span class="text-red-600">*</span>
+              </label>
+              <input type="text" id="colorSlogan" required placeholder="เช่น ร่วมคิด ร่วมทำ นำวชิรธรรมสู่อนาคต" class="gov-input w-full">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">
+                ชื่อ-นามสกุล ครูที่ปรึกษาพรรค <span class="text-red-600">*</span>
+              </label>
+              <input type="text" id="advisorName" required placeholder="เช่น นายสมชาย ใจดี" class="gov-input w-full">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">
+                เบอร์โทรศัพท์ติดต่อครูที่ปรึกษาพรรค <span class="text-red-600">*</span>
+              </label>
+              <input type="tel" id="advisorPhone" required placeholder="เช่น 081-234-5678" class="gov-input w-full">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ส่วนที่ 2: ข้อมูลผู้ลงสมัครประธานคณะสี -->
+      <div class="gov-card">
+        <div class="gov-card-header">
+          <span>ส่วนที่ 2: ข้อมูลผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)</span>
+          <span class="text-xs bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-semibold">ประธานคณะสี</span>
+        </div>
+
+        <div class="p-5 grid grid-cols-1 md:grid-cols-12 gap-4 items-start text-xs sm:text-sm">
+          <!-- Photo -->
+          <div class="md:col-span-3 flex flex-col items-center">
+            <div class="photo-box">
+              <img id="preview_leader" src="" class="hidden w-full h-full object-cover">
+              <div id="placeholder_leader" class="p-2 text-center text-slate-500 text-xs">
+                <i class="fa-solid fa-user text-2xl text-slate-400 mb-1"></i>
+                <div>รูปถ่าย 1.5 นิ้ว</div>
+                <div class="text-[10px] text-slate-400">ชุดนักเรียน</div>
+              </div>
+            </div>
+            <input type="file" id="file_leader" accept="image/*" class="hidden" onchange="previewLeaderPhoto(this)">
+            <input type="hidden" id="photoData_leader" value="">
+            <button type="button" onclick="document.getElementById('file_leader').click()" 
+              class="btn-gov-outline text-xs mt-2 py-1 px-2.5">
+              <i class="fa-solid fa-camera mr-1"></i> แนบไฟล์รูป
+            </button>
+          </div>
+
+          <!-- Inputs -->
+          <div class="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div class="sm:col-span-2 md:col-span-3">
+              <label class="block font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล (ผู้ลงสมัครประธานคณะสี) <span class="text-red-600">*</span></label>
+              <input type="text" id="leaderName" required placeholder="เช่น นายธีรภัทร ชาญวิชัย" class="gov-input w-full">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ชั้น ม.4 ห้อง <span class="text-red-600">*</span></label>
+              <select id="leaderRoom" required class="gov-select w-full">
+                <option value="">เลือกห้อง</option>
+                <option value="1">ม.4/1</option>
+                <option value="2">ม.4/2</option>
+                <option value="3">ม.4/3</option>
+                <option value="4">ม.4/4</option>
+                <option value="5">ม.4/5</option>
+                <option value="6">ม.4/6</option>
+                <option value="7">ม.4/7</option>
+                <option value="8">ม.4/8</option>
+                <option value="9">ม.4/9</option>
+                <option value="10">ม.4/10</option>
+                <option value="11">ม.4/11</option>
+                <option value="12">ม.4/12</option>
+                <option value="13">ม.4/13</option>
+                <option value="14">ม.4/14</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">เลขประจำตัวนักเรียน <span class="text-red-600">*</span></label>
+              <input type="text" id="leaderStudentId" required pattern="[0-9]{5}" maxlength="5" placeholder="45xxx" class="gov-input w-full">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">คะแนนพฤติกรรมคงเหลือ <span class="text-red-600">*</span></label>
+              <input type="number" id="leaderBehaviorScore" required placeholder="80-100" class="gov-input w-full">
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">เกรดเฉลี่ย ม.4 เทอม 1 <span class="text-red-600">*</span></label>
+              <input type="number" step="0.01" id="leaderGpax" required placeholder=">= 2.50" class="gov-input w-full">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ <span class="text-red-600">*</span></label>
+              <input type="tel" id="leaderPhone" required placeholder="เช่น 081-333-4455" class="gov-input w-full">
+            </div>
+
+            <div class="sm:col-span-2 md:col-span-3 pt-1">
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" id="leaderAgreed" required class="rounded text-[#16325c] border-slate-300">
+                <span class="text-xs text-slate-700">
+                  ผู้ลงสมัครประธานคณะสี ยินยอมและยอมรับข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ส่วนที่ 3: สมาชิกคณะสี 9 ตำแหน่ง (เหมือนสมัครประธานสภานักเรียน) -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+          <h3 class="text-base font-bold text-[#16325c]">
+            ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน (9 ตำแหน่ง)
+          </h3>
+          <span class="text-xs bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded font-semibold">
+            รองประธาน 1 • ฝ่ายทั่วไป 2 • ประชาสัมพันธ์ 2 • สันทนาการ 3 • เลขานุการ 1
+          </span>
+        </div>
+
+        <div id="teamMembersList" class="space-y-4">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- ส่วนที่ 4: ข้อตกลงของสภานักเรียน -->
+      <div class="gov-card">
+        <div class="gov-card-header">
+          <span>ส่วนที่ 4: ข้อตกลงและคำรับรองของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></span>
+        </div>
+
+        <div class="p-5 space-y-4 text-xs sm:text-sm">
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded text-slate-700 leading-relaxed space-y-1.5">
+            <p class="font-semibold text-slate-900">ข้าพเจ้าในนามผู้สมัครรับเลือกตั้งประธานคณะสีและคณะทำงาน ขอให้คำมั่นสัญญาและยอมรับข้อตกลงดังนี้:</p>
+            <ol class="list-decimal pl-5 space-y-1 text-xs">
+              <li>จะปฏิบัติหน้าที่ด้วยความซื่อสัตย์ เสียสละ และมุ่งมั่นสร้างความสามัคคีในคณะสีและโรงเรียนอย่างเต็มความสามารถ</li>
+              <li>จะประสานงานร่วมกับสภานักเรียน ครูที่ปรึกษาคณะสี และกลุ่มบริหารกิจการนักเรียนอย่างเคร่งครัด</li>
+              <li>ขอรับรองว่าข้อมูลทั้งหมดเป็นความจริง และได้รับความยินยอมจากผู้ปกครองเรียบร้อยแล้ว</li>
+            </ol>
+          </div>
+
+          <label class="flex items-start space-x-2.5 cursor-pointer pt-1">
+            <input type="checkbox" id="globalAgreementColor" required class="mt-1 rounded text-[#16325c] border-slate-300">
+            <span class="font-semibold text-slate-800 text-xs sm:text-sm">
+              ข้าพเจ้าและสมาชิกทุกคนในทีม ได้อ่าน ทำความเข้าใจ และ <strong class="text-[#16325c]">ยอมรับข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></strong> ทุกประการ
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center justify-between border-t border-slate-300 pt-4">
+        <a href="index.html" class="btn-gov-outline text-xs">
+          <i class="fa-solid fa-arrow-left mr-1.5"></i> ยกเลิก / กลับหน้าหลัก
+        </a>
+        <button type="submit" class="btn-gov-gold text-xs sm:text-sm">
+          <i class="fa-solid fa-paper-plane mr-1.5"></i> บันทึกและส่งใบสมัครคณะสี
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- Modal แจ้งผลการส่งใบสมัคร -->
+  <div id="successModalColor" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded border border-slate-300 max-w-md w-full p-6 shadow-lg text-center space-y-4">
+      <div class="w-12 h-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-2xl mx-auto">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <div>
+        <h4 class="text-base font-bold text-slate-900">บันทึกใบสมัครคณะสีสำเร็จ</h4>
+        <p class="text-xs text-slate-600 mt-1">ระบบได้จัดเก็บข้อมูลใบสมัครเลือกตั้งประธานคณะสีเรียบร้อยแล้ว</p>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 p-3 rounded text-left text-xs space-y-1">
+        <div><strong>รหัสใบสมัคร:</strong> <span id="modalColorAppId" class="font-mono text-[#16325c]"></span></div>
+        <div><strong>คณะสี:</strong> <span id="modalColorName"></span></div>
+        <div><strong>ชื่อทีม/พรรค:</strong> <span id="modalColorParty"></span></div>
+      </div>
+
+      <div class="space-y-2 pt-2">
+        <a id="modalColorPrintBtn" href="#" target="_blank" class="btn-gov-primary w-full text-xs">
+          <i class="fa-solid fa-print mr-1.5"></i> พิมพ์แบบฟอร์มใบสมัครกระดาษ A4
+        </a>
+        <a href="index.html" class="btn-gov-outline w-full text-xs block text-center">
+          กลับสู่หน้าหลัก
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function previewLeaderPhoto(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('preview_leader');
+          const placeholder = document.getElementById('placeholder_leader');
+          const hiddenInput = document.getElementById('photoData_leader');
+          
+          img.src = e.target.result;
+          img.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+          hiddenInput.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function previewColorMemberPhoto(input, key) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById(`preview_${key}`);
+          const placeholder = document.getElementById(`placeholder_${key}`);
+          const hiddenInput = document.getElementById(`photoData_${key}`);
+          
+          img.src = e.target.result;
+          img.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+          hiddenInput.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function renderColorMemberForms() {
+      const container = document.getElementById('teamMembersList');
+      if (!container) return;
+      const cfg = WDSDB.getConfig();
+      const minGpa = cfg.minGpaMember || 2.50;
+      let html = '';
+
+      COLOR_MEMBER_POSITIONS.forEach((pos, idx) => {
+        const num = idx + 1;
+        html += `
+          <div class="gov-card">
+            <div class="gov-card-header">
+              <span class="text-xs sm:text-sm font-bold text-[#16325c]">
+                ลำดับที่ ${num}. ${pos.title}
+              </span>
+              <span class="text-xs text-slate-500">
+                (GPAX ขั้นต่ำ ${Number(minGpa).toFixed(2)} | คะแนนพฤติกรรม ≥ ${cfg.minBehaviorScore})
+              </span>
+            </div>
+
+            <div class="p-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-start text-xs sm:text-sm">
+              <!-- Photo -->
+              <div class="md:col-span-3 flex flex-col items-center">
+                <div class="photo-box">
+                  <img id="preview_${pos.key}" src="" class="hidden w-full h-full object-cover">
+                  <div id="placeholder_${pos.key}" class="p-2 text-center text-slate-500 text-xs">
+                    <i class="fa-solid fa-user text-2xl text-slate-400 mb-1"></i>
+                    <div>รูปถ่าย 1.5 นิ้ว</div>
+                    <div class="text-[10px] text-slate-400">ชุดนักเรียน</div>
+                  </div>
+                </div>
+                <input type="file" id="file_${pos.key}" accept="image/*" class="hidden" onchange="previewColorMemberPhoto(this, '${pos.key}')">
+                <input type="hidden" id="photoData_${pos.key}" value="">
+                <button type="button" onclick="document.getElementById('file_${pos.key}').click()" 
+                  class="btn-gov-outline text-xs mt-2 py-1 px-2.5">
+                  <i class="fa-solid fa-camera mr-1"></i> แนบไฟล์รูป
+                </button>
+              </div>
+
+              <!-- Inputs -->
+              <div class="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                <div class="sm:col-span-2 md:col-span-3">
+                  <label class="block font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล (${pos.title}) <span class="text-red-600">*</span></label>
+                  <input type="text" id="name_${pos.key}" required placeholder="เช่น นายธนกฤต ศิริวัฒนา" class="gov-input w-full">
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">ชั้น ม.4 ห้อง <span class="text-red-600">*</span></label>
+                  <select id="room_${pos.key}" required class="gov-select w-full">
+                    <option value="">เลือกห้อง</option>
+                    ${[1,2,3,4,5,6,7,8,9,10,11,12,13,14].map(r => `<option value="${r}">ม.4/${r}</option>`).join('')}
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">เลขประจำตัวนักเรียน <span class="text-red-600">*</span></label>
+                  <input type="text" id="studentId_${pos.key}" required pattern="[0-9]{5}" maxlength="5" placeholder="45xxx" class="gov-input w-full">
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">คะแนนพฤติกรรมคงเหลือ <span class="text-red-600">*</span></label>
+                  <input type="number" id="behaviorScore_${pos.key}" required min="${cfg.minBehaviorScore}" max="100" placeholder="${cfg.minBehaviorScore}-100" class="gov-input w-full">
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">เกรดเฉลี่ย ม.4 เทอม 1 <span class="text-red-600">*</span></label>
+                  <input type="number" step="0.01" min="${minGpa}" max="4.00" id="gpax_${pos.key}" required placeholder=">= ${minGpa}" class="gov-input w-full">
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ <span class="text-red-600">*</span></label>
+                  <input type="tel" id="phone_${pos.key}" required placeholder="เช่น 089-111-2233" class="gov-input w-full">
+                </div>
+
+                <div class="sm:col-span-2 md:col-span-3 pt-1">
+                  <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="agreed_${pos.key}" required class="rounded text-[#16325c] border-slate-300">
+                    <span class="text-xs text-slate-700">
+                      ผู้สมัครตำแหน่งนี้ ยินยอมและยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.colorAgreementYear}
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function handleSubmitColor(e) {
+      e.preventDefault();
+      const cfg = WDSDB.getConfig();
+
+      const selectedColor = document.querySelector('input[name="colorHouse"]:checked');
+      if (!selectedColor) {
+        alert('กรุณาเลือกคณะสีที่ต้องการลงสมัคร');
+        return;
+      }
+
+      const colorId = selectedColor.value;
+      const partyName = document.getElementById('colorPartyName').value.trim();
+      const slogan = document.getElementById('colorSlogan').value.trim();
+      const advisorName = document.getElementById('advisorName').value.trim();
+      const advisorPhone = document.getElementById('advisorPhone').value.trim();
+
+      const leaderName = document.getElementById('leaderName').value.trim();
+      const leaderRoom = document.getElementById('leaderRoom').value;
+      const leaderStudentId = document.getElementById('leaderStudentId').value.trim();
+      const leaderBehaviorScore = parseFloat(document.getElementById('leaderBehaviorScore').value);
+      const leaderGpax = document.getElementById('leaderGpax').value.trim();
+      const leaderPhone = document.getElementById('leaderPhone').value.trim();
+      const leaderPhoto = document.getElementById('photoData_leader').value;
+
+      if (leaderBehaviorScore < cfg.minBehaviorScore) {
+        alert(`คะแนนพฤติกรรมของผู้สมัครประธานคณะสีต่ำกว่าเกณฑ์ (ต้องไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน)`);
+        return;
+      }
+
+      if (parseFloat(leaderGpax) < cfg.minGpaMember) {
+        alert(`เกรดเฉลี่ยของผู้สมัครประธานคณะสีต่ำกว่าเกณฑ์ (ต้องไม่ต่ำกว่า ${cfg.minGpaMember})`);
+        return;
+      }
+
+      const members = [];
+      for (let pos of COLOR_MEMBER_POSITIONS) {
+        const key = pos.key;
+        const name = document.getElementById(`name_${key}`).value.trim();
+        const room = document.getElementById(`room_${key}`).value;
+        const studentId = document.getElementById(`studentId_${key}`).value.trim();
+        const behaviorScore = parseFloat(document.getElementById(`behaviorScore_${key}`).value);
+        const gpax = document.getElementById(`gpax_${key}`).value.trim();
+        const phone = document.getElementById(`phone_${key}`).value.trim();
+        const photo = document.getElementById(`photoData_${key}`).value;
+        const agreed = document.getElementById(`agreed_${key}`).checked;
+
+        if (behaviorScore < cfg.minBehaviorScore) {
+          alert(`คะแนนพฤติกรรมของ ${pos.title} (${name}) ต่ำกว่าเกณฑ์ที่กำหนด (ต้องไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน)`);
+          return;
+        }
+
+        if (parseFloat(gpax) < cfg.minGpaMember) {
+          alert(`เกรดเฉลี่ยของ ${pos.title} (${name}) ต่ำกว่าเกณฑ์ที่กำหนด (ต้องไม่ต่ำกว่า ${cfg.minGpaMember})`);
+          return;
+        }
+
+        members.push({
+          key,
+          role: pos.title,
+          fullname: name,
+          grade: 'ม.4',
+          room,
+          studentId,
+          behaviorScore,
+          gpax,
+          phone,
+          photo: photo || THAI_STUDENT_FEMALE_PHOTO,
+          agreed
+        });
+      }
+
+      const payload = {
+        colorId,
+        partyName,
+        slogan,
+        advisorName,
+        advisorPhone,
+        agreementAccepted: true,
+        agreementYear: cfg.colorAgreementYear,
+        leader: {
+          fullname: leaderName,
+          grade: 'ม.4',
+          room: leaderRoom,
+          studentId: leaderStudentId,
+          behaviorScore: leaderBehaviorScore,
+          gpax: leaderGpax,
+          phone: leaderPhone,
+          photo: leaderPhoto || THAI_STUDENT_MALE_PHOTO,
+          agreed: true
+        },
+        members
+      };
+
+      const result = WDSDB.saveColorApplication(payload);
+
+      document.getElementById('modalColorAppId').innerText = result.id;
+      document.getElementById('modalColorName').innerText = result.colorName;
+      document.getElementById('modalColorParty').innerText = result.partyName;
+      document.getElementById('modalColorPrintBtn').href = `print-application.html?type=color&id=${result.id}`;
+      document.getElementById('successModalColor').classList.remove('hidden');
+
+      showToast('บันทึกใบสมัครคณะสีเรียบร้อยแล้ว', 'success');
+    }
+
+    function fillDemoColorData() {
+      const radio = document.querySelector('input[value="anchan"]');
+      if (radio) radio.checked = true;
+
+      document.getElementById('colorPartyName').value = 'พรรคอัญชันก้าวไกล';
+      document.getElementById('colorSlogan').value = 'ร่วมคิด ร่วมทำ นำอัญชันสู่ความสามัคคี';
+      document.getElementById('advisorName').value = 'นางวันทนา วงศ์วาน';
+      document.getElementById('advisorPhone').value = '082-345-6789';
+
+      document.getElementById('leaderName').value = 'นายธีรภัทร ชาญวิชัย';
+      document.getElementById('leaderRoom').value = '2';
+      document.getElementById('leaderStudentId').value = '45112';
+      document.getElementById('leaderBehaviorScore').value = '96';
+      document.getElementById('leaderGpax').value = '3.55';
+      document.getElementById('leaderPhone').value = '081-333-4455';
+      document.getElementById('leaderAgreed').checked = true;
+
+      document.getElementById('photoData_leader').value = THAI_STUDENT_MALE_PHOTO;
+      const img = document.getElementById('preview_leader');
+      const placeholder = document.getElementById('placeholder_leader');
+      img.src = THAI_STUDENT_MALE_PHOTO;
+      img.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+
+      const sampleColorNames = [
+        'นางสาวพิมพ์มาดา วงศ์ษา',
+        'นายชินวัฒน์ สว่างจิต',
+        'นางสาวปรียาพร เกียรติกูล',
+        'นายณัฐพงศ์ วัฒนากูล',
+        'นางสาวกมลชนก ศรีสุวรรณ',
+        'นายศุภณัฐ ทองดี',
+        'นางสาววรัญญา เพ็ชรรัตน์',
+        'นายกิตติภพ รัตนชัย',
+        'นางสาวพิชญาภา อัศวกุล'
+      ];
+
+      COLOR_MEMBER_POSITIONS.forEach((pos, idx) => {
+        const key = pos.key;
+        document.getElementById(`name_${key}`).value = sampleColorNames[idx];
+        document.getElementById(`room_${key}`).value = ((idx % 14) + 1).toString();
+        document.getElementById(`studentId_${key}`).value = (45301 + idx).toString();
+        document.getElementById(`behaviorScore_${key}`).value = (90 + (idx % 9)).toString();
+        document.getElementById(`gpax_${key}`).value = (3.15 + (idx * 0.06)).toFixed(2);
+        document.getElementById(`phone_${key}`).value = `081-${String(310 + idx).padStart(3, '0')}-5678`;
+        document.getElementById(`agreed_${key}`).checked = true;
+
+        const photo = (idx % 2 === 0) ? THAI_STUDENT_FEMALE_PHOTO : THAI_STUDENT_MALE_PHOTO;
+        document.getElementById(`photoData_${key}`).value = photo;
+
+        const mImg = document.getElementById(`preview_${key}`);
+        const mPlaceholder = document.getElementById(`placeholder_${key}`);
+        mImg.src = photo;
+        mImg.classList.remove('hidden');
+        mPlaceholder.classList.add('hidden');
+      });
+
+      document.getElementById('globalAgreementColor').checked = true;
+      showToast('นำเข้าข้อมูลตัวอย่างคณะสีอัญชันครบทั้งทีมเรียบร้อยแล้ว', 'info');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const cfg = WDSDB.getConfig();
+      const bInput = document.getElementById('leaderBehaviorScore');
+      if (bInput) {
+        bInput.min = cfg.minBehaviorScore;
+        bInput.placeholder = `${cfg.minBehaviorScore}-100`;
+      }
+      const gInput = document.getElementById('leaderGpax');
+      if (gInput) {
+        gInput.min = cfg.minGpaMember;
+        gInput.placeholder = `>= ${cfg.minGpaMember}`;
+      }
+      renderColorMemberForms();
+    });
+  </script>
+</body>
+</html>

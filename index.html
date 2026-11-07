@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบรับสมัครเลือกตั้งประธานสภานักเรียนและประธานคณะสี | โรงเรียนวชิรธรรมสาธิต</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .portal-nav-btn {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 3px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.15s ease-in-out;
+      white-space: nowrap;
+    }
+    .portal-nav-btn:hover {
+      color: #064e3b;
+      background-color: #f8fafc;
+    }
+    .portal-nav-btn.active {
+      color: #0f2942;
+      font-weight: 700;
+      border-bottom-color: #065f46;
+      background-color: #ffffff;
+    }
+    .hero-banner-bg {
+      background-color: #0b2444;
+      background-image: url('assets/images/hero-bg-clean.jpg');
+      background-size: cover;
+      background-position: center right;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-formal bg-[#f9fbfa] relative">
+
+  <!-- แบนเนอร์หัวเว็บไซต์โรงเรียน -->
+  <header class="hero-banner-bg text-white border-b border-slate-800/30 shadow-md relative overflow-hidden">
+    <!-- แผ่น Dark Navy Gradient Overlay คลุมทับเพื่อให้อ่านตัวหนังสือชัดเจน 100% ทั้งบนมือถือและคอมพิวเตอร์ -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#06182c]/95 via-[#092240]/88 to-[#06182c]/96 sm:bg-gradient-to-r sm:from-[#092240]/95 sm:via-[#0b2444]/80 sm:to-transparent pointer-events-none z-0"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto py-5 sm:py-8 px-4 sm:px-8">
+      <div class="max-w-xl space-y-2.5 sm:space-y-3">
+        <!-- แถวตราโรงเรียน + ชื่อโรงเรียน ไทย/อังกฤษ -->
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-2 flex-shrink-0">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden flex-shrink-0 drop-shadow-md" data-cfg-logo>
+              <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
+            </div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo2>
+              <!-- Logo 2 -->
+            </div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden hidden" data-cfg-logo3>
+              <!-- Logo 3 -->
+            </div>
+          </div>
+          <div class="border-l border-white/40 pl-3">
+            <div class="text-sm sm:text-lg font-bold tracking-wide text-white leading-tight drop-shadow-sm" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</div>
+            <div class="text-[9px] sm:text-[11px] tracking-[0.12em] text-slate-200 font-medium uppercase mt-0.5" data-cfg="schoolNameEn">WACHIRATHAMSATIT SCHOOL</div>
+          </div>
+        </div>
+
+        <!-- หัวข้อใหญ่ คณะกรรมการการจัดการเลือกตั้ง ประธานสภานักเรียน -->
+        <div class="pt-0.5">
+          <h1 class="text-base sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
+            คณะกรรมการการจัดการเลือกตั้ง<br>ประธานสภานักเรียน
+          </h1>
+          <p class="text-xs sm:text-base font-medium text-slate-100 mt-1 drop-shadow-sm">
+            และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
+          </p>
+          <div class="w-12 sm:w-14 h-[3px] bg-amber-400 rounded-full mt-2 mb-2"></div>
+        </div>
+
+        <!-- กลุ่มงานด้านล่างแบนเนอร์ -->
+        <div class="text-[10px] sm:text-xs text-slate-200/95 space-y-0.5 leading-relaxed drop-shadow-sm">
+          <p data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</p>
+          <p>ระบบรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span></p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (ปรับขนาดสำหรับมือถือ) -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-2 sm:px-4 flex items-center justify-between gap-1">
+      <div class="flex items-center space-x-0.5 sm:space-x-1 overflow-x-auto no-scrollbar py-1" id="tabNavGroup" style="-webkit-overflow-scrolling: touch;">
+        <button onclick="setActiveTab('home')" id="btnTabHome" class="portal-nav-btn active">
+          <i class="fa-solid fa-house mr-1 sm:mr-2 text-[#0f2942]"></i>
+          <span class="sm:hidden">หน้าแรก</span>
+          <span class="hidden sm:inline">หน้าแรก (ประกาศ & กำหนดการ)</span>
+        </button>
+        <button onclick="setActiveTab('rules')" id="btnTabRules" class="portal-nav-btn">
+          <i class="fa-regular fa-file-lines mr-1 sm:mr-2 text-slate-500"></i>
+          <span class="sm:hidden">ระเบียบการ</span>
+          <span class="hidden sm:inline">ระเบียบและเกณฑ์การรับสมัคร</span>
+        </button>
+        <button onclick="setActiveTab('apply')" id="btnTabApply" class="portal-nav-btn">
+          <i class="fa-regular fa-pen-to-square mr-1 sm:mr-2 text-slate-500"></i>
+          <span class="sm:hidden">ยื่นใบสมัคร</span>
+          <span class="hidden sm:inline">ยื่นใบสมัครออนไลน์</span>
+        </button>
+        <button onclick="setActiveTab('status')" id="btnTabStatus" class="portal-nav-btn">
+          <i class="fa-solid fa-magnifying-glass mr-1 sm:mr-2 text-slate-500"></i>
+          <span class="sm:hidden">ตรวจสอบสถานะ</span>
+          <span class="hidden sm:inline">ตรวจสอบสถานะ & พิมพ์ใบสมัคร A4</span>
+        </button>
+        <a href="documents.html" class="portal-nav-btn">
+          <i class="fa-solid fa-download mr-1 sm:mr-2 text-slate-500"></i>
+          <span class="sm:hidden">เอกสาร</span>
+          <span class="hidden sm:inline">ดาวน์โหลดแบบฟอร์มเอกสาร</span>
+        </a>
+      </div>
+
+      <div class="py-1 flex-shrink-0 pl-1">
+        <a href="admin.html?tab=settings" class="bg-[#0e5a42] hover:bg-[#094230] text-white text-[11px] sm:text-xs px-2.5 sm:px-4 py-1.5 rounded-full font-semibold flex items-center shadow-sm transition whitespace-nowrap">
+          <i class="fa-solid fa-gear sm:mr-1.5"></i>
+          <span class="hidden sm:inline">แก้ไขข้อมูลเว็บ (หลังบ้าน)</span>
+          <span class="sm:hidden ml-1">หลังบ้าน</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- แถบประกาศสำคัญทรงแคปซูล (อัปเดตตามที่แก้ไขในหลังบ้านได้ทันที) -->
+  <div class="max-w-6xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 w-full">
+    <div class="bg-[#f8efe0] border border-[#ebd9be] rounded-2xl sm:rounded-full py-2 px-3 sm:px-4 text-xs sm:text-[13px] text-slate-800 flex items-start sm:items-center space-x-2 sm:space-x-2.5 shadow-sm">
+      <i class="fa-solid fa-bullhorn text-amber-700 text-sm mt-0.5 sm:mt-0 flex-shrink-0"></i>
+      <span class="bg-[#155e43] text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-3 py-0.5 rounded-full flex-shrink-0">ประกาศ</span>
+      <span class="text-slate-300 hidden sm:inline">|</span>
+      <span class="font-medium text-slate-800 leading-snug break-words" data-cfg="announcementText">เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569</span>
+    </div>
+  </div>
+
+  <!-- เนื้อหาหลัก -->
+  <main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 py-6 w-full">
+
+    <!-- TAB 1: หน้าแรก (ภาพรวม กำหนดการ ไทม์ไลน์ 5 การ์ดแนวนอน) -->
+    <div id="contentHome" class="space-y-6">
+      
+      <div class="py-2 space-y-5">
+        <!-- หัวข้อกำหนดการ พร้อมไอคอนปฏิทินสีเขียวอ่อน -->
+        <div class="flex items-start space-x-3.5">
+          <div class="w-12 h-12 rounded-full bg-[#e6f3ed] text-[#156548] flex items-center justify-center flex-shrink-0 text-xl shadow-sm border border-[#cce6da] mt-0.5">
+            <i class="fa-regular fa-calendar-check"></i>
+          </div>
+          <div class="space-y-1">
+            <h2 class="text-lg sm:text-xl font-extrabold text-[#0f2942]">
+              กำหนดการเลือกตั้งผู้นำนักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
+            </h2>
+            <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+              <span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> ขอประกาศกำหนดการรับสมัครและจัดการเลือกตั้งประธานสภานักเรียน และประธานคณะสี (5 คณะสี) ประจำปีการศึกษา <span data-cfg="academicYear">2570</span> เพื่อให้นักเรียนและครูที่ปรึกษาเตรียมความพร้อมในการดำเนินการตามลำดับขั้นตอน ดังนี้
+            </p>
+          </div>
+        </div>
+
+        <!-- การ์ด 5 ขั้นตอนเรียงแนวนอนพร้อมเส้นเชื่อม -->
+        <div id="timelineCardsGrid" class="flex flex-col lg:flex-row items-stretch justify-between gap-3 lg:gap-0 pt-1">
+          <!-- เรนเดอร์ด้วย app.js -->
+        </div>
+
+        <!-- แถบปุ่มด้านล่างกำหนดการ -->
+        <div class="pt-3 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+          <div class="text-xs text-slate-600">
+            * ก่อนกรอกใบสมัคร กรุณาอ่านระเบียบคุณสมบัติ และเตรียมเอกสารยินยอมจากผู้ปกครอง
+          </div>
+          <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
+            <button onclick="setActiveTab('rules')" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-4 sm:px-5 py-2.5 sm:py-2 text-xs font-semibold flex items-center justify-center shadow-sm transition">
+              <i class="fa-regular fa-file-lines mr-1.5 sm:mr-2 text-slate-600"></i> อ่านระเบียบการ
+            </button>
+            <button onclick="setActiveTab('apply')" class="bg-[#0e4838] hover:bg-[#093529] text-white rounded-full px-4 sm:px-5 py-2.5 sm:py-2 text-xs font-semibold flex items-center justify-center shadow-sm transition">
+              <i class="fa-solid fa-paper-plane mr-1.5 sm:mr-2 text-xs"></i> ไปที่หน้ากรอกใบสมัคร
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: ระเบียบและเกณฑ์การรับสมัคร -->
+    <div id="contentRules" class="space-y-6 hidden">
+      <div class="gov-card">
+        <div class="gov-card-header">
+          <span data-cfg="rulesHeaderTitle">ประกาศและคุณสมบัติของผู้สมัครรับเลือกตั้ง ประจำปีการศึกษา 2570</span>
+          <span class="text-xs text-slate-500" data-cfg="rulesHeaderSubtitle">ข้อบังคับกลุ่มบริหารกิจการนักเรียน</span>
+        </div>
+
+        <div class="p-5 space-y-6 text-xs sm:text-sm text-slate-700">
+          
+          <div class="border border-slate-300 rounded p-4 bg-white space-y-2">
+            <h3 class="font-bold text-sm text-[#16325c] border-b border-slate-200 pb-2" data-cfg="rulesSection1Title">
+              หมวดที่ 1: เกณฑ์คุณสมบัติผู้สมัครประธานสภานักเรียน
+            </h3>
+            <ol id="rulesCouncilOl" class="list-decimal pl-5 space-y-1.5 leading-relaxed">
+              <li><strong>ระดับชั้น:</strong> ผู้สมัครทุกคนต้องเป็นนักเรียนที่กำลังศึกษาอยู่ในระดับชั้นมัธยมศึกษาปีที่ 4 <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></li>
+              <li><strong>โครงสร้างพรรค:</strong> ต้องจัดตั้งเป็นพรรคการเมือง จำนวน 10 ตำแหน่งครบถ้วน (ประธาน, รองประธาน, วิชาการ 2 คน, สันทนาการ 2 คน, ฝ่ายทั่วไป, ประชาสัมพันธ์ 2 คน, เลขานุการ)</li>
+              <li><strong>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):</strong> ตำแหน่งประธานสภานักเรียน และเลขานุการ ไม่ต่ำกว่า <strong data-cfg="minGpaPresident">2.75</strong> | ตำแหน่งอื่นๆ ไม่ต่ำกว่า <strong data-cfg="minGpaMember">2.50</strong></li>
+              <li><strong>คะแนนความประพฤติ (คะแนนพฤติกรรม):</strong> ผู้สมัครทุกตำแหน่งต้องมีคะแนนความประพฤติคงเหลือ ณ วันสมัคร ไม่ต่ำกว่า <strong data-cfg="minBehaviorScore">80</strong> คะแนน (จากคะแนนเต็ม 100)</li>
+              <li><strong>ครูที่ปรึกษา:</strong> ต้องมีข้าราชการครูหรือครูอัตราจ้าง<span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> อย่างน้อย 1 ท่าน ลงนามรับรองเป็นครูที่ปรึกษาพรรค</li>
+              <li><strong>ความยินยอม:</strong> ต้องได้รับความยินยอมเป็นลายลักษณ์อักษรจากผู้ปกครอง และยอมรับ <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2568</span></strong></li>
+            </ol>
+          </div>
+
+          <div class="border border-slate-300 rounded p-4 bg-white space-y-2">
+            <h3 class="font-bold text-sm text-[#16325c] border-b border-slate-200 pb-2" data-cfg="rulesSection2Title">
+              หมวดที่ 2: เกณฑ์คุณสมบัติผู้สมัครประธานคณะสี (5 คณะสี)
+            </h3>
+            <ol id="rulesColorOl" class="list-decimal pl-5 space-y-1.5 leading-relaxed">
+              <li><strong>สังกัดคณะสี:</strong> ผู้สมัครต้องเป็นนักเรียนชั้น ม.4 ที่มีชื่อสังกัดในคณะสีที่สมัคร ได้แก่ คณะสีอัญชัน (น้ำเงิน), คณะสีนนทรี (เหลือง), คณะปาริชาต (แดง), คณะสีเอื้องช่อแสด (แสด), คณะสีอินทนิล (เขียว)</li>
+              <li><strong>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):</strong> ไม่ต่ำกว่า <strong data-cfg="minGpaMember">2.50</strong></li>
+              <li><strong>คะแนนความประพฤติ:</strong> มีคะแนนคงเหลือ ณ วันสมัคร ไม่ต่ำกว่า <strong data-cfg="minBehaviorScore">80</strong> คะแนน</li>
+              <li><strong>ครูที่ปรึกษา:</strong> มีครูที่ปรึกษาประจำคณะสีลงนามรับรองคุณสมบัติและความประพฤติ</li>
+              <li><strong>ความยินยอม:</strong> ได้รับความยินยอมจากผู้ปกครอง และยอมรับ <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></strong></li>
+            </ol>
+          </div>
+
+          <div class="text-right pt-2">
+            <button onclick="setActiveTab('apply')" class="btn-gov-primary text-xs">
+              <i class="fa-solid fa-arrow-right mr-1.5"></i> เข้าใจระเบียบแล้ว ไปยังหน้ากรอกใบสมัคร
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: ยื่นใบสมัครออนไลน์ -->
+    <div id="contentApply" class="space-y-6 hidden">
+      <div class="border-b border-slate-300 pb-2">
+        <h2 class="text-base sm:text-lg font-bold text-[#16325c]" data-cfg="applyHeaderTitle">
+          เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570
+        </h2>
+        <p class="text-xs text-slate-600" data-cfg="applyHeaderSubtitle">กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- สภานักเรียน -->
+        <div class="gov-card flex flex-col justify-between">
+          <div class="gov-card-header">
+            <span class="font-bold text-[#16325c]">
+              <i class="fa-solid fa-landmark mr-1.5 text-[#16325c]"></i> <span data-cfg="applyCouncilTitle">1. สมัครเลือกตั้งประธานสภานักเรียน</span>
+            </span>
+            <span class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-semibold" data-cfg="applyCouncilBadge">ทีมพรรค 10 คน</span>
+          </div>
+
+          <div class="p-5 space-y-3 text-xs sm:text-sm text-slate-700">
+            <p class="leading-relaxed" data-cfg="applyCouncilDesc">
+              สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่รวมกลุ่มจัดตั้งพรรคการเมือง จำนวน 10 ตำแหน่ง (ประธาน, รองประธาน, วิชาการ 2 คน, สันทนาการ 2 คน, ฝ่ายทั่วไป, ประชาสัมพันธ์ 2 คน, เลขานุการ)
+            </p>
+
+            <div id="applyCouncilBulletsBox" class="bg-slate-50 border border-slate-200 p-3 rounded text-xs text-slate-600 space-y-1">
+              <div>• GPAX ม.4 เทอม 1: ประธาน/เลขา ≥ <span data-cfg="minGpaPresident">2.75</span>, ตำแหน่งอื่น ≥ <span data-cfg="minGpaMember">2.50</span></div>
+              <div>• คะแนนพฤติกรรมคงเหลือไม่ต่ำกว่า <span data-cfg="minBehaviorScore">80</span> คะแนน</div>
+              <div>• แนบไฟล์รูปถ่ายนักเรียนขนาด 1.5 นิ้ว ทุกตำแหน่ง</div>
+              <div>• ข้อตกลงสภานักเรียน ปีการศึกษา <span data-cfg="councilAgreementYear">2568</span></div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-50 border-t border-slate-200">
+            <a href="apply-council.html" class="btn-gov-primary w-full text-center text-xs sm:text-sm">
+              <i class="fa-solid fa-file-pen mr-1.5"></i> <span data-cfg="applyCouncilBtnText">เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- ประธานคณะสี -->
+        <div class="gov-card flex flex-col justify-between">
+          <div class="gov-card-header">
+            <span class="font-bold text-[#16325c]">
+              <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> <span data-cfg="applyColorTitle">2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)</span>
+            </span>
+            <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold" data-cfg="applyColorBadge">5 คณะสี</span>
+          </div>
+
+          <div class="p-5 space-y-3 text-xs sm:text-sm text-slate-700">
+            <p class="leading-relaxed" data-cfg="applyColorDesc">
+              สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่ประสงค์ลงสมัครเป็นผู้นำคณะสี เพื่อขับเคลื่อนกิจกรรมกีฬาภายใน กิจกรรมเชียร์ และสร้างความสามัคคี
+            </p>
+
+            <div id="applyColorTagsBox" class="flex flex-wrap gap-1.5 text-xs py-1">
+              <span class="px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">1. คณะสีอัญชัน</span>
+              <span class="px-2 py-0.5 bg-yellow-50 text-yellow-800 border border-yellow-300 rounded">2. คณะสีนนทรี</span>
+              <span class="px-2 py-0.5 bg-red-50 text-red-800 border border-red-200 rounded">3. คณะปาริชาต</span>
+              <span class="px-2 py-0.5 bg-orange-50 text-orange-800 border border-orange-200 rounded">4. คณะสีเอื้องช่อแสด</span>
+              <span class="px-2 py-0.5 bg-green-50 text-green-800 border border-green-200 rounded">5. คณะสีอินทนิล</span>
+            </div>
+
+            <div id="applyColorBulletsBox" class="bg-slate-50 border border-slate-200 p-3 rounded text-xs text-slate-600 space-y-1">
+              <div>• นักเรียนชั้น ม.4 ที่สังกัดในคณะสีนั้นๆ</div>
+              <div>• GPAX ม.4 เทอม 1 ไม่ต่ำกว่า <span data-cfg="minGpaMember">2.50</span></div>
+              <div>• คะแนนพฤติกรรมคงเหลือไม่ต่ำกว่า <span data-cfg="minBehaviorScore">80</span> คะแนน</div>
+              <div>• ข้อตกลงสภานักเรียน ปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-50 border-t border-slate-200">
+            <a href="apply-color.html" class="btn-gov-gold w-full text-center text-xs sm:text-sm">
+              <i class="fa-solid fa-file-pen mr-1.5"></i> <span data-cfg="applyColorBtnText">เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: ตรวจสอบสถานะและพิมพ์ใบสมัคร A4 -->
+    <div id="contentStatus" class="space-y-6 hidden">
+      <div class="gov-card">
+        <div class="gov-card-header">
+          <span>ตรวจสอบผลการสมัคร และ พิมพ์แบบฟอร์มใบสมัคร A4 ทางการ</span>
+          <a href="print-application.html?blank=1" target="_blank" class="text-xs text-[#16325c] hover:underline flex items-center">
+            <i class="fa-solid fa-file-lines mr-1"></i> พิมพ์แบบฟอร์มเปล่าเพื่อเขียนด้วยมือ
+          </a>
+        </div>
+
+        <div class="p-5 space-y-4">
+          <div class="max-w-2xl text-xs sm:text-sm">
+            <label class="block font-semibold text-slate-700 mb-1">
+              ค้นหาข้อมูลใบสมัคร: กรอกเลขประจำตัวนักเรียน 5 หลัก หรือ ชื่อ-นามสกุล หรือ ชื่อพรรค
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="text" id="searchInput" placeholder="เช่น 45101 หรือ ธนกฤต หรือ ก้าวใหม่" class="gov-input flex-grow">
+              <button onclick="handleSearch()" class="btn-gov-primary text-xs w-full sm:w-auto">
+                <i class="fa-solid fa-search mr-1.5"></i> ค้นหาใบสมัคร
+              </button>
+            </div>
+          </div>
+
+          <div id="searchResults" class="mt-4 space-y-3">
+            <div class="border border-slate-200 rounded p-4 bg-slate-50 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-[#16325c]">[สภานักเรียน]</span>
+                  <span class="font-semibold text-slate-800">พรรคก้าวใหม่ วชิรธรรม</span>
+                  <span class="badge-approved">ผ่านคุณสมบัติ (หมายเลข 1)</span>
+                </div>
+                <div class="text-slate-600 mt-1">
+                  ผู้ลงสมัครประธาน: นายธนกฤต ศิริวัฒนา (ชั้น ม.4/1 เลขประจำตัว 45101) | รหัส: COUNCIL-2570-001
+                </div>
+              </div>
+              <div>
+                <a href="print-application.html?type=council&id=COUNCIL-2570-001" target="_blank" class="btn-gov-outline text-xs">
+                  <i class="fa-solid fa-print mr-1"></i> พิมพ์ใบสมัคร A4
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ส่วนข้อมูลสหวิทยาเขตนวสิรินครินทร์ แผนที่ และที่ตั้งโรงเรียน -->
+  <section id="schoolNetworkAndMapSection"></section>
+
+  <!-- ส่วนท้ายเว็บไซต์ -->
+  <footer class="bg-[#eef3f1] text-slate-600 text-xs py-4 border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div>
+        <p class="font-bold text-slate-800"><span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></p>
+        <p class="text-slate-600 text-[11px] mt-0.5"><span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span> | โทรศัพท์: <span data-cfg="schoolPhone">0990499557</span></p>
+      </div>
+      <div class="text-slate-600 text-xs font-medium">
+        ระบบรับสมัครเลือกตั้งผู้นำนักเรียน ปีการศึกษา <span data-cfg="academicYear">2570</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function setActiveTab(tabName) {
+      const tabs = ['home', 'rules', 'apply', 'status'];
+      tabs.forEach(t => {
+        const content = document.getElementById('content' + t.charAt(0).toUpperCase() + t.slice(1));
+        const btn = document.getElementById('btnTab' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (content && btn) {
+          if (t === tabName) {
+            content.classList.remove('hidden');
+            btn.classList.add('active');
+          } else {
+            content.classList.add('hidden');
+            btn.classList.remove('active');
+          }
+        }
+      });
+      const mapSec = document.getElementById('schoolNetworkAndMapSection');
+      if (mapSec) {
+        if (tabName === 'home') {
+          mapSec.classList.remove('hidden');
+        } else {
+          mapSec.classList.add('hidden');
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      const container = document.getElementById('searchResults');
+      
+      if (!q) {
+        showToast('กรุณากรอกเลขประจำตัว หรือชื่อผู้สมัคร หรือชื่อพรรค', 'error');
+        return;
+      }
+
+      const results = WDSDB.searchStudent(q);
+
+      if (results.length === 0) {
+        container.innerHTML = `
+          <div class="border border-slate-200 p-4 bg-slate-50 text-center text-slate-600 text-xs rounded">
+            ไม่พบข้อมูลใบสมัครที่ตรงกับคำค้นหา "${q}" กรุณาตรวจสอบข้อมูลอีกครั้ง
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      results.forEach(res => {
+        const isApproved = res.status === 'approved';
+        const statusBadge = isApproved 
+          ? `<span class="badge-approved">ผ่านคุณสมบัติ ${res.candidateNumber ? '(หมายเลข ' + res.candidateNumber + ')' : ''}</span>`
+          : (res.status === 'pending' 
+              ? `<span class="badge-pending">รอการตรวจสอบคุณสมบัติ</span>` 
+              : `<span class="badge-rejected">เอกสารต้องแก้ไข</span>`);
+
+        const printUrl = `print-application.html?type=${res.type}&id=${res.id}`;
+
+        html += `
+          <div class="border border-slate-200 rounded p-4 bg-white flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="font-bold text-[#16325c]">[${res.typeLabel}]</span>
+                <span class="font-semibold text-slate-800">${res.partyName || res.colorName}</span>
+                ${statusBadge}
+              </div>
+              <div class="text-slate-600 mt-1">
+                ${res.matchedRole}: ${res.student.fullname} (ม.${res.student.grade || '4'}/${res.student.room} เลขประจำตัว: ${res.student.studentId}) | รหัส: ${res.id}
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5">ยื่นใบสมัครเมื่อ: ${res.submittedAt}</div>
+            </div>
+            <div>
+              <a href="${printUrl}" target="_blank" class="btn-gov-outline text-xs">
+                <i class="fa-solid fa-print mr-1"></i> พิมพ์ใบสมัคร A4
+              </a>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      showToast(`พบข้อมูลใบสมัครจำนวน ${results.length} รายการ`, 'info');
+    }
+  </script>
+</body>
+</html>
