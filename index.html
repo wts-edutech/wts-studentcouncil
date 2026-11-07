@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/style.css">
   <style>
     .portal-nav-btn {
-      padding: 12px 16px;
+      padding: 10px 12px;
       font-size: 13px;
       font-weight: 600;
       color: #475569;
@@ -21,6 +21,12 @@
       align-items: center;
       transition: all 0.15s ease-in-out;
       white-space: nowrap;
+    }
+    @media (min-width: 1280px) {
+      .portal-nav-btn {
+        padding: 11px 14px;
+        font-size: 13.5px;
+      }
     }
     .portal-nav-btn:hover {
       color: #064e3b;
@@ -97,17 +103,17 @@
     </div>
   </header>
 
-  <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (ปรับขนาดสำหรับมือถือ) -->
+  <!-- แถบเมนูนำทางหลักแบบแท็บงานบริการ (พอดีทุกขนาดหน้าจอ ไม่มีเลื่อน) -->
   <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-6xl mx-auto px-2 sm:px-4 flex items-center justify-between gap-1">
-      <div class="flex items-center space-x-1 sm:space-x-1 overflow-x-auto no-scrollbar py-1" id="tabNavGroup" style="-webkit-overflow-scrolling: touch;">
+      <div class="flex items-center space-x-0.5 sm:space-x-1 overflow-x-auto lg:overflow-x-visible no-scrollbar py-1" id="tabNavGroup" style="-webkit-overflow-scrolling: touch;">
         <button onclick="setActiveTab('home')" id="btnTabHome" class="portal-nav-btn active">
           <i class="fa-solid fa-house mr-1.5 text-[#0f2942]"></i>
-          <span>หน้าแรก (ประกาศ & กำหนดการ)</span>
+          <span>หน้าแรก</span>
         </button>
         <button onclick="setActiveTab('rules')" id="btnTabRules" class="portal-nav-btn">
           <i class="fa-regular fa-file-lines mr-1.5 text-slate-500"></i>
-          <span>ระเบียบและเกณฑ์การรับสมัคร</span>
+          <span>ระเบียบการรับสมัคร</span>
         </button>
         <button onclick="setActiveTab('apply')" id="btnTabApply" class="portal-nav-btn">
           <i class="fa-regular fa-pen-to-square mr-1.5 text-slate-500"></i>
@@ -115,19 +121,19 @@
         </button>
         <button onclick="setActiveTab('status')" id="btnTabStatus" class="portal-nav-btn">
           <i class="fa-solid fa-magnifying-glass mr-1.5 text-slate-500"></i>
-          <span>ตรวจสอบสถานะ & พิมพ์ใบสมัคร A4</span>
+          <span>ตรวจสอบสถานะ & พิมพ์ A4</span>
         </button>
         <a href="documents.html" class="portal-nav-btn">
           <i class="fa-solid fa-download mr-1.5 text-slate-500"></i>
-          <span>ดาวน์โหลดแบบฟอร์มเอกสาร</span>
+          <span>ดาวน์โหลดเอกสาร</span>
         </a>
       </div>
 
       <div class="py-1 flex-shrink-0 pl-1">
-        <a href="admin.html?tab=settings" class="bg-[#0e5a42] hover:bg-[#094230] text-white text-xs px-2.5 sm:px-4 py-1.5 rounded-full font-semibold flex items-center shadow-sm transition whitespace-nowrap">
+        <a href="admin.html?tab=settings" class="bg-[#0e5a42] hover:bg-[#094230] text-white text-xs px-3 sm:px-4 py-1.5 rounded-full font-semibold flex items-center shadow-sm transition whitespace-nowrap">
           <i class="fa-solid fa-gear sm:mr-1.5"></i>
-          <span class="hidden sm:inline">แก้ไขข้อมูลเว็บ (หลังบ้าน)</span>
-          <span class="sm:hidden ml-1">หลังบ้าน</span>
+          <span class="hidden md:inline">แก้ไขข้อมูลเว็บ (หลังบ้าน)</span>
+          <span class="md:hidden ml-1">หลังบ้าน</span>
         </a>
       </div>
     </div>
