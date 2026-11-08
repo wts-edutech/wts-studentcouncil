@@ -469,13 +469,66 @@ button, a, input, select, textarea {
   }
 }
 
-/* ปรับแต่งสำหรับจอใหญ่และ Wide Screen (>= 1440px) */
-@media (min-width: 1440px) {
+/* ========================================================
+   DESKTOP & WIDESCREEN ADAPTATION (สำหรับหน้าจอคอมพิวเตอร์)
+   * โค้ดส่วนนี้มีผลเฉพาะจอคอมพิวเตอร์และแล็ปท็อป (>= 1024px)
+   * ไม่กระทบขนาดและการแสดงผลเดิมบนมือถือ 100%
+   ======================================================== */
+
+/* จอแล็ปท็อป (Laptop >= 1024px) */
+@media (min-width: 1024px) {
   .max-w-6xl {
-    max-width: 1240px;
+    max-width: 1180px;
   }
   .max-w-7xl {
-    max-width: 1400px;
+    max-width: 1320px;
+  }
+  .gov-card {
+    border-radius: 8px;
+  }
+  .gov-input, .gov-select {
+    font-size: 15px;
+    padding: 9px 14px;
+  }
+  .btn-gov-primary, .btn-gov-gold, .btn-gov-outline {
+    font-size: 15px;
+    padding: 10px 22px;
+  }
+  .formal-table {
+    font-size: 15px;
+  }
+  .formal-table th, .formal-table td {
+    padding: 10px 14px;
+  }
+}
+
+/* จอคอมพิวเตอร์มาตรฐาน (Desktop >= 1280px) */
+@media (min-width: 1280px) {
+  .max-w-6xl {
+    max-width: 1320px;
+  }
+  .max-w-7xl {
+    max-width: 1460px;
+  }
+}
+
+/* จอคอมพิวเตอร์ Full HD กว้างพิเศษ (Widescreen >= 1440px) */
+@media (min-width: 1440px) {
+  .max-w-6xl {
+    max-width: 1460px;
+  }
+  .max-w-7xl {
+    max-width: 1600px;
+  }
+}
+
+/* จอคอมพิวเตอร์ 1920x1080 และหน้าจอกว้างระดับมืออาชีพ (>= 1600px - 1920px) */
+@media (min-width: 1600px) {
+  .max-w-6xl {
+    max-width: 1580px;
+  }
+  .max-w-7xl {
+    max-width: 1720px;
   }
 }
 
