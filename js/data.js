@@ -134,6 +134,7 @@ const DEFAULT_DOCUMENTS_LIST = [
 const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/hero-bg-clean.jpg';
 
 const DEFAULT_SITE_CONFIG = {
+  configVersion: '2570.2',
   schoolName: 'โรงเรียนวชิรธรรมสาธิต',
   schoolNameEn: 'WACHIRATHAMSATIT SCHOOL',
   schoolLogo: DEFAULT_SCHOOL_LOGO,
@@ -577,8 +578,27 @@ const DEFAULT_COLOR_APPLICATIONS = [
 // Helper Functions
 const WDSDB = {
   init() {
-    if (!localStorage.getItem(STORAGE_KEYS.CONFIG)) {
-      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(DEFAULT_SITE_CONFIG));
+    const CURRENT_CONFIG_VERSION = '2570.2';
+    const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
+    if (!stored) {
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
+    } else {
+      try {
+        const parsed = JSON.parse(stored);
+        if (!parsed.configVersion || parsed.configVersion !== CURRENT_CONFIG_VERSION) {
+          // หากเป็นเวอร์ชันเก่า ให้อัปเดตข้อมูลระเบียบการล่าสุดให้ตรงกับระบบหลักทันที
+          const updated = {
+            ...DEFAULT_SITE_CONFIG,
+            ...parsed,
+            rulesCouncilList: DEFAULT_COUNCIL_RULES,
+            rulesColorList: DEFAULT_COLOR_RULES,
+            configVersion: CURRENT_CONFIG_VERSION
+          };
+          localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(updated));
+        }
+      } catch (e) {
+        localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
+      }
     }
     const storedCouncil = localStorage.getItem(STORAGE_KEYS.COUNCIL);
     const storedColor = localStorage.getItem(STORAGE_KEYS.COLOR);
