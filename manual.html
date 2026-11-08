@@ -224,8 +224,8 @@
           <button onclick="filterManualSection('advisor')" id="pill-advisor" class="manual-nav-pill">
             <i class="fa-solid fa-chalkboard-user text-blue-600"></i> สำหรับครูที่ปรึกษา
           </button>
-          <button onclick="filterManualSection('admin')" id="pill-admin" class="manual-nav-pill">
-            <i class="fa-solid fa-shield-halved text-amber-600"></i> สำหรับคณะกรรมการ / แอดมิน
+          <button onclick="filterManualSection('rules')" id="pill-rules" class="manual-nav-pill">
+            <i class="fa-solid fa-scale-balanced text-amber-600"></i> ระเบียบการหาเสียง
           </button>
           <button onclick="filterManualSection('faq')" id="pill-faq" class="manual-nav-pill">
             <i class="fa-solid fa-circle-question text-purple-600"></i> คำถามที่พบบ่อย (FAQ)
@@ -243,8 +243,8 @@
   <!-- เนื้อหาหลักคู่มือ -->
   <main class="max-w-6xl mx-auto px-3 sm:px-6 py-5 sm:py-7 flex-grow w-full space-y-6">
 
-    <!-- แถบสรุปด่วน 3 บทบาทการทำงาน (Overview Cards) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 no-print" id="overviewRolesGrid">
+    <!-- แถบสรุปด่วน 2 บทบาทหลัก (Overview Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 no-print" id="overviewRolesGrid">
       <div onclick="filterManualSection('candidate')" class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 cursor-pointer hover:shadow-md transition">
         <div class="flex items-center space-x-3 mb-2">
           <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
@@ -278,24 +278,6 @@
         </p>
         <div class="mt-3 text-xs font-semibold text-blue-800 flex items-center">
           ดูขั้นตอนสำหรับครูที่ปรึกษา <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i>
-        </div>
-      </div>
-
-      <div onclick="filterManualSection('admin')" class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 cursor-pointer hover:shadow-md transition">
-        <div class="flex items-center space-x-3 mb-2">
-          <div class="w-10 h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-            <i class="fa-solid fa-shield-halved"></i>
-          </div>
-          <div>
-            <h3 class="font-bold text-sm text-amber-900">คณะกรรมการ / หลังบ้าน</h3>
-            <p class="text-[11px] text-amber-700">กลุ่มบริหารบุคคล • ส่งเสริมประชาธิปไตย</p>
-          </div>
-        </div>
-        <p class="text-xs text-slate-600 leading-relaxed">
-          ตรวจสอบใบสมัคร อนุมัติ/ขอแก้ไข กำหนดหมายเลขผู้สมัคร ส่งออกข้อมูล Excel แก้ไขข้อมูลเว็บ จัดการผู้ลงนาม และอัปโหลดเอกสาร
-        </p>
-        <div class="mt-3 text-xs font-semibold text-amber-800 flex items-center">
-          ดูขั้นตอนสำหรับคณะกรรมการ <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i>
         </div>
       </div>
     </div>
@@ -647,169 +629,13 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- ส่วนที่ 4: คู่มือสำหรับคณะกรรมการ / แอดมิน -->
-    <!-- ========================================== -->
-    <section class="manual-section gov-card" id="sec-admin">
-      <div class="gov-card-header bg-[#9a3412] text-white flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span class="font-bold text-sm sm:text-base">ส่วนที่ 4: คู่มือสำหรับคณะกรรมการจัดการเลือกตั้งและผู้ดูแลระบบ (Admin CMS Guide)</span>
-        </div>
-        <span class="text-xs bg-orange-900 px-2 py-0.5 rounded text-orange-100 font-normal">ระบบหลังบ้าน</span>
-      </div>
-
-      <div class="p-4 sm:p-6 space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
-        
-        <!-- 4.1 เข้าสู่ระบบหลังบ้าน -->
-        <div class="border-b border-slate-200 pb-4 space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-solid fa-key mr-2 text-amber-700"></i> 4.1 การเข้าสู่ระบบจัดการหลังบ้าน (Admin CMS)
-          </h3>
-          <p class="text-slate-600">
-            ครูและคณะกรรมการการจัดการเลือกตั้งสามารถเข้าสู่ระบบหลังบ้านได้ทาง:
-          </p>
-          <ul class="list-disc pl-5 space-y-1 text-slate-700">
-            <li>คลิกปุ่ม <strong>"แก้ไขข้อมูลเว็บ (หลังบ้าน)"</strong> หรือ <strong>"แผงหลังบ้าน (CMS)"</strong> ที่อยู่แถบนำทางส่วนหัว หรือไปที่หน้า <a href="admin.html" class="text-blue-700 underline font-semibold">admin.html</a></li>
-            <li>กรอกรหัสผ่านผู้ดูแลระบบ (รหัสผ่านเริ่มต้นของระบบ: <code class="px-1.5 py-0.5 bg-slate-200 text-slate-800 rounded font-mono font-bold">admin1234</code>)</li>
-            <li>เมื่อเข้าสู่ระบบสำเร็จ จะพบแถบเมนู 5 แท็บหลักสำหรับบริหารจัดการทุกส่วนของระบบ</li>
-          </ul>
-        </div>
-
-        <!-- 4.2 การตรวจสอบใบสมัคร -->
-        <div class="border-b border-slate-200 pb-4 space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-solid fa-list-check mr-2 text-amber-700"></i> 4.2 การตรวจสอบใบสมัครและการอนุมัติ
-          </h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <div class="p-3 bg-white rounded border border-slate-200 space-y-1.5">
-              <div class="font-bold text-slate-800 text-xs">แท็บสภานักเรียน / แท็บคณะสี</div>
-              <p class="text-[11px] text-slate-600">
-                ระบบจะแสดงรายชื่อทุกทีมที่ยื่นสมัคร พร้อมรหัสใบสมัคร ชื่อพรรค รายชื่อสมาชิก เกรดเฉลี่ย และคะแนนความประพฤติ
-              </p>
-              <div class="text-[11px] text-slate-500">
-                <strong>การเปลี่ยนสถานะ:</strong>
-                <span class="badge-pending">รอตรวจสอบ</span>
-                <span class="badge-approved">ผ่านคุณสมบัติ</span>
-                <span class="badge-rejected">ไม่ผ่าน</span>
-              </div>
-            </div>
-
-            <div class="p-3 bg-white rounded border border-slate-200 space-y-1.5">
-              <div class="font-bold text-slate-800 text-xs">การระบุหมายเหตุและขอเอกสารเพิ่ม</div>
-              <p class="text-[11px] text-slate-600">
-                หากเอกสารไม่ครบถ้วน เช่น เกรดไม่ถึง หรือรูปถ่ายไม่ชัดเจน กรรมการสามารถพิมพ์หมายเหตุแจ้งเตือน เช่น <em>"กรุณาแนบใบ ปพ.1 ตัวจริงเพิ่มเติม"</em> ซึ่งนักเรียนจะเห็นข้อความนี้ทันทีเมื่อเช็กสถานะ
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4.3 การบันทึกหมายเลขผู้สมัคร -->
-        <div class="border-b border-slate-200 pb-4 space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-solid fa-hashtag mr-2 text-amber-700"></i> 4.3 การบันทึกหมายเลขประจำตัวผู้สมัคร / หมายเลขพรรค
-          </h3>
-          <p class="text-slate-600">
-            หลังจากที่มีการจับสลากหมายเลขผู้สมัครอย่างเป็นทางการ กรรมการสามารถเปิดหน้ารายละเอียดใบสมัคร แล้วกรอก <strong>"หมายเลขผู้สมัคร / หมายเลขพรรค"</strong> (เช่น หมายเลข 1, หมายเลข 2) แล้วกดบันทึก ข้อมูลหมายเลขจะไปปรากฏในใบสมัคร A4 และหน้าตรวจสอบสถานะทันที
-          </p>
-        </div>
-
-        <!-- 4.4 การส่งออกข้อมูลเป็น Excel CSV -->
-        <div class="border-b border-slate-200 pb-4 space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-solid fa-file-excel mr-2 text-emerald-700"></i> 4.4 การส่งออกข้อมูลเป็นไฟล์ Excel (CSV Export)
-          </h3>
-          <p class="text-slate-600">
-            ในแท็บสภานักเรียนและแท็บคณะสี จะมีปุ่ม <strong>"ส่งออก Excel (CSV)"</strong> เมื่อคลิก ระบบจะดาวน์โหลดไฟล์ข้อมูลผู้สมัครครบทุกฟิลด์ (ชื่อทีม, หมายเลข, รายชื่อประธานและสมาชิก, ชั้นห้อง, GPAX, คะแนนพฤติกรรม, เบอร์โทรศัพท์ครูที่ปรึกษา) รองรับภาษาไทย UTF-8 เปิดดูใน Microsoft Excel ได้ทันที
-          </p>
-        </div>
-
-        <!-- 4.5 การจัดการตั้งค่าเว็บไซต์ CMS -->
-        <div class="border-b border-slate-200 pb-4 space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-solid fa-sliders mr-2 text-amber-700"></i> 4.5 การตั้งค่าข้อมูลเว็บไซต์และระบบ (Site Settings & CMS)
-          </h3>
-          <p class="text-slate-600">
-            ที่แท็บ <strong>"⚙️ ตั้งค่าข้อมูลเว็บไซต์และระบบ (CMS)"</strong> ผู้ดูแลระบบสามารถปรับแต่งเนื้อหาหน้าเว็บได้แบบ Real-time:
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1 text-xs">
-            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
-              <strong>ปีการศึกษา & ชื่อโรงเรียน:</strong> ปรับปี พ.ศ., สังกัด, และชื่อกลุ่มงาน
-            </div>
-            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
-              <strong>ข้อความแถบประกาศ:</strong> ปรับข้อความตัววิ่ง/แถบประกาศหน้าแรก
-            </div>
-            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
-              <strong>ข้อมูลการติดต่อท้ายเว็บ:</strong> ปรับชื่อครูประสานงาน (เช่น คุณครูสีวลี ยืนยาว) และเบอร์โทรศัพท์ (0990499597)
-            </div>
-            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
-              <strong>ตราสัญลักษณ์ 3 ตำแหน่ง:</strong> อัปโหลดตราโรงเรียนและตราสัญลักษณ์เสริม
-            </div>
-            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
-              <strong>เกณฑ์ GPAX และพฤติกรรม:</strong> ปรับเกณฑ์เกรดเฉลี่ยและคะแนนความประพฤติ
-            </div>
-            <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
-              <strong>ปฏิทิน 5 ขั้นตอน:</strong> แก้ไขวันที่ สถานที่ และกิจกรรมในแต่ละขั้นตอน
-            </div>
-          </div>
-        </div>
-
-        <!-- 4.6 การจัดการช่องลงนามเอกสาร -->
-        <div class="border-b border-slate-200 pb-4 space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-solid fa-signature mr-2 text-amber-700"></i> 4.6 การจัดการช่องลงนามเอกสาร (Dynamic Signers Management)
-          </h3>
-          <p class="text-slate-600">
-            ระบบรองรับการเพิ่ม ลบ หรือแก้ไขช่องลงนามในใบสมัคร A4 ได้อย่างอิสระ:
-          </p>
-          <ul class="list-disc pl-5 space-y-1 text-slate-700">
-            <li>สามารถแก้ไขชื่อผู้ลงนาม, ตำแหน่ง (เช่น หัวหน้ากลุ่มบริหารกิจการนักเรียน / รองผู้อำนวยการ), หรือเพิ่มช่องลงนามของกรรมการท่านอื่น</li>
-            <li>สามารถเปิด/ปิดช่องทำเครื่องหมาย <em>"[ ] ผ่านคุณสมบัติ [ ] ไม่ผ่าน"</em> หรือช่องวันที่ได้ตามต้องการ</li>
-            <li>แยกการตั้งค่าระหว่างใบสมัครสภานักเรียน และใบสมัครคณะสี 5 สีอย่างอิสระ</li>
-          </ul>
-        </div>
-
-        <!-- 4.7 การจัดการและอัปโหลดเอกสาร -->
-        <div class="border-b border-slate-200 pb-4 space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-solid fa-folder-plus mr-2 text-amber-700"></i> 4.7 การจัดการเอกสารดาวน์โหลด (Documents Manager)
-          </h3>
-          <p class="text-slate-600">
-            ที่แท็บ <strong>"📁 จัดการและอัปโหลดเอกสาร"</strong> กรรมการสามารถเพิ่มเอกสารที่จัดทำขึ้นเองเข้าสู่หน้า <a href="documents.html" class="text-blue-700 underline font-semibold">documents.html</a> ได้ 3 รูปแบบ:
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
-            <div class="bg-white p-2.5 rounded border border-slate-200">
-              <strong>1. อัปโหลดไฟล์โดยตรง:</strong> แนบไฟล์ PDF, Word (.doc, .docx) เพื่อให้นักเรียนกดดาวน์โหลดได้ทันที
-            </div>
-            <div class="bg-white p-2.5 rounded border border-slate-200">
-              <strong>2. ใส่ลิงก์ภายนอก:</strong> แปะลิงก์ Google Drive, ลิงก์โฟลเดอร์โรงเรียน หรือเว็บประกาศ
-            </div>
-            <div class="bg-white p-2.5 rounded border border-slate-200">
-              <strong>3. สร้างแบบฟอร์ม A4:</strong> กรอกข้อความเพื่อให้ระบบสร้างหน้าพิมพ์ A4 อัตโนมัติ
-            </div>
-          </div>
-        </div>
-
-        <!-- 4.8 การตั้งค่ากลุ่ม LINE -->
-        <div class="space-y-2">
-          <h3 class="font-bold text-sm sm:text-base text-slate-900 flex items-center">
-            <i class="fa-brands fa-line mr-2 text-emerald-600"></i> 4.8 การตั้งค่ากลุ่ม LINE ผู้สมัคร (URL & QR Code)
-          </h3>
-          <p class="text-slate-600">
-            ในแท็บ CMS สามารถอัปเดต <strong>"ลิงก์กลุ่ม LINE (LINE Group URL)"</strong> และ <strong>"อัปโหลดภาพ QR Code ใหม่"</strong> ได้ตลอดเวลา เพื่อให้สอดคล้องกับกลุ่ม LINE ประจำแต่ละปีการศึกษา
-          </p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- ส่วนที่ 5: กฎระเบียบและข้อห้ามในการหาเสียง -->
+    <!-- ส่วนที่ 4: กฎระเบียบและข้อห้ามในการหาเสียง -->
     <!-- ========================================== -->
     <section class="manual-section gov-card" id="sec-rules">
       <div class="gov-card-header bg-slate-800 text-white flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-scale-balanced text-amber-400"></i>
-          <span class="font-bold text-sm sm:text-base">ส่วนที่ 5: กฎระเบียบและข้อห้ามในการหาเสียงเลือกตั้ง (Campaigning Code)</span>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 4: กฎระเบียบและข้อห้ามในการหาเสียงเลือกตั้ง (Campaigning Code)</span>
         </div>
         <span class="text-xs text-slate-300 font-normal">ข้อบังคับประชาธิปไตยในโรงเรียน</span>
       </div>
@@ -848,13 +674,13 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- ส่วนที่ 6: คำถามที่พบบ่อย (FAQ) -->
+    <!-- ส่วนที่ 5: คำถามที่พบบ่อย (FAQ) -->
     <!-- ========================================== -->
     <section class="manual-section gov-card" id="sec-faq">
       <div class="gov-card-header bg-[#4c1d95] text-white flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-circle-question text-purple-300"></i>
-          <span class="font-bold text-sm sm:text-base">ส่วนที่ 6: คำถามที่พบบ่อยและแนวทางแก้ไขปัญหา (FAQ)</span>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 5: คำถามที่พบบ่อยและแนวทางแก้ไขปัญหา (FAQ)</span>
         </div>
         <span class="text-xs bg-purple-900 px-2 py-0.5 rounded text-purple-200 font-normal">6 ข้อสงสัยยอดนิยม</span>
       </div>
@@ -961,13 +787,13 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- ส่วนที่ 7: ข้อมูลการติดต่อและสนับสนุน -->
+    <!-- ส่วนที่ 6: ข้อมูลการติดต่อและสนับสนุน -->
     <!-- ========================================== -->
     <section class="manual-section gov-card" id="sec-contact">
       <div class="gov-card-header bg-slate-900 text-white flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-headset text-emerald-400"></i>
-          <span class="font-bold text-sm sm:text-base">ส่วนที่ 7: ช่องทางการติดต่อและขอความช่วยเหลือ (Support & Contact)</span>
+          <span class="font-bold text-sm sm:text-base">ส่วนที่ 6: ช่องทางการติดต่อและขอความช่วยเหลือ (Support & Contact)</span>
         </div>
         <span class="text-xs text-slate-400 font-normal">งานส่งเสริมประชาธิปไตยในโรงเรียน</span>
       </div>
@@ -1026,7 +852,7 @@
 
       // ตรวจสอบ hash parameter เพื่อเลื่อนหรือกรองอัตโนมัติ
       const hash = window.location.hash.replace('#', '');
-      if (['candidate', 'advisor', 'admin', 'faq'].includes(hash)) {
+      if (['candidate', 'advisor', 'rules', 'faq'].includes(hash)) {
         filterManualSection(hash);
       }
     });
@@ -1042,51 +868,46 @@
       const secOverview = document.getElementById('sec-overview');
       const secCandidate = document.getElementById('sec-candidate');
       const secAdvisor = document.getElementById('sec-advisor');
-      const secAdmin = document.getElementById('sec-admin');
       const secRules = document.getElementById('sec-rules');
       const secFaq = document.getElementById('sec-faq');
       const secContact = document.getElementById('sec-contact');
 
       if (role === 'all') {
-        [secOverview, secCandidate, secAdvisor, secAdmin, secRules, secFaq, secContact].forEach(el => {
+        [secOverview, secCandidate, secAdvisor, secRules, secFaq, secContact].forEach(el => {
           if (el) el.classList.remove('hidden');
         });
       } else if (role === 'candidate') {
         if (secOverview) secOverview.classList.remove('hidden');
         if (secCandidate) secCandidate.classList.remove('hidden');
         if (secAdvisor) secAdvisor.classList.add('hidden');
-        if (secAdmin) secAdmin.classList.add('hidden');
         if (secRules) secRules.classList.remove('hidden');
         if (secFaq) secFaq.classList.remove('hidden');
         if (secContact) secContact.classList.remove('hidden');
-        secCandidate.scrollIntoView({ behavior: 'smooth' });
+        if (secCandidate) secCandidate.scrollIntoView({ behavior: 'smooth' });
       } else if (role === 'advisor') {
         if (secOverview) secOverview.classList.remove('hidden');
         if (secCandidate) secCandidate.classList.add('hidden');
         if (secAdvisor) secAdvisor.classList.remove('hidden');
-        if (secAdmin) secAdmin.classList.add('hidden');
         if (secRules) secRules.classList.remove('hidden');
         if (secFaq) secFaq.classList.remove('hidden');
         if (secContact) secContact.classList.remove('hidden');
-        secAdvisor.scrollIntoView({ behavior: 'smooth' });
-      } else if (role === 'admin') {
-        if (secOverview) secOverview.classList.remove('hidden');
+        if (secAdvisor) secAdvisor.scrollIntoView({ behavior: 'smooth' });
+      } else if (role === 'rules') {
+        if (secOverview) secOverview.classList.add('hidden');
         if (secCandidate) secCandidate.classList.add('hidden');
         if (secAdvisor) secAdvisor.classList.add('hidden');
-        if (secAdmin) secAdmin.classList.remove('hidden');
         if (secRules) secRules.classList.remove('hidden');
-        if (secFaq) secFaq.classList.remove('hidden');
+        if (secFaq) secFaq.classList.add('hidden');
         if (secContact) secContact.classList.remove('hidden');
-        secAdmin.scrollIntoView({ behavior: 'smooth' });
+        if (secRules) secRules.scrollIntoView({ behavior: 'smooth' });
       } else if (role === 'faq') {
         if (secOverview) secOverview.classList.add('hidden');
         if (secCandidate) secCandidate.classList.add('hidden');
         if (secAdvisor) secAdvisor.classList.add('hidden');
-        if (secAdmin) secAdmin.classList.add('hidden');
         if (secRules) secRules.classList.add('hidden');
         if (secFaq) secFaq.classList.remove('hidden');
         if (secContact) secContact.classList.remove('hidden');
-        secFaq.scrollIntoView({ behavior: 'smooth' });
+        if (secFaq) secFaq.scrollIntoView({ behavior: 'smooth' });
       }
     }
   </script>
