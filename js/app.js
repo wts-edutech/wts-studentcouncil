@@ -156,15 +156,15 @@ function applySiteConfig() {
 
       if (isHighlightStep) {
         return `
-          <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white p-2.5 sm:p-4 shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative">
+          <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white p-2.5 sm:p-4 md:p-5 shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative">
             <div>
-              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-                <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#064e3b] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
-                <i class="fa-solid ${iconClass} text-white/90 text-sm sm:text-xl"></i>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2 md:mb-3">
+                <span class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-white text-[#064e3b] font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center shadow-sm">${stepNum}</span>
+                <i class="fa-solid ${iconClass} text-white/90 text-sm sm:text-xl md:text-2xl"></i>
               </div>
-              <div class="text-[10.5px] sm:text-xs font-bold text-[#fbbf24] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
-              <div class="font-bold text-xs sm:text-sm leading-snug text-white mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
-              <div class="text-[10px] sm:text-xs text-emerald-100 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
+              <div class="text-[10.5px] sm:text-xs md:text-sm font-bold text-[#fbbf24] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
+              <div class="font-bold text-xs sm:text-sm md:text-base lg:text-[16.5px] leading-snug text-white mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
+              <div class="text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm text-emerald-100 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
             </div>
           </div>
           ${connectorHtml}
@@ -172,15 +172,15 @@ function applySiteConfig() {
       }
 
       return `
-        <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-4 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+        <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-4 md:p-5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
           <div>
-            <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-              <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">${stepNum}</span>
-              <i class="fa-solid ${iconClass} text-[#156548] text-sm sm:text-xl"></i>
+            <div class="flex items-start justify-between mb-1.5 sm:mb-2 md:mb-3">
+              <span class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center">${stepNum}</span>
+              <i class="fa-solid ${iconClass} text-[#156548] text-sm sm:text-xl md:text-2xl"></i>
             </div>
-            <div class="text-[10.5px] sm:text-xs font-bold text-[#b4690e] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
-            <div class="font-bold text-xs sm:text-sm leading-snug text-slate-900 mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
-            <div class="text-[10px] sm:text-xs text-slate-600 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
+            <div class="text-[10.5px] sm:text-xs md:text-sm font-bold text-[#b4690e] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
+            <div class="font-bold text-xs sm:text-sm md:text-base lg:text-[16.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
+            <div class="text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm text-slate-600 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
           </div>
         </div>
         ${connectorHtml}
@@ -213,26 +213,31 @@ function applySiteConfig() {
 }
 
 function renderRulesAndApplyContent(cfg) {
-  // ฟังก์ชันจัดรูปแบบบรรทัดระเบียบการและตัดเลขอาราบิกนำหน้า (1. , 2. ) ออก
+  // ฟังก์ชันจัดรูปแบบบรรทัดระเบียบการและตัดเลขอาราบิกนำหน้า (1. , 2. ) ออก พร้อมปรับขนาดและระยะบรรทัดให้อ่านง่ายบนจอคอม
   const formatRuleItem = (line) => {
     // ตัดเลขอาราบิกนำหน้า เช่น "1. ", "2. ", "10) " ออก
     const cleanLine = String(line || '').replace(/^\s*\d+[\.\)]\s*/, '').trim();
     if (!cleanLine) return '';
 
-    // จัดการระดับการย่อหน้าตามโครงสร้างหัวข้อย่อยแบบไทย
+    // จัดการระดับการย่อหน้าตามโครงสร้างหัวข้อย่อยแบบไทย และขนาดตัวอักษรให้อ่านง่าย ชัดเจนบนจอคอม
     let indentClass = '';
     let extraClass = '';
     if (/^[๑-๙0-9]\.[๑-๙0-9]\.[๑-๙0-9]/.test(cleanLine)) {
-      indentClass = 'pl-6 sm:pl-8 text-slate-600 text-xs sm:text-[13px]';
+      // ข้อย่อยระดับ 3 (เช่น ๑.๙.๑, ๑.๙.๒)
+      indentClass = 'pl-6 sm:pl-9 md:pl-12 text-slate-700 text-xs sm:text-sm md:text-[15.5px] lg:text-[16px] py-1';
     } else if (/^[๑-๙0-9]\.[๑-๙0-9]/.test(cleanLine)) {
-      indentClass = 'pl-3 sm:pl-4';
+      // ข้อย่อยระดับ 2 (เช่น ๑.๑, ๑.๒)
+      indentClass = 'pl-3 sm:pl-5 md:pl-7 text-slate-800 text-xs sm:text-sm md:text-base lg:text-[16.5px] py-1 font-normal';
     } else if (cleanLine.startsWith('ดังต่อไปนี้')) {
-      indentClass = 'pl-6 sm:pl-8 text-slate-500 font-medium italic';
-    } else if (cleanLine.includes('คุณสมบัติของผู้สมัคร')) {
-      extraClass = 'font-bold text-slate-900 pt-1 border-t border-slate-100';
+      indentClass = 'pl-6 sm:pl-9 md:pl-12 text-slate-600 font-medium italic text-xs sm:text-sm md:text-base lg:text-[16px] py-0.5';
+    } else if (cleanLine.includes('คุณสมบัติของผู้สมัคร') || cleanLine.includes('เกณฑ์คุณสมบัติ')) {
+      extraClass = 'font-bold text-slate-900 text-sm sm:text-base md:text-lg lg:text-xl pt-3 pb-1.5 border-t border-slate-200 mt-2.5';
+    } else {
+      // หัวข้อหลักทั่วไป (เช่น ระดับชั้น:, ครูที่ปรึกษา:, ความยินยอม:)
+      extraClass = 'text-xs sm:text-sm md:text-base lg:text-[16.5px] text-slate-800 py-1';
     }
 
-    return `<div class="leading-relaxed ${indentClass} ${extraClass}">${formatTimelineTitle(cleanLine)}</div>`;
+    return `<div class="leading-relaxed md:leading-[1.85] ${indentClass} ${extraClass}">${formatTimelineTitle(cleanLine)}</div>`;
   };
 
   // หมวดที่ 1: สภานักเรียน
