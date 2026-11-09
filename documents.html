@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257015">
+  <link rel="stylesheet" href="css/style.css?v=257016">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -70,14 +70,246 @@
               </tr>
             </thead>
             <tbody id="documentsTableBody" class="divide-y divide-slate-200 text-slate-700">
-              <!-- Rendered dynamically from WDSDB.getConfig().documentsList -->
+
+    <tr class="hover:bg-slate-50">
+      <td class="p-3.5 sm:p-4 text-center font-bold text-slate-800 text-sm sm:text-base">1</td>
+      <td class="p-3.5 sm:p-4">
+        <div class="font-bold text-slate-900 text-sm sm:text-base md:text-lg">หนังสือยินยอมจากผู้ปกครอง (Parental Consent Form)</div>
+        <div class="text-xs sm:text-sm md:text-[14.5px] text-slate-500 mt-0.5">แบบฟอร์มอนุญาตให้นักเรียนลงสมัครรับเลือกตั้งประธานสภานักเรียน หรือประธานคณะสี</div>
+      </td>
+      <td class="p-3.5 sm:p-4 text-xs sm:text-sm md:text-base text-slate-700">บิดา มารดา หรือผู้ปกครอง</td>
+      <td class="p-3.5 sm:p-4 text-center">
+      <a href="assets/documents/%E0%B8%AB%E0%B8%99%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B7%E0%B8%AD%E0%B8%A2%E0%B8%B4%E0%B8%99%E0%B8%A2%E0%B8%AD%E0%B8%A1%E0%B8%88%E0%B8%B2%E0%B8%81%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%9B%E0%B8%81%E0%B8%84%E0%B8%A3%E0%B8%AD%E0%B8%87.pdf" download="หนังสือยินยอมจากผู้ปกครอง.pdf" target="_blank" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+        <i class="fa-solid fa-file-pdf mr-1.5"></i> ดาวน์โหลด PDF
+      </a>
+    </td>
+    </tr>
+  
+
+    <tr class="hover:bg-slate-50">
+      <td class="p-3.5 sm:p-4 text-center font-bold text-slate-800 text-sm sm:text-base">2</td>
+      <td class="p-3.5 sm:p-4">
+        <div class="font-bold text-slate-900 text-sm sm:text-base md:text-lg">แบบคำร้องขอใบรับรองคะแนนความประพฤติ (คะแนนพฤติกรรม)</div>
+        <div class="text-xs sm:text-sm md:text-[14.5px] text-slate-500 mt-0.5">แบบฟอร์มยื่นต่อกลุ่มบริหารกิจการนักเรียน เพื่อขอรับรองคะแนนความประพฤติคงเหลือ (เกณฑ์ไม่ต่ำกว่า 70 คะแนน)</div>
+      </td>
+      <td class="p-3.5 sm:p-4 text-xs sm:text-sm md:text-base text-slate-700">ครูประจำชั้น และงานวินัยนักเรียน</td>
+      <td class="p-3.5 sm:p-4 text-center">
+      <a href="assets/documents/%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%84%E0%B8%B3%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B8%82%E0%B8%AD%E0%B9%83%E0%B8%9A%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%A3%E0%B8%AD%E0%B8%87%E0%B8%84%E0%B8%B0%E0%B9%81%E0%B8%99%E0%B8%99%E0%B8%9E%E0%B8%A4%E0%B8%95%E0%B8%B4%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1.pdf" download="แบบคำร้องขอใบรับรองคะแนนพฤติกรรม.pdf" target="_blank" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+        <i class="fa-solid fa-file-pdf mr-1.5"></i> ดาวน์โหลด PDF
+      </a>
+    </td>
+    </tr>
+  
+
+    <tr class="hover:bg-slate-50">
+      <td class="p-3.5 sm:p-4 text-center font-bold text-slate-800 text-sm sm:text-base">3</td>
+      <td class="p-3.5 sm:p-4">
+        <div class="font-bold text-slate-900 text-sm sm:text-base md:text-lg">แบบรับทราบระเบียบการเลือกตั้ง (พร้อมแบบเซ็นรับทราบ)</div>
+        <div class="text-xs sm:text-sm md:text-[14.5px] text-slate-500 mt-0.5">แบบฟอร์มแสดงความยินยอมและรับทราบระเบียบ ข้อตกลง และเกณฑ์คุณสมบัติการเลือกตั้ง พร้อมลงลายมือชื่อรับทราบ</div>
+      </td>
+      <td class="p-3.5 sm:p-4 text-xs sm:text-sm md:text-base text-slate-700">ผู้สมัคร, ผู้ปกครอง และครูที่ปรึกษา</td>
+      <td class="p-3.5 sm:p-4 text-center">
+      <a href="assets/documents/%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%97%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9A%E0%B8%B5%E0%B8%A2%E0%B8%9A%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%82%E0%B9%89%E0%B8%AD%E0%B8%95%E0%B8%81%E0%B8%A5%E0%B8%87%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%95%E0%B8%B1%E0%B9%89%E0%B8%87%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%99%E0%B8%B3%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99.pdf" download="แบบรับทราบระเบียบและข้อตกลงการเลือกตั้งผู้นำนักเรียน.pdf" target="_blank" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+        <i class="fa-solid fa-file-pdf mr-1.5"></i> ดาวน์โหลด PDF
+      </a>
+    </td>
+    </tr>
+  
+
+    <tr class="hover:bg-slate-50">
+      <td class="p-3.5 sm:p-4 text-center font-bold text-slate-800 text-sm sm:text-base">4</td>
+      <td class="p-3.5 sm:p-4">
+        <div class="font-bold text-slate-900 text-sm sm:text-base md:text-lg">แบบฟอร์มใบสมัครเปล่า: ประธานสภานักเรียน (A4)</div>
+        <div class="text-xs sm:text-sm md:text-[14.5px] text-slate-500 mt-0.5">สำหรับพิมพ์เพื่อนำไปกรอกข้อมูลด้วยลายมือและติดรูปถ่ายด้วยตนเอง</div>
+      </td>
+      <td class="p-3.5 sm:p-4 text-xs sm:text-sm md:text-base text-slate-700">ผู้สมัครและครูที่ปรึกษา</td>
+      <td class="p-3.5 sm:p-4 text-center">
+      <a href="print-application.html?type=council&blank=1" target="_blank" class="btn-gov-outline text-xs sm:text-sm md:text-base py-2 px-3.5 inline-block whitespace-nowrap">
+        <i class="fa-solid fa-print mr-1.5"></i> พิมพ์ฟอร์ม
+      </a>
+    </td>
+    </tr>
+  
+
+    <tr class="hover:bg-slate-50">
+      <td class="p-3.5 sm:p-4 text-center font-bold text-slate-800 text-sm sm:text-base">5</td>
+      <td class="p-3.5 sm:p-4">
+        <div class="font-bold text-slate-900 text-sm sm:text-base md:text-lg">แบบฟอร์มใบสมัครเปล่า: ประธานคณะสี 5 สี (A4)</div>
+        <div class="text-xs sm:text-sm md:text-[14.5px] text-slate-500 mt-0.5">สำหรับพิมพ์เพื่อนำไปกรอกข้อมูลด้วยลายมือและติดรูปถ่ายด้วยตนเอง</div>
+      </td>
+      <td class="p-3.5 sm:p-4 text-xs sm:text-sm md:text-base text-slate-700">ผู้สมัครและครูที่ปรึกษาพรรค</td>
+      <td class="p-3.5 sm:p-4 text-center">
+      <a href="print-application.html?type=color&blank=1" target="_blank" class="btn-gov-outline text-xs sm:text-sm md:text-base py-2 px-3.5 inline-block whitespace-nowrap">
+        <i class="fa-solid fa-print mr-1.5"></i> พิมพ์ฟอร์ม
+      </a>
+    </td>
+    </tr>
+  
+
+    <tr class="hover:bg-slate-50">
+      <td class="p-3.5 sm:p-4 text-center font-bold text-slate-800 text-sm sm:text-base">6</td>
+      <td class="p-3.5 sm:p-4">
+        <div class="font-bold text-slate-900 text-sm sm:text-base md:text-lg">คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์ (System User Manual)</div>
+        <div class="text-xs sm:text-sm md:text-[14.5px] text-slate-500 mt-0.5">คู่มือขั้นตอนการยื่นใบสมัครออนไลน์ การพิมพ์ฟอร์ม A4 บทบาทครูที่ปรึกษา และระบบหลังบ้าน</div>
+      </td>
+      <td class="p-3.5 sm:p-4 text-xs sm:text-sm md:text-base text-slate-700">คณะกรรมการจัดการเลือกตั้ง</td>
+      <td class="p-3.5 sm:p-4 text-center">
+      <a href="manual.html" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+        <i class="fa-solid fa-book-open mr-1.5"></i> เปิดอ่านคู่มือ
+      </a>
+    </td>
+    </tr>
+  
             </tbody>
           </table>
         </div>
 
         <!-- Mobile Cards View for clean touch display -->
         <div id="documentsMobileCards" class="sm:hidden space-y-3">
-          <!-- Rendered dynamically -->
+
+    <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-2.5 shadow-sm">
+      <div class="flex items-start space-x-2.5">
+        <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+          1
+        </div>
+        <div class="space-y-0.5">
+          <div class="font-bold text-xs text-slate-900 leading-snug">หนังสือยินยอมจากผู้ปกครอง (Parental Consent Form)</div>
+          <div class="text-[11px] text-slate-500 leading-normal">แบบฟอร์มอนุญาตให้นักเรียนลงสมัครรับเลือกตั้งประธานสภานักเรียน หรือประธานคณะสี</div>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-600 bg-slate-50 rounded px-2.5 py-1.5 flex items-center">
+        <i class="fa-solid fa-file-signature text-slate-400 mr-1.5 text-xs"></i>
+        <span><strong>ผู้ลงนาม:</strong> บิดา มารดา หรือผู้ปกครอง</span>
+      </div>
+      <div>
+        
+      <a href="assets/documents/%E0%B8%AB%E0%B8%99%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B7%E0%B8%AD%E0%B8%A2%E0%B8%B4%E0%B8%99%E0%B8%A2%E0%B8%AD%E0%B8%A1%E0%B8%88%E0%B8%B2%E0%B8%81%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%9B%E0%B8%81%E0%B8%84%E0%B8%A3%E0%B8%AD%E0%B8%87.pdf" download="หนังสือยินยอมจากผู้ปกครอง.pdf" target="_blank" class="btn-gov-primary w-full text-xs sm:text-sm py-2.5 px-3 text-center flex items-center justify-center shadow-sm">
+        <i class="fa-solid fa-file-pdf mr-1.5"></i> ดาวน์โหลด PDF
+      </a>
+    
+      </div>
+    </div>
+  
+
+    <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-2.5 shadow-sm">
+      <div class="flex items-start space-x-2.5">
+        <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+          2
+        </div>
+        <div class="space-y-0.5">
+          <div class="font-bold text-xs text-slate-900 leading-snug">แบบคำร้องขอใบรับรองคะแนนความประพฤติ (คะแนนพฤติกรรม)</div>
+          <div class="text-[11px] text-slate-500 leading-normal">แบบฟอร์มยื่นต่อกลุ่มบริหารกิจการนักเรียน เพื่อขอรับรองคะแนนความประพฤติคงเหลือ (เกณฑ์ไม่ต่ำกว่า 70 คะแนน)</div>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-600 bg-slate-50 rounded px-2.5 py-1.5 flex items-center">
+        <i class="fa-solid fa-file-signature text-slate-400 mr-1.5 text-xs"></i>
+        <span><strong>ผู้ลงนาม:</strong> ครูประจำชั้น และงานวินัยนักเรียน</span>
+      </div>
+      <div>
+        
+      <a href="assets/documents/%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%84%E0%B8%B3%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B8%82%E0%B8%AD%E0%B9%83%E0%B8%9A%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%A3%E0%B8%AD%E0%B8%87%E0%B8%84%E0%B8%B0%E0%B9%81%E0%B8%99%E0%B8%99%E0%B8%9E%E0%B8%A4%E0%B8%95%E0%B8%B4%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1.pdf" download="แบบคำร้องขอใบรับรองคะแนนพฤติกรรม.pdf" target="_blank" class="btn-gov-primary w-full text-xs sm:text-sm py-2.5 px-3 text-center flex items-center justify-center shadow-sm">
+        <i class="fa-solid fa-file-pdf mr-1.5"></i> ดาวน์โหลด PDF
+      </a>
+    
+      </div>
+    </div>
+  
+
+    <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-2.5 shadow-sm">
+      <div class="flex items-start space-x-2.5">
+        <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+          3
+        </div>
+        <div class="space-y-0.5">
+          <div class="font-bold text-xs text-slate-900 leading-snug">แบบรับทราบระเบียบการเลือกตั้ง (พร้อมแบบเซ็นรับทราบ)</div>
+          <div class="text-[11px] text-slate-500 leading-normal">แบบฟอร์มแสดงความยินยอมและรับทราบระเบียบ ข้อตกลง และเกณฑ์คุณสมบัติการเลือกตั้ง พร้อมลงลายมือชื่อรับทราบ</div>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-600 bg-slate-50 rounded px-2.5 py-1.5 flex items-center">
+        <i class="fa-solid fa-file-signature text-slate-400 mr-1.5 text-xs"></i>
+        <span><strong>ผู้ลงนาม:</strong> ผู้สมัคร, ผู้ปกครอง และครูที่ปรึกษา</span>
+      </div>
+      <div>
+        
+      <a href="assets/documents/%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%97%E0%B8%A3%E0%B8%B2%E0%B8%9A%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9A%E0%B8%B5%E0%B8%A2%E0%B8%9A%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%82%E0%B9%89%E0%B8%AD%E0%B8%95%E0%B8%81%E0%B8%A5%E0%B8%87%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%95%E0%B8%B1%E0%B9%89%E0%B8%87%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%99%E0%B8%B3%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99.pdf" download="แบบรับทราบระเบียบและข้อตกลงการเลือกตั้งผู้นำนักเรียน.pdf" target="_blank" class="btn-gov-primary w-full text-xs sm:text-sm py-2.5 px-3 text-center flex items-center justify-center shadow-sm">
+        <i class="fa-solid fa-file-pdf mr-1.5"></i> ดาวน์โหลด PDF
+      </a>
+    
+      </div>
+    </div>
+  
+
+    <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-2.5 shadow-sm">
+      <div class="flex items-start space-x-2.5">
+        <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+          4
+        </div>
+        <div class="space-y-0.5">
+          <div class="font-bold text-xs text-slate-900 leading-snug">แบบฟอร์มใบสมัครเปล่า: ประธานสภานักเรียน (A4)</div>
+          <div class="text-[11px] text-slate-500 leading-normal">สำหรับพิมพ์เพื่อนำไปกรอกข้อมูลด้วยลายมือและติดรูปถ่ายด้วยตนเอง</div>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-600 bg-slate-50 rounded px-2.5 py-1.5 flex items-center">
+        <i class="fa-solid fa-file-signature text-slate-400 mr-1.5 text-xs"></i>
+        <span><strong>ผู้ลงนาม:</strong> ผู้สมัครและครูที่ปรึกษา</span>
+      </div>
+      <div>
+        
+      <a href="print-application.html?type=council&blank=1" target="_blank" class="btn-gov-outline w-full text-xs py-2 px-3 text-center flex items-center justify-center">
+        <i class="fa-solid fa-print mr-1.5"></i> พิมพ์ฟอร์ม
+      </a>
+    
+      </div>
+    </div>
+  
+
+    <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-2.5 shadow-sm">
+      <div class="flex items-start space-x-2.5">
+        <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+          5
+        </div>
+        <div class="space-y-0.5">
+          <div class="font-bold text-xs text-slate-900 leading-snug">แบบฟอร์มใบสมัครเปล่า: ประธานคณะสี 5 สี (A4)</div>
+          <div class="text-[11px] text-slate-500 leading-normal">สำหรับพิมพ์เพื่อนำไปกรอกข้อมูลด้วยลายมือและติดรูปถ่ายด้วยตนเอง</div>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-600 bg-slate-50 rounded px-2.5 py-1.5 flex items-center">
+        <i class="fa-solid fa-file-signature text-slate-400 mr-1.5 text-xs"></i>
+        <span><strong>ผู้ลงนาม:</strong> ผู้สมัครและครูที่ปรึกษาพรรค</span>
+      </div>
+      <div>
+        
+      <a href="print-application.html?type=color&blank=1" target="_blank" class="btn-gov-outline w-full text-xs py-2 px-3 text-center flex items-center justify-center">
+        <i class="fa-solid fa-print mr-1.5"></i> พิมพ์ฟอร์ม
+      </a>
+    
+      </div>
+    </div>
+  
+
+    <div class="border border-slate-200 rounded-lg p-3.5 bg-white space-y-2.5 shadow-sm">
+      <div class="flex items-start space-x-2.5">
+        <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+          6
+        </div>
+        <div class="space-y-0.5">
+          <div class="font-bold text-xs text-slate-900 leading-snug">คู่มือการใช้งานระบบรับสมัครเลือกตั้งออนไลน์ (System User Manual)</div>
+          <div class="text-[11px] text-slate-500 leading-normal">คู่มือขั้นตอนการยื่นใบสมัครออนไลน์ การพิมพ์ฟอร์ม A4 บทบาทครูที่ปรึกษา และระบบหลังบ้าน</div>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-600 bg-slate-50 rounded px-2.5 py-1.5 flex items-center">
+        <i class="fa-solid fa-file-signature text-slate-400 mr-1.5 text-xs"></i>
+        <span><strong>ผู้ลงนาม:</strong> คณะกรรมการจัดการเลือกตั้ง</span>
+      </div>
+      <div>
+        
+      <a href="manual.html" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
+        <i class="fa-solid fa-book-open mr-1.5"></i> เปิดอ่านคู่มือ
+      </a>
+    
+      </div>
+    </div>
+  
         </div>
       </div>
     </div>
@@ -111,8 +343,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257015"></script>
-  <script src="js/app.js?v=257015"></script>
+  <script src="js/data.js?v=257016"></script>
+  <script src="js/app.js?v=257016"></script>
   <script>
     function closeDocModal() {
       document.getElementById('docModal').classList.add('hidden');
@@ -466,7 +698,14 @@
     }
 
     function renderDocumentsPage() {
-      const cfg = WDSDB.getConfig();
+      let cfg = {};
+      try {
+        if (typeof WDSDB !== 'undefined' && typeof WDSDB.getConfig === 'function') {
+          cfg = WDSDB.getConfig();
+        }
+      } catch (e) {
+        console.warn('WDSDB getConfig:', e);
+      }
       const pageHeaderEl = document.getElementById('docsPageHeaderTitle');
       if (pageHeaderEl && cfg.docsPageHeaderTitle) {
         pageHeaderEl.innerText = cfg.docsPageHeaderTitle;
@@ -688,6 +927,7 @@
   </script>
 </body>
 </html>
+
 
 
 
