@@ -646,6 +646,20 @@ window.addEventListener('wds-cloud-synced', (e) => {
   if (typeof renderPositionForms === 'function') renderPositionForms();
 });
 
+// ซิงค์อัตโนมัติเมื่อผู้ใช้สลับกลับมาเปิดหน้าเว็บ (มือถือ / แท็บเล็ต / คอมพิวเตอร์)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && typeof WDSDB !== 'undefined') {
+    if (typeof WDSDB.syncFromCloud === 'function') WDSDB.syncFromCloud();
+    if (typeof WDSDB.syncApplicationsFromCloud === 'function') WDSDB.syncApplicationsFromCloud();
+  }
+});
+window.addEventListener('focus', () => {
+  if (typeof WDSDB !== 'undefined') {
+    if (typeof WDSDB.syncFromCloud === 'function') WDSDB.syncFromCloud();
+    if (typeof WDSDB.syncApplicationsFromCloud === 'function') WDSDB.syncApplicationsFromCloud();
+  }
+});
+
 // รันผูกค่าการตั้งค่าอัตโนมัติเมื่อเอกสารโหลด พร้อมซิงค์ข้อมูลล่าสุดจากคลาวด์
 window.addEventListener('DOMContentLoaded', () => {
   applySiteConfig();

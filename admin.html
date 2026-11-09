@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257020">
-  <script src="js/data.js?v=257020"></script>
-  <script src="js/app.js?v=257020"></script>
+  <link rel="stylesheet" href="css/style.css?v=257022">
+  <script src="js/data.js?v=257022"></script>
+  <script src="js/app.js?v=257022"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -1153,6 +1153,9 @@
             <button type="button" onclick="handleSaveApplyManager(event)" class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm px-4 py-2.5 shadow-md flex items-center justify-center cursor-pointer transition flex-1 md:flex-initial">
               <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
             </button>
+            <a href="admin-apply.html" target="_blank" class="gov-btn bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm flex items-center justify-center" title="เปิดหน้าต่างจัดการรับสมัครออนไลน์แบบเต็มหน้าจอแยกต่างหาก">
+              <i class="fa-solid fa-window-maximize mr-1.5 text-emerald-700"></i> หน้าจัดการแยก (เต็มจอ)
+            </a>
             <a href="index.html" target="_blank" class="gov-btn bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm flex items-center justify-center">
               <i class="fa-solid fa-arrow-up-right-from-square mr-1.5 text-blue-600"></i> เปิดดูหน้าบ้าน
             </a>
@@ -1549,9 +1552,7 @@
 
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
-  <!-- Scripts -->
-  <script src="js/data.js?v=257020"></script>
-  <script src="js/app.js?v=257020"></script>
+  <!-- Scripts (data.js and app.js loaded in head) -->
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -1589,9 +1590,11 @@
           applySiteConfig();
           updateStatsDashboard();
           updateLivePreview();
+          if (typeof loadApplyManagerData === 'function') loadApplyManagerData();
           showToast('✅ ซิงค์ข้อมูลล่าสุดจากคลาวด์เรียบร้อยแล้ว!', 'success');
         } else {
           updateStatsDashboard();
+          if (typeof loadApplyManagerData === 'function') loadApplyManagerData();
           showToast('✅ ข้อมูลบนอุปกรณ์ของคุณเป็นเวอร์ชันล่าสุดแล้ว', 'success');
         }
       } catch (e) {
@@ -1605,6 +1608,7 @@
       applySiteConfig();
       updateStatsDashboard();
       updateLivePreview();
+      if (typeof loadApplyManagerData === 'function') loadApplyManagerData();
     });
 
     window.addEventListener('wds-apps-synced', () => {

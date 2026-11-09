@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257020">
-  <script src="js/data.js?v=257020"></script>
-  <script src="js/app.js?v=257020"></script>
+  <link rel="stylesheet" href="css/style.css?v=257022">
+  <script src="js/data.js?v=257022"></script>
+  <script src="js/app.js?v=257022"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -70,6 +70,16 @@
             <i class="fa-solid fa-lock text-[#1a365d]"></i> เข้าสู่ระบบสำหรับผู้ดูแลระบบ
           </h3>
           <p class="text-xs text-slate-500 mt-0.5">กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าสู่การจัดการ</p>
+        </div>
+
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-2 shadow-xs">
+          <div>
+            <div class="font-bold flex items-center gap-1.5 text-amber-950"><i class="fa-solid fa-key text-amber-700"></i> ข้อมูลเข้าสู่ระบบผู้ดูแลระบบ:</div>
+            <div class="mt-0.5 text-[11.5px] text-slate-700">ชื่อผู้ใช้: <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-300 font-bold text-amber-950">admin</code> | รหัสผ่าน: <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-300 font-bold text-amber-950">admin1234</code></div>
+          </div>
+          <button type="button" onclick="doDirectLogin()" class="px-3 py-1.5 bg-amber-300 hover:bg-amber-400 text-amber-950 rounded text-xs font-bold whitespace-nowrap shadow-xs flex items-center justify-center gap-1">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> คลิกเข้าสู่ระบบทันที
+          </button>
         </div>
 
         <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
