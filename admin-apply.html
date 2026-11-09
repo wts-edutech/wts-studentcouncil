@@ -1,0 +1,768 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>จัดการหน้ายื่นใบสมัครออนไลน์ | ระบบหลังบ้าน โรงเรียนวชิรธรรมสาธิต</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css?v=257020">
+  <script src="js/data.js?v=257020"></script>
+  <script src="js/app.js?v=257020"></script>
+  <script>
+    function doDirectLogin() {
+      try {
+        localStorage.setItem('wds_admin_logged_in', 'true');
+        sessionStorage.setItem('wds_admin_logged_in', 'true');
+      } catch(e) {}
+      const s = document.getElementById('adminLoginScreen');
+      if (s) {
+        s.style.setProperty('display', 'none', 'important');
+        s.classList.add('hidden');
+      }
+      const w = document.getElementById('adminAppWrapper');
+      if (w) {
+        w.style.setProperty('display', 'flex', 'important');
+        w.classList.remove('hidden');
+      }
+      if (typeof initApplyManagerPage === 'function') {
+        try { initApplyManagerPage(); } catch(e) {}
+      }
+    }
+
+    try {
+      const q = window.location.search || '';
+      if (q.includes('login') || q.includes('admin') || localStorage.getItem('wds_admin_logged_in') === 'true') {
+        localStorage.setItem('wds_admin_logged_in', 'true');
+        sessionStorage.setItem('wds_admin_logged_in', 'true');
+        document.addEventListener('DOMContentLoaded', () => {
+          doDirectLogin();
+        });
+      }
+    } catch(e) {}
+  </script>
+</head>
+<body class="flex flex-col min-h-screen font-formal bg-slate-100 text-slate-800">
+
+  <!-- หน้าจอเข้าสู่ระบบ (Login Screen) -->
+  <div id="adminLoginScreen" class="fixed inset-0 z-50 bg-[#0f172a] flex flex-col justify-center items-center px-4 py-8 overflow-y-auto">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden transform transition-all my-auto">
+      <div class="bg-gradient-to-r from-[#1a365d] to-[#1e3a8a] p-6 text-white text-center relative border-b-2 border-[#c59b27]">
+        <div class="w-16 h-16 mx-auto mb-3 flex items-center justify-center p-1 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 shadow-inner">
+          <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain filter drop-shadow" alt="ตราโรงเรียน">
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#c59b27]/30 border border-[#c59b27]/50 rounded-full text-[11px] font-bold text-amber-200 mb-2">
+          <i class="fa-solid fa-file-pen text-amber-300"></i> จัดการหน้ายื่นใบสมัครออนไลน์
+        </div>
+        <h2 class="text-xl font-bold tracking-tight text-white">โรงเรียนวชิรธรรมสาธิต</h2>
+        <p class="text-xs text-blue-100/90 mt-1">ระบบบริหารจัดการหน้ายื่นใบสมัครออนไลน์ (Tab 3)</p>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-5 bg-white">
+        <div class="border-b border-slate-100 pb-3">
+          <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-lock text-[#1a365d]"></i> เข้าสู่ระบบสำหรับผู้ดูแลระบบ
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าสู่การจัดการ</p>
+        </div>
+
+        <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">ชื่อผู้ใช้งาน (Username) <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm"><i class="fa-solid fa-user"></i></span>
+              <input type="text" id="loginUsername" required value="admin" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-[#1a365d] focus:ring-1 focus:ring-[#1a365d] outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">รหัสผ่าน (Password) <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm"><i class="fa-solid fa-key"></i></span>
+              <input type="password" id="loginPassword" required value="admin1234" class="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-[#1a365d] focus:ring-1 focus:ring-[#1a365d] outline-none">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 px-4 bg-[#1a365d] hover:bg-[#1e3a8a] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 border border-[#172554] cursor-pointer">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>เข้าสู่ระบบจัดการ (Log In)</span>
+          </button>
+        </form>
+
+        <div class="p-3 rounded-lg bg-amber-50 border border-amber-200/80 text-[11.5px] text-amber-900 space-y-1">
+          <div class="font-bold flex items-center gap-1.5 text-amber-950">
+            <i class="fa-solid fa-circle-info text-amber-600"></i> ข้อมูลเริ่มต้น:
+          </div>
+          <div class="grid grid-cols-2 gap-1 text-[11px] pt-1">
+            <div>ชื่อผู้ใช้: <code class="bg-amber-100 px-1 py-0.5 rounded font-bold font-mono">admin</code></div>
+            <div>รหัสผ่าน: <code class="bg-amber-100 px-1 py-0.5 rounded font-bold font-mono">admin1234</code></div>
+          </div>
+        </div>
+
+        <div class="pt-2 text-center border-t border-slate-100">
+          <a href="index.html" class="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-[#1a365d] font-medium transition">
+            <i class="fa-solid fa-arrow-left"></i> กลับสู่หน้าหลักเว็บไซต์
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- แผงเนื้อหาแดชบอร์ดหลังบ้าน (Admin App Wrapper) -->
+  <div id="adminAppWrapper" class="hidden flex-col min-h-screen">
+
+    <!-- Top Banner -->
+    <div class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white text-xs sm:text-sm py-2 px-4 sm:px-6 shadow flex flex-wrap justify-between items-center gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <strong>ระบบบริหารหลังบ้าน:</strong> จัดการหน้า "ยื่นใบสมัครออนไลน์ (Tab 3)" โรงเรียนวชิรธรรมสาธิต
+      </div>
+      <div class="flex items-center space-x-2">
+        <a href="admin.html" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-2.5 py-1 rounded text-xs flex items-center transition border border-white/20">
+          <i class="fa-solid fa-gear mr-1 text-amber-300"></i> ไปหน้าตั้งค่าระบบรวม (admin.html)
+        </a>
+        <a href="index.html" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded text-xs flex items-center transition">
+          <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> เปิดดูหน้าบ้านจริง
+        </a>
+      </div>
+    </div>
+
+    <!-- Header Bar -->
+    <header class="bg-[#1a365d] border-b-2 border-[#c59b27] text-white py-3.5 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-11 h-11 flex items-center justify-center flex-shrink-0 overflow-hidden" data-cfg-logo>
+            <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราโรงเรียน">
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg lg:text-xl font-bold tracking-tight">ระบบจัดการหน้ายื่นใบสมัครออนไลน์ (Apply Online Portal)</h1>
+            <p class="text-xs sm:text-sm text-slate-200"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • ปีการศึกษา <span data-cfg="academicYear">2570</span></p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <div id="adminCloudBadge" class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/20 rounded-full border border-emerald-400/40 text-[11px] sm:text-xs text-emerald-200">
+            <i class="fa-solid fa-cloud text-emerald-300 animate-pulse"></i>
+            <span>คลาวด์: ออนไลน์</span>
+          </div>
+          <button onclick="handleLogout()" class="bg-red-700 hover:bg-red-800 text-white text-xs px-3 py-1.5 rounded transition flex items-center gap-1">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>ออกจากระบบ</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Shortcuts -->
+    <div class="bg-white border-b border-slate-200 px-4 sm:px-6 py-2 shadow-xs">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-1 overflow-x-auto py-1">
+          <span class="text-slate-400 mr-1 font-semibold">ทางลัดระบบ:</span>
+          <a href="admin.html?tab=settings" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium transition">
+            <i class="fa-solid fa-gear mr-1 text-slate-500"></i> 1. ตั้งค่าระบบ CMS
+          </a>
+          <span class="px-2.5 py-1 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded font-bold">
+            <i class="fa-solid fa-file-pen mr-1 text-emerald-700"></i> 2. จัดการหน้ายื่นใบสมัครออนไลน์ (หน้านี้)
+          </span>
+          <a href="admin.html?tab=council" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium transition">
+            <i class="fa-solid fa-landmark mr-1 text-blue-600"></i> 3. ทะเบียนสภานักเรียน
+          </a>
+          <a href="admin.html?tab=color" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium transition">
+            <i class="fa-solid fa-flag mr-1 text-amber-600"></i> 4. ทะเบียนประธานคณะสี
+          </a>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="manual.html" target="_blank" class="text-slate-600 hover:text-blue-800 flex items-center gap-1 font-medium">
+            <i class="fa-solid fa-book-open text-amber-600"></i> คู่มือระบบ
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+
+      <!-- Header Intro Banner -->
+      <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200/80 p-4 sm:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-start space-x-3 text-emerald-950">
+          <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-md">
+            <i class="fa-solid fa-file-signature text-xl"></i>
+          </div>
+          <div>
+            <div class="font-bold text-base sm:text-lg text-emerald-950 flex items-center gap-2 flex-wrap">
+              <span>แผงควบคุมหน้ายื่นใบสมัครออนไลน์ (Tab 3: ยื่นใบสมัครออนไลน์)</span>
+              <span class="text-xs bg-emerald-200/90 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold">2 การ์ดหลัก</span>
+            </div>
+            <p class="text-xs sm:text-sm text-emerald-800 mt-1 leading-relaxed">
+              สามารถเปิด/ปิดการรับสมัครของแต่ละประเภท, ปรับแต่งข้อความหัวเรื่อง, คุณสมบัติผู้สมัคร และตรวจดูตัวอย่างจำลองหน้าจอจริง 1:1 ได้ทันที
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0 w-full md:w-auto">
+          <button type="button" onclick="handleSaveApplyPage(event)" class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm px-4 py-2.5 shadow-md flex items-center justify-center cursor-pointer transition flex-1 md:flex-initial">
+            <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
+          </button>
+          <a href="index.html" target="_blank" class="gov-btn bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm flex items-center justify-center">
+            <i class="fa-solid fa-arrow-up-right-from-square mr-1.5 text-blue-600"></i> เปิดดูหน้าบ้าน
+          </a>
+        </div>
+      </div>
+
+      <!-- 1. Master Status Toggles -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+        
+        <!-- Council Status -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm space-y-3.5">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-2">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-full bg-blue-100 text-[#16325c] flex items-center justify-center text-base">
+                <i class="fa-solid fa-landmark"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm sm:text-base">1. การรับสมัครประธานสภานักเรียน</h4>
+                <div class="text-[11px] text-slate-500">ทีมพรรค 10 คน (ม.4)</div>
+              </div>
+            </div>
+            <span id="applyCouncilStatusPill" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>กำลังเปิดรับสมัคร</span>
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <div>
+              <div class="font-bold text-slate-800 text-xs sm:text-sm">สวิตช์เปิด/ปิดรับสมัครสภานักเรียน</div>
+              <div class="text-[11px] text-slate-500">หากปิด ปุ่มจะล็อกและแสดงข้อความแจ้งเตือน</div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+              <input type="checkbox" id="councilIsOpenChk" checked onchange="onStatusToggle('council')" class="sr-only peer">
+              <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+            </label>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 text-xs mb-1">
+              ข้อความแจ้งเตือนเมื่อปิดรับสมัคร (แสดงบนปุ่มและหน้าฟอร์ม)
+            </label>
+            <input type="text" id="councilCloseNotice" oninput="renderPreview()" class="gov-input w-full text-xs" placeholder="เช่น ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว">
+          </div>
+
+          <div class="pt-1 flex items-center justify-between text-xs text-slate-500">
+            <span>หน้าฟอร์ม: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-700">apply-council.html</code></span>
+            <a href="apply-council.html" target="_blank" class="text-blue-700 hover:text-blue-900 font-semibold inline-flex items-center gap-1">
+              <span>ทดสอบเปิดฟอร์มสภา</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Color Status -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm space-y-3.5">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-2">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-base">
+                <i class="fa-solid fa-flag"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm sm:text-base">2. การรับสมัครประธานคณะสี</h4>
+                <div class="text-[11px] text-slate-500">ทั้ง 5 คณะสี (ม.4)</div>
+              </div>
+            </div>
+            <span id="applyColorStatusPill" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>กำลังเปิดรับสมัคร</span>
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <div>
+              <div class="font-bold text-slate-800 text-xs sm:text-sm">สวิตช์เปิด/ปิดรับสมัครคณะสี</div>
+              <div class="text-[11px] text-slate-500">หากปิด ปุ่มจะล็อกและแสดงข้อความแจ้งเตือน</div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+              <input type="checkbox" id="colorIsOpenChk" checked onchange="onStatusToggle('color')" class="sr-only peer">
+              <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+            </label>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 text-xs mb-1">
+              ข้อความแจ้งเตือนเมื่อปิดรับสมัคร (แสดงบนปุ่มและหน้าฟอร์ม)
+            </label>
+            <input type="text" id="colorCloseNotice" oninput="renderPreview()" class="gov-input w-full text-xs" placeholder="เช่น ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว">
+          </div>
+
+          <div class="pt-1 flex items-center justify-between text-xs text-slate-500">
+            <span>หน้าฟอร์ม: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-700">apply-color.html</code></span>
+            <a href="apply-color.html" target="_blank" class="text-amber-800 hover:text-amber-950 font-semibold inline-flex items-center gap-1">
+              <span>ทดสอบเปิดฟอร์มคณะสี</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 2. Header and Announcement Editor -->
+      <div class="border border-slate-300 rounded-xl p-4 sm:p-5 bg-white space-y-4 shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+          <h4 class="font-bold text-[#1a365d] text-sm sm:text-base flex items-center gap-2">
+            <i class="fa-solid fa-heading text-slate-600"></i> ข้อความหัวเรื่องและแถบประกาศ
+          </h4>
+          <span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">ส่วนหัวหน้าเลือกประเภท</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">หัวข้อหลักของหน้านี้ (Main Heading) <span class="text-red-600">*</span></label>
+            <input type="text" id="pageHeaderTitle" oninput="renderPreview()" class="gov-input w-full font-bold text-slate-800">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">คำอธิบายย่อยใต้หัวข้อหลัก (Subtitle)</label>
+            <input type="text" id="pageHeaderSubtitle" oninput="renderPreview()" class="gov-input w-full text-slate-700">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1">ข้อความในแถบประกาศสีส้มด้านบน (Announcement Banner)</label>
+            <input type="text" id="pageAnnouncementText" oninput="renderPreview()" class="gov-input w-full">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Two Cards Editor -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        
+        <!-- Card 1: Council -->
+        <div class="bg-white border border-slate-300 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-blue-200 pb-2.5">
+            <div class="font-bold text-[#16325c] text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-landmark text-blue-700"></i> การ์ดที่ 1: สมัครเลือกตั้งประธานสภานักเรียน
+            </div>
+            <span class="text-[11px] bg-blue-100 text-blue-900 px-2 py-0.5 rounded font-bold">10 ตำแหน่ง</span>
+          </div>
+
+          <div class="space-y-3.5">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block font-semibold text-slate-700 mb-1">ชื่อหัวข้อการ์ดที่ 1</label>
+                <input type="text" id="councilTitle" oninput="renderPreview()" class="gov-input w-full font-bold">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ป้ายกำกับมุมขวา</label>
+                <input type="text" id="councilBadge" oninput="renderPreview()" class="gov-input w-full">
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ข้อความอธิบายรายละเอียด (Paragraph)</label>
+              <textarea id="councilDesc" rows="4" oninput="renderPreview()" class="gov-input w-full text-xs sm:text-sm leading-relaxed"></textarea>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="font-semibold text-slate-700 text-xs sm:text-sm">
+                  รายการสรุปคุณสมบัติในกล่องสีเทา (Bullet points)
+                </label>
+                <span class="text-[11px] text-slate-500">พิมพ์บรรทัดละ 1 ข้อ</span>
+              </div>
+              <textarea id="councilBullets" rows="4" oninput="renderPreview()" class="gov-input w-full text-xs sm:text-sm font-mono"></textarea>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ข้อความบนปุ่มกดสมัคร (Button Text)</label>
+              <input type="text" id="councilBtnText" oninput="renderPreview()" class="gov-input w-full">
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Color -->
+        <div class="bg-white border border-slate-300 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-amber-200 pb-2.5">
+            <div class="font-bold text-amber-900 text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-flag text-amber-700"></i> การ์ดที่ 2: สมัครเลือกตั้งประธานคณะสี (5 คณะสี)
+            </div>
+            <span class="text-[11px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-bold">5 คณะสี</span>
+          </div>
+
+          <div class="space-y-3.5">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block font-semibold text-slate-700 mb-1">ชื่อหัวข้อการ์ดที่ 2</label>
+                <input type="text" id="colorTitle" oninput="renderPreview()" class="gov-input w-full font-bold">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ป้ายกำกับมุมขวา</label>
+                <input type="text" id="colorBadge" oninput="renderPreview()" class="gov-input w-full">
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ข้อความอธิบายรายละเอียด (Paragraph)</label>
+              <textarea id="colorDesc" rows="4" oninput="renderPreview()" class="gov-input w-full text-xs sm:text-sm leading-relaxed"></textarea>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">
+                ป้ายรายชื่อคณะสีทั้ง 5 สี (คั่นด้วยเครื่องหมาย <code class="bg-slate-200 px-1 rounded">,</code>)
+              </label>
+              <input type="text" id="colorHousesText" oninput="renderPreview()" class="gov-input w-full text-xs sm:text-sm">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="font-semibold text-slate-700 text-xs sm:text-sm">
+                  รายการสรุปคุณสมบัติในกล่องสีเทา (Bullet points)
+                </label>
+                <span class="text-[11px] text-slate-500">พิมพ์บรรทัดละ 1 ข้อ</span>
+              </div>
+              <textarea id="colorBullets" rows="4" oninput="renderPreview()" class="gov-input w-full text-xs sm:text-sm font-mono"></textarea>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ข้อความบนปุ่มกดสมัคร (Button Text)</label>
+              <input type="text" id="colorBtnText" oninput="renderPreview()" class="gov-input w-full">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 4. Interactive Live Preview 1:1 -->
+      <div class="border-2 border-slate-300 rounded-xl bg-slate-100 overflow-hidden shadow-md">
+        <div class="bg-slate-800 text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+            <span class="font-bold text-xs sm:text-sm ml-2 tracking-wide flex items-center gap-1.5">
+              <i class="fa-solid fa-eye text-emerald-400"></i> ตัวอย่างจำลองหน้าจอจริง 1:1 (Live Interactive Preview)
+            </span>
+          </div>
+          <div class="text-xs text-slate-300">
+            แสดงผลตรงกับที่นักเรียนจะเห็นในแท็บ "ยื่นใบสมัครออนไลน์" ของหน้าแรก
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-6 lg:p-8 bg-white min-h-[400px]">
+          <div id="standaloneLivePreviewBox" class="space-y-6 max-w-5xl mx-auto">
+            <!-- Filled dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Save Bar -->
+      <div class="sticky bottom-4 z-20 bg-slate-900 text-white p-3.5 sm:p-4 rounded-xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-slate-700">
+        <div class="flex items-center space-x-2.5 text-xs sm:text-sm">
+          <i class="fa-solid fa-cloud-arrow-up text-emerald-400 text-lg"></i>
+          <div>
+            <div class="font-bold">พร้อมบันทึกการแก้ไขหน้ายื่นใบสมัครออนไลน์</div>
+            <div class="text-[11px] text-slate-300">เมื่อกดบันทึก ข้อมูลจะซิงค์ขึ้น Cloud ทันที ทุกอุปกรณ์จะอัปเดต Real-time</div>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2 w-full sm:w-auto">
+          <button type="button" onclick="handleSaveApplyPage(event)" class="gov-btn bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm py-2.5 px-5 shadow cursor-pointer transition flex-1 sm:flex-initial">
+            <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
+          </button>
+          <a href="index.html" target="_blank" class="gov-btn bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm py-2.5 px-3.5 border border-white/30 flex items-center justify-center">
+            <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> ดูหน้าบ้าน
+          </a>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 px-6 text-center border-t border-slate-800">
+      โรงเรียนวชิรธรรมสาธิต • ระบบบริหารจัดการหน้ายื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570
+    </footer>
+
+  </div>
+
+  <script>
+    function handleLoginSubmit(e) {
+      if (e) e.preventDefault();
+      const u = (document.getElementById('loginUsername')?.value || '').trim();
+      const p = (document.getElementById('loginPassword')?.value || '').trim();
+      const cfg = WDSDB.getConfig();
+      const correctUser = cfg.adminUsername || 'admin';
+      const correctPass = cfg.adminPassword || 'admin1234';
+
+      if (u === correctUser && p === correctPass) {
+        doDirectLogin();
+        showToast('เข้าสู่ระบบสำเร็จ ยินดีต้อนรับสู่แผงควบคุมหน้ายื่นใบสมัครออนไลน์', 'success');
+      } else {
+        showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (ค่าเริ่มต้น: admin / admin1234)', 'error');
+      }
+    }
+
+    function handleLogout() {
+      if (!confirm('ต้องการออกจากระบบหรือไม่?')) return;
+      try {
+        localStorage.removeItem('wds_admin_logged_in');
+        sessionStorage.removeItem('wds_admin_logged_in');
+      } catch(e) {}
+      window.location.reload();
+    }
+
+    function initApplyManagerPage() {
+      const cfg = WDSDB.getConfig();
+
+      const isCouncilOpen = cfg.applyCouncilIsOpen !== false;
+      const isColorOpen = cfg.applyColorIsOpen !== false;
+
+      document.getElementById('councilIsOpenChk').checked = isCouncilOpen;
+      updatePillUI('council', isCouncilOpen);
+
+      document.getElementById('colorIsOpenChk').checked = isColorOpen;
+      updatePillUI('color', isColorOpen);
+
+      document.getElementById('councilCloseNotice').value = cfg.applyCouncilCloseNotice || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
+      document.getElementById('colorCloseNotice').value = cfg.applyColorCloseNotice || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
+
+      document.getElementById('pageHeaderTitle').value = cfg.applyHeaderTitle || 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570';
+      document.getElementById('pageHeaderSubtitle').value = cfg.applyHeaderSubtitle || 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย';
+      document.getElementById('pageAnnouncementText').value = cfg.announcementText || 'เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569';
+
+      document.getElementById('councilTitle').value = cfg.applyCouncilTitle || '1. สมัครเลือกตั้งประธานสภานักเรียน';
+      document.getElementById('councilBadge').value = cfg.applyCouncilBadge || 'ทีมพรรค 10 คน';
+      document.getElementById('councilDesc').value = cfg.applyCouncilDesc || '';
+      document.getElementById('councilBullets').value = Array.isArray(cfg.applyCouncilBullets) ? cfg.applyCouncilBullets.join('\n') : '';
+      document.getElementById('councilBtnText').value = cfg.applyCouncilBtnText || 'เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)';
+
+      document.getElementById('colorTitle').value = cfg.applyColorTitle || '2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)';
+      document.getElementById('colorBadge').value = cfg.applyColorBadge || '5 คณะสี';
+      document.getElementById('colorDesc').value = cfg.applyColorDesc || '';
+      document.getElementById('colorHousesText').value = cfg.applyColorHousesText || '1. คณะสีอัญชัน, 2. คณะสีนนทรี, 3. คณะปาริชาต, 4. คณะสีเอื้องช่อแสด, 5. คณะสีอินทนิล';
+      document.getElementById('colorBullets').value = Array.isArray(cfg.applyColorBullets) ? cfg.applyColorBullets.join('\n') : '';
+      document.getElementById('colorBtnText').value = cfg.applyColorBtnText || 'เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)';
+
+      renderPreview();
+    }
+
+    function updatePillUI(type, isOpen) {
+      const pill = document.getElementById(type === 'council' ? 'applyCouncilStatusPill' : 'applyColorStatusPill');
+      if (!pill) return;
+      if (isOpen) {
+        pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs';
+        pill.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>กำลังเปิดรับสมัคร</span>';
+      } else {
+        pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1.5 shadow-xs';
+        pill.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500"></span><span>ปิดรับสมัครชั่วคราว</span>';
+      }
+    }
+
+    function onStatusToggle(type) {
+      const chk = document.getElementById(type === 'council' ? 'councilIsOpenChk' : 'colorIsOpenChk');
+      const isOpen = chk ? chk.checked : true;
+      updatePillUI(type, isOpen);
+      renderPreview();
+      showToast(`เปลี่ยนสถานะรับสมัคร${type === 'council' ? 'สภานักเรียน' : 'ประธานคณะสี'}: ${isOpen ? 'เปิดรับสมัคร' : 'ปิดรับสมัคร'} (กดบันทึกเพื่อยืนยัน)`, 'info');
+    }
+
+    function renderPreview() {
+      const box = document.getElementById('standaloneLivePreviewBox');
+      if (!box) return;
+
+      const isCouncilOpen = document.getElementById('councilIsOpenChk') ? document.getElementById('councilIsOpenChk').checked : true;
+      const isColorOpen = document.getElementById('colorIsOpenChk') ? document.getElementById('colorIsOpenChk').checked : true;
+      const councilNotice = (document.getElementById('councilCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครแล้ว').trim();
+      const colorNotice = (document.getElementById('colorCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครแล้ว').trim();
+
+      const headerTitle = (document.getElementById('pageHeaderTitle')?.value || 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570').trim();
+      const headerSub = (document.getElementById('pageHeaderSubtitle')?.value || 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย').trim();
+      const announceText = (document.getElementById('pageAnnouncementText')?.value || 'เปิดรับสมัครเลือกตั้ง...').trim();
+
+      const cTitle = (document.getElementById('councilTitle')?.value || '1. สมัครเลือกตั้งประธานสภานักเรียน').trim();
+      const cBadge = (document.getElementById('councilBadge')?.value || 'ทีมพรรค 10 คน').trim();
+      const cDesc = (document.getElementById('councilDesc')?.value || '').trim();
+      const cBulletsRaw = (document.getElementById('councilBullets')?.value || '').trim();
+      const cBullets = cBulletsRaw ? cBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const cBtnText = (document.getElementById('councilBtnText')?.value || 'เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)').trim();
+
+      const kTitle = (document.getElementById('colorTitle')?.value || '2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)').trim();
+      const kBadge = (document.getElementById('colorBadge')?.value || '5 คณะสี').trim();
+      const kDesc = (document.getElementById('colorDesc')?.value || '').trim();
+      const kHousesRaw = (document.getElementById('colorHousesText')?.value || '1. คณะสีอัญชัน, 2. คณะสีนนทรี, 3. คณะปาริชาต, 4. คณะสีเอื้องช่อแสด, 5. คณะสีอินทนิล').trim();
+      const kHouses = kHousesRaw ? kHousesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const kBulletsRaw = (document.getElementById('colorBullets')?.value || '').trim();
+      const kBullets = kBulletsRaw ? kBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const kBtnText = (document.getElementById('colorBtnText')?.value || 'เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)').trim();
+
+      const tagStyles = [
+        'bg-blue-50 text-blue-800 border-blue-200',
+        'bg-yellow-50 text-yellow-800 border-yellow-300',
+        'bg-red-50 text-red-800 border-red-200',
+        'bg-orange-50 text-orange-800 border-orange-200',
+        'bg-green-50 text-green-800 border-green-200'
+      ];
+
+      box.innerHTML = `
+        <div class="bg-amber-50/90 border border-amber-200/90 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-950 text-xs sm:text-sm shadow-xs">
+          <div class="flex items-center space-x-2.5">
+            <span class="w-7 h-7 rounded-full bg-amber-500/20 text-amber-800 flex items-center justify-center flex-shrink-0 text-xs">
+              <i class="fa-solid fa-bullhorn text-amber-700"></i>
+            </span>
+            <div class="font-bold text-amber-900 flex items-center gap-1.5 flex-wrap">
+              <span class="bg-amber-600 text-white px-2 py-0.5 rounded text-[11px] font-bold">ประกาศ</span>
+              <span>${escapeHTML(announceText)}</span>
+            </div>
+          </div>
+          <span class="bg-amber-200/70 hover:bg-amber-300/80 text-amber-950 text-xs font-semibold px-3 py-1 rounded-md border border-amber-300 flex items-center gap-1.5 flex-shrink-0">
+            <i class="fa-solid fa-book-open text-amber-800"></i> อ่านคู่มือระบบ
+          </span>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+          <h2 class="text-base sm:text-lg md:text-xl font-bold text-[#16325c]">
+            ${escapeHTML(headerTitle)}
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1">${escapeHTML(headerSub)}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Card 1: Council -->
+          <div class="gov-card flex flex-col justify-between ${!isCouncilOpen ? 'opacity-90 border-slate-300' : ''}">
+            <div class="gov-card-header text-sm sm:text-base">
+              <span class="font-bold text-[#16325c] flex items-center">
+                <i class="fa-solid fa-landmark mr-2 text-[#16325c]"></i> ${escapeHTML(cTitle)}
+              </span>
+              <div class="flex items-center gap-1.5">
+                ${!isCouncilOpen ? '<span class="text-[11px] bg-rose-100 text-rose-800 border border-rose-200 px-2 py-0.5 rounded font-bold"><i class="fa-solid fa-lock mr-1"></i> ปิดรับ</span>' : ''}
+                <span class="text-xs bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded font-semibold">${escapeHTML(cBadge)}</span>
+              </div>
+            </div>
+
+            <div class="p-5 space-y-3.5 text-xs sm:text-sm text-slate-700">
+              <p class="leading-relaxed whitespace-pre-line">${escapeHTML(cDesc)}</p>
+
+              <div class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm text-slate-700 space-y-1.5">
+                ${cBullets.length > 0 ? cBullets.map(b => `<div>• ${escapeHTML(b)}</div>`).join('') : '<div class="text-slate-400 italic">ไม่มีรายการสรุปคุณสมบัติ</div>'}
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200">
+              ${isCouncilOpen ? `
+                <a href="apply-council.html" target="_blank" class="btn-gov-primary w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm block">
+                  <i class="fa-solid fa-file-pen mr-2"></i> ${escapeHTML(cBtnText)}
+                </a>
+              ` : `
+                <div class="btn-gov-gray w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm opacity-80 cursor-not-allowed">
+                  <i class="fa-solid fa-lock mr-2 text-rose-500"></i> ${escapeHTML(councilCloseNotice)}
+                </div>
+              `}
+            </div>
+          </div>
+
+          <!-- Card 2: Color -->
+          <div class="gov-card flex flex-col justify-between ${!isColorOpen ? 'opacity-90 border-slate-300' : ''}">
+            <div class="gov-card-header text-sm sm:text-base">
+              <span class="font-bold text-[#16325c] flex items-center">
+                <i class="fa-solid fa-flag mr-2 text-amber-700"></i> ${escapeHTML(kTitle)}
+              </span>
+              <div class="flex items-center gap-1.5">
+                ${!isColorOpen ? '<span class="text-[11px] bg-rose-100 text-rose-800 border border-rose-200 px-2 py-0.5 rounded font-bold"><i class="fa-solid fa-lock mr-1"></i> ปิดรับ</span>' : ''}
+                <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded font-semibold">${escapeHTML(kBadge)}</span>
+              </div>
+            </div>
+
+            <div class="p-5 space-y-3.5 text-xs sm:text-sm text-slate-700">
+              <p class="leading-relaxed whitespace-pre-line">${escapeHTML(kDesc)}</p>
+
+              <div class="flex flex-wrap gap-1.5 py-1">
+                ${kHouses.map((h, i) => {
+                  const st = tagStyles[i % tagStyles.length];
+                  return `<span class="px-2 py-0.5 ${st} border rounded text-xs font-semibold">${escapeHTML(h)}</span>`;
+                }).join('')}
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm text-slate-700 space-y-1.5">
+                ${kBullets.length > 0 ? kBullets.map(b => `<div>• ${escapeHTML(b)}</div>`).join('') : '<div class="text-slate-400 italic">ไม่มีรายการสรุปคุณสมบัติ</div>'}
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200">
+              ${isColorOpen ? `
+                <a href="apply-color.html" target="_blank" class="btn-gov-gold w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm block">
+                  <i class="fa-solid fa-file-pen mr-2"></i> ${escapeHTML(kBtnText)}
+                </a>
+              ` : `
+                <div class="btn-gov-gray w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm opacity-80 cursor-not-allowed">
+                  <i class="fa-solid fa-lock mr-2 text-rose-500"></i> ${escapeHTML(colorCloseNotice)}
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleSaveApplyPage(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      try {
+        const currentCfg = WDSDB.getConfig();
+
+        const isCouncilOpen = document.getElementById('councilIsOpenChk').checked;
+        const isColorOpen = document.getElementById('colorIsOpenChk').checked;
+        const councilNotice = (document.getElementById('councilCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครแล้ว').trim();
+        const colorNotice = (document.getElementById('colorCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครแล้ว').trim();
+
+        const headerTitle = (document.getElementById('pageHeaderTitle')?.value || currentCfg.applyHeaderTitle).trim();
+        const headerSub = (document.getElementById('pageHeaderSubtitle')?.value || currentCfg.applyHeaderSubtitle).trim();
+        const announceText = (document.getElementById('pageAnnouncementText')?.value || currentCfg.announcementText).trim();
+
+        const cTitle = (document.getElementById('councilTitle')?.value || currentCfg.applyCouncilTitle).trim();
+        const cBadge = (document.getElementById('councilBadge')?.value || currentCfg.applyCouncilBadge).trim();
+        const cDesc = (document.getElementById('councilDesc')?.value || currentCfg.applyCouncilDesc).trim();
+        const cBulletsRaw = (document.getElementById('councilBullets')?.value || '').trim();
+        const cBullets = cBulletsRaw ? cBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : currentCfg.applyCouncilBullets;
+        const cBtnText = (document.getElementById('councilBtnText')?.value || currentCfg.applyCouncilBtnText).trim();
+
+        const kTitle = (document.getElementById('colorTitle')?.value || currentCfg.applyColorTitle).trim();
+        const kBadge = (document.getElementById('colorBadge')?.value || currentCfg.applyColorBadge).trim();
+        const kDesc = (document.getElementById('colorDesc')?.value || currentCfg.applyColorDesc).trim();
+        const kHouses = (document.getElementById('colorHousesText')?.value || currentCfg.applyColorHousesText).trim();
+        const kBulletsRaw = (document.getElementById('colorBullets')?.value || '').trim();
+        const kBullets = kBulletsRaw ? kBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : currentCfg.applyColorBullets;
+        const kBtnText = (document.getElementById('colorBtnText')?.value || currentCfg.applyColorBtnText).trim();
+
+        const updated = {
+          ...currentCfg,
+          applyCouncilIsOpen: isCouncilOpen,
+          applyCouncilCloseNotice: councilNotice,
+          applyColorIsOpen: isColorOpen,
+          applyColorCloseNotice: colorNotice,
+          applyHeaderTitle: headerTitle,
+          applyHeaderSubtitle: headerSub,
+          announcementText: announceText,
+          applyCouncilTitle: cTitle,
+          applyCouncilBadge: cBadge,
+          applyCouncilDesc: cDesc,
+          applyCouncilBullets: cBullets,
+          applyCouncilBtnText: cBtnText,
+          applyColorTitle: kTitle,
+          applyColorBadge: kBadge,
+          applyColorDesc: kDesc,
+          applyColorHousesText: kHouses,
+          applyColorBullets: kBullets,
+          applyColorBtnText: kBtnText
+        };
+
+        const ok = WDSDB.saveConfig(updated);
+        if (ok) {
+          if (typeof applySiteConfig === 'function') applySiteConfig();
+          renderPreview();
+          showToast('✅ บันทึกข้อมูลและซิงค์คลาวด์หน้ายื่นใบสมัครออนไลน์เรียบร้อยแล้ว!', 'success');
+        } else {
+          showToast('บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
+        }
+      } catch (err) {
+        console.error('Save error:', err);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err), 'error');
+      }
+    }
+  </script>
+</body>
+</html>

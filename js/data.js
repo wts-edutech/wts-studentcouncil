@@ -194,11 +194,15 @@ const DEFAULT_SITE_CONFIG = {
   rulesColorList: DEFAULT_COLOR_RULES,
   applyHeaderTitle: 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570',
   applyHeaderSubtitle: 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย',
+  applyCouncilIsOpen: true,
+  applyCouncilCloseNotice: 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร',
   applyCouncilTitle: '1. สมัครเลือกตั้งประธานสภานักเรียน',
   applyCouncilBadge: 'ทีมพรรค 10 คน',
   applyCouncilDesc: "ผู้สมัครรับเลือกตั้งเป็นประธานนักเรียนต้องจัดตั้งพรรคโดยให้มีสมาชิกภายในพรรค จำนวน 10 คน และมีผู้แทนพรรคเพื่อดำรงตำแหน่ง\nดังต่อไปนี้  ประธานพรรคลงสมัครประธานสภานักเรียน 1 คน , รองประธานพรรค 1 คน , สมาชิกพรรคฝ่ายวิชาการ 2 คน , สมาชิกพรรคฝ่ายสันทนาการ 2 คน, สมาชิกพรรคฝ่ายทั่วไป 1 คน, สมาชิกพรรคฝ่ายประชาสัมพันธ์ 2 คน, เลขานุการสภานักเรียน 1 คน",
   applyCouncilBullets: DEFAULT_APPLY_COUNCIL_BULLETS,
   applyCouncilBtnText: 'เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)',
+  applyColorIsOpen: true,
+  applyColorCloseNotice: 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร',
   applyColorTitle: '2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)',
   applyColorBadge: '5 คณะสี',
   applyColorDesc: "ผู้สมัครรับเลือกตั้งเป็นประธานนักเรียนต้องจัดตั้งพรรคโดยให้มีสมาชิกภายในพรรค จำนวน 10 คน และมีผู้แทนพรรคเพื่อดำรงตำแหน่ง\nดังต่อไปนี้  ประธานคณะสี\t1 คน ,  รองประธานคณะสี\t1 คน , สมาชิกคณะสีฝ่ายทั่วไป\t2 คน, สมาชิกพรรคฝ่ายประชาสัมพันธ์\t2 คน , สมาชิกคณะสีฝ่ายสันทนาการ 3 คน , เลขานุการคณะสี 1 คน",
@@ -559,6 +563,10 @@ const WDSDB = {
       if (!merged.applyColorBullets || !Array.isArray(merged.applyColorBullets) || merged.applyColorBullets.length === 0) {
         merged.applyColorBullets = DEFAULT_APPLY_COLOR_BULLETS;
       }
+      if (merged.applyCouncilIsOpen === undefined) merged.applyCouncilIsOpen = true;
+      if (merged.applyColorIsOpen === undefined) merged.applyColorIsOpen = true;
+      if (!merged.applyCouncilCloseNotice) merged.applyCouncilCloseNotice = 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
+      if (!merged.applyColorCloseNotice) merged.applyColorCloseNotice = 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
       if (!merged.documentsList || !Array.isArray(merged.documentsList) || merged.documentsList.length === 0) {
         merged.documentsList = DEFAULT_DOCUMENTS_LIST;
       } else {

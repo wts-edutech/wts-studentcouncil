@@ -295,6 +295,78 @@ function renderRulesAndApplyContent(cfg) {
   if (applyColorBulletsEl && Array.isArray(cfg.applyColorBullets)) {
     applyColorBulletsEl.innerHTML = cfg.applyColorBullets.map(b => `<div>• ${escapeHTML(b)}</div>`).join('');
   }
+
+  // ควบคุมสถานะเปิด/ปิดรับสมัครสภานักเรียน
+  const applyCouncilBtn = document.querySelector('a[href="apply-council.html"], a[data-apply-role="council"]');
+  if (applyCouncilBtn) {
+    applyCouncilBtn.setAttribute('data-apply-role', 'council');
+    if (cfg.applyCouncilIsOpen === false) {
+      applyCouncilBtn.setAttribute('href', 'javascript:void(0)');
+      applyCouncilBtn.className = 'btn-gov-gray w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm opacity-80 cursor-not-allowed';
+      applyCouncilBtn.innerHTML = `<i class="fa-solid fa-lock mr-2 text-rose-500"></i> <span>${escapeHTML(cfg.applyCouncilCloseNotice || 'ปิดรับสมัครชั่วคราว')}</span>`;
+    } else {
+      applyCouncilBtn.setAttribute('href', 'apply-council.html');
+      applyCouncilBtn.className = 'btn-gov-primary w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm';
+      applyCouncilBtn.innerHTML = `<i class="fa-solid fa-file-pen mr-2"></i> <span data-cfg="applyCouncilBtnText">${escapeHTML(cfg.applyCouncilBtnText || 'เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)')}</span>`;
+    }
+  }
+
+  // ควบคุมสถานะเปิด/ปิดรับสมัครประธานคณะสี
+  const applyColorBtn = document.querySelector('a[href="apply-color.html"], a[data-apply-role="color"]');
+  if (applyColorBtn) {
+    applyColorBtn.setAttribute('data-apply-role', 'color');
+    if (cfg.applyColorIsOpen === false) {
+      applyColorBtn.setAttribute('href', 'javascript:void(0)');
+      applyColorBtn.className = 'btn-gov-gray w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm opacity-80 cursor-not-allowed';
+      applyColorBtn.innerHTML = `<i class="fa-solid fa-lock mr-2 text-rose-500"></i> <span>${escapeHTML(cfg.applyColorCloseNotice || 'ปิดรับสมัครชั่วคราว')}</span>`;
+    } else {
+      applyColorBtn.setAttribute('href', 'apply-color.html');
+      applyColorBtn.className = 'btn-gov-gold w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm';
+      applyColorBtn.innerHTML = `<i class="fa-solid fa-file-pen mr-2"></i> <span data-cfg="applyColorBtnText">${escapeHTML(cfg.applyColorBtnText || 'เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)')}</span>`;
+    }
+  }
+
+  // ตรวจสอบหน้ากรอกฟอร์มจริง (apply-council.html / apply-color.html) หากปิดรับสมัคร
+  if (typeof window !== 'undefined' && window.location) {
+    if (window.location.pathname.includes('apply-council.html') && cfg.applyCouncilIsOpen === false) {
+      const lockBox = document.getElementById('councilFormLockBanner');
+      if (!lockBox) {
+        const form = document.querySelector('form');
+        if (form) {
+          const banner = document.createElement('div');
+          banner.id = 'councilFormLockBanner';
+          banner.className = 'p-4 bg-rose-50 border-2 border-rose-300 rounded-lg text-rose-800 text-xs sm:text-sm font-semibold mb-4 flex items-center justify-between gap-3 shadow-sm';
+          banner.innerHTML = `<div class="flex items-center gap-2"><i class="fa-solid fa-lock text-rose-600 text-lg"></i><span>${escapeHTML(cfg.applyCouncilCloseNotice || 'ขณะนี้ปิดรับสมัครแล้ว')}</span></div><a href="index.html" class="btn-gov-outline text-xs px-2.5 py-1 whitespace-nowrap">กลับหน้าหลัก</a>`;
+          form.prepend(banner);
+          const submitBtn = form.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            submitBtn.innerHTML = '<i class="fa-solid fa-lock mr-2"></i> ปิดรับสมัครแล้ว';
+          }
+        }
+      }
+    }
+    if (window.location.pathname.includes('apply-color.html') && cfg.applyColorIsOpen === false) {
+      const lockBox = document.getElementById('colorFormLockBanner');
+      if (!lockBox) {
+        const form = document.querySelector('form');
+        if (form) {
+          const banner = document.createElement('div');
+          banner.id = 'colorFormLockBanner';
+          banner.className = 'p-4 bg-rose-50 border-2 border-rose-300 rounded-lg text-rose-800 text-xs sm:text-sm font-semibold mb-4 flex items-center justify-between gap-3 shadow-sm';
+          banner.innerHTML = `<div class="flex items-center gap-2"><i class="fa-solid fa-lock text-rose-600 text-lg"></i><span>${escapeHTML(cfg.applyColorCloseNotice || 'ขณะนี้ปิดรับสมัครแล้ว')}</span></div><a href="index.html" class="btn-gov-outline text-xs px-2.5 py-1 whitespace-nowrap">กลับหน้าหลัก</a>`;
+          form.prepend(banner);
+          const submitBtn = form.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            submitBtn.innerHTML = '<i class="fa-solid fa-lock mr-2"></i> ปิดรับสมัครแล้ว';
+          }
+        }
+      }
+    }
+  }
 }
 
 // รายชื่อโรงเรียนในสหวิทยาเขตนวสิรินครินทร์ พร้อมไอคอนตราสัญลักษณ์จำลองสีประจำโรงเรียน

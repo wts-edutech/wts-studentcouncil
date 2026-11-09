@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257019">
-  <script src="js/data.js?v=257019"></script>
-  <script src="js/app.js?v=257019"></script>
+  <link rel="stylesheet" href="css/style.css?v=257020">
+  <script src="js/data.js?v=257020"></script>
+  <script src="js/app.js?v=257020"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -414,13 +414,16 @@
       <div class="flex flex-wrap items-center justify-between border-b border-slate-300 bg-slate-100 px-3 sm:px-4 pt-2 gap-2">
         <div class="flex space-x-1 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0" style="-webkit-overflow-scrolling: touch;">
           <button onclick="switchTab('settings')" id="tabSettingsBtn" class="gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap">
-            <i class="fa-solid fa-gear mr-1.5 text-amber-600"></i> <span class="sm:hidden">1. ตั้งค่าระบบ (CMS)</span><span class="hidden sm:inline">1. ตั้งค่าข้อมูลเว็บไซต์และระบบ (CMS)</span>
+            <i class="fa-solid fa-gear mr-1.5 text-amber-600"></i> <span class="sm:hidden">1. ตั้งค่าระบบ</span><span class="hidden sm:inline">1. ตั้งค่าข้อมูลเว็บไซต์และระบบ (CMS)</span>
+          </button>
+          <button onclick="switchTab('apply')" id="tabApplyBtn" class="gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
+            <i class="fa-regular fa-pen-to-square mr-1.5 text-emerald-600"></i> <span class="sm:hidden">2. หน้าสมัครออนไลน์</span><span class="hidden sm:inline">2. จัดการหน้ายื่นใบสมัครออนไลน์ (Tab 3)</span>
           </button>
           <button onclick="switchTab('council')" id="tabCouncilBtn" class="gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
-            <i class="fa-solid fa-landmark mr-1.5 text-blue-700"></i> <span class="sm:hidden">2. สภานักเรียน</span><span class="hidden sm:inline">2. ทะเบียนผู้สมัครสภานักเรียน</span>
+            <i class="fa-solid fa-landmark mr-1.5 text-blue-700"></i> <span class="sm:hidden">3. สภานักเรียน</span><span class="hidden sm:inline">3. ทะเบียนผู้สมัครสภานักเรียน</span>
           </button>
           <button onclick="switchTab('color')" id="tabColorBtn" class="gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
-            <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> <span class="sm:hidden">3. คณะสี (5 สี)</span><span class="hidden sm:inline">3. ทะเบียนผู้สมัครประธานคณะสี</span>
+            <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> <span class="sm:hidden">4. คณะสี (5 สี)</span><span class="hidden sm:inline">4. ทะเบียนผู้สมัครประธานคณะสี</span>
           </button>
         </div>
 
@@ -1127,7 +1130,358 @@
         </form>
       </div>
 
-      <!-- VIEW 2: ตารางทะเบียนสภา หรือ คณะสี -->
+      <!-- VIEW 2: จัดการหน้ายื่นใบสมัครออนไลน์ (Apply Online Manager - Tab 3 หน้าบ้าน) -->
+      <div id="viewApplyManager" class="hidden p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 text-xs sm:text-sm lg:text-[15px]">
+        
+        <!-- แถบแนะนำและปุ่มบันทึกด่วนด้านบน -->
+        <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200/80 p-4 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+          <div class="flex items-start space-x-3 text-emerald-950">
+            <div class="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+              <i class="fa-solid fa-file-pen text-lg"></i>
+            </div>
+            <div>
+              <div class="font-bold text-sm sm:text-base text-emerald-900 flex items-center gap-2">
+                <span>จัดการหน้ายื่นใบสมัครออนไลน์ (Tab 3: ยื่นใบสมัครออนไลน์)</span>
+                <span class="text-[11px] bg-emerald-200/80 text-emerald-900 px-2 py-0.5 rounded-full font-semibold">หน้าเลือกประเภทการสมัคร</span>
+              </div>
+              <p class="text-xs sm:text-sm text-emerald-800/90 mt-0.5 leading-relaxed">
+                ควบคุมสวิตช์เปิด/ปิดรับสมัคร, แก้ไขข้อความการ์ดสภานักเรียนและการ์ดประธานคณะสี พร้อมดูตัวอย่างจำลองหน้าจอจริง 1:1 ได้แบบสดๆ ทันที
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0 w-full md:w-auto">
+            <button type="button" onclick="handleSaveApplyManager(event)" class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm px-4 py-2.5 shadow-md flex items-center justify-center cursor-pointer transition flex-1 md:flex-initial">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
+            </button>
+            <a href="index.html" target="_blank" class="gov-btn bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm flex items-center justify-center">
+              <i class="fa-solid fa-arrow-up-right-from-square mr-1.5 text-blue-600"></i> เปิดดูหน้าบ้าน
+            </a>
+            <button type="button" onclick="resetApplyManagerDefaults()" class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2.5 border border-slate-300" title="คืนค่าข้อความมาตรฐาน">
+              <i class="fa-solid fa-rotate-left mr-1"></i> คืนค่าเดิม
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. แผงสวิตช์ควบคุมเปิด/ปิดการรับสมัคร (Master Status Controls) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+          
+          <!-- สวิตช์สภานักเรียน -->
+          <div class="bg-white border-2 border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm hover:border-blue-400 transition space-y-3.5" id="applyMgrCouncilStatusBox">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-2">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-[#16325c] flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-landmark"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm sm:text-base">1. การรับสมัครประธานสภานักเรียน</h4>
+                  <div class="text-[11px] text-slate-500">ทีมพรรค 10 คน (ม.4)</div>
+                </div>
+              </div>
+              <span id="applyMgr_councilStatusPill" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>กำลังเปิดรับสมัคร</span>
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div>
+                <div class="font-bold text-slate-800 text-xs sm:text-sm">สถานะระบบรับสมัครสภานักเรียน</div>
+                <div class="text-[11px] text-slate-500">หากปิด ปุ่มในหน้าบ้านจะถูกล็อกและแสดงข้อความแจ้งเตือน</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input type="checkbox" id="applyMgr_councilIsOpen" checked onchange="onApplyMgrStatusToggle('council')" class="sr-only peer">
+                <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 text-xs mb-1">
+                ข้อความแจ้งเตือนเมื่อปิดรับสมัคร (จะแสดงบนปุ่มและหน้าฟอร์ม)
+              </label>
+              <input type="text" id="applyMgr_councilCloseNotice" oninput="renderApplyManagerPreview()" class="gov-input w-full text-xs" placeholder="เช่น ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว">
+            </div>
+
+            <div class="pt-1 flex items-center justify-between text-xs text-slate-500">
+              <span>แบบฟอร์ม: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-700">apply-council.html</code></span>
+              <a href="apply-council.html" target="_blank" class="text-blue-700 hover:text-blue-900 font-semibold inline-flex items-center gap-1">
+                <span>เปิดดูแบบฟอร์มสภา</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- สวิตช์ประธานคณะสี -->
+          <div class="bg-white border-2 border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm hover:border-amber-400 transition space-y-3.5" id="applyMgrColorStatusBox">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-2">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-flag"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm sm:text-base">2. การรับสมัครประธานคณะสี</h4>
+                  <div class="text-[11px] text-slate-500">ทั้ง 5 คณะสี (ม.4)</div>
+                </div>
+              </div>
+              <span id="applyMgr_colorStatusPill" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>กำลังเปิดรับสมัคร</span>
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div>
+                <div class="font-bold text-slate-800 text-xs sm:text-sm">สถานะระบบรับสมัครคณะสี</div>
+                <div class="text-[11px] text-slate-500">หากปิด ปุ่มในหน้าบ้านจะถูกล็อกและแสดงข้อความแจ้งเตือน</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input type="checkbox" id="applyMgr_colorIsOpen" checked onchange="onApplyMgrStatusToggle('color')" class="sr-only peer">
+                <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 text-xs mb-1">
+                ข้อความแจ้งเตือนเมื่อปิดรับสมัคร (จะแสดงบนปุ่มและหน้าฟอร์ม)
+              </label>
+              <input type="text" id="applyMgr_colorCloseNotice" oninput="renderApplyManagerPreview()" class="gov-input w-full text-xs" placeholder="เช่น ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว">
+            </div>
+
+            <div class="pt-1 flex items-center justify-between text-xs text-slate-500">
+              <span>แบบฟอร์ม: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-700">apply-color.html</code></span>
+              <a href="apply-color.html" target="_blank" class="text-amber-800 hover:text-amber-950 font-semibold inline-flex items-center gap-1">
+                <span>เปิดดูแบบฟอร์มคณะสี</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2. แผงแก้ไขหัวเรื่องและแถบประกาศด้านบนของหน้า -->
+        <div class="border border-slate-300 rounded-xl p-4 sm:p-5 bg-white space-y-4 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+            <h4 class="font-bold text-[#1a365d] text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-heading text-slate-600"></i> ข้อความหัวเรื่องและแถบประกาศของหน้านี้
+            </h4>
+            <span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">ส่วนหัวหน้าเลือกประเภท</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">หัวข้อหลักของหน้านี้ (Main Heading) <span class="text-red-600">*</span></label>
+              <input type="text" id="applyMgr_headerTitle" oninput="renderApplyManagerPreview()" class="gov-input w-full font-bold text-slate-800" placeholder="เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">คำอธิบายย่อยใต้หัวข้อหลัก (Subtitle)</label>
+              <input type="text" id="applyMgr_headerSubtitle" oninput="renderApplyManagerPreview()" class="gov-input w-full text-slate-700" placeholder="กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block font-semibold text-slate-700 mb-1">ข้อความในแถบประกาศสีส้มด้านบน (Announcement Banner)</label>
+              <input type="text" id="applyMgr_announcementText" oninput="renderApplyManagerPreview()" class="gov-input w-full" placeholder="เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. แผงแก้ไขการ์ดทั้ง 2 ใบ (2 Cards Editor) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          
+          <!-- การ์ดที่ 1: สภานักเรียน -->
+          <div class="bg-white border border-slate-300 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-blue-200 pb-2.5">
+              <div class="font-bold text-[#16325c] text-sm sm:text-base flex items-center gap-2">
+                <i class="fa-solid fa-landmark text-blue-700"></i> การ์ดที่ 1: สมัครเลือกตั้งประธานสภานักเรียน
+              </div>
+              <span class="text-[11px] bg-blue-100 text-blue-900 px-2 py-0.5 rounded font-bold">10 ตำแหน่ง</span>
+            </div>
+
+            <div class="space-y-3.5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-1">ชื่อหัวข้อการ์ดที่ 1</label>
+                  <input type="text" id="applyMgr_councilTitle" oninput="renderApplyManagerPreview()" class="gov-input w-full font-bold">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">ป้ายกำกับมุมขวา</label>
+                  <input type="text" id="applyMgr_councilBadge" oninput="renderApplyManagerPreview()" class="gov-input w-full">
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ข้อความอธิบายรายละเอียด (Paragraph)</label>
+                <textarea id="applyMgr_councilDesc" rows="4" oninput="renderApplyManagerPreview()" class="gov-input w-full text-xs sm:text-sm leading-relaxed"></textarea>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="font-semibold text-slate-700 text-xs sm:text-sm">
+                    รายการสรุปคุณสมบัติในกล่องสีเทา (Bullet points)
+                  </label>
+                  <span class="text-[11px] text-slate-500">พิมพ์บรรทัดละ 1 ข้อ</span>
+                </div>
+                <textarea id="applyMgr_councilBullets" rows="4" oninput="renderApplyManagerPreview()" class="gov-input w-full text-xs sm:text-sm font-mono"></textarea>
+                <p class="text-[11px] text-slate-500 mt-1">
+                  * เช่น GPAX, คะแนนพฤติกรรม, แนบรูปถ่าย 1.5 นิ้ว, ข้อตกลงสภานักเรียน
+                </p>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ข้อความบนปุ่มกดสมัคร (Button Text)</label>
+                <input type="text" id="applyMgr_councilBtnText" oninput="renderApplyManagerPreview()" class="gov-input w-full">
+              </div>
+            </div>
+          </div>
+
+          <!-- การ์ดที่ 2: ประธานคณะสี -->
+          <div class="bg-white border border-slate-300 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-amber-200 pb-2.5">
+              <div class="font-bold text-amber-900 text-sm sm:text-base flex items-center gap-2">
+                <i class="fa-solid fa-flag text-amber-700"></i> การ์ดที่ 2: สมัครเลือกตั้งประธานคณะสี (5 คณะสี)
+              </div>
+              <span class="text-[11px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-bold">5 คณะสี</span>
+            </div>
+
+            <div class="space-y-3.5">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-1">ชื่อหัวข้อการ์ดที่ 2</label>
+                  <input type="text" id="applyMgr_colorTitle" oninput="renderApplyManagerPreview()" class="gov-input w-full font-bold">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">ป้ายกำกับมุมขวา</label>
+                  <input type="text" id="applyMgr_colorBadge" oninput="renderApplyManagerPreview()" class="gov-input w-full">
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ข้อความอธิบายรายละเอียด (Paragraph)</label>
+                <textarea id="applyMgr_colorDesc" rows="4" oninput="renderApplyManagerPreview()" class="gov-input w-full text-xs sm:text-sm leading-relaxed"></textarea>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">
+                  ป้ายรายชื่อคณะสีทั้ง 5 สี (คั่นด้วยเครื่องหมายจุลภาค <code class="bg-slate-200 px-1 rounded">,</code>)
+                </label>
+                <input type="text" id="applyMgr_colorHousesText" oninput="renderApplyManagerPreview()" class="gov-input w-full text-xs sm:text-sm">
+                <div class="flex flex-wrap gap-1.5 mt-2" id="applyMgrColorPillsQuickDisplay">
+                  <!-- แท็กสีตัวอย่าง -->
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="font-semibold text-slate-700 text-xs sm:text-sm">
+                    รายการสรุปคุณสมบัติในกล่องสีเทา (Bullet points)
+                  </label>
+                  <span class="text-[11px] text-slate-500">พิมพ์บรรทัดละ 1 ข้อ</span>
+                </div>
+                <textarea id="applyMgr_colorBullets" rows="4" oninput="renderApplyManagerPreview()" class="gov-input w-full text-xs sm:text-sm font-mono"></textarea>
+                <p class="text-[11px] text-slate-500 mt-1">
+                  * เช่น GPAX, คะแนนพฤติกรรม, แนบรูปถ่าย 1.5 นิ้ว, ข้อตกลงสภานักเรียน
+                </p>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">ข้อความบนปุ่มกดสมัคร (Button Text)</label>
+                <input type="text" id="applyMgr_colorBtnText" oninput="renderApplyManagerPreview()" class="gov-input w-full">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 4. แผงจำลองตัวอย่างหน้าจอจริง 1:1 แบบ Real-time (Interactive Live Preview) -->
+        <div class="border-2 border-slate-300 rounded-xl bg-slate-100 overflow-hidden shadow-md">
+          <div class="bg-slate-800 text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+              <span class="font-bold text-xs sm:text-sm ml-2 tracking-wide flex items-center gap-1.5">
+                <i class="fa-solid fa-eye text-emerald-400"></i> ตัวอย่างจำลองหน้าจอจริง 1:1 (Live Interactive Preview)
+              </span>
+            </div>
+            <div class="flex items-center space-x-2 text-xs">
+              <span class="text-slate-400 hidden sm:inline">การแสดงผลจริงตามที่นักเรียนจะเห็นในแท็บ "ยื่นใบสมัครออนไลน์"</span>
+              <span class="bg-emerald-600/90 text-white px-2 py-0.5 rounded text-[11px] font-semibold">อัปเดตสดอัตโนมัติ</span>
+            </div>
+          </div>
+
+          <!-- กล่องเนื้อหาจำลอง -->
+          <div class="p-4 sm:p-6 lg:p-8 bg-white min-h-[400px]">
+            <div id="applyManagerLivePreviewBox" class="space-y-6 max-w-5xl mx-auto">
+              <!-- จะถูกเติมด้วย renderApplyManagerPreview() -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. แผงสรุปจำนวนใบสมัครของหน้านี้ด่วน (Quick Submissions Snapshot) -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+            <h4 class="font-bold text-[#1a365d] text-sm sm:text-base flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie text-blue-700"></i> ยอดการยื่นใบสมัครล่าสุดที่เชื่อมโยงกับหน้านี้
+            </h4>
+            <span class="text-[11px] text-slate-500">ข้อมูลปัจจุบันในระบบ</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs sm:text-sm">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-slate-600 text-xs">พรรคสภานักเรียน</div>
+                <div class="text-xl font-bold text-[#16325c] mt-0.5"><span id="applyMgrStatCouncil">0</span> พรรค</div>
+              </div>
+              <button type="button" onclick="switchTab('council')" class="gov-btn gov-btn-navy text-[11px] py-1 px-2.5">
+                ดูรายชื่อ <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-slate-600 text-xs">ทีมประธานคณะสี (5 สี)</div>
+                <div class="text-xl font-bold text-amber-900 mt-0.5"><span id="applyMgrStatColor">0</span> ทีม</div>
+              </div>
+              <button type="button" onclick="switchTab('color')" class="gov-btn bg-amber-700 hover:bg-amber-800 text-white text-[11px] py-1 px-2.5">
+                ดูรายชื่อ <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+
+            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-slate-600 text-xs">ผ่านคุณสมบัติแล้ว</div>
+                <div class="text-xl font-bold text-emerald-800 mt-0.5"><span id="applyMgrStatApproved">0</span> รายการ</div>
+              </div>
+              <i class="fa-solid fa-circle-check text-emerald-600 text-2xl"></i>
+            </div>
+
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-slate-600 text-xs">รอตรวจสอบ</div>
+                <div class="text-xl font-bold text-orange-700 mt-0.5"><span id="applyMgrStatPending">0</span> รายการ</div>
+              </div>
+              <i class="fa-solid fa-clock text-orange-500 text-2xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. แถบบันทึกข้อมูลล่างสุด (Sticky Bottom Action Bar) -->
+        <div class="sticky bottom-4 z-20 bg-slate-900 text-white p-3.5 sm:p-4 rounded-xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-slate-700">
+          <div class="flex items-center space-x-2.5 text-xs sm:text-sm">
+            <i class="fa-solid fa-cloud-arrow-up text-emerald-400 text-lg"></i>
+            <div>
+              <div class="font-bold">พร้อมบันทึกการแก้ไขหน้ายื่นใบสมัครออนไลน์</div>
+              <div class="text-[11px] text-slate-300">เมื่อกดบันทึก ข้อมูลจะซิงค์ขึ้น Cloud ทันที และหน้าบ้านทุกอุปกรณ์จะอัปเดต Real-time</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <button type="button" onclick="handleSaveApplyManager(event)" class="gov-btn bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm py-2.5 px-5 shadow cursor-pointer transition flex-1 sm:flex-initial">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
+            </button>
+            <a href="index.html" target="_blank" class="gov-btn bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm py-2.5 px-3.5 border border-white/30 flex items-center justify-center">
+              <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> ดูหน้าบ้าน
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW 3: ตารางทะเบียนสภา หรือ คณะสี -->
       <div id="viewRegistries" class="hidden">
         <div class="p-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           <div class="flex items-center space-x-2 w-full sm:w-auto flex-grow max-w-lg">
@@ -1196,8 +1550,8 @@
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257019"></script>
-  <script src="js/app.js?v=257019"></script>
+  <script src="js/data.js?v=257020"></script>
+  <script src="js/app.js?v=257020"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -1263,33 +1617,46 @@
       const cBtn = document.getElementById('tabCouncilBtn');
       const kBtn = document.getElementById('tabColorBtn');
       const sBtn = document.getElementById('tabSettingsBtn');
+      const aBtn = document.getElementById('tabApplyBtn');
       const viewReg = document.getElementById('viewRegistries');
       const viewSet = document.getElementById('viewSettings');
+      const viewApply = document.getElementById('viewApplyManager');
       const exportGrp = document.getElementById('toolbarExportGroup');
 
-      cBtn.className = 'gov-tab-inactive px-4 py-2.5 text-xs sm:text-sm';
-      kBtn.className = 'gov-tab-inactive px-4 py-2.5 text-xs sm:text-sm';
-      sBtn.className = 'gov-tab-inactive px-4 py-2.5 text-xs sm:text-sm';
+      if (cBtn) cBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
+      if (kBtn) kBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
+      if (sBtn) sBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
+      if (aBtn) aBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
 
       updateStatsDashboard();
 
       if (tab === 'settings') {
-        sBtn.className = 'gov-tab-active px-4 py-2.5 text-xs sm:text-sm text-[#1a365d]';
-        viewReg.classList.add('hidden');
-        viewSet.classList.remove('hidden');
-        exportGrp.classList.add('hidden');
+        if (sBtn) sBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
+        if (viewReg) viewReg.classList.add('hidden');
+        if (viewSet) viewSet.classList.remove('hidden');
+        if (viewApply) viewApply.classList.add('hidden');
+        if (exportGrp) exportGrp.classList.add('hidden');
         loadSettingsIntoForm();
+      } else if (tab === 'apply') {
+        if (aBtn) aBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
+        if (viewReg) viewReg.classList.add('hidden');
+        if (viewSet) viewSet.classList.add('hidden');
+        if (viewApply) viewApply.classList.remove('hidden');
+        if (exportGrp) exportGrp.classList.add('hidden');
+        loadApplyManagerData();
       } else if (tab === 'council') {
-        cBtn.className = 'gov-tab-active px-4 py-2.5 text-xs sm:text-sm text-[#1a365d]';
-        viewReg.classList.remove('hidden');
-        viewSet.classList.add('hidden');
-        exportGrp.classList.remove('hidden');
+        if (cBtn) cBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
+        if (viewReg) viewReg.classList.remove('hidden');
+        if (viewSet) viewSet.classList.add('hidden');
+        if (viewApply) viewApply.classList.add('hidden');
+        if (exportGrp) exportGrp.classList.remove('hidden');
         renderTable();
       } else if (tab === 'color') {
-        kBtn.className = 'gov-tab-active px-4 py-2.5 text-xs sm:text-sm text-[#1a365d]';
-        viewReg.classList.remove('hidden');
-        viewSet.classList.add('hidden');
-        exportGrp.classList.remove('hidden');
+        if (kBtn) kBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
+        if (viewReg) viewReg.classList.remove('hidden');
+        if (viewSet) viewSet.classList.add('hidden');
+        if (viewApply) viewApply.classList.add('hidden');
+        if (exportGrp) exportGrp.classList.remove('hidden');
         renderTable();
       }
     }
@@ -1433,6 +1800,363 @@
 
       renderTimelineAdminTable();
       updateLivePreview();
+    }
+
+    /* ========================================================
+       ฟังก์ชันบริหารจัดการหน้ายื่นใบสมัครออนไลน์ (Tab 2: Apply Manager)
+       ======================================================== */
+    function loadApplyManagerData() {
+      const cfg = WDSDB.getConfig();
+
+      // โหลดสวิตช์สถานะ
+      const isCouncilOpen = cfg.applyCouncilIsOpen !== false;
+      const isColorOpen = cfg.applyColorIsOpen !== false;
+      
+      const councilChk = document.getElementById('applyMgr_councilIsOpen');
+      if (councilChk) councilChk.checked = isCouncilOpen;
+      updateApplyMgrPill('council', isCouncilOpen);
+
+      const colorChk = document.getElementById('applyMgr_colorIsOpen');
+      if (colorChk) colorChk.checked = isColorOpen;
+      updateApplyMgrPill('color', isColorOpen);
+
+      const councilNotice = document.getElementById('applyMgr_councilCloseNotice');
+      if (councilNotice) councilNotice.value = cfg.applyCouncilCloseNotice || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
+
+      const colorNotice = document.getElementById('applyMgr_colorCloseNotice');
+      if (colorNotice) colorNotice.value = cfg.applyColorCloseNotice || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
+
+      // โหลดข้อความหัวเรื่องและแถบประกาศ
+      const headerTitle = document.getElementById('applyMgr_headerTitle');
+      if (headerTitle) headerTitle.value = cfg.applyHeaderTitle || 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570';
+
+      const headerSub = document.getElementById('applyMgr_headerSubtitle');
+      if (headerSub) headerSub.value = cfg.applyHeaderSubtitle || 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย';
+
+      const announceText = document.getElementById('applyMgr_announcementText');
+      if (announceText) announceText.value = cfg.announcementText || 'เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569';
+
+      // โหลดการ์ดที่ 1 (สภานักเรียน)
+      const cTitle = document.getElementById('applyMgr_councilTitle');
+      if (cTitle) cTitle.value = cfg.applyCouncilTitle || '1. สมัครเลือกตั้งประธานสภานักเรียน';
+
+      const cBadge = document.getElementById('applyMgr_councilBadge');
+      if (cBadge) cBadge.value = cfg.applyCouncilBadge || 'ทีมพรรค 10 คน';
+
+      const cDesc = document.getElementById('applyMgr_councilDesc');
+      if (cDesc) cDesc.value = cfg.applyCouncilDesc || '';
+
+      const cBullets = document.getElementById('applyMgr_councilBullets');
+      if (cBullets) cBullets.value = Array.isArray(cfg.applyCouncilBullets) ? cfg.applyCouncilBullets.join('\n') : '';
+
+      const cBtnText = document.getElementById('applyMgr_councilBtnText');
+      if (cBtnText) cBtnText.value = cfg.applyCouncilBtnText || 'เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)';
+
+      // โหลดการ์ดที่ 2 (ประธานคณะสี)
+      const kTitle = document.getElementById('applyMgr_colorTitle');
+      if (kTitle) kTitle.value = cfg.applyColorTitle || '2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)';
+
+      const kBadge = document.getElementById('applyMgr_colorBadge');
+      if (kBadge) kBadge.value = cfg.applyColorBadge || '5 คณะสี';
+
+      const kDesc = document.getElementById('applyMgr_colorDesc');
+      if (kDesc) kDesc.value = cfg.applyColorDesc || '';
+
+      const kHouses = document.getElementById('applyMgr_colorHousesText');
+      if (kHouses) kHouses.value = cfg.applyColorHousesText || '1. คณะสีอัญชัน, 2. คณะสีนนทรี, 3. คณะปาริชาต, 4. คณะสีเอื้องช่อแสด, 5. คณะสีอินทนิล';
+
+      const kBullets = document.getElementById('applyMgr_colorBullets');
+      if (kBullets) kBullets.value = Array.isArray(cfg.applyColorBullets) ? cfg.applyColorBullets.join('\n') : '';
+
+      const kBtnText = document.getElementById('applyMgr_colorBtnText');
+      if (kBtnText) kBtnText.value = cfg.applyColorBtnText || 'เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)';
+
+      // อัปเดตสถิติด้านล่าง
+      updateApplyMgrStatsSnapshot();
+
+      // วาดตัวอย่างจำลองสดทันที
+      renderApplyManagerPreview();
+    }
+
+    function updateApplyMgrPill(type, isOpen) {
+      const pill = document.getElementById(type === 'council' ? 'applyMgr_councilStatusPill' : 'applyMgr_colorStatusPill');
+      if (!pill) return;
+      if (isOpen) {
+        pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs';
+        pill.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>กำลังเปิดรับสมัคร</span>';
+      } else {
+        pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1.5 shadow-xs';
+        pill.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500"></span><span>ปิดรับสมัครชั่วคราว</span>';
+      }
+    }
+
+    function onApplyMgrStatusToggle(type) {
+      const chk = document.getElementById(type === 'council' ? 'applyMgr_councilIsOpen' : 'applyMgr_colorIsOpen');
+      const isOpen = chk ? chk.checked : true;
+      updateApplyMgrPill(type, isOpen);
+      renderApplyManagerPreview();
+      showToast(`เปลี่ยนสถานะรับสมัคร${type === 'council' ? 'สภานักเรียน' : 'ประธานคณะสี'}: ${isOpen ? 'เปิดรับสมัคร' : 'ปิดรับสมัคร'} (กดบันทึกเพื่อยืนยัน)`, 'info');
+    }
+
+    function updateApplyMgrStatsSnapshot() {
+      const councilList = WDSDB.getCouncilList() || [];
+      const colorList = WDSDB.getColorList() || [];
+      const allApps = [...councilList, ...colorList];
+      const approved = allApps.filter(a => a.status === 'approved').length;
+      const pending = allApps.filter(a => a.status === 'pending').length;
+
+      const elC = document.getElementById('applyMgrStatCouncil');
+      const elK = document.getElementById('applyMgrStatColor');
+      const elA = document.getElementById('applyMgrStatApproved');
+      const elP = document.getElementById('applyMgrStatPending');
+      if (elC) elC.textContent = councilList.length;
+      if (elK) elK.textContent = colorList.length;
+      if (elA) elA.textContent = approved;
+      if (elP) elP.textContent = pending;
+    }
+
+    function renderApplyManagerPreview() {
+      const box = document.getElementById('applyManagerLivePreviewBox');
+      if (!box) return;
+
+      const isCouncilOpen = document.getElementById('applyMgr_councilIsOpen') ? document.getElementById('applyMgr_councilIsOpen').checked : true;
+      const isColorOpen = document.getElementById('applyMgr_colorIsOpen') ? document.getElementById('applyMgr_colorIsOpen').checked : true;
+      const councilCloseNotice = (document.getElementById('applyMgr_councilCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครแล้ว').trim();
+      const colorCloseNotice = (document.getElementById('applyMgr_colorCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครแล้ว').trim();
+
+      const headerTitle = (document.getElementById('applyMgr_headerTitle')?.value || 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570').trim();
+      const headerSub = (document.getElementById('applyMgr_headerSubtitle')?.value || 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย').trim();
+      const announceText = (document.getElementById('applyMgr_announcementText')?.value || 'เปิดรับสมัครเลือกตั้ง...').trim();
+
+      const cTitle = (document.getElementById('applyMgr_councilTitle')?.value || '1. สมัครเลือกตั้งประธานสภานักเรียน').trim();
+      const cBadge = (document.getElementById('applyMgr_councilBadge')?.value || 'ทีมพรรค 10 คน').trim();
+      const cDesc = (document.getElementById('applyMgr_councilDesc')?.value || '').trim();
+      const cBulletsRaw = (document.getElementById('applyMgr_councilBullets')?.value || '').trim();
+      const cBullets = cBulletsRaw ? cBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const cBtnText = (document.getElementById('applyMgr_councilBtnText')?.value || 'เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)').trim();
+
+      const kTitle = (document.getElementById('applyMgr_colorTitle')?.value || '2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)').trim();
+      const kBadge = (document.getElementById('applyMgr_colorBadge')?.value || '5 คณะสี').trim();
+      const kDesc = (document.getElementById('applyMgr_colorDesc')?.value || '').trim();
+      const kHousesRaw = (document.getElementById('applyMgr_colorHousesText')?.value || '1. คณะสีอัญชัน, 2. คณะสีนนทรี, 3. คณะปาริชาต, 4. คณะสีเอื้องช่อแสด, 5. คณะสีอินทนิล').trim();
+      const kHouses = kHousesRaw ? kHousesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const kBulletsRaw = (document.getElementById('applyMgr_colorBullets')?.value || '').trim();
+      const kBullets = kBulletsRaw ? kBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const kBtnText = (document.getElementById('applyMgr_colorBtnText')?.value || 'เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)').trim();
+
+      // Quick display for pills
+      const tagStyles = [
+        'bg-blue-50 text-blue-800 border-blue-200',
+        'bg-yellow-50 text-yellow-800 border-yellow-300',
+        'bg-red-50 text-red-800 border-red-200',
+        'bg-orange-50 text-orange-800 border-orange-200',
+        'bg-green-50 text-green-800 border-green-200'
+      ];
+      const quickPillContainer = document.getElementById('applyMgrColorPillsQuickDisplay');
+      if (quickPillContainer) {
+        quickPillContainer.innerHTML = kHouses.map((h, i) => {
+          const st = tagStyles[i % tagStyles.length];
+          return `<span class="px-2 py-0.5 ${st} border rounded text-[11px] font-semibold">${escapeHTML(h)}</span>`;
+        }).join('');
+      }
+
+      box.innerHTML = `
+        <!-- แถบประกาศสีส้มจำลอง -->
+        <div class="bg-amber-50/90 border border-amber-200/90 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-950 text-xs sm:text-sm shadow-xs">
+          <div class="flex items-center space-x-2.5">
+            <span class="w-7 h-7 rounded-full bg-amber-500/20 text-amber-800 flex items-center justify-center flex-shrink-0 text-xs">
+              <i class="fa-solid fa-bullhorn text-amber-700"></i>
+            </span>
+            <div class="font-bold text-amber-900 flex items-center gap-1.5 flex-wrap">
+              <span class="bg-amber-600 text-white px-2 py-0.5 rounded text-[11px] font-bold">ประกาศ</span>
+              <span>${escapeHTML(announceText)}</span>
+            </div>
+          </div>
+          <span class="bg-amber-200/70 hover:bg-amber-300/80 text-amber-950 text-xs font-semibold px-3 py-1 rounded-md border border-amber-300 flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
+            <i class="fa-solid fa-book-open text-amber-800"></i> อ่านคู่มือระบบ
+          </span>
+        </div>
+
+        <!-- หัวข้อหน้าและคำอธิบายย่อยจำลอง -->
+        <div class="border-b border-slate-200 pb-3">
+          <h2 class="text-base sm:text-lg md:text-xl font-bold text-[#16325c] flex items-center gap-2">
+            <span>${escapeHTML(headerTitle)}</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1">${escapeHTML(headerSub)}</p>
+        </div>
+
+        <!-- การ์ด 2 ใบจำลอง -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- การ์ด 1: สภานักเรียน -->
+          <div class="gov-card flex flex-col justify-between ${!isCouncilOpen ? 'opacity-90 border-slate-300' : ''}">
+            <div class="gov-card-header text-sm sm:text-base">
+              <span class="font-bold text-[#16325c] flex items-center">
+                <i class="fa-solid fa-landmark mr-2 text-[#16325c]"></i> ${escapeHTML(cTitle)}
+              </span>
+              <div class="flex items-center gap-1.5">
+                ${!isCouncilOpen ? '<span class="text-[11px] bg-rose-100 text-rose-800 border border-rose-200 px-2 py-0.5 rounded font-bold"><i class="fa-solid fa-lock mr-1"></i> ปิดรับ</span>' : ''}
+                <span class="text-xs bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded font-semibold">${escapeHTML(cBadge)}</span>
+              </div>
+            </div>
+
+            <div class="p-5 space-y-3.5 text-xs sm:text-sm text-slate-700">
+              <p class="leading-relaxed whitespace-pre-line">${escapeHTML(cDesc)}</p>
+
+              <div class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm text-slate-700 space-y-1.5">
+                ${cBullets.length > 0 ? cBullets.map(b => `<div>• ${escapeHTML(b)}</div>`).join('') : '<div class="text-slate-400 italic">ไม่มีรายการสรุปคุณสมบัติ</div>'}
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200">
+              ${isCouncilOpen ? `
+                <a href="apply-council.html" target="_blank" class="btn-gov-primary w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm block">
+                  <i class="fa-solid fa-file-pen mr-2"></i> ${escapeHTML(cBtnText)}
+                </a>
+              ` : `
+                <div class="btn-gov-gray w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm opacity-80 cursor-not-allowed">
+                  <i class="fa-solid fa-lock mr-2 text-rose-500"></i> ${escapeHTML(councilCloseNotice)}
+                </div>
+              `}
+            </div>
+          </div>
+
+          <!-- การ์ด 2: ประธานคณะสี -->
+          <div class="gov-card flex flex-col justify-between ${!isColorOpen ? 'opacity-90 border-slate-300' : ''}">
+            <div class="gov-card-header text-sm sm:text-base">
+              <span class="font-bold text-[#16325c] flex items-center">
+                <i class="fa-solid fa-flag mr-2 text-amber-700"></i> ${escapeHTML(kTitle)}
+              </span>
+              <div class="flex items-center gap-1.5">
+                ${!isColorOpen ? '<span class="text-[11px] bg-rose-100 text-rose-800 border border-rose-200 px-2 py-0.5 rounded font-bold"><i class="fa-solid fa-lock mr-1"></i> ปิดรับ</span>' : ''}
+                <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded font-semibold">${escapeHTML(kBadge)}</span>
+              </div>
+            </div>
+
+            <div class="p-5 space-y-3.5 text-xs sm:text-sm text-slate-700">
+              <p class="leading-relaxed whitespace-pre-line">${escapeHTML(kDesc)}</p>
+
+              <!-- รายการป้ายสี -->
+              <div class="flex flex-wrap gap-1.5 py-1">
+                ${kHouses.map((h, i) => {
+                  const st = tagStyles[i % tagStyles.length];
+                  return `<span class="px-2 py-0.5 ${st} border rounded text-xs font-semibold">${escapeHTML(h)}</span>`;
+                }).join('')}
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm text-slate-700 space-y-1.5">
+                ${kBullets.length > 0 ? kBullets.map(b => `<div>• ${escapeHTML(b)}</div>`).join('') : '<div class="text-slate-400 italic">ไม่มีรายการสรุปคุณสมบัติ</div>'}
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200">
+              ${isColorOpen ? `
+                <a href="apply-color.html" target="_blank" class="btn-gov-gold w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm block">
+                  <i class="fa-solid fa-file-pen mr-2"></i> ${escapeHTML(kBtnText)}
+                </a>
+              ` : `
+                <div class="btn-gov-gray w-full text-center text-xs sm:text-sm py-2.5 sm:py-3 shadow-sm opacity-80 cursor-not-allowed">
+                  <i class="fa-solid fa-lock mr-2 text-rose-500"></i> ${escapeHTML(colorCloseNotice)}
+                </div>
+              `}
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function handleSaveApplyManager(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      try {
+        const currentCfg = WDSDB.getConfig();
+
+        const isCouncilOpen = document.getElementById('applyMgr_councilIsOpen') ? document.getElementById('applyMgr_councilIsOpen').checked : true;
+        const isColorOpen = document.getElementById('applyMgr_colorIsOpen') ? document.getElementById('applyMgr_colorIsOpen').checked : true;
+        const councilNotice = (document.getElementById('applyMgr_councilCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร').trim();
+        const colorNotice = (document.getElementById('applyMgr_colorCloseNotice')?.value || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร').trim();
+
+        const headerTitle = (document.getElementById('applyMgr_headerTitle')?.value || currentCfg.applyHeaderTitle).trim();
+        const headerSub = (document.getElementById('applyMgr_headerSubtitle')?.value || currentCfg.applyHeaderSubtitle).trim();
+        const announceText = (document.getElementById('applyMgr_announcementText')?.value || currentCfg.announcementText).trim();
+
+        const cTitle = (document.getElementById('applyMgr_councilTitle')?.value || currentCfg.applyCouncilTitle).trim();
+        const cBadge = (document.getElementById('applyMgr_councilBadge')?.value || currentCfg.applyCouncilBadge).trim();
+        const cDesc = (document.getElementById('applyMgr_councilDesc')?.value || currentCfg.applyCouncilDesc).trim();
+        const cBulletsRaw = (document.getElementById('applyMgr_councilBullets')?.value || '').trim();
+        const cBullets = cBulletsRaw ? cBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : currentCfg.applyCouncilBullets;
+        const cBtnText = (document.getElementById('applyMgr_councilBtnText')?.value || currentCfg.applyCouncilBtnText).trim();
+
+        const kTitle = (document.getElementById('applyMgr_colorTitle')?.value || currentCfg.applyColorTitle).trim();
+        const kBadge = (document.getElementById('applyMgr_colorBadge')?.value || currentCfg.applyColorBadge).trim();
+        const kDesc = (document.getElementById('applyMgr_colorDesc')?.value || currentCfg.applyColorDesc).trim();
+        const kHouses = (document.getElementById('applyMgr_colorHousesText')?.value || currentCfg.applyColorHousesText).trim();
+        const kBulletsRaw = (document.getElementById('applyMgr_colorBullets')?.value || '').trim();
+        const kBullets = kBulletsRaw ? kBulletsRaw.split('\n').map(s => s.trim()).filter(Boolean) : currentCfg.applyColorBullets;
+        const kBtnText = (document.getElementById('applyMgr_colorBtnText')?.value || currentCfg.applyColorBtnText).trim();
+
+        const updated = {
+          ...currentCfg,
+          applyCouncilIsOpen: isCouncilOpen,
+          applyCouncilCloseNotice: councilNotice,
+          applyColorIsOpen: isColorOpen,
+          applyColorCloseNotice: colorNotice,
+          applyHeaderTitle: headerTitle,
+          applyHeaderSubtitle: headerSub,
+          announcementText: announceText,
+          applyCouncilTitle: cTitle,
+          applyCouncilBadge: cBadge,
+          applyCouncilDesc: cDesc,
+          applyCouncilBullets: cBullets,
+          applyCouncilBtnText: cBtnText,
+          applyColorTitle: kTitle,
+          applyColorBadge: kBadge,
+          applyColorDesc: kDesc,
+          applyColorHousesText: kHouses,
+          applyColorBullets: kBullets,
+          applyColorBtnText: kBtnText
+        };
+
+        const ok = WDSDB.saveConfig(updated);
+        if (ok) {
+          if (typeof applySiteConfig === 'function') applySiteConfig();
+          renderApplyManagerPreview();
+          // ซิงค์กลับฟอร์ม CMS หลักด้วย
+          loadSettingsIntoForm();
+          showToast('✅ บันทึกข้อมูลและซิงค์คลาวด์หน้ายื่นใบสมัครออนไลน์สำเร็จ!', 'success');
+        } else {
+          showToast('บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
+        }
+      } catch (err) {
+        console.error('Save Apply Manager Error:', err);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err), 'error');
+      }
+    }
+
+    function resetApplyManagerDefaults() {
+      if (!confirm('ต้องการคืนค่าข้อความมาตรฐานสำหรับหน้ายื่นใบสมัครออนไลน์หรือไม่?')) return;
+      document.getElementById('applyMgr_councilIsOpen').checked = true;
+      document.getElementById('applyMgr_colorIsOpen').checked = true;
+      document.getElementById('applyMgr_councilCloseNotice').value = 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
+      document.getElementById('applyMgr_colorCloseNotice').value = 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
+      document.getElementById('applyMgr_headerTitle').value = 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570';
+      document.getElementById('applyMgr_headerSubtitle').value = 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย';
+      document.getElementById('applyMgr_announcementText').value = 'เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569';
+      document.getElementById('applyMgr_councilTitle').value = '1. สมัครเลือกตั้งประธานสภานักเรียน';
+      document.getElementById('applyMgr_councilBadge').value = 'ทีมพรรค 10 คน';
+      document.getElementById('applyMgr_councilDesc').value = `ผู้สมัครรับเลือกตั้งเป็นประธานนักเรียนต้องจัดตั้งพรรคโดยให้มีสมาชิกภายในพรรค จำนวน 10 คน และมีผู้แทนพรรคเพื่อดำรงตำแหน่ง\nดังต่อไปนี้  ประธานพรรคลงสมัครประธานสภานักเรียน 1 คน , รองประธานพรรค 1 คน , สมาชิกพรรคฝ่ายวิชาการ 2 คน , สมาชิกพรรคฝ่ายสันทนาการ 2 คน, สมาชิกพรรคฝ่ายทั่วไป 1 คน, สมาชิกพรรคฝ่ายประชาสัมพันธ์ 2 คน, เลขานุการสภานักเรียน 1 คน`;
+      document.getElementById('applyMgr_councilBullets').value = DEFAULT_APPLY_COUNCIL_BULLETS.join('\n');
+      document.getElementById('applyMgr_councilBtnText').value = 'เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)';
+      document.getElementById('applyMgr_colorTitle').value = '2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)';
+      document.getElementById('applyMgr_colorBadge').value = '5 คณะสี';
+      document.getElementById('applyMgr_colorDesc').value = `ผู้สมัครรับเลือกตั้งเป็นประธานนักเรียนต้องจัดตั้งพรรคโดยให้มีสมาชิกภายในพรรค จำนวน 10 คน และมีผู้แทนพรรคเพื่อดำรงตำแหน่ง\nดังต่อไปนี้  ประธานคณะสี\t1 คน ,  รองประธานคณะสี\t1 คน , สมาชิกคณะสีฝ่ายทั่วไป\t2 คน, สมาชิกพรรคฝ่ายประชาสัมพันธ์\t2 คน , สมาชิกคณะสีฝ่ายสันทนาการ 3 คน , เลขานุการคณะสี 1 คน`;
+      document.getElementById('applyMgr_colorHousesText').value = '1. คณะสีอัญชัน, 2. คณะสีนนทรี, 3. คณะปาริชาต, 4. คณะสีเอื้องช่อแสด, 5. คณะสีอินทนิล';
+      document.getElementById('applyMgr_colorBullets').value = DEFAULT_APPLY_COLOR_BULLETS.join('\n');
+      document.getElementById('applyMgr_colorBtnText').value = 'เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)';
+      updateApplyMgrPill('council', true);
+      updateApplyMgrPill('color', true);
+      renderApplyManagerPreview();
+      showToast('คืนค่าข้อความมาตรฐานเรียบร้อยแล้ว (กดบันทึกเพื่อยืนยัน)', 'info');
     }
 
     function renderTimelineAdminTable() {
@@ -2347,6 +3071,10 @@
           applyColorHousesText: getTrimmed('cfg_applyColorHousesText'),
           applyColorBullets: getTrimmed('cfg_applyColorBullets').split('\n').map(s => s.trim()).filter(Boolean),
           applyColorBtnText: getTrimmed('cfg_applyColorBtnText'),
+          applyCouncilIsOpen: currentCfg.applyCouncilIsOpen !== false,
+          applyCouncilCloseNotice: currentCfg.applyCouncilCloseNotice || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร',
+          applyColorIsOpen: currentCfg.applyColorIsOpen !== false,
+          applyColorCloseNotice: currentCfg.applyColorCloseNotice || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร',
           docsPageHeaderTitle: getTrimmed('cfg_docsPageHeaderTitle'),
           docsCardTitle: getTrimmed('cfg_docsCardTitle'),
           docsCardSubtitle: getTrimmed('cfg_docsCardSubtitle'),
@@ -2896,6 +3624,7 @@
   </script>
 </body>
 </html>
+
 
 
 
