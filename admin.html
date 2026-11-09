@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257006">
+  <link rel="stylesheet" href="css/style.css?v=257007">
   <style>
     .gov-sys-header {
       background-color: #1a365d;
@@ -284,7 +284,15 @@
         </div>
       </div>
 
-      <div class="flex items-center space-x-2.5">
+      <div class="flex items-center space-x-2 sm:space-x-2.5">
+        <div id="adminCloudBadge" class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/20 rounded-full border border-emerald-400/40 text-[11px] sm:text-xs text-emerald-200 shadow-sm" title="ระบบซิงค์คลาวด์อัตโนมัติ Real-time ระหว่างคอมพิวเตอร์และมือถือ">
+          <i class="fa-solid fa-cloud text-emerald-300 animate-pulse"></i>
+          <span class="hidden sm:inline">คลาวด์: ออนไลน์</span>
+        </div>
+        <button type="button" onclick="triggerManualCloudSync()" class="gov-btn bg-emerald-700/80 hover:bg-emerald-600 text-white text-xs px-2.5 py-1.5 border border-emerald-400/40 flex items-center gap-1 cursor-pointer transition" title="ดึงข้อมูลล่าสุดจากคลาวด์">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span class="hidden md:inline">ซิงค์คลาวด์</span>
+        </button>
         <div id="adminUserBadge" class="hidden md:flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full border border-white/20 text-xs text-white">
           <i class="fa-solid fa-user-shield text-amber-300"></i>
           <span>ผู้ดูแลระบบ: <strong id="headerAdminUserDisplay" class="font-mono">admin</strong></span>
@@ -1139,8 +1147,8 @@
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257006"></script>
-  <script src="js/app.js?v=257006"></script>
+  <script src="js/data.js?v=257007"></script>
+  <script src="js/app.js?v=257007"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -1167,6 +1175,39 @@
       if (elApproved) elApproved.innerText = approvedCount;
       if (elPending) elPending.innerText = pendingCount;
     }
+
+    async function triggerManualCloudSync() {
+      showToast('☁️ กำลังซิงค์ข้อมูลกับคลาวด์...', 'info');
+      try {
+        const cfg = await WDSDB.syncFromCloud();
+        await WDSDB.syncApplicationsFromCloud();
+        if (cfg) {
+          loadSettingsIntoForm();
+          applySiteConfig();
+          updateStatsDashboard();
+          updateLivePreview();
+          showToast('✅ ซิงค์ข้อมูลล่าสุดจากคลาวด์เรียบร้อยแล้ว!', 'success');
+        } else {
+          updateStatsDashboard();
+          showToast('✅ ข้อมูลบนอุปกรณ์ของคุณเป็นเวอร์ชันล่าสุดแล้ว', 'success');
+        }
+      } catch (e) {
+        showToast('การซิงค์คลาวด์ขัดข้อง: ' + e.message, 'error');
+      }
+    }
+
+    // รับสัญญาณเมื่อข้อมูลบนคลาวด์อัปเดตอัตโนมัติ
+    window.addEventListener('wds-cloud-synced', (e) => {
+      loadSettingsIntoForm();
+      applySiteConfig();
+      updateStatsDashboard();
+      updateLivePreview();
+    });
+
+    window.addEventListener('wds-apps-synced', () => {
+      updateStatsDashboard();
+      if (typeof renderTable === 'function') renderTable();
+    });
 
     function switchTab(tab) {
       activeTab = tab;
@@ -2272,7 +2313,7 @@
           if (typeof applySiteConfig === 'function') applySiteConfig();
           if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
           if (typeof updateLivePreview === 'function') updateLivePreview();
-          showToast('✅ บันทึกข้อมูลเว็บไซต์สำเร็จเรียบร้อยแล้ว!', 'success');
+          showToast('✅ บันทึกข้อมูลและซิงค์คลาวด์สำเร็จ! มือถือทุกเครื่องจะแสดงข้อมูลล่าสุดอัตโนมัติ', 'success');
         }
       } catch (err) {
         console.error('Save Settings Error:', err);

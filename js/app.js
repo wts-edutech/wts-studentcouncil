@@ -567,7 +567,22 @@ function exportToCSV(filename, rows) {
   }
 }
 
-// รันผูกค่าการตั้งค่าอัตโนมัติเมื่อเอกสารโหลด
+// ซิงค์ข้อมูลกับคลาวด์อัตโนมัติเมื่อเปิดเว็บ (มือถือ ↔ คอมพิวเตอร์)
+window.addEventListener('wds-cloud-synced', (e) => {
+  if (typeof applySiteConfig === 'function') applySiteConfig();
+  if (typeof renderTimeline === 'function') renderTimeline();
+  if (typeof renderPositionForms === 'function') renderPositionForms();
+});
+
+// รันผูกค่าการตั้งค่าอัตโนมัติเมื่อเอกสารโหลด พร้อมซิงค์ข้อมูลล่าสุดจากคลาวด์
 window.addEventListener('DOMContentLoaded', () => {
   applySiteConfig();
+  if (typeof WDSDB !== 'undefined') {
+    if (typeof WDSDB.syncFromCloud === 'function') {
+      WDSDB.syncFromCloud();
+    }
+    if (typeof WDSDB.syncApplicationsFromCloud === 'function') {
+      WDSDB.syncApplicationsFromCloud();
+    }
+  }
 });
