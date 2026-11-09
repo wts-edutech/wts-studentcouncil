@@ -9,7 +9,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257003">
+  <link rel="stylesheet" href="css/style.css?v=257004">
   <style>
     .gov-sys-header {
       background-color: #1a365d;
@@ -756,6 +756,13 @@
                         <th class="p-2 w-44">วัน เดือน ปี</th>
                         <th class="p-2">รายการกิจกรรม</th>
                         <th class="p-2 w-36">สถานที่ / ช่องทาง</th>
+                        <th class="p-2 w-44 text-center bg-emerald-50 text-emerald-950 border-x border-emerald-200">
+                          <div class="flex items-center justify-center gap-1 font-bold">
+                            <i class="fa-solid fa-star text-amber-500"></i>
+                            <span>ช่วงสำคัญ (การ์ดเขียว)</span>
+                          </div>
+                          <div class="text-[9.5px] font-normal text-emerald-700">คลิกเลือกขั้นตอนสำคัญ</div>
+                        </th>
                         <th class="p-2 w-12 text-center">ลบ</th>
                       </tr>
                     </thead>
@@ -1124,8 +1131,8 @@
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257003"></script>
-  <script src="js/app.js?v=257003"></script>
+  <script src="js/data.js?v=257004"></script>
+  <script src="js/app.js?v=257004"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -1346,7 +1353,7 @@
       }
 
       tbody.innerHTML = currentTimeline.map((item, idx) => `
-        <tr class="hover:bg-slate-50">
+        <tr class="hover:bg-slate-50 transition-colors ${item.highlight ? 'bg-emerald-50/50' : ''}">
           <td class="p-2 text-center font-bold text-[#1a365d]">
             ${idx + 1}
           </td>
@@ -1354,13 +1361,13 @@
             <input type="text" value="${escapeHTML(item.date)}"
               oninput="updateTimelineField(${idx}, 'date', this.value)"
               placeholder="เช่น 1 - 10 พ.ย. 2569"
-              class="gov-input w-full text-xs py-1 px-2">
+              class="gov-input w-full text-xs py-1 px-2 ${item.highlight ? 'border-emerald-500 font-bold text-[#065f46]' : ''}">
           </td>
           <td class="p-1.5">
             <input type="text" value="${escapeHTML(item.title)}"
               oninput="updateTimelineField(${idx}, 'title', this.value)"
               placeholder="เช่น เปิดรับสมัครออนไลน์: สภานักเรียนและคณะสี"
-              class="gov-input w-full text-xs py-1 px-2">
+              class="gov-input w-full text-xs py-1 px-2 ${item.highlight ? 'border-emerald-500 font-semibold' : ''}">
           </td>
           <td class="p-1.5">
             <input type="text" value="${escapeHTML(item.location)}"
@@ -1368,15 +1375,39 @@
               placeholder="เช่น ระบบออนไลน์"
               class="gov-input w-full text-xs py-1 px-2">
           </td>
+          <td class="p-1.5 text-center border-x border-slate-200 ${item.highlight ? 'bg-emerald-100/60' : ''}">
+            <button type="button" 
+              onclick="setTimelineHighlight(${idx})"
+              class="px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer ${item.highlight ? 'bg-emerald-700 hover:bg-emerald-800 text-white ring-2 ring-emerald-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'}"
+              title="คลิกเพื่อตั้งให้ขั้นตอนนี้เป็นการ์ดสีเขียวเด่นในหน้าแรก">
+              <i class="fa-solid ${item.highlight ? 'fa-circle-check text-amber-300 text-sm' : 'fa-circle text-slate-300 text-xs'}"></i>
+              <span>${item.highlight ? '★ จุดเขียว (สำคัญ)' : 'ทั่วไป'}</span>
+            </button>
+          </td>
           <td class="p-1.5 text-center">
             <button type="button" onclick="removeTimelineRow(${idx})"
-              class="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50 transition"
+              class="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50 transition cursor-pointer"
               title="ลบขั้นตอนนี้">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </td>
         </tr>
       `).join('');
+    }
+
+    function setTimelineHighlight(targetIdx) {
+      if (!currentTimeline[targetIdx]) return;
+      const wasActive = Boolean(currentTimeline[targetIdx].highlight);
+      currentTimeline.forEach((item, idx) => {
+        item.highlight = (idx === targetIdx) ? !wasActive : false;
+      });
+      renderTimelineAdminTable();
+      updateLivePreview();
+      if (!wasActive) {
+        showToast(`ย้ายจุดสีเขียวไปยังขั้นตอนที่ ${targetIdx + 1} เรียบร้อยแล้ว (กด "บันทึกข้อมูล" เพื่อใช้งาน)`, 'success');
+      } else {
+        showToast(`ยกเลิกการเน้นการ์ดสีเขียวของขั้นตอนที่ ${targetIdx + 1} แล้ว`, 'info');
+      }
     }
 
     function updateTimelineField(index, field, val) {
@@ -1868,9 +1899,9 @@
       const timelinePreviewEl = document.getElementById('previewLiveTimeline');
       if (timelinePreviewEl) {
         timelinePreviewEl.innerHTML = currentTimeline.map((item, idx) => `
-          <div class="p-1.5 rounded border ${idx === 0 ? 'bg-amber-50/70 border-amber-200' : 'bg-slate-50 border-slate-200'}">
+          <div class="p-1.5 rounded border transition-colors ${item.highlight ? 'bg-emerald-50 border-emerald-400 text-emerald-950 shadow-2xs' : (idx === 0 ? 'bg-amber-50/70 border-amber-200' : 'bg-slate-50 border-slate-200')}">
             <div class="flex items-center justify-between font-bold text-[#16325c]">
-              <span>ขั้นตอนที่ ${idx + 1}: ${escapeHTML(item.date)}</span>
+              <span>ขั้นตอนที่ ${idx + 1}: ${escapeHTML(item.date)} ${item.highlight ? '<span class="text-[9.5px] bg-emerald-700 text-white px-1.5 py-0.2 rounded-full font-bold ml-1">★ การ์ดเขียว</span>' : ''}</span>
               <span class="text-[9px] font-normal text-slate-500">${escapeHTML(item.location)}</span>
             </div>
             <div class="text-slate-700 mt-0.5 leading-snug">${formatTimelineTitle(item.title)}</div>
@@ -2118,7 +2149,7 @@
         date: (item.date || '').trim(),
         title: (item.title || '').trim(),
         location: (item.location || '').trim(),
-        highlight: idx === 0 || idx === 3
+        highlight: Boolean(item.highlight)
       }));
 
       const newConfig = {

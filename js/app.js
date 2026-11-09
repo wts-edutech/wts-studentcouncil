@@ -132,9 +132,13 @@ function applySiteConfig() {
       'fa-chart-simple'
     ];
 
+    // ตรวจสอบว่าครู/ผู้ดูแลระบบกำหนดให้ขั้นตอนใดเป็นช่วงเวลาสำคัญ (highlight)
+    const hasAnyHighlight = list.some(item => Boolean(item.highlight));
+
     timelineCardsContainer.innerHTML = list.map((item, index) => {
       const stepNum = item.step !== undefined ? item.step : (index + 1);
-      const isHighlightStep = stepNum == 4;
+      // แสดงการ์ดสีเขียวตามขั้นตอนที่ครูกำหนดไว้ หากยังไม่มีการกำหนดให้เริ่มต้นที่ขั้นตอนแรก
+      const isHighlightStep = hasAnyHighlight ? Boolean(item.highlight) : (index === 0);
       const iconClass = stepIcons[index % stepIcons.length];
 
       // แยกหัวข้อหลัก และรายละเอียด (คั่นด้วย :)
@@ -156,7 +160,7 @@ function applySiteConfig() {
 
       if (isHighlightStep) {
         return `
-          <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white p-2.5 sm:p-4 md:p-5 shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative">
+          <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white p-2.5 sm:p-4 md:p-5 shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative transition-all">
             <div>
               <div class="flex items-start justify-between mb-1.5 sm:mb-2 md:mb-3">
                 <span class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-white text-[#064e3b] font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center shadow-sm">${stepNum}</span>
@@ -192,15 +196,17 @@ function applySiteConfig() {
   if (timelineTbody) {
     timelineTbody.innerHTML = list.map((item, index) => {
       const stepNum = item.step !== undefined ? item.step : (index + 1);
-      const isStep1 = stepNum == 1 || item.highlight;
-      const isStep4 = stepNum == 4;
-      const rowClass = isStep1 ? 'bg-amber-50/40' : (isStep4 ? 'bg-blue-50/40' : '');
-      const dateClass = isStep1 ? 'font-semibold text-amber-900' : (isStep4 ? 'font-semibold text-[#16325c]' : 'text-slate-800');
+      const isHighlight = Boolean(item.highlight);
+      const rowClass = isHighlight ? 'bg-emerald-50/80 font-medium' : '';
+      const dateClass = isHighlight ? 'font-bold text-[#065f46]' : 'text-slate-800';
 
       return `
         <tr class="${rowClass}">
           <td class="p-2.5 text-center font-bold text-slate-800">${stepNum}</td>
-          <td class="p-2.5 ${dateClass}">${escapeHTML(item.date || '')}</td>
+          <td class="p-2.5 ${dateClass}">
+            ${escapeHTML(item.date || '')}
+            ${isHighlight ? '<span class="hidden sm:inline-block ml-1.5 text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold border border-emerald-300">★ ช่วงสำคัญ</span>' : ''}
+          </td>
           <td class="p-2.5 text-slate-800 leading-relaxed">${formatTimelineTitle(item.title || '')}</td>
           <td class="p-2.5 text-slate-700">${escapeHTML(item.location || '')}</td>
         </tr>
