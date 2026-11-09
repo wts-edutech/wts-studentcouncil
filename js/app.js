@@ -169,15 +169,15 @@ function applySiteConfig() {
 
       if (isHighlightStep) {
         return `
-          <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white ${cardPad} shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative transition-all">
+          <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-gradient-to-b from-[#10b981] to-[#059669] text-white ${cardPad} shadow-md shadow-emerald-600/25 border-2 border-emerald-300 flex flex-col justify-between relative transition-all ring-2 ring-emerald-400/20">
             <div>
               <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-                <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#064e3b] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
-                <i class="fa-solid ${iconClass} text-white/90 text-sm sm:text-lg md:text-xl"></i>
+                <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#059669] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
+                <i class="fa-solid ${iconClass} text-white text-sm sm:text-lg md:text-xl drop-shadow-xs"></i>
               </div>
-              <div class="${dateSize} font-bold text-[#fbbf24] mb-1 leading-snug">${escapeHTML(item.date || '')}</div>
-              <div class="font-bold ${titleSize} leading-snug text-white mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
-              <div class="${subSize} text-emerald-100 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
+              <div class="${dateSize} font-bold text-[#fef08a] mb-1 leading-snug drop-shadow-xs">${escapeHTML(item.date || '')}</div>
+              <div class="font-bold ${titleSize} leading-snug text-white mb-0.5 sm:mb-1 drop-shadow-xs">${escapeHTML(mainTitle)}</div>
+              <div class="${subSize} text-emerald-50 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
             </div>
           </div>
           ${connectorHtml}
