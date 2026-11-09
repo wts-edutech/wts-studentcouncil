@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257018">
+  <link rel="stylesheet" href="css/style.css?v=257019">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -498,7 +498,7 @@
               ค้นหาข้อมูลใบสมัคร: กรอกเลขประจำตัวนักเรียน 5 หลัก หรือ ชื่อ-นามสกุล หรือ ชื่อพรรค
             </label>
             <div class="flex flex-col sm:flex-row gap-2.5">
-              <input type="text" id="searchInput" placeholder="เช่น 45101 หรือ ธนกฤต หรือ ก้าวใหม่" class="gov-input flex-grow text-xs sm:text-sm md:text-base py-2.5">
+              <input type="text" id="searchInput" placeholder="กรอกเลขประจำตัวนักเรียน หรือชื่อผู้สมัคร หรือชื่อพรรค/คณะสี" class="gov-input flex-grow text-xs sm:text-sm md:text-base py-2.5">
               <button onclick="handleSearch()" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 px-5 w-full sm:w-auto shadow-sm">
                 <i class="fa-solid fa-search mr-2"></i> ค้นหาใบสมัคร
               </button>
@@ -506,22 +506,10 @@
           </div>
 
           <div id="searchResults" class="mt-4 space-y-3">
-            <div class="border border-slate-200 rounded p-4 bg-slate-50 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs sm:text-sm md:text-base">
-              <div>
-                <div class="flex items-center space-x-2">
-                  <span class="font-bold text-[#16325c]">[สภานักเรียน]</span>
-                  <span class="font-semibold text-slate-800">พรรคก้าวใหม่ วชิรธรรม</span>
-                  <span class="badge-approved">ผ่านคุณสมบัติ (หมายเลข 1)</span>
-                </div>
-                <div class="text-slate-600 mt-1">
-                  ผู้ลงสมัครประธาน: นายธนกฤต ศิริวัฒนา (ชั้น ม.4/1 เลขประจำตัว 45101) | รหัส: COUNCIL-2570-001
-                </div>
-              </div>
-              <div>
-                <a href="print-application.html?type=council&id=COUNCIL-2570-001" target="_blank" class="btn-gov-outline text-xs sm:text-sm">
-                  <i class="fa-solid fa-print mr-1"></i> พิมพ์ใบสมัคร A4
-                </a>
-              </div>
+            <div class="p-8 text-center text-slate-400 bg-slate-50/60 rounded-xl border border-dashed border-slate-300">
+              <i class="fa-solid fa-magnifying-glass text-slate-300 text-3xl mb-2.5 block"></i>
+              <div class="font-semibold text-slate-600 text-xs sm:text-sm md:text-base">กรุณากรอกเลขประจำตัวนักเรียน ชื่อ-นามสกุล หรือชื่อพรรค/คณะสี เพื่อค้นหาสถานะใบสมัคร</div>
+              <div class="text-[11px] sm:text-xs text-slate-400 mt-1">ระบบจะแสดงผลการตรวจสอบคุณสมบัติและปุ่มพิมพ์ใบสมัคร A4 ทันที</div>
             </div>
           </div>
         </div>
@@ -545,8 +533,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257018"></script>
-  <script src="js/app.js?v=257018"></script>
+  <script src="js/data.js?v=257019"></script>
+  <script src="js/app.js?v=257019"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];
@@ -632,6 +620,7 @@
   </script>
 </body>
 </html>
+
 
 
 

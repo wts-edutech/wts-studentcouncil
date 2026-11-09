@@ -328,135 +328,8 @@ const COLOR_MEMBER_POSITIONS = [
   { key: 'secretary', title: 'เลขานุการคณะสี', roleName: 'เลขานุการคณะสี' }
 ];
 
-// ข้อมูลจำลองสำหรับทดสอบระบบ
-const DEFAULT_COUNCIL_APPLICATIONS = [
-  {
-    id: 'COUNCIL-2570-001',
-    partyName: 'พรรคก้าวใหม่ วชิรธรรม',
-    slogan: 'สร้างสรรค์ พัฒนา พาสู่การเปลี่ยนแปลงที่จับต้องได้',
-    candidateNumber: '1',
-    status: 'approved',
-    submittedAt: '1 พ.ย. 2569 10:30 น.',
-    reviewedBy: 'ครูกิจการนักเรียน',
-    notes: 'คุณสมบัติครบถ้วน เอกสารและรูปถ่ายถูกต้องตามระเบียบ',
-    agreementAccepted: true,
-    agreementYear: '2568',
-    advisorName: 'นายสมชาย ใจดี',
-    advisorPhone: '081-234-5678',
-    members: {
-      president: {
-        fullname: 'นายธนกฤต ศิริวัฒนา',
-        grade: 'ม.4',
-        room: '1',
-        studentId: '45101',
-        behaviorScore: 98,
-        gpax: '3.82',
-        phone: '089-111-2233',
-        photo: THAI_STUDENT_MALE_PHOTO,
-        agreed: true
-      },
-      vice_president: {
-        fullname: 'นางสาวกานต์พิชชา รัตนเรืองรอง',
-        grade: 'ม.4',
-        room: '2',
-        studentId: '45115',
-        behaviorScore: 95,
-        gpax: '3.75',
-        phone: '089-111-2234',
-        photo: THAI_STUDENT_FEMALE_PHOTO,
-        agreed: true
-      },
-      academic_1: {
-        fullname: 'นายพงศกร วิริยะกิจ',
-        grade: 'ม.4',
-        room: '1',
-        studentId: '45105',
-        behaviorScore: 100,
-        gpax: '3.94',
-        phone: '089-111-2235',
-        photo: THAI_STUDENT_MALE_PHOTO,
-        agreed: true
-      },
-      academic_2: {
-        fullname: 'นางสาวณิชาภา บุญประเสริฐ',
-        grade: 'ม.4',
-        room: '3',
-        studentId: '45122',
-        behaviorScore: 92,
-        gpax: '3.65',
-        phone: '089-111-2236',
-        photo: THAI_STUDENT_FEMALE_PHOTO,
-        agreed: true
-      },
-      recreation_1: {
-        fullname: 'นายปภังกร เตชะวัฒน์',
-        grade: 'ม.4',
-        room: '4',
-        studentId: '45140',
-        behaviorScore: 88,
-        gpax: '3.20',
-        phone: '089-111-2237',
-        photo: THAI_STUDENT_MALE_PHOTO,
-        agreed: true
-      },
-      recreation_2: {
-        fullname: 'นางสาวศศิธร วัฒนพาณิชย์',
-        grade: 'ม.4',
-        room: '5',
-        studentId: '45155',
-        behaviorScore: 90,
-        gpax: '3.45',
-        phone: '089-111-2238',
-        photo: THAI_STUDENT_FEMALE_PHOTO,
-        agreed: true
-      },
-      general: {
-        fullname: 'นายกิตติภูมิ ทรัพย์เจริญ',
-        grade: 'ม.4',
-        room: '6',
-        studentId: '45170',
-        behaviorScore: 95,
-        gpax: '3.15',
-        phone: '089-111-2239',
-        photo: THAI_STUDENT_MALE_PHOTO,
-        agreed: true
-      },
-      pr_1: {
-        fullname: 'นางสาวชัชชญา ศรีสุวรรณ',
-        grade: 'ม.4',
-        room: '2',
-        studentId: '45118',
-        behaviorScore: 96,
-        gpax: '3.50',
-        phone: '089-111-2240',
-        photo: THAI_STUDENT_FEMALE_PHOTO,
-        agreed: true
-      },
-      pr_2: {
-        fullname: 'นายวรเมธ เกียรติสกุล',
-        grade: 'ม.4',
-        room: '3',
-        studentId: '45129',
-        behaviorScore: 89,
-        gpax: '3.38',
-        phone: '089-111-2241',
-        photo: THAI_STUDENT_MALE_PHOTO,
-        agreed: true
-      },
-      secretary: {
-        fullname: 'นางสาวพิชชาพร แสงอรุณ',
-        grade: 'ม.4',
-        room: '1',
-        studentId: '45109',
-        behaviorScore: 99,
-        gpax: '3.88',
-        phone: '089-111-2242',
-        photo: THAI_STUDENT_FEMALE_PHOTO,
-        agreed: true
-      }
-    }
-  }
-];
+// ข้อมูลจำลองสำหรับทดสอบระบบ (ตั้งค่าว่างสำหรับเปิดรับสมัครจริง)
+const DEFAULT_COUNCIL_APPLICATIONS = [];
 
 const DEFAULT_COLOR_APPLICATIONS = [
   {
@@ -638,8 +511,19 @@ const WDSDB = {
         localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
       }
     }
-    const storedCouncil = localStorage.getItem(STORAGE_KEYS.COUNCIL);
+    let storedCouncil = localStorage.getItem(STORAGE_KEYS.COUNCIL);
     const storedColor = localStorage.getItem(STORAGE_KEYS.COLOR);
+    
+    // กรองและล้างข้อมูลทดสอบ COUNCIL-2570-001 ออกจากเครื่องผู้ใช้โดยอัตโนมัติ
+    if (storedCouncil && (storedCouncil.includes('COUNCIL-2570-001') || storedCouncil.includes('พรรคก้าวใหม่ วชิรธรรม'))) {
+      try {
+        const cleaned = (JSON.parse(storedCouncil) || []).filter(item => 
+          item && item.id !== 'COUNCIL-2570-001' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม'
+        );
+        localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(cleaned));
+        storedCouncil = JSON.stringify(cleaned);
+      } catch (e) {}
+    }
     
     if (!storedCouncil || storedCouncil.includes('unsplash.com')) {
       localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(DEFAULT_COUNCIL_APPLICATIONS));
@@ -812,7 +696,9 @@ const WDSDB = {
         const localCouncil = this.getCouncilList();
         const map = new Map();
         [...rCouncil, ...localCouncil].forEach(item => {
-          if (item && item.id && !map.has(item.id)) map.set(item.id, item);
+          if (item && item.id && item.id !== 'COUNCIL-2570-001' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม' && !map.has(item.id)) {
+            map.set(item.id, item);
+          }
         });
         const mergedCouncil = Array.from(map.values());
         localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(mergedCouncil));
