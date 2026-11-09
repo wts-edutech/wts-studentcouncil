@@ -13,10 +13,6 @@
   --gov-text-muted: #57606a;
 }
 
-/* ยูทิลิตี้ซ่อนแสดงผลที่รับประกันการทำงาน 100% ข้ามทุกเบราว์เซอร์ */
-.hidden {
-  display: none !important;
-}
 
 body {
   font-family: 'Sarabun', 'Krub', sans-serif;
