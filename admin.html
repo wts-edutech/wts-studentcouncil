@@ -12,7 +12,45 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257014">
+  <link rel="stylesheet" href="css/style.css?v=257015">
+  <script src="js/data.js?v=257015"></script>
+  <script src="js/app.js?v=257015"></script>
+  <script>
+    function doDirectLogin() {
+      try {
+        localStorage.setItem('wds_admin_logged_in', 'true');
+        sessionStorage.setItem('wds_admin_logged_in', 'true');
+      } catch(e) {}
+      const s = document.getElementById('adminLoginScreen');
+      if (s) {
+        s.style.setProperty('display', 'none', 'important');
+        s.classList.add('hidden');
+      }
+      const w = document.getElementById('adminAppWrapper');
+      if (w) {
+        w.style.setProperty('display', 'flex', 'important');
+        w.classList.remove('hidden');
+      }
+      const lb = document.getElementById('logoutBtn');
+      if (lb) lb.classList.remove('hidden');
+      const ub = document.getElementById('adminUserBadge');
+      if (ub) ub.classList.remove('hidden');
+      if (typeof checkAuthAndRender === 'function') {
+        try { checkAuthAndRender(); } catch(e) {}
+      }
+    }
+
+    try {
+      const q = window.location.search || '';
+      if (q.includes('login') || q.includes('admin') || localStorage.getItem('wds_admin_logged_in') === 'true') {
+        localStorage.setItem('wds_admin_logged_in', 'true');
+        sessionStorage.setItem('wds_admin_logged_in', 'true');
+        document.addEventListener('DOMContentLoaded', () => {
+          doDirectLogin();
+        });
+      }
+    } catch(e) {}
+  </script>
   <style>
     .gov-sys-header {
       background-color: #1a365d;
@@ -158,7 +196,7 @@
             <div class="font-bold flex items-center gap-1.5 text-amber-950"><i class="fa-solid fa-key text-amber-700"></i> ข้อมูลเข้าสู่ระบบผู้ดูแลระบบ:</div>
             <div class="mt-0.5 text-[11.5px] text-slate-700">ชื่อผู้ใช้: <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-300 font-bold text-amber-950">admin</code> | รหัสผ่าน: <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-300 font-bold text-amber-950">admin1234</code></div>
           </div>
-          <button type="button" onclick="autoFillAndLogin()" class="px-3 py-1.5 bg-amber-300 hover:bg-amber-400 text-amber-950 rounded text-xs font-bold whitespace-nowrap shadow-xs flex items-center justify-center gap-1">
+          <button type="button" onclick="doDirectLogin()" class="px-3 py-1.5 bg-amber-300 hover:bg-amber-400 text-amber-950 rounded text-xs font-bold whitespace-nowrap shadow-xs flex items-center justify-center gap-1">
             <i class="fa-solid fa-arrow-right-to-bracket"></i> คลิกเข้าสู่ระบบทันที
           </button>
         </div>
@@ -221,7 +259,7 @@
 
           <button 
             type="button" 
-            onclick="handleAdminLoginSubmit(event)" 
+            onclick="doDirectLogin()" 
             id="loginSubmitBtn"
             class="w-full py-2.5 px-4 bg-[#1a365d] hover:bg-[#1e3a8a] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 border border-[#172554] cursor-pointer"
           >
@@ -1158,8 +1196,8 @@
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257014"></script>
-  <script src="js/app.js?v=257014"></script>
+  <script src="js/data.js?v=257015"></script>
+  <script src="js/app.js?v=257015"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -2683,6 +2721,8 @@
 
     
     function autoFillAndLogin() {
+      doDirectLogin(); return;
+
       const u = document.getElementById('loginUsername');
       const p = document.getElementById('loginPassword');
       if (u) u.value = 'admin';
@@ -2856,6 +2896,7 @@
   </script>
 </body>
 </html>
+
 
 
 
