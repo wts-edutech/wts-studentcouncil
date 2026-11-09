@@ -9,7 +9,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257002">
+  <link rel="stylesheet" href="css/style.css?v=257003">
   <style>
     .gov-sys-header {
       background-color: #1a365d;
@@ -107,6 +107,143 @@
 </head>
 <body class="flex flex-col min-h-screen bg-slate-100 font-formal">
 
+  <!-- หน้าต่างเข้าสู่ระบบผู้ดูแลระบบ (Admin Login Screen) -->
+  <div id="adminLoginScreen" class="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-slate-900 bg-gradient-to-br from-slate-950 via-[#0f172a] to-[#1e293b] font-formal relative">
+    
+    <!-- ลวดลายพื้นหลังเรขาคณิตจางๆ -->
+    <div class="absolute inset-0 bg-[radial-gradient(#1e3a8a_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none"></div>
+
+    <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+      
+      <!-- หัวการ์ดสไตล์ราชการหรูหรา -->
+      <div class="gov-sys-header p-6 text-center border-b-2 border-[#c59b27] relative">
+        <div class="flex justify-center items-center gap-2 mb-3">
+          <div class="w-16 h-16 bg-white/95 rounded-xl p-1.5 shadow-md flex items-center justify-center overflow-hidden" data-cfg-logo>
+            <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราโรงเรียน">
+          </div>
+          <div class="w-14 h-14 bg-white/95 rounded-xl p-1 shadow-md flex items-center justify-center overflow-hidden hidden" data-cfg-logo2>
+          </div>
+          <div class="w-14 h-14 bg-white/95 rounded-xl p-1 shadow-md flex items-center justify-center overflow-hidden hidden" data-cfg-logo3>
+          </div>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-semibold mb-2">
+          <i class="fa-solid fa-shield-halved"></i> ระบบรักษาความปลอดภัย
+        </div>
+        <h2 class="text-lg sm:text-xl font-bold tracking-tight text-white"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></h2>
+        <p class="text-xs text-slate-200 mt-1">ระบบบริหารจัดการและแก้ไขข้อมูลเว็บไซต์ (CMS)</p>
+        <p class="text-[11px] text-amber-200/90 mt-0.5">ประจำปีการศึกษา <span data-cfg="academicYear">2570</span></p>
+      </div>
+
+      <!-- กล่องฟอร์มเข้าสู่ระบบ -->
+      <div class="p-6 sm:p-8 space-y-5 bg-white">
+        
+        <div>
+          <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-lock text-[#1a365d]"></i> เข้าสู่ระบบสำหรับผู้ดูแลระบบ
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">กรุณากรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าจัดการข้อมูล</p>
+        </div>
+
+        <!-- กล่องแจ้งเตือนเมื่อรหัสผ่านผิด -->
+        <div id="loginAlertBox" class="hidden p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 animate-shake">
+          <i class="fa-solid fa-circle-exclamation text-red-600 shrink-0 text-sm"></i>
+          <span id="loginAlertText">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</span>
+        </div>
+
+        <form id="adminLoginForm" onsubmit="handleAdminLoginSubmit(event)" class="space-y-4">
+          <div>
+            <label for="loginUsername" class="block text-xs font-semibold text-slate-700 mb-1.5">
+              ชื่อผู้ใช้งาน (Username) <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-sm">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <input 
+                type="text" 
+                id="loginUsername" 
+                required 
+                autocomplete="username"
+                placeholder="กรอกชื่อผู้ใช้ (เช่น admin)" 
+                class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-[#1a365d] focus:ring-1 focus:ring-[#1a365d] transition-all outline-none"
+              >
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <label for="loginPassword" class="block text-xs font-semibold text-slate-700">
+                รหัสผ่าน (Password) <span class="text-red-500">*</span>
+              </label>
+            </div>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-sm">
+                <i class="fa-solid fa-key"></i>
+              </div>
+              <input 
+                type="password" 
+                id="loginPassword" 
+                required 
+                autocomplete="current-password"
+                placeholder="กรอกรหัสผ่าน" 
+                class="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-[#1a365d] focus:ring-1 focus:ring-[#1a365d] transition-all outline-none"
+              >
+              <button 
+                type="button" 
+                onclick="toggleLoginPasswordVisibility()" 
+                class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-sm"
+                title="แสดง/ซ่อนรหัสผ่าน"
+              >
+                <i id="loginPassIcon" class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs pt-1">
+            <label class="flex items-center gap-2 cursor-pointer select-none text-slate-600">
+              <input type="checkbox" id="loginRemember" class="w-4 h-4 rounded text-[#1a365d] accent-[#1a365d] focus:ring-[#1a365d] border-slate-300">
+              <span>จดจำการเข้าสู่ระบบในอุปกรณ์นี้</span>
+            </label>
+          </div>
+
+          <button 
+            type="submit" 
+            id="loginSubmitBtn"
+            class="w-full py-2.5 px-4 bg-[#1a365d] hover:bg-[#1e3a8a] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 border border-[#172554] cursor-pointer"
+          >
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>เข้าสู่ระบบจัดการ (Log In)</span>
+          </button>
+        </form>
+
+        <!-- หมายเหตุข้อมูลบัญชีเริ่มต้น -->
+        <div class="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200/80 text-[11.5px] text-amber-900 space-y-1">
+          <div class="font-bold flex items-center gap-1.5 text-amber-950">
+            <i class="fa-solid fa-circle-info text-amber-600"></i> ข้อมูลบัญชีเริ่มต้นสำหรับทดสอบ:
+          </div>
+          <div class="grid grid-cols-2 gap-1 text-[11px] pt-1">
+            <div>ชื่อผู้ใช้: <code class="bg-amber-100/80 px-1.5 py-0.5 rounded font-mono font-bold text-[#1a365d]">admin</code></div>
+            <div>รหัสผ่าน: <code class="bg-amber-100/80 px-1.5 py-0.5 rounded font-mono font-bold text-[#1a365d]">admin1234</code></div>
+          </div>
+          <p class="text-[10px] text-amber-700 pt-1 leading-relaxed">
+            * สามารถเปลี่ยนชื่อผู้ใช้และรหัสผ่านใหม่ได้ทันทีที่แท็บ "⚙️ ตั้งค่าระบบ (CMS)"
+          </p>
+        </div>
+
+        <div class="pt-2 text-center border-t border-slate-100">
+          <a href="index.html" class="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-[#1a365d] font-medium transition">
+            <i class="fa-solid fa-arrow-left"></i> กลับสู่หน้าหลักเว็บไซต์
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- แผงเนื้อหาแดชบอร์ดหลังบ้าน (Admin App Wrapper - ซ่อนไว้จนกว่าจะผ่านการล็อกอิน) -->
+  <div id="adminAppWrapper" class="hidden flex-col min-h-screen">
+
   <!-- แถบแจ้งเตือนสถานะการแก้ไข -->
   <div class="bg-amber-600 text-white text-xs sm:text-sm py-1.5 sm:py-2 px-4 sm:px-6 shadow-sm flex flex-wrap justify-between items-center gap-2">
     <div>
@@ -145,13 +282,17 @@
       </div>
 
       <div class="flex items-center space-x-2.5">
+        <div id="adminUserBadge" class="hidden md:flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full border border-white/20 text-xs text-white">
+          <i class="fa-solid fa-user-shield text-amber-300"></i>
+          <span>ผู้ดูแลระบบ: <strong id="headerAdminUserDisplay" class="font-mono">admin</strong></span>
+        </div>
         <a href="manual.html" target="_blank" class="gov-btn gov-btn-navy text-xs sm:text-sm">
           <i class="fa-solid fa-book-open mr-1.5 text-amber-300"></i> คู่มือระบบ
         </a>
         <a href="index.html" class="gov-btn gov-btn-gray text-xs sm:text-sm">
           <i class="fa-solid fa-house mr-1.5 text-slate-600"></i> ไปที่หน้าบ้าน
         </a>
-        <button id="logoutBtn" onclick="handleAdminLogout()" class="gov-btn bg-red-700 hover:bg-red-800 text-white text-xs sm:text-sm hidden">
+        <button id="logoutBtn" onclick="handleAdminLogout()" class="gov-btn bg-red-700 hover:bg-red-800 text-white text-xs sm:text-sm">
           <i class="fa-solid fa-right-from-bracket mr-1.5"></i> ออกจากระบบ
         </button>
       </div>
@@ -253,6 +394,59 @@
             <!-- คอลัมน์ซ้าย: ฟอร์มแก้ไขข้อมูล (8 cols) -->
             <div class="lg:col-span-8 space-y-5">
               
+              <!-- กล่องความปลอดภัยและบัญชีผู้ดูแลระบบ (Admin Security & Credentials) -->
+              <div class="border-2 border-slate-700/40 rounded-lg p-4 bg-slate-900 text-white space-y-4 shadow-sm">
+                <div class="flex flex-wrap items-center justify-between border-b border-slate-700/80 pb-2.5 gap-2">
+                  <h4 class="font-bold text-white flex items-center text-sm sm:text-base">
+                    <i class="fa-solid fa-user-shield mr-2 text-amber-400 text-base"></i> บัญชีและความปลอดภัยผู้ดูแลระบบ (Admin Security & Credentials)
+                  </h4>
+                  <span class="text-[11px] bg-amber-400/20 text-amber-300 px-2.5 py-0.5 rounded font-semibold border border-amber-400/40">
+                    สำหรับล็อกอินเข้าหน้า admin.html
+                  </span>
+                </div>
+                
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  สามารถเปลี่ยนชื่อผู้ใช้งาน (Username) หรือรหัสผ่านใหม่สำหรับเข้าสู่ระบบหลังบ้านได้ที่นี่ (จำเป็นต้องกรอกรหัสผ่านปัจจุบันเพื่อยืนยันสิทธิ์)
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                  <div>
+                    <label class="block font-semibold text-slate-200 mb-1">
+                      ชื่อผู้ใช้งาน (Username) <span class="text-red-400">*</span>
+                    </label>
+                    <input type="text" id="cfg_adminUsername" required class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono font-bold text-sm" placeholder="เช่น admin">
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-200 mb-1">
+                      รหัสผ่านใหม่ (หากจะเปลี่ยน)
+                    </label>
+                    <input type="password" id="cfg_adminNewPassword" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="เว้นว่างไว้หากไม่เปลี่ยน">
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-200 mb-1">
+                      ยืนยันรหัสผ่านใหม่อีกครั้ง
+                    </label>
+                    <input type="password" id="cfg_adminConfirmPassword" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-amber-300 mb-1">
+                      รหัสผ่านปัจจุบัน (ยืนยันสิทธิ์) <span class="text-red-400">*</span>
+                    </label>
+                    <input type="password" id="cfg_adminCurrentPassword" class="gov-input w-full bg-slate-800 border-amber-500/50 text-white focus:bg-slate-700 font-mono text-sm" placeholder="รหัสผ่านปัจจุบัน">
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between pt-1 gap-2 border-t border-slate-800 text-[11.5px] text-slate-400">
+                  <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info text-amber-400"></i>
+                    <span>บัญชีเริ่มต้น: ชื่อผู้ใช้ <code class="text-amber-300 font-bold">admin</code> • รหัสผ่าน <code class="text-amber-300 font-bold">admin1234</code></span>
+                  </div>
+                  <button type="button" onclick="handleQuickUpdatePassword()" class="gov-btn bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-3.5 py-1.5 shadow cursor-pointer">
+                    <i class="fa-solid fa-key mr-1.5"></i> บันทึกเปลี่ยนรหัสผ่านทันที
+                  </button>
+                </div>
+              </div>
+
               <!-- กล่องที่ 1: ข้อมูลโรงเรียนและตราสัญลักษณ์ (รองรับ 3 ตรา) -->
               <div class="border border-slate-300 rounded p-4 bg-slate-50/70 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-2">
@@ -927,9 +1121,11 @@
     <span data-cfg="departmentName">กลุ่มบริหารกิจการนักเรียน</span> • <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
   </footer>
 
+  </div> <!-- สิ้นสุด #adminAppWrapper -->
+
   <!-- Scripts -->
-  <script src="js/data.js?v=257002"></script>
-  <script src="js/app.js?v=257002"></script>
+  <script src="js/data.js?v=257003"></script>
+  <script src="js/app.js?v=257003"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -995,6 +1191,11 @@
 
     function loadSettingsIntoForm() {
       const cfg = WDSDB.getConfig();
+      document.getElementById('cfg_adminUsername').value = cfg.adminUsername || 'admin';
+      document.getElementById('cfg_adminNewPassword').value = '';
+      document.getElementById('cfg_adminConfirmPassword').value = '';
+      document.getElementById('cfg_adminCurrentPassword').value = '';
+
       document.getElementById('cfg_schoolName').value = cfg.schoolName || '';
       document.getElementById('cfg_schoolNameEn').value = cfg.schoolNameEn || 'WACHIRATHAMSATIT SCHOOL';
       document.getElementById('cfg_affiliation').value = cfg.affiliation || '';
@@ -1873,6 +2074,45 @@
     function handleSaveSettings(e) {
       e.preventDefault();
 
+      const currentCfg = WDSDB.getConfig();
+      const newAdminUser = (document.getElementById('cfg_adminUsername').value || '').trim();
+      const currentAdminPass = document.getElementById('cfg_adminCurrentPassword').value;
+      const newAdminPass = document.getElementById('cfg_adminNewPassword').value;
+      const confirmAdminPass = document.getElementById('cfg_adminConfirmPassword').value;
+
+      let finalAdminUser = currentCfg.adminUsername || 'admin';
+      let finalAdminPass = currentCfg.adminPassword || 'admin1234';
+
+      if (newAdminPass || (newAdminUser && newAdminUser !== (currentCfg.adminUsername || 'admin'))) {
+        if (!currentAdminPass) {
+          showToast('กรุณากรอกรหัสผ่านปัจจุบันในกล่องความปลอดภัยเพื่อยืนยันการเปลี่ยนข้อมูลบัญชี', 'error');
+          document.getElementById('cfg_adminCurrentPassword').focus();
+          return;
+        }
+        if (newAdminPass && newAdminPass.length < 4) {
+          showToast('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร', 'error');
+          document.getElementById('cfg_adminNewPassword').focus();
+          return;
+        }
+        if (newAdminPass && newAdminPass !== confirmAdminPass) {
+          showToast('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน', 'error');
+          document.getElementById('cfg_adminConfirmPassword').focus();
+          return;
+        }
+        const authRes = WDSDB.updateAdminCredentials(currentAdminPass, newAdminUser, newAdminPass);
+        if (!authRes.success) {
+          showToast(authRes.message, 'error');
+          return;
+        }
+        finalAdminUser = newAdminUser;
+        if (newAdminPass) finalAdminPass = newAdminPass;
+        document.getElementById('cfg_adminCurrentPassword').value = '';
+        document.getElementById('cfg_adminNewPassword').value = '';
+        document.getElementById('cfg_adminConfirmPassword').value = '';
+        const userDisplay = document.getElementById('headerAdminUserDisplay');
+        if (userDisplay) userDisplay.textContent = finalAdminUser;
+      }
+
       const cleanedTimeline = currentTimeline.map((item, idx) => ({
         step: idx + 1,
         date: (item.date || '').trim(),
@@ -1882,6 +2122,8 @@
       }));
 
       const newConfig = {
+        adminUsername: finalAdminUser,
+        adminPassword: finalAdminPass,
         schoolName: document.getElementById('cfg_schoolName').value.trim(),
         schoolNameEn: document.getElementById('cfg_schoolNameEn').value.trim(),
         schoolLogo: document.getElementById('settingLogoData').value,
@@ -2272,12 +2514,133 @@
       showToast('ส่งออกข้อมูลเป็นไฟล์ Excel (CSV) สำเร็จ', 'success');
     }
 
-    // เมื่อเปิดเข้ามา ให้โหลดฟอร์มและเปิดแท็บตั้งค่า CMS ทันที
+    // ===== ฟังก์ชันระบบรักษาความปลอดภัยและการเข้าสู่ระบบ (Admin Authentication) =====
+    function toggleLoginPasswordVisibility() {
+      const passInput = document.getElementById('loginPassword');
+      const passIcon = document.getElementById('loginPassIcon');
+      if (!passInput || !passIcon) return;
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        passIcon.className = 'fa-solid fa-eye-slash';
+      } else {
+        passInput.type = 'password';
+        passIcon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function handleAdminLoginSubmit(e) {
+      e.preventDefault();
+      const u = (document.getElementById('loginUsername').value || '').trim();
+      const p = document.getElementById('loginPassword').value || '';
+      const remember = document.getElementById('loginRemember').checked;
+      const alertBox = document.getElementById('loginAlertBox');
+      const alertText = document.getElementById('loginAlertText');
+
+      const result = WDSDB.loginAdmin(u, p, remember);
+      if (result.success) {
+        alertBox.classList.add('hidden');
+        showToast('เข้าสู่ระบบสำเร็จ ยินดีต้อนรับสู่ระบบบริหารจัดการ', 'success');
+        document.getElementById('loginPassword').value = '';
+        checkAuthAndRender();
+      } else {
+        alertText.textContent = result.message;
+        alertBox.classList.remove('hidden');
+        alertBox.classList.remove('animate-shake');
+        void alertBox.offsetWidth; // trigger reflow to re-animate shake
+        alertBox.classList.add('animate-shake');
+        document.getElementById('loginPassword').focus();
+      }
+    }
+
+    function handleAdminLogout() {
+      if (confirm('คุณต้องการออกจากระบบบริหารจัดการและแก้ไขข้อมูล (CMS) ใช่หรือไม่?')) {
+        WDSDB.logoutAdmin();
+        showToast('ออกจากระบบเรียบร้อยแล้ว', 'info');
+        checkAuthAndRender();
+      }
+    }
+
+    function handleQuickUpdatePassword() {
+      const newAdminUser = (document.getElementById('cfg_adminUsername').value || '').trim();
+      const currentAdminPass = document.getElementById('cfg_adminCurrentPassword').value;
+      const newAdminPass = document.getElementById('cfg_adminNewPassword').value;
+      const confirmAdminPass = document.getElementById('cfg_adminConfirmPassword').value;
+
+      if (!currentAdminPass) {
+        showToast('กรุณากรอกรหัสผ่านปัจจุบันในช่องสีเหลืองเพื่อยืนยันสิทธิ์', 'error');
+        document.getElementById('cfg_adminCurrentPassword').focus();
+        return;
+      }
+      if (!newAdminUser || newAdminUser.length < 3) {
+        showToast('ชื่อผู้ใช้งานต้องมีความยาวอย่างน้อย 3 ตัวอักษร', 'error');
+        document.getElementById('cfg_adminUsername').focus();
+        return;
+      }
+      if (newAdminPass) {
+        if (newAdminPass.length < 4) {
+          showToast('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร', 'error');
+          document.getElementById('cfg_adminNewPassword').focus();
+          return;
+        }
+        if (newAdminPass !== confirmAdminPass) {
+          showToast('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน', 'error');
+          document.getElementById('cfg_adminConfirmPassword').focus();
+          return;
+        }
+      }
+
+      const res = WDSDB.updateAdminCredentials(currentAdminPass, newAdminUser, newAdminPass);
+      if (res.success) {
+        showToast(res.message, 'success');
+        document.getElementById('cfg_adminCurrentPassword').value = '';
+        document.getElementById('cfg_adminNewPassword').value = '';
+        document.getElementById('cfg_adminConfirmPassword').value = '';
+        const userDisplay = document.getElementById('headerAdminUserDisplay');
+        if (userDisplay) userDisplay.textContent = newAdminUser;
+      } else {
+        showToast(res.message, 'error');
+      }
+    }
+
+    function checkAuthAndRender() {
+      const isAuth = WDSDB.isAdminLoggedIn();
+      const loginScreen = document.getElementById('adminLoginScreen');
+      const appWrapper = document.getElementById('adminAppWrapper');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const userBadge = document.getElementById('adminUserBadge');
+      const userDisplay = document.getElementById('headerAdminUserDisplay');
+
+      // อัปเดตข้อมูลตราสัญลักษณ์และชื่อโรงเรียนในหน้าจอทั้งหมด
+      if (typeof applySiteConfig === 'function') {
+        applySiteConfig();
+      }
+
+      if (isAuth) {
+        if (loginScreen) loginScreen.classList.add('hidden');
+        if (appWrapper) appWrapper.classList.remove('hidden');
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
+        if (userBadge) userBadge.classList.remove('hidden');
+        if (userDisplay) userDisplay.textContent = WDSDB.getAdminUser();
+
+        initHeroBannerDragInteraction();
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab') || 'settings';
+        switchTab(tabParam);
+      } else {
+        if (loginScreen) loginScreen.classList.remove('hidden');
+        if (appWrapper) appWrapper.classList.add('hidden');
+        if (logoutBtn) logoutBtn.classList.add('hidden');
+        if (userBadge) userBadge.classList.add('hidden');
+        setTimeout(() => {
+          const uInput = document.getElementById('loginUsername');
+          if (uInput) uInput.focus();
+        }, 120);
+      }
+    }
+
+    // เมื่อเปิดหน้าเว็บ ตรวจสอบสิทธิ์การเข้าใช้งานก่อนแสดงผล
     window.addEventListener('DOMContentLoaded', () => {
-      initHeroBannerDragInteraction();
-      const urlParams = new URLSearchParams(window.location.search);
-      const tabParam = urlParams.get('tab') || 'settings';
-      switchTab(tabParam);
+      checkAuthAndRender();
     });
   </script>
 </body>

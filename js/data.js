@@ -134,7 +134,9 @@ const DEFAULT_DOCUMENTS_LIST = [
 const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/hero-bg-clean.jpg';
 
 const DEFAULT_SITE_CONFIG = {
-  configVersion: '2570.2',
+  configVersion: '2570.3',
+  adminUsername: 'admin',
+  adminPassword: 'admin1234',
   schoolName: 'โรงเรียนวชิรธรรมสาธิต',
   schoolNameEn: 'WACHIRATHAMSATIT SCHOOL',
   schoolLogo: DEFAULT_SCHOOL_LOGO,
@@ -578,7 +580,7 @@ const DEFAULT_COLOR_APPLICATIONS = [
 // Helper Functions
 const WDSDB = {
   init() {
-    const CURRENT_CONFIG_VERSION = '2570.2';
+    const CURRENT_CONFIG_VERSION = '2570.3';
     const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
     if (!stored) {
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
@@ -590,6 +592,8 @@ const WDSDB = {
           const updated = {
             ...DEFAULT_SITE_CONFIG,
             ...parsed,
+            adminUsername: parsed.adminUsername || DEFAULT_SITE_CONFIG.adminUsername,
+            adminPassword: parsed.adminPassword || DEFAULT_SITE_CONFIG.adminPassword,
             rulesCouncilList: DEFAULT_COUNCIL_RULES,
             rulesColorList: DEFAULT_COLOR_RULES,
             configVersion: CURRENT_CONFIG_VERSION
@@ -865,6 +869,64 @@ const WDSDB = {
     list = list.filter(x => x.id !== id);
     localStorage.setItem(key, JSON.stringify(list));
     return true;
+  },
+
+  // ===== ระบบรักษาความปลอดภัยและการยืนยันตัวตนผู้ดูแลระบบ (Admin Auth) =====
+  isAdminLoggedIn() {
+    return sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true' || 
+           localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true';
+  },
+
+  getAdminUser() {
+    const cfg = this.getConfig();
+    return cfg.adminUsername || 'admin';
+  },
+
+  loginAdmin(username, password, remember = false) {
+    const cfg = this.getConfig();
+    const validUser = (cfg.adminUsername || 'admin').trim();
+    const validPass = (cfg.adminPassword || 'admin1234').trim();
+
+    if (username.trim() === validUser && password === validPass) {
+      if (remember) {
+        localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
+        sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+      } else {
+        sessionStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
+        localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+      }
+      return { success: true };
+    }
+    return { success: false, message: 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่อีกครั้ง' };
+  },
+
+  logoutAdmin() {
+    sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+    localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+  },
+
+  updateAdminCredentials(currentPassword, newUsername, newPassword) {
+    const cfg = this.getConfig();
+    const validPass = (cfg.adminPassword || 'admin1234').trim();
+
+    if (currentPassword !== validPass) {
+      return { success: false, message: 'รหัสผ่านปัจจุบันไม่ถูกต้อง ไม่สามารถดำเนินการได้' };
+    }
+    if (!newUsername || newUsername.trim().length < 3) {
+      return { success: false, message: 'ชื่อผู้ใช้งานต้องมีความยาวอย่างน้อย 3 ตัวอักษร' };
+    }
+    if (newPassword && newPassword.length < 4) {
+      return { success: false, message: 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร' };
+    }
+
+    const updatedConfig = {
+      ...cfg,
+      adminUsername: newUsername.trim(),
+      adminPassword: newPassword ? newPassword : validPass
+    };
+
+    this.saveConfig(updatedConfig);
+    return { success: true, message: 'อัปเดตข้อมูลบัญชีผู้ดูแลระบบเรียบร้อยแล้ว' };
   },
 
   resetToDefaults() {

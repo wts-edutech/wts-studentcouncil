@@ -42,7 +42,7 @@ server.listen(PORT, () => {
   console.log(` โรงเรียนวชิรธรรมสาธิต - ระบบรับสมัครเลือกตั้ง 2570`);
   console.log(` เว็บไซต์เปิดใช้งานแล้วที่: http://localhost:${PORT}`);
   console.log(` หน้าบ้าน: http://localhost:${PORT}/index.html`);
-  console.log(` หลังบ้าน: http://localhost:${PORT}/admin.html (admin / 1234)`);
+  console.log(` หลังบ้าน: http://localhost:${PORT}/admin.html (admin / admin1234)`);
   console.log(`=====================================================`);
 });
 
