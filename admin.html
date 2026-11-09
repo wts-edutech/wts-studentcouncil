@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257010">
+  <link rel="stylesheet" href="css/style.css?v=257011">
   <style>
     .gov-sys-header {
       background-color: #1a365d;
@@ -1157,8 +1157,8 @@
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257010"></script>
-  <script src="js/app.js?v=257010"></script>
+  <script src="js/data.js?v=257011"></script>
+  <script src="js/app.js?v=257011"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -1462,10 +1462,21 @@
       });
       renderTimelineAdminTable();
       updateLivePreview();
+
+      // บันทึกและเชื่อมโยงข้อมูลไปยังหน้าแรกและคลาวด์ทันทีอัตโนมัติ!
+      const cleanedTimeline = (currentTimeline || []).map((item, idx) => ({
+        step: idx + 1,
+        date: (item.date || '').trim(),
+        title: (item.title || '').trim(),
+        location: (item.location || '').trim(),
+        highlight: Boolean(item.highlight)
+      }));
+      WDSDB.saveConfig({ timeline: cleanedTimeline }, true);
+
       if (!wasActive) {
-        showToast(`ย้ายจุดสีเขียวไปยังขั้นตอนที่ ${targetIdx + 1} เรียบร้อยแล้ว (กด "บันทึกข้อมูล" เพื่อใช้งาน)`, 'success');
+        showToast(`✅ ย้ายจุดสีเขียวไปยังขั้นตอนที่ ${targetIdx + 1} และเชื่อมโยงไปหน้าแรกทันที!`, 'success');
       } else {
-        showToast(`ยกเลิกการเน้นการ์ดสีเขียวของขั้นตอนที่ ${targetIdx + 1} แล้ว`, 'info');
+        showToast(`✅ ยกเลิกการเน้นการ์ดสีเขียวของขั้นตอนที่ ${targetIdx + 1} และบันทึกแล้ว!`, 'info');
       }
     }
 
@@ -2789,8 +2800,14 @@
     }
 
     // เมื่อเปิดหน้าเว็บ ตรวจสอบสิทธิ์การเข้าใช้งานก่อนแสดงผล
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       checkAuthAndRender();
+      if (typeof WDSDB !== 'undefined' && typeof WDSDB.syncFromCloud === 'function') {
+        const synced = await WDSDB.syncFromCloud();
+        if (synced && typeof loadSettingsIntoForm === 'function') {
+          loadSettingsIntoForm();
+        }
+      }
     });
   </script>
 </body>

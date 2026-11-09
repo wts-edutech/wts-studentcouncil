@@ -29,10 +29,10 @@ const THAI_STUDENT_FEMALE_PHOTO = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns
 
 // ข้อมูลกำหนดการเริ่มต้น
 const DEFAULT_TIMELINE = [
-  { step: 1, date: '16 - 30 พฤศจิกายน 2569', title: 'เปิดรับสมัครออนไลน์: สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)', location: 'ระบบรับสมัครออนไลน์', highlight: false },
+  { step: 1, date: '16 - 30 พฤศจิกายน 2569', title: 'เปิดรับสมัครออนไลน์: สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)', location: 'ระบบรับสมัครออนไลน์', highlight: true },
   { step: 2, date: '4 ธันวาคม 2569', title: 'ตรวจสอบคุณสมบัติผู้ลงสมัครประธานสภานักเรียนและประธานคณะสี', location: 'ห้องประชุม Minting Room', highlight: false },
   { step: 3, date: '9 ธันวาคม 2569', title: 'ผู้ลงสมัคร จับสลากหมายเลขผู้สมัคร: ประชุมชี้แจงระเบียบการหาเสียง', location: 'หอประชุมโรงเรียน', highlight: false },
-  { step: 4, date: '16 พฤศจิกายน 2569 - 2 กุมภาพันธ์ 2570', title: 'รณรงค์หาเสียง: แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด', location: 'ภายในบริเวณโรงเรียน', highlight: true },
+  { step: 4, date: '16 พฤศจิกายน 2569 - 2 กุมภาพันธ์ 2570', title: 'รณรงค์หาเสียง: แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด', location: 'ภายในบริเวณโรงเรียน', highlight: false },
   { step: 5, date: '27 มกราคม 2570', title: 'กิจกรรมดีเบตประธานสภานักเรียนและประธานคณะสี', location: 'หอประชุมโรงเรียนวชิรธรรมสาธิต', highlight: false },
   { step: 6, date: '3 กุมภาพันธ์ 2570', title: 'วันลงคะแนนเสียงเลือกตั้งใหญ่: เปิดคูหาลงคะแนนเสียง เวลา 08.30 - 15.00 น.', location: 'คูหาลงคะแนนเสียง', highlight: false },
   { step: 7, date: '8 กุมภาพันธ์ 2570', title: 'ประกาศผลการเลือกตั้งอย่างเป็นทางการ', location: 'เว็บไซต์โรงเรียนวชิรธรรมสาธิต', highlight: false }
@@ -156,7 +156,7 @@ const DEFAULT_DOCUMENTS_LIST = [
 const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/hero-bg-clean.jpg';
 
 const DEFAULT_SITE_CONFIG = {
-  configVersion: '2570.8',
+  configVersion: '2570.9',
   adminUsername: 'admin',
   adminPassword: 'admin1234',
   schoolName: 'โรงเรียนวชิรธรรมสาธิต',
@@ -209,7 +209,7 @@ const DEFAULT_SITE_CONFIG = {
   docsCardTitle: 'รายการแบบฟอร์มเอกสารทางการที่ต้องนำส่ง',
   docsCardSubtitle: 'ขนาดกระดาษ A4',
   documentsList: DEFAULT_DOCUMENTS_LIST,
-  timeline: DEFAULT_TIMELINE,
+  timeline: (parsed.timeline && Array.isArray(parsed.timeline) && parsed.timeline.length > 0) ? parsed.timeline : DEFAULT_TIMELINE,
   lineGroupUrl: 'https://line.me/ti/g/KhLtg2M7vA',
   lineGroupQr: 'assets/images/line-group-qr.jpg',
   lineGroupTitle: 'กรุณาเข้ากลุ่ม LINE ผู้สมัคร',
@@ -602,14 +602,14 @@ const DEFAULT_COLOR_APPLICATIONS = [
 // Helper Functions
 const WDSDB = {
   init() {
-    const CURRENT_CONFIG_VERSION = '2570.8';
+    const CURRENT_CONFIG_VERSION = '2570.9';
     const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
     if (!stored) {
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
     } else {
       try {
         const parsed = JSON.parse(stored);
-        if (!parsed.configVersion || parsed.configVersion !== CURRENT_CONFIG_VERSION || parsed.minBehaviorScore !== 70 || parsed.minGpaPresident !== 2.8 || !parsed.timeline || !parsed.timeline[3] || !parsed.timeline[3].highlight) {
+        if (!parsed.configVersion || parsed.configVersion !== CURRENT_CONFIG_VERSION || parsed.minBehaviorScore !== 70 || parsed.minGpaPresident !== 2.8) {
           // หากเป็นเวอร์ชันเก่า ให้อัปเดตข้อมูลระเบียบการและกำหนดการ 7 ขั้นตอนล่าสุดทันที
           const updated = {
             ...DEFAULT_SITE_CONFIG,
@@ -782,7 +782,7 @@ const WDSDB = {
       const local = stored ? JSON.parse(stored) : null;
       const remoteTime = new Date(remote._lastUpdated || 0).getTime();
       const localTime = new Date(local?._lastUpdated || 0).getTime();
-      const isCloudNewer = !local || remoteTime > localTime || local.configVersion !== remote.configVersion || (remote.timeline && remote.timeline[3]?.highlight && !local.timeline?.[3]?.highlight);
+      const isCloudNewer = !local || remoteTime > localTime || local.configVersion !== remote.configVersion;
 
       if (isCloudNewer) {
         const merged = { ...DEFAULT_SITE_CONFIG, ...remote };
