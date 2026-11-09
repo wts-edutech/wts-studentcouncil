@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257005">
+  <link rel="stylesheet" href="css/style.css?v=257006">
   <style>
     .gov-sys-header {
       background-color: #1a365d;
@@ -385,12 +385,17 @@
               <strong>คำแนะนำ:</strong> เมื่อแก้ไขข้อมูลด้านล่างนี้แล้วกดปุ่ม <strong>"บันทึกข้อมูล"</strong> ข้อมูลในหน้าบ้านทุกหน้า (ชื่อโรงเรียน, ตราสัญลักษณ์, ปีการศึกษา, ข้อความประกาศ, แบบฟอร์ม A4) จะถูกอัปเดตตามทันที
             </div>
           </div>
-          <button type="button" onclick="fillQuickSampleData()" class="gov-btn bg-blue-800 hover:bg-blue-700 text-white flex-shrink-0 text-xs">
-            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> ทดลองกรอกชื่อโรงเรียนอื่น (ทดสอบระบบ)
-          </button>
+          <div class="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+            <button type="button" id="btnSaveAllSettingsTop" onclick="handleSaveSettings(event)" class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-3.5 py-2 shadow flex items-center justify-center cursor-pointer">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกข้อมูลเว็บไซต์
+            </button>
+            <button type="button" onclick="fillQuickSampleData()" class="gov-btn bg-blue-800 hover:bg-blue-700 text-white text-xs px-3 py-2">
+              <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> ข้อมูลตัวอย่าง
+            </button>
+          </div>
         </div>
 
-        <form onsubmit="handleSaveSettings(event)" class="space-y-6">
+        <form id="settingsCmsForm" novalidate onsubmit="handleSaveSettings(event)" class="space-y-6">
           
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
@@ -417,25 +422,25 @@
                     <label class="block font-semibold text-slate-200 mb-1">
                       ชื่อผู้ใช้งาน (Username) <span class="text-red-400">*</span>
                     </label>
-                    <input type="text" id="cfg_adminUsername" required class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono font-bold text-sm" placeholder="เช่น admin">
+                    <input type="text" id="cfg_adminUsername" autocomplete="username" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono font-bold text-sm" placeholder="เช่น admin">
                   </div>
                   <div>
                     <label class="block font-semibold text-slate-200 mb-1">
                       รหัสผ่านใหม่ (หากจะเปลี่ยน)
                     </label>
-                    <input type="password" id="cfg_adminNewPassword" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="เว้นว่างไว้หากไม่เปลี่ยน">
+                    <input type="password" id="cfg_adminNewPassword" autocomplete="new-password" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="เว้นว่างไว้หากไม่เปลี่ยน">
                   </div>
                   <div>
                     <label class="block font-semibold text-slate-200 mb-1">
                       ยืนยันรหัสผ่านใหม่อีกครั้ง
                     </label>
-                    <input type="password" id="cfg_adminConfirmPassword" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
+                    <input type="password" id="cfg_adminConfirmPassword" autocomplete="new-password" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
                   </div>
                   <div>
                     <label class="block font-semibold text-amber-300 mb-1">
                       รหัสผ่านปัจจุบัน (ยืนยันสิทธิ์) <span class="text-red-400">*</span>
                     </label>
-                    <input type="password" id="cfg_adminCurrentPassword" class="gov-input w-full bg-slate-800 border-amber-500/50 text-white focus:bg-slate-700 font-mono text-sm" placeholder="รหัสผ่านปัจจุบัน">
+                    <input type="password" id="cfg_adminCurrentPassword" autocomplete="current-password" class="gov-input w-full bg-slate-800 border-amber-500/50 text-white focus:bg-slate-700 font-mono text-sm" placeholder="รหัสผ่านปัจจุบัน">
                   </div>
                 </div>
 
@@ -1047,14 +1052,14 @@
               </div>
 
               <!-- Action Submit Box -->
-              <div class="bg-white border border-slate-300 p-4 rounded space-y-2 shadow-sm text-center">
-                <button type="submit" class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 w-full text-sm shadow">
+              <div class="bg-white border border-slate-300 p-4 rounded space-y-2.5 shadow-sm text-center">
+                <button type="button" id="btnSaveAllSettings" onclick="handleSaveSettings(event)" class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 px-4 w-full text-sm sm:text-base shadow cursor-pointer transition transform active:scale-95 flex items-center justify-center">
                   <i class="fa-solid fa-floppy-disk mr-2"></i> บันทึกข้อมูลเว็บไซต์ทั้งหมด
                 </button>
-                <a href="index.html" target="_blank" class="gov-btn gov-btn-navy w-full py-2 text-xs">
+                <a href="index.html" target="_blank" class="gov-btn gov-btn-navy w-full py-2.5 text-xs flex items-center justify-center">
                   <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> เปิดดูหน้าบ้านทันที
                 </a>
-                <button type="button" onclick="confirmResetSettings()" class="text-xs text-slate-500 hover:text-red-700 underline pt-1 block mx-auto">
+                <button type="button" onclick="confirmResetSettings()" class="text-xs text-slate-500 hover:text-red-700 underline pt-1 block mx-auto cursor-pointer">
                   คืนค่าเริ่มต้นของโรงเรียนวชิรธรรมสาธิต
                 </button>
               </div>
@@ -1134,8 +1139,8 @@
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257005"></script>
-  <script src="js/app.js?v=257005"></script>
+  <script src="js/data.js?v=257006"></script>
+  <script src="js/app.js?v=257006"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -2106,131 +2111,182 @@
     }
 
     function handleSaveSettings(e) {
-      e.preventDefault();
-
-      const currentCfg = WDSDB.getConfig();
-      const newAdminUser = (document.getElementById('cfg_adminUsername').value || '').trim();
-      const currentAdminPass = document.getElementById('cfg_adminCurrentPassword').value;
-      const newAdminPass = document.getElementById('cfg_adminNewPassword').value;
-      const confirmAdminPass = document.getElementById('cfg_adminConfirmPassword').value;
-
-      let finalAdminUser = currentCfg.adminUsername || 'admin';
-      let finalAdminPass = currentCfg.adminPassword || 'admin1234';
-
-      if (newAdminPass || (newAdminUser && newAdminUser !== (currentCfg.adminUsername || 'admin'))) {
-        if (!currentAdminPass) {
-          showToast('กรุณากรอกรหัสผ่านปัจจุบันในกล่องความปลอดภัยเพื่อยืนยันการเปลี่ยนข้อมูลบัญชี', 'error');
-          document.getElementById('cfg_adminCurrentPassword').focus();
-          return;
-        }
-        if (newAdminPass && newAdminPass.length < 4) {
-          showToast('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร', 'error');
-          document.getElementById('cfg_adminNewPassword').focus();
-          return;
-        }
-        if (newAdminPass && newAdminPass !== confirmAdminPass) {
-          showToast('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน', 'error');
-          document.getElementById('cfg_adminConfirmPassword').focus();
-          return;
-        }
-        const authRes = WDSDB.updateAdminCredentials(currentAdminPass, newAdminUser, newAdminPass);
-        if (!authRes.success) {
-          showToast(authRes.message, 'error');
-          return;
-        }
-        finalAdminUser = newAdminUser;
-        if (newAdminPass) finalAdminPass = newAdminPass;
-        document.getElementById('cfg_adminCurrentPassword').value = '';
-        document.getElementById('cfg_adminNewPassword').value = '';
-        document.getElementById('cfg_adminConfirmPassword').value = '';
-        const userDisplay = document.getElementById('headerAdminUserDisplay');
-        if (userDisplay) userDisplay.textContent = finalAdminUser;
+      if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
       }
 
-      const cleanedTimeline = currentTimeline.map((item, idx) => ({
-        step: idx + 1,
-        date: (item.date || '').trim(),
-        title: (item.title || '').trim(),
-        location: (item.location || '').trim(),
-        highlight: Boolean(item.highlight)
-      }));
+      const saveButtons = [
+        document.getElementById('btnSaveAllSettings'),
+        document.getElementById('btnSaveAllSettingsTop')
+      ].filter(Boolean);
 
-      const newConfig = {
-        adminUsername: finalAdminUser,
-        adminPassword: finalAdminPass,
-        schoolName: document.getElementById('cfg_schoolName').value.trim(),
-        schoolNameEn: document.getElementById('cfg_schoolNameEn').value.trim(),
-        schoolLogo: document.getElementById('settingLogoData').value,
-        schoolLogo2: document.getElementById('settingLogo2Data').value,
-        schoolLogo3: document.getElementById('settingLogo3Data').value,
-        heroBannerImage: document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg'),
-        heroBannerPosX: parseInt(document.getElementById('cfg_heroBannerPosX').value, 10) || 0,
-        heroBannerPosY: parseInt(document.getElementById('cfg_heroBannerPosY').value, 10) || 0,
-        heroBannerZoom: parseInt(document.getElementById('cfg_heroBannerZoom').value, 10) || 100,
-        affiliation: document.getElementById('cfg_affiliation').value.trim(),
-        departmentName: document.getElementById('cfg_departmentName').value.trim(),
-        academicYear: document.getElementById('cfg_academicYear').value.trim(),
-        councilAgreementYear: document.getElementById('cfg_councilAgreementYear').value.trim(),
-        colorAgreementYear: document.getElementById('cfg_colorAgreementYear').value.trim(),
-        regPeriod: document.getElementById('cfg_regPeriod').value.trim(),
-        announcementText: document.getElementById('cfg_announcementText').value.trim(),
-        minBehaviorScore: parseFloat(document.getElementById('cfg_minBehaviorScore').value),
-        minGpaPresident: parseFloat(document.getElementById('cfg_minGpaPresident').value),
-        minGpaMember: parseFloat(document.getElementById('cfg_minGpaMember').value),
-        schoolAddress: document.getElementById('cfg_schoolAddress').value.trim(),
-        contactPerson: document.getElementById('cfg_contactPerson').value.trim(),
-        schoolPhone: document.getElementById('cfg_schoolPhone').value.trim(),
-        councilPhone: document.getElementById('cfg_councilPhone').value.trim(),
-        councilEmail: document.getElementById('cfg_councilEmail').value.trim(),
-        schoolWebsite: document.getElementById('cfg_schoolWebsite').value.trim(),
-        councilOfficeHours: document.getElementById('cfg_councilOfficeHours').value.trim(),
-        lineGroupUrl: document.getElementById('cfg_lineGroupUrl').value.trim(),
-        lineGroupTitle: document.getElementById('cfg_lineGroupTitle').value.trim(),
-        lineGroupDesc: document.getElementById('cfg_lineGroupDesc').value.trim(),
-        lineGroupQr: document.getElementById('settingLineQrData').value || 'assets/images/line-group-qr.jpg',
-        rulesHeaderTitle: document.getElementById('cfg_rulesHeaderTitle').value.trim(),
-        rulesHeaderSubtitle: document.getElementById('cfg_rulesHeaderSubtitle').value.trim(),
-        rulesSection1Title: document.getElementById('cfg_rulesSection1Title').value.trim(),
-        rulesCouncilList: document.getElementById('cfg_rulesCouncilList').value.split('\n').map(s => s.replace(/^\s*\d+[\.\)]\s*/, '').trim()).filter(Boolean),
-        rulesSection2Title: document.getElementById('cfg_rulesSection2Title').value.trim(),
-        rulesColorList: document.getElementById('cfg_rulesColorList').value.split('\n').map(s => s.replace(/^\s*\d+[\.\)]\s*/, '').trim()).filter(Boolean),
-        applyHeaderTitle: document.getElementById('cfg_applyHeaderTitle').value.trim(),
-        applyHeaderSubtitle: document.getElementById('cfg_applyHeaderSubtitle').value.trim(),
-        applyCouncilTitle: document.getElementById('cfg_applyCouncilTitle').value.trim(),
-        applyCouncilBadge: document.getElementById('cfg_applyCouncilBadge').value.trim(),
-        applyCouncilDesc: document.getElementById('cfg_applyCouncilDesc').value.trim(),
-        applyCouncilBullets: document.getElementById('cfg_applyCouncilBullets').value.split('\n').map(s => s.trim()).filter(Boolean),
-        applyCouncilBtnText: document.getElementById('cfg_applyCouncilBtnText').value.trim(),
-        applyColorTitle: document.getElementById('cfg_applyColorTitle').value.trim(),
-        applyColorBadge: document.getElementById('cfg_applyColorBadge').value.trim(),
-        applyColorDesc: document.getElementById('cfg_applyColorDesc').value.trim(),
-        applyColorHousesText: document.getElementById('cfg_applyColorHousesText').value.trim(),
-        applyColorBullets: document.getElementById('cfg_applyColorBullets').value.split('\n').map(s => s.trim()).filter(Boolean),
-        applyColorBtnText: document.getElementById('cfg_applyColorBtnText').value.trim(),
-        docsPageHeaderTitle: document.getElementById('cfg_docsPageHeaderTitle').value.trim(),
-        docsCardTitle: document.getElementById('cfg_docsCardTitle').value.trim(),
-        docsCardSubtitle: document.getElementById('cfg_docsCardSubtitle').value.trim(),
-        documentsList: currentDocuments.map((doc, idx) => ({
-          id: idx + 1,
-          title: (doc.title || '').trim(),
-          desc: (doc.desc || '').trim(),
-          signer: (doc.signer || '').trim(),
-          btnText: (doc.btnText || 'เปิดพิมพ์ A4').trim(),
-          actionType: doc.actionType || 'consent',
-          fileData: doc.fileData || '',
-          fileName: doc.fileName || '',
-          fileSize: doc.fileSize || '',
-          fileUrl: (doc.fileUrl || '').trim(),
-          customContent: (doc.customContent || '').trim()
-        })),
-        councilSignatures: currentCouncilSignatures,
-        colorSignatures: currentColorSignatures,
-        timeline: cleanedTimeline
-      };
+      saveButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+      });
 
-      WDSDB.saveConfig(newConfig);
-      applySiteConfig();
-      showToast('บันทึกข้อมูลสำเร็จ! หน้าบ้านทุกหน้าถูกอัปเดตเรียบร้อยแล้ว', 'success');
+      try {
+        const currentCfg = WDSDB.getConfig();
+        let finalAdminUser = currentCfg.adminUsername || 'admin';
+        let finalAdminPass = currentCfg.adminPassword || 'admin1234';
+
+        const getVal = (id, fallback = '') => {
+          const el = document.getElementById(id);
+          return el ? el.value : fallback;
+        };
+        const getTrimmed = (id, fallback = '') => String(getVal(id, fallback) || '').trim();
+        const getParsedFloat = (id, fallback = 0) => {
+          const v = parseFloat(getVal(id, ''));
+          return isNaN(v) ? fallback : v;
+        };
+        const getParsedInt = (id, fallback = 0) => {
+          const v = parseInt(getVal(id, ''), 10);
+          return isNaN(v) ? fallback : v;
+        };
+        const getSplitLines = (id) => {
+          return getTrimmed(id).split('\n').map(s => s.replace(/^\s*\d+[\.\)]\s*/, '').trim()).filter(Boolean);
+        };
+
+        const currentAdminPass = getTrimmed('cfg_adminCurrentPassword');
+        const newAdminUser = getTrimmed('cfg_adminUsername');
+        const newAdminPass = getTrimmed('cfg_adminNewPassword');
+        const confirmAdminPass = getTrimmed('cfg_adminConfirmPassword');
+
+        // จัดการเปลี่ยนรหัสผ่านเฉพาะเมื่อผู้ใช้กรอกรหัสผ่านปัจจุบันเข้ามาเพื่อยืนยันสิทธิ์
+        if (currentAdminPass) {
+          if (newAdminPass && newAdminPass.length < 4) {
+            showToast('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร', 'error');
+            document.getElementById('cfg_adminNewPassword')?.focus();
+            return;
+          }
+          if (newAdminPass && newAdminPass !== confirmAdminPass) {
+            showToast('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน', 'error');
+            document.getElementById('cfg_adminConfirmPassword')?.focus();
+            return;
+          }
+          const authRes = WDSDB.updateAdminCredentials(currentAdminPass, newAdminUser || finalAdminUser, newAdminPass);
+          if (!authRes.success) {
+            showToast(authRes.message, 'error');
+            document.getElementById('cfg_adminCurrentPassword')?.focus();
+            return;
+          }
+          if (newAdminUser) finalAdminUser = newAdminUser;
+          if (newAdminPass) finalAdminPass = newAdminPass;
+          if (document.getElementById('cfg_adminCurrentPassword')) document.getElementById('cfg_adminCurrentPassword').value = '';
+          if (document.getElementById('cfg_adminNewPassword')) document.getElementById('cfg_adminNewPassword').value = '';
+          if (document.getElementById('cfg_adminConfirmPassword')) document.getElementById('cfg_adminConfirmPassword').value = '';
+          const userDisplay = document.getElementById('headerAdminUserDisplay');
+          if (userDisplay) userDisplay.textContent = finalAdminUser;
+        }
+
+        const schoolNameVal = getTrimmed('cfg_schoolName');
+        if (!schoolNameVal) {
+          showToast('กรุณากรอกชื่อโรงเรียน', 'error');
+          document.getElementById('cfg_schoolName')?.focus();
+          return;
+        }
+
+        const cleanedTimeline = (currentTimeline || []).map((item, idx) => ({
+          step: idx + 1,
+          date: (item.date || '').trim(),
+          title: (item.title || '').trim(),
+          location: (item.location || '').trim(),
+          highlight: Boolean(item.highlight)
+        }));
+
+        const newConfig = {
+          adminUsername: finalAdminUser,
+          adminPassword: finalAdminPass,
+          schoolName: schoolNameVal,
+          schoolNameEn: getTrimmed('cfg_schoolNameEn'),
+          schoolLogo: getVal('settingLogoData'),
+          schoolLogo2: getVal('settingLogo2Data'),
+          schoolLogo3: getVal('settingLogo3Data'),
+          heroBannerImage: getVal('settingHeroBannerData') || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg'),
+          heroBannerPosX: getParsedInt('cfg_heroBannerPosX', 0),
+          heroBannerPosY: getParsedInt('cfg_heroBannerPosY', 0),
+          heroBannerZoom: getParsedInt('cfg_heroBannerZoom', 100),
+          affiliation: getTrimmed('cfg_affiliation'),
+          departmentName: getTrimmed('cfg_departmentName'),
+          academicYear: getTrimmed('cfg_academicYear'),
+          councilAgreementYear: getTrimmed('cfg_councilAgreementYear'),
+          colorAgreementYear: getTrimmed('cfg_colorAgreementYear'),
+          regPeriod: getTrimmed('cfg_regPeriod'),
+          announcementText: getTrimmed('cfg_announcementText'),
+          minBehaviorScore: getParsedFloat('cfg_minBehaviorScore', 80),
+          minGpaPresident: getParsedFloat('cfg_minGpaPresident', 2.75),
+          minGpaMember: getParsedFloat('cfg_minGpaMember', 2.50),
+          schoolAddress: getTrimmed('cfg_schoolAddress'),
+          contactPerson: getTrimmed('cfg_contactPerson'),
+          schoolPhone: getTrimmed('cfg_schoolPhone'),
+          councilPhone: getTrimmed('cfg_councilPhone'),
+          councilEmail: getTrimmed('cfg_councilEmail'),
+          schoolWebsite: getTrimmed('cfg_schoolWebsite'),
+          councilOfficeHours: getTrimmed('cfg_councilOfficeHours'),
+          lineGroupUrl: getTrimmed('cfg_lineGroupUrl'),
+          lineGroupTitle: getTrimmed('cfg_lineGroupTitle'),
+          lineGroupDesc: getTrimmed('cfg_lineGroupDesc'),
+          lineGroupQr: getVal('settingLineQrData') || 'assets/images/line-group-qr.jpg',
+          rulesHeaderTitle: getTrimmed('cfg_rulesHeaderTitle'),
+          rulesHeaderSubtitle: getTrimmed('cfg_rulesHeaderSubtitle'),
+          rulesSection1Title: getTrimmed('cfg_rulesSection1Title'),
+          rulesCouncilList: getSplitLines('cfg_rulesCouncilList'),
+          rulesSection2Title: getTrimmed('cfg_rulesSection2Title'),
+          rulesColorList: getSplitLines('cfg_rulesColorList'),
+          applyHeaderTitle: getTrimmed('cfg_applyHeaderTitle'),
+          applyHeaderSubtitle: getTrimmed('cfg_applyHeaderSubtitle'),
+          applyCouncilTitle: getTrimmed('cfg_applyCouncilTitle'),
+          applyCouncilBadge: getTrimmed('cfg_applyCouncilBadge'),
+          applyCouncilDesc: getTrimmed('cfg_applyCouncilDesc'),
+          applyCouncilBullets: getTrimmed('cfg_applyCouncilBullets').split('\n').map(s => s.trim()).filter(Boolean),
+          applyCouncilBtnText: getTrimmed('cfg_applyCouncilBtnText'),
+          applyColorTitle: getTrimmed('cfg_applyColorTitle'),
+          applyColorBadge: getTrimmed('cfg_applyColorBadge'),
+          applyColorDesc: getTrimmed('cfg_applyColorDesc'),
+          applyColorHousesText: getTrimmed('cfg_applyColorHousesText'),
+          applyColorBullets: getTrimmed('cfg_applyColorBullets').split('\n').map(s => s.trim()).filter(Boolean),
+          applyColorBtnText: getTrimmed('cfg_applyColorBtnText'),
+          docsPageHeaderTitle: getTrimmed('cfg_docsPageHeaderTitle'),
+          docsCardTitle: getTrimmed('cfg_docsCardTitle'),
+          docsCardSubtitle: getTrimmed('cfg_docsCardSubtitle'),
+          documentsList: (currentDocuments || []).map((doc, idx) => ({
+            id: idx + 1,
+            title: (doc.title || '').trim(),
+            desc: (doc.desc || '').trim(),
+            signer: (doc.signer || '').trim(),
+            btnText: (doc.btnText || 'เปิดพิมพ์ A4').trim(),
+            actionType: doc.actionType || 'consent',
+            fileData: doc.fileData || '',
+            fileName: doc.fileName || '',
+            fileSize: doc.fileSize || '',
+            fileUrl: (doc.fileUrl || '').trim(),
+            customContent: (doc.customContent || '').trim()
+          })),
+          councilSignatures: Array.isArray(currentCouncilSignatures) ? currentCouncilSignatures : (currentCfg.councilSignatures || []),
+          colorSignatures: Array.isArray(currentColorSignatures) ? currentColorSignatures : (currentCfg.colorSignatures || []),
+          timeline: cleanedTimeline
+        };
+
+        const saveRes = WDSDB.saveConfig(newConfig);
+        if (saveRes) {
+          if (typeof applySiteConfig === 'function') applySiteConfig();
+          if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
+          if (typeof updateLivePreview === 'function') updateLivePreview();
+          showToast('✅ บันทึกข้อมูลเว็บไซต์สำเร็จเรียบร้อยแล้ว!', 'success');
+        }
+      } catch (err) {
+        console.error('Save Settings Error:', err);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err), 'error');
+      } finally {
+        saveButtons.forEach(btn => {
+          btn.disabled = false;
+          if (btn.id === 'btnSaveAllSettingsTop') {
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกข้อมูลเว็บไซต์';
+          } else {
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i> บันทึกข้อมูลเว็บไซต์ทั้งหมด';
+          }
+        });
+      }
     }
 
     function confirmResetSettings() {

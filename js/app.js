@@ -510,11 +510,11 @@ function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.id = 'govToast';
   const bgColor = type === 'success' ? 'bg-[#15803d]' : (type === 'error' ? 'bg-red-800' : 'bg-[#1e3a8a]');
-  toast.className = `fixed bottom-4 right-4 z-50 text-white px-5 py-2.5 rounded shadow-lg text-xs sm:text-sm flex items-center space-x-2 transition-all duration-200 transform translate-y-6 opacity-0 ${bgColor} font-formal`;
+  toast.className = `fixed bottom-5 right-5 z-[9999] text-white px-5 py-3 rounded-lg shadow-2xl text-xs sm:text-sm font-semibold flex items-center space-x-2.5 transition-all duration-300 transform translate-y-6 opacity-0 ${bgColor} font-formal border border-white/20`;
   
-  const icon = type === 'success' ? 'fa-check' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info');
+  const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info');
   toast.innerHTML = `
-    <i class="fa-solid ${icon}"></i>
+    <i class="fa-solid ${icon} text-base sm:text-lg"></i>
     <span>${message}</span>
   `;
 
@@ -527,7 +527,7 @@ function showToast(message, type = 'success') {
   setTimeout(() => {
     toast.classList.add('translate-y-6', 'opacity-0');
     setTimeout(() => toast.remove(), 300);
-  }, 3500);
+  }, 4000);
 }
 
 // การดาวน์โหลดไฟล์ข้อมูลเป็น CSV ภาษาไทย UTF-8

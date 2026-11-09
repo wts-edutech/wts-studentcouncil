@@ -701,10 +701,20 @@ const WDSDB = {
 
   saveConfig(newConfig) {
     this.init();
-    const current = this.getConfig();
-    const merged = { ...current, ...newConfig };
-    localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
-    return merged;
+    try {
+      const current = this.getConfig();
+      const merged = { ...current, ...newConfig };
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
+      return merged;
+    } catch (e) {
+      console.error('WDSDB saveConfig error:', e);
+      if (e.name === 'QuotaExceededError' || e.code === 22) {
+        alert('พื้นที่จัดเก็บของเบราว์เซอร์เต็ม ไม่สามารถบันทึกได้ กรุณาลดขนาดไฟล์ภาพที่อัปโหลด');
+      } else {
+        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + (e.message || e));
+      }
+      return null;
+    }
   },
 
   resetConfig() {
