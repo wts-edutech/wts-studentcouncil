@@ -156,7 +156,7 @@ const DEFAULT_DOCUMENTS_LIST = [
 const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/hero-bg-clean.jpg';
 
 const DEFAULT_SITE_CONFIG = {
-  configVersion: '2570.6',
+  configVersion: '2570.8',
   adminUsername: 'admin',
   adminPassword: 'admin1234',
   schoolName: 'โรงเรียนวชิรธรรมสาธิต',
@@ -602,19 +602,19 @@ const DEFAULT_COLOR_APPLICATIONS = [
 // Helper Functions
 const WDSDB = {
   init() {
-    const CURRENT_CONFIG_VERSION = '2570.6';
+    const CURRENT_CONFIG_VERSION = '2570.8';
     const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
     if (!stored) {
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
     } else {
       try {
         const parsed = JSON.parse(stored);
-        if (!parsed.configVersion || parsed.configVersion !== CURRENT_CONFIG_VERSION || parsed.minBehaviorScore !== 70 || parsed.minGpaPresident !== 2.8) {
+        if (!parsed.configVersion || parsed.configVersion !== CURRENT_CONFIG_VERSION || parsed.minBehaviorScore !== 70 || parsed.minGpaPresident !== 2.8 || !parsed.timeline || !parsed.timeline[3] || !parsed.timeline[3].highlight) {
           // หากเป็นเวอร์ชันเก่า ให้อัปเดตข้อมูลระเบียบการและกำหนดการ 7 ขั้นตอนล่าสุดทันที
           const updated = {
             ...DEFAULT_SITE_CONFIG,
             ...parsed,
-            timeline: (parsed.timeline && parsed.timeline.length) ? parsed.timeline : DEFAULT_TIMELINE,
+            timeline: DEFAULT_TIMELINE,
             regPeriod: '16 - 30 พฤศจิกายน 2569',
             adminUsername: parsed.adminUsername || DEFAULT_SITE_CONFIG.adminUsername,
             adminPassword: parsed.adminPassword || DEFAULT_SITE_CONFIG.adminPassword,
@@ -630,7 +630,7 @@ const WDSDB = {
             applyColorBullets: DEFAULT_APPLY_COLOR_BULLETS,
             documentsList: DEFAULT_DOCUMENTS_LIST,
             configVersion: CURRENT_CONFIG_VERSION,
-            _lastUpdated: new Date().toISOString()
+            _lastUpdated: '2026-11-09T00:00:00.000Z'
           };
           localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(updated));
         }
@@ -782,9 +782,9 @@ const WDSDB = {
       const local = stored ? JSON.parse(stored) : null;
       const remoteTime = new Date(remote._lastUpdated || 0).getTime();
       const localTime = new Date(local?._lastUpdated || 0).getTime();
+      const isCloudNewer = !local || remoteTime > localTime || local.configVersion !== remote.configVersion || (remote.timeline && remote.timeline[3]?.highlight && !local.timeline?.[3]?.highlight);
 
-      // หากข้อมูลบนคลาวด์ใหม่กว่า หรือเครื่องนี้ยังไม่มี timestamp
-      if (!local || remoteTime > localTime) {
+      if (isCloudNewer) {
         const merged = { ...DEFAULT_SITE_CONFIG, ...remote };
         localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
         if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
