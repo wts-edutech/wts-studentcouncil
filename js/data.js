@@ -209,7 +209,7 @@ const DEFAULT_SITE_CONFIG = {
   docsCardTitle: 'รายการแบบฟอร์มเอกสารทางการที่ต้องนำส่ง',
   docsCardSubtitle: 'ขนาดกระดาษ A4',
   documentsList: DEFAULT_DOCUMENTS_LIST,
-  timeline: (parsed.timeline && Array.isArray(parsed.timeline) && parsed.timeline.length > 0) ? parsed.timeline : DEFAULT_TIMELINE,
+  timeline: DEFAULT_TIMELINE,
   lineGroupUrl: 'https://line.me/ti/g/KhLtg2M7vA',
   lineGroupQr: 'assets/images/line-group-qr.jpg',
   lineGroupTitle: 'กรุณาเข้ากลุ่ม LINE ผู้สมัคร',
