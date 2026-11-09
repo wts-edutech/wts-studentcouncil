@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257012">
+  <link rel="stylesheet" href="css/style.css?v=257013">
   <style>
     .gov-sys-header {
       background-color: #1a365d;
@@ -163,7 +163,7 @@
           </button>
         </div>
 
-        <form id="adminLoginForm" onsubmit="handleAdminLoginSubmit(event)" class="space-y-4">
+        <form id="adminLoginForm" onsubmit="handleAdminLoginSubmit(event); return false;" class="space-y-4">
           <div>
             <label for="loginUsername" class="block text-xs font-semibold text-slate-700 mb-1.5">
               ชื่อผู้ใช้งาน (Username) <span class="text-red-500">*</span>
@@ -220,7 +220,8 @@
           </div>
 
           <button 
-            type="submit" 
+            type="button" 
+            onclick="handleAdminLoginSubmit(event)" 
             id="loginSubmitBtn"
             class="w-full py-2.5 px-4 bg-[#1a365d] hover:bg-[#1e3a8a] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 border border-[#172554] cursor-pointer"
           >
@@ -1157,8 +1158,8 @@
   </div> <!-- สิ้นสุด #adminAppWrapper -->
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257012"></script>
-  <script src="js/app.js?v=257012"></script>
+  <script src="js/data.js?v=257013"></script>
+  <script src="js/app.js?v=257013"></script>
   <script>
     let activeTab = 'settings'; // เริ่มต้นที่หน้าตั้งค่า CMS เพื่อให้ผู้ใช้แก้ไขได้ทันที
     let currentTimeline = [];   // รายการตารางกำหนดการสำหรับแก้ไขในหน้าตั้งค่า
@@ -2686,31 +2687,38 @@
       const p = document.getElementById('loginPassword');
       if (u) u.value = 'admin';
       if (p) p.value = 'admin1234';
-      handleAdminLoginSubmit(new Event('submit'));
+      handleAdminLoginSubmit();
     }
 
     function handleAdminLoginSubmit(e) {
-      e.preventDefault();
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
       const u = (document.getElementById('loginUsername').value || '').trim();
       const p = document.getElementById('loginPassword').value || '';
-      const remember = document.getElementById('loginRemember').checked;
+      const remember = document.getElementById('loginRemember') ? document.getElementById('loginRemember').checked : true;
       const alertBox = document.getElementById('loginAlertBox');
       const alertText = document.getElementById('loginAlertText');
 
       const result = WDSDB.loginAdmin(u, p, remember);
       if (result.success) {
-        alertBox.classList.add('hidden');
+        if (alertBox) alertBox.classList.add('hidden');
         showToast('เข้าสู่ระบบสำเร็จ ยินดีต้อนรับสู่ระบบบริหารจัดการ', 'success');
-        document.getElementById('loginPassword').value = '';
         checkAuthAndRender();
       } else {
-        alertText.textContent = result.message;
-        alertBox.classList.remove('hidden');
-        alertBox.classList.remove('animate-shake');
-        void alertBox.offsetWidth; // trigger reflow to re-animate shake
-        alertBox.classList.add('animate-shake');
-        document.getElementById('loginPassword').focus();
+        if (alertText) alertText.textContent = result.message;
+        if (alertBox) {
+          alertBox.classList.remove('hidden');
+          alertBox.style.setProperty('display', 'flex', 'important');
+          alertBox.classList.remove('animate-shake');
+          void alertBox.offsetWidth;
+          alertBox.classList.add('animate-shake');
+        }
+        const pInput = document.getElementById('loginPassword');
+        if (pInput) pInput.focus();
       }
+      return false;
     }
 
     function handleAdminLogout() {
@@ -2772,29 +2780,65 @@
       const userDisplay = document.getElementById('headerAdminUserDisplay');
 
       // อัปเดตข้อมูลตราสัญลักษณ์และชื่อโรงเรียนในหน้าจอทั้งหมด
-      if (typeof applySiteConfig === 'function') {
-        applySiteConfig();
+      try {
+        if (typeof applySiteConfig === 'function') {
+          applySiteConfig();
+        }
+      } catch (e) {
+        console.warn('applySiteConfig in checkAuthAndRender:', e);
       }
 
       if (isAuth) {
-        if (loginScreen) loginScreen.classList.add('hidden');
-        if (appWrapper) appWrapper.classList.remove('hidden');
-        if (logoutBtn) logoutBtn.classList.remove('hidden');
-        if (userBadge) userBadge.classList.remove('hidden');
+        if (loginScreen) {
+          loginScreen.classList.add('hidden');
+          loginScreen.style.setProperty('display', 'none', 'important');
+        }
+        if (appWrapper) {
+          appWrapper.classList.remove('hidden');
+          appWrapper.style.setProperty('display', 'flex', 'important');
+        }
+        if (logoutBtn) {
+          logoutBtn.classList.remove('hidden');
+          logoutBtn.style.display = 'inline-flex';
+        }
+        if (userBadge) {
+          userBadge.classList.remove('hidden');
+          userBadge.style.display = 'inline-flex';
+        }
         if (userDisplay) userDisplay.textContent = WDSDB.getAdminUser();
 
-        initHeroBannerDragInteraction();
-        const urlParams = new URLSearchParams(window.location.search);
-        const tabParam = urlParams.get('tab') || 'settings';
-        switchTab(tabParam);
+        try {
+          initHeroBannerDragInteraction();
+        } catch (e) {
+          console.warn('initHeroBannerDragInteraction:', e);
+        }
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const tabParam = urlParams.get('tab') || 'settings';
+          switchTab(tabParam);
+        } catch (e) {
+          console.warn('switchTab:', e);
+        }
       } else {
-        if (loginScreen) loginScreen.classList.remove('hidden');
-        if (appWrapper) appWrapper.classList.add('hidden');
-        if (logoutBtn) logoutBtn.classList.add('hidden');
-        if (userBadge) userBadge.classList.add('hidden');
+        if (loginScreen) {
+          loginScreen.classList.remove('hidden');
+          loginScreen.style.setProperty('display', 'flex', 'important');
+        }
+        if (appWrapper) {
+          appWrapper.classList.add('hidden');
+          appWrapper.style.setProperty('display', 'none', 'important');
+        }
+        if (logoutBtn) {
+          logoutBtn.classList.add('hidden');
+          logoutBtn.style.display = 'none';
+        }
+        if (userBadge) {
+          userBadge.classList.add('hidden');
+          userBadge.style.display = 'none';
+        }
         setTimeout(() => {
           const uInput = document.getElementById('loginUsername');
-          if (uInput) uInput.focus();
+          if (uInput && document.activeElement !== uInput) uInput.focus();
         }, 120);
       }
     }
@@ -2812,4 +2856,5 @@
   </script>
 </body>
 </html>
+
 

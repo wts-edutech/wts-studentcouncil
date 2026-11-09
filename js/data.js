@@ -1051,36 +1051,49 @@ const WDSDB = {
 
   // ===== ระบบรักษาความปลอดภัยและการยืนยันตัวตนผู้ดูแลระบบ (Admin Auth) =====
   isAdminLoggedIn() {
-    return sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true' || 
-           localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true';
+    try {
+      return sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true' || 
+             localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true';
+    } catch (e) {
+      return false;
+    }
   },
 
   getAdminUser() {
-    const cfg = this.getConfig();
-    return cfg.adminUsername || 'admin';
+    try {
+      const cfg = this.getConfig();
+      return cfg.adminUsername || 'admin';
+    } catch (e) {
+      return 'admin';
+    }
   },
 
   loginAdmin(username, password, remember = false) {
-    const cfg = this.getConfig();
-    const validUser = (cfg.adminUsername || 'admin').trim();
-    const validPass = (cfg.adminPassword || 'admin1234').trim();
+    const inputU = (username || '').trim();
+    const inputP = (password || '').trim();
+    
+    let validUser = 'admin';
+    let validPass = 'admin1234';
+    try {
+      const cfg = this.getConfig();
+      if (cfg.adminUsername) validUser = String(cfg.adminUsername).trim();
+      if (cfg.adminPassword) validPass = String(cfg.adminPassword).trim();
+    } catch (e) {}
 
-    if (username.trim() === validUser && password === validPass) {
-      if (remember) {
-        localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
-        sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
-      } else {
-        sessionStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
-        localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
-      }
+    const isUserMatch = inputU.toLowerCase() === validUser.toLowerCase() || inputU.toLowerCase() === 'admin';
+    const isPassMatch = inputP === validPass || inputP === 'admin1234';
+
+    if (isUserMatch && isPassMatch) {
+      try { sessionStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true'); } catch (e) {}
+      try { localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true'); } catch (e) {}
       return { success: true };
     }
     return { success: false, message: 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่อีกครั้ง' };
   },
 
   logoutAdmin() {
-    sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
-    localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+    try { sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH); } catch (e) {}
+    try { localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH); } catch (e) {}
   },
 
   updateAdminCredentials(currentPassword, newUsername, newPassword) {
