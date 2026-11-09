@@ -135,6 +135,15 @@ function applySiteConfig() {
     // ตรวจสอบว่าครู/ผู้ดูแลระบบกำหนดให้ขั้นตอนใดเป็นช่วงเวลาสำคัญ (highlight)
     const hasAnyHighlight = list.some(item => Boolean(item.highlight));
 
+    // ปรับขนาดการ์ดและระยะเชื่อมตามจำนวนขั้นตอน (รองรับ 5-7 ขั้นตอนได้อย่างสวยงาม)
+    const isManySteps = list.length > 5;
+    const cardMinW = isManySteps ? 'min-w-[120px] lg:min-w-0 xl:min-w-[135px]' : 'min-w-[160px]';
+    const cardPad = isManySteps ? 'p-2.5 sm:p-3 xl:p-3.5' : 'p-2.5 sm:p-4 md:p-5';
+    const dateSize = isManySteps ? 'text-[10px] sm:text-[11px] xl:text-xs' : 'text-[10.5px] sm:text-xs md:text-sm';
+    const titleSize = isManySteps ? 'text-xs sm:text-[13px] xl:text-[14.5px]' : 'text-xs sm:text-sm md:text-base lg:text-[16.5px]';
+    const subSize = isManySteps ? 'text-[9.5px] sm:text-[11px] xl:text-xs' : 'text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm';
+    const connClass = isManySteps ? 'w-1 xl:w-2' : 'w-3 xl:w-4';
+
     timelineCardsContainer.innerHTML = list.map((item, index) => {
       const stepNum = item.step !== undefined ? item.step : (index + 1);
       // แสดงการ์ดสีเขียวตามขั้นตอนที่ครูกำหนดไว้ หากยังไม่มีการกำหนดให้เริ่มต้นที่ขั้นตอนแรก
@@ -153,22 +162,22 @@ function applySiteConfig() {
       }
 
       const connectorHtml = index < list.length - 1
-        ? `<div class="hidden lg:flex items-center justify-center w-4 flex-shrink-0">
+        ? `<div class="hidden lg:flex items-center justify-center ${connClass} flex-shrink-0">
              <div class="w-full h-[2px] bg-emerald-700/30"></div>
            </div>`
         : '';
 
       if (isHighlightStep) {
         return `
-          <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white p-2.5 sm:p-4 md:p-5 shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative transition-all">
+          <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-gradient-to-b from-[#065f46] to-[#064e3b] text-white ${cardPad} shadow-sm sm:shadow-md border border-emerald-800 flex flex-col justify-between relative transition-all">
             <div>
-              <div class="flex items-start justify-between mb-1.5 sm:mb-2 md:mb-3">
-                <span class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-white text-[#064e3b] font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center shadow-sm">${stepNum}</span>
-                <i class="fa-solid ${iconClass} text-white/90 text-sm sm:text-xl md:text-2xl"></i>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#064e3b] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
+                <i class="fa-solid ${iconClass} text-white/90 text-sm sm:text-lg md:text-xl"></i>
               </div>
-              <div class="text-[10.5px] sm:text-xs md:text-sm font-bold text-[#fbbf24] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
-              <div class="font-bold text-xs sm:text-sm md:text-base lg:text-[16.5px] leading-snug text-white mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
-              <div class="text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm text-emerald-100 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
+              <div class="${dateSize} font-bold text-[#fbbf24] mb-1 leading-snug">${escapeHTML(item.date || '')}</div>
+              <div class="font-bold ${titleSize} leading-snug text-white mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
+              <div class="${subSize} text-emerald-100 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
             </div>
           </div>
           ${connectorHtml}
@@ -176,15 +185,15 @@ function applySiteConfig() {
       }
 
       return `
-        <div class="flex-1 min-w-[180px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-4 md:p-5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+        <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition ${cardPad} shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
           <div>
-            <div class="flex items-start justify-between mb-1.5 sm:mb-2 md:mb-3">
-              <span class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center">${stepNum}</span>
-              <i class="fa-solid ${iconClass} text-[#156548] text-sm sm:text-xl md:text-2xl"></i>
+            <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+              <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">${stepNum}</span>
+              <i class="fa-solid ${iconClass} text-[#156548] text-sm sm:text-lg md:text-xl"></i>
             </div>
-            <div class="text-[10.5px] sm:text-xs md:text-sm font-bold text-[#b4690e] mb-1 sm:mb-1.5">${escapeHTML(item.date || '')}</div>
-            <div class="font-bold text-xs sm:text-sm md:text-base lg:text-[16.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
-            <div class="text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm text-slate-600 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
+            <div class="${dateSize} font-bold text-[#b4690e] mb-1 leading-snug">${escapeHTML(item.date || '')}</div>
+            <div class="font-bold ${titleSize} leading-snug text-slate-900 mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
+            <div class="${subSize} text-slate-600 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
           </div>
         </div>
         ${connectorHtml}

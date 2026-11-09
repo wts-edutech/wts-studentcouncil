@@ -21,11 +21,13 @@ const THAI_STUDENT_FEMALE_PHOTO = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns
 
 // ข้อมูลกำหนดการเริ่มต้น
 const DEFAULT_TIMELINE = [
-  { step: 1, date: '1 - 10 พฤศจิกายน 2569', title: 'เปิดรับสมัครออนไลน์: สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)', location: 'ระบบรับสมัครออนไลน์', highlight: true },
-  { step: 2, date: '12 พฤศจิกายน 2569', title: 'ตรวจสอบคุณสมบัติ & จับสลากหมายเลขผู้สมัคร: ประชุมชี้แจงระเบียบการหาเสียง', location: 'หอประชุมโรงเรียน', highlight: false },
-  { step: 3, date: '13 - 25 พฤศจิกายน 2569', title: 'รณรงค์หาเสียง: แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด', location: 'ภายในบริเวณโรงเรียน', highlight: false },
-  { step: 4, date: '27 พฤศจิกายน 2569', title: 'วันลงคะแนนเสียงเลือกตั้งใหญ่: เปิดคูหาลงคะแนนเสียง เวลา 08.30 - 15.00 น.', location: 'คูหาลงคะแนนเสียง', highlight: false },
-  { step: 5, date: '28 พฤศจิกายน 2569', title: 'ประกาศผลการเลือกตั้งอย่างเป็นทางการ: และกำหนดวันส่งมอบงาน', location: 'กลุ่มบริหารกิจการนักเรียน', highlight: false }
+  { step: 1, date: '16 - 30 พฤศจิกายน 2569', title: 'เปิดรับสมัครออนไลน์: สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)', location: 'ระบบรับสมัครออนไลน์', highlight: false },
+  { step: 2, date: '4 ธันวาคม 2569', title: 'ตรวจสอบคุณสมบัติผู้ลงสมัครประธานสภานักเรียนและประธานคณะสี', location: 'ห้องประชุม Minting Room', highlight: false },
+  { step: 3, date: '9 ธันวาคม 2569', title: 'ผู้ลงสมัคร จับสลากหมายเลขผู้สมัคร: ประชุมชี้แจงระเบียบการหาเสียง', location: 'หอประชุมโรงเรียน', highlight: false },
+  { step: 4, date: '16 พฤศจิกายน 2569 - 2 กุมภาพันธ์ 2570', title: 'รณรงค์หาเสียง: แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด', location: 'ภายในบริเวณโรงเรียน', highlight: true },
+  { step: 5, date: '27 มกราคม 2570', title: 'กิจกรรมดีเบตประธานสภานักเรียนและประธานคณะสี', location: 'หอประชุมโรงเรียนวชิรธรรมสาธิต', highlight: false },
+  { step: 6, date: '3 กุมภาพันธ์ 2570', title: 'วันลงคะแนนเสียงเลือกตั้งใหญ่: เปิดคูหาลงคะแนนเสียง เวลา 08.30 - 15.00 น.', location: 'คูหาลงคะแนนเสียง', highlight: false },
+  { step: 7, date: '8 กุมภาพันธ์ 2570', title: 'ประกาศผลการเลือกตั้งอย่างเป็นทางการ', location: 'เว็บไซต์โรงเรียนวชิรธรรมสาธิต', highlight: false }
 ];
 
 // ข้อมูลระเบียบและเกณฑ์คุณสมบัติเริ่มต้น (หมวดที่ 1 สภานักเรียน)
@@ -134,7 +136,7 @@ const DEFAULT_DOCUMENTS_LIST = [
 const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/hero-bg-clean.jpg';
 
 const DEFAULT_SITE_CONFIG = {
-  configVersion: '2570.3',
+  configVersion: '2570.5',
   adminUsername: 'admin',
   adminPassword: 'admin1234',
   schoolName: 'โรงเรียนวชิรธรรมสาธิต',
@@ -151,7 +153,7 @@ const DEFAULT_SITE_CONFIG = {
   academicYear: '2570',
   councilAgreementYear: '2568',
   colorAgreementYear: '2567',
-  regPeriod: '1 - 10 พฤศจิกายน 2569',
+  regPeriod: '16 - 30 พฤศจิกายน 2569',
   announcementText: 'เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569',
   minBehaviorScore: 80,
   minGpaPresident: 2.75,
@@ -580,7 +582,7 @@ const DEFAULT_COLOR_APPLICATIONS = [
 // Helper Functions
 const WDSDB = {
   init() {
-    const CURRENT_CONFIG_VERSION = '2570.3';
+    const CURRENT_CONFIG_VERSION = '2570.5';
     const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
     if (!stored) {
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
@@ -588,10 +590,12 @@ const WDSDB = {
       try {
         const parsed = JSON.parse(stored);
         if (!parsed.configVersion || parsed.configVersion !== CURRENT_CONFIG_VERSION) {
-          // หากเป็นเวอร์ชันเก่า ให้อัปเดตข้อมูลระเบียบการล่าสุดให้ตรงกับระบบหลักทันที
+          // หากเป็นเวอร์ชันเก่า ให้อัปเดตข้อมูลระเบียบการและกำหนดการ 7 ขั้นตอนล่าสุดทันที
           const updated = {
             ...DEFAULT_SITE_CONFIG,
             ...parsed,
+            timeline: DEFAULT_TIMELINE,
+            regPeriod: '16 - 30 พฤศจิกายน 2569',
             adminUsername: parsed.adminUsername || DEFAULT_SITE_CONFIG.adminUsername,
             adminPassword: parsed.adminPassword || DEFAULT_SITE_CONFIG.adminPassword,
             rulesCouncilList: DEFAULT_COUNCIL_RULES,
