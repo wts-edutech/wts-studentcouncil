@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257007">
+  <link rel="stylesheet" href="css/style.css?v=257008">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -111,8 +111,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257007"></script>
-  <script src="js/app.js?v=257007"></script>
+  <script src="js/data.js?v=257008"></script>
+  <script src="js/app.js?v=257008"></script>
   <script>
     function closeDocModal() {
       document.getElementById('docModal').classList.add('hidden');
@@ -491,10 +491,18 @@
         tbody.innerHTML = list.map((doc, idx) => {
           let actionBtnHtml = '';
           const btnText = doc.btnText || 'เปิดพิมพ์ A4';
-          if (doc.actionType === 'custom_file') {
-            if (doc.fileData) {
+          const fileSrc = doc.fileUrl || doc.fileData;
+
+          if (doc.actionType === 'download' || (fileSrc && (doc.actionType === 'custom_file' || doc.actionType === 'consent' || doc.actionType === 'behavior' || doc.actionType === 'regulation'))) {
+            actionBtnHtml = `
+              <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+                <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
+              </a>
+            `;
+          } else if (doc.actionType === 'custom_file') {
+            if (fileSrc) {
               actionBtnHtml = `
-                <a href="${doc.fileData}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" class="btn-gov-primary text-xs py-1.5 px-3 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+                <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary text-xs py-1.5 px-3 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
                   <i class="fa-solid fa-file-arrow-down mr-1"></i> ${btnText}
                 </a>
               `;
@@ -573,10 +581,18 @@
         mobileCards.innerHTML = list.map((doc, idx) => {
           let actionBtnHtml = '';
           const btnText = doc.btnText || 'เปิดพิมพ์ A4';
-          if (doc.actionType === 'custom_file') {
-            if (doc.fileData) {
+          const fileSrc = doc.fileUrl || doc.fileData;
+
+          if (doc.actionType === 'download' || (fileSrc && (doc.actionType === 'custom_file' || doc.actionType === 'consent' || doc.actionType === 'behavior' || doc.actionType === 'regulation'))) {
+            actionBtnHtml = `
+              <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary w-full text-xs sm:text-sm py-2.5 px-3 text-center flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
+              </a>
+            `;
+          } else if (doc.actionType === 'custom_file') {
+            if (fileSrc) {
               actionBtnHtml = `
-                <a href="${doc.fileData}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
+                <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
                   <i class="fa-solid fa-file-arrow-down mr-1.5"></i> ${btnText}
                 </a>
               `;
