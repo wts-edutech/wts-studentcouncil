@@ -255,31 +255,65 @@ function applySiteConfig() {
 }
 
 function renderRulesAndApplyContent(cfg) {
-  // ฟังก์ชันจัดรูปแบบบรรทัดระเบียบการและตัดเลขอาราบิกนำหน้า (1. , 2. ) ออก พร้อมปรับขนาดและระยะบรรทัดให้อ่านง่ายบนจอคอม
+  // ฟังก์ชันจัดรูปแบบบรรทัดระเบียบการให้มีระยะห่างบรรทัดกระชับ ชิดกันอย่างเหมาะสม อ่านง่าย สบายตา
   const formatRuleItem = (line) => {
-    // ตัดเลขอาราบิกนำหน้า เช่น "1. ", "2. ", "10) " ออก
-    const cleanLine = String(line || '').replace(/^\s*\d+[\.\)]\s*/, '').trim();
-    if (!cleanLine) return '';
+    const raw = String(line || '').trim();
+    if (!raw) return '';
 
-    // จัดการระดับการย่อหน้าตามโครงสร้างหัวข้อย่อยแบบไทย และขนาดตัวอักษรให้อ่านง่าย ชัดเจนบนจอคอม
-    let indentClass = '';
-    let extraClass = '';
-    if (/^[๑-๙0-9]\.[๑-๙0-9]\.[๑-๙0-9]/.test(cleanLine)) {
-      // ข้อย่อยระดับ 3 (เช่น ๑.๙.๑, ๑.๙.๒)
-      indentClass = 'pl-6 sm:pl-9 md:pl-12 text-slate-700 text-xs sm:text-sm md:text-[15.5px] lg:text-[16px] py-1';
-    } else if (/^[๑-๙0-9]\.[๑-๙0-9]/.test(cleanLine)) {
-      // ข้อย่อยระดับ 2 (เช่น ๑.๑, ๑.๒)
-      indentClass = 'pl-3 sm:pl-5 md:pl-7 text-slate-800 text-xs sm:text-sm md:text-base lg:text-[16.5px] py-1 font-normal';
-    } else if (cleanLine.startsWith('ดังต่อไปนี้')) {
-      indentClass = 'pl-6 sm:pl-9 md:pl-12 text-slate-600 font-medium italic text-xs sm:text-sm md:text-base lg:text-[16px] py-0.5';
-    } else if (cleanLine.includes('คุณสมบัติของผู้สมัคร') || cleanLine.includes('เกณฑ์คุณสมบัติ')) {
-      extraClass = 'font-bold text-slate-900 text-sm sm:text-base md:text-lg lg:text-xl pt-3 pb-1.5 border-t border-slate-200 mt-2.5';
-    } else {
-      // หัวข้อหลักทั่วไป (เช่น ระดับชั้น:, ครูที่ปรึกษา:, ความยินยอม:)
-      extraClass = 'text-xs sm:text-sm md:text-base lg:text-[16.5px] text-slate-800 py-1';
+    // 1. ข้อย่อยแบบมีตัวเลขนำหน้า (เช่น "1 ...", "1. ...", "10 ...")
+    const numMatch = raw.match(/^([0-9๑-๙]+)[\.\)]?\s+(.*)$/);
+    if (numMatch) {
+      const num = numMatch[1];
+      const content = numMatch[2].trim();
+      return `
+        <div class="flex items-start space-x-2 py-0.5 text-slate-800 leading-snug sm:leading-normal">
+          <span class="inline-flex items-center justify-end font-semibold text-[#16325c] w-6 flex-shrink-0 text-xs sm:text-sm md:text-[14.5px]">${num}.</span>
+          <div class="flex-1 text-xs sm:text-sm md:text-[14.5px] text-slate-800">${formatTimelineTitle(content)}</div>
+        </div>
+      `;
     }
 
-    return `<div class="leading-relaxed md:leading-[1.85] ${indentClass} ${extraClass}">${formatTimelineTitle(cleanLine)}</div>`;
+    // 2. ข้อย่อยแตกรายละเอียด (เช่น "ดังต่อไปนี้ ...")
+    if (raw.startsWith('ดังต่อไปนี้')) {
+      return `
+        <div class="pl-8 sm:pl-9 py-0.5 text-slate-600 text-[11.5px] sm:text-xs md:text-[13.5px] leading-snug sm:leading-normal">
+          <span class="text-amber-700 font-bold mr-1">↳</span>${formatTimelineTitle(raw)}
+        </div>
+      `;
+    }
+
+    // 3. หัวข้อย่อยระดับหมวด (เช่น "คุณสมบัติของผู้สมัครรับเลือกตั้ง...")
+    if (raw.includes('คุณสมบัติของผู้สมัคร') || raw.includes('เกณฑ์คุณสมบัติ')) {
+      return `
+        <div class="font-bold text-[#16325c] text-xs sm:text-sm md:text-[15px] pt-2 pb-0.5 mt-2 border-t border-slate-200/90 flex items-center space-x-1.5">
+          <i class="fa-solid fa-list-check text-emerald-600 text-xs mr-1"></i>
+          <span>${formatTimelineTitle(raw)}</span>
+        </div>
+      `;
+    }
+
+    // 4. ข้อกำหนดที่มีเครื่องหมายโคลอน : (เช่น "ระดับชั้น:", "ครูที่ปรึกษา:", "ความยินยอม:", "สังกัดคณะสี:")
+    if (raw.includes(':')) {
+      const parts = raw.split(':');
+      const label = parts[0].trim();
+      const rest = parts.slice(1).join(':').trim();
+      const isFooter = label.includes('ครูที่ปรึกษา') || label.includes('ความยินยอม');
+      const containerClass = isFooter 
+        ? 'mt-2 pt-2 border-t border-slate-100/90 py-0.5' 
+        : 'py-0.5';
+      return `
+        <div class="${containerClass} text-slate-800 text-xs sm:text-sm md:text-[14.5px] leading-snug sm:leading-normal">
+          <strong class="text-[#16325c] font-semibold">${label}:</strong> <span>${formatTimelineTitle(rest)}</span>
+        </div>
+      `;
+    }
+
+    // 5. ข้อความทั่วไป
+    return `
+      <div class="py-0.5 text-slate-800 text-xs sm:text-sm md:text-[14.5px] leading-snug sm:leading-normal">
+        ${formatTimelineTitle(raw)}
+      </div>
+    `;
   };
 
   // หมวดที่ 1: สภานักเรียน
