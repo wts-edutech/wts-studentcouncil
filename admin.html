@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257027">
-  <script src="js/data.js?v=257027"></script>
-  <script src="js/app.js?v=257027"></script>
+  <link rel="stylesheet" href="css/style.css?v=257028">
+  <script src="js/data.js?v=257028"></script>
+  <script src="js/app.js?v=257028"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -599,27 +599,36 @@
                   <!-- กรอบแสดงตัวอย่างที่สามารถคลิกลากขยับรูปได้จริง -->
                   <div id="settingHeroBannerDragBox"
                     class="w-full h-32 sm:h-36 border-2 border-slate-300 hover:border-blue-500 rounded overflow-hidden bg-slate-900 relative shadow-inner cursor-move select-none transition"
-                    style="background-image: url('assets/images/hero-bg-clean.jpg'); background-size: cover; background-position: 100% 50%; background-repeat: no-repeat;"
+                    style="background-image: url('assets/images/school-logo-transparent.png'); background-size: contain; background-position: 99% 50%; background-repeat: no-repeat;"
                     title="คลิกค้างแล้วลากเมาส์เพื่อขยับตำแหน่งรูปภาพ">
                     <div class="absolute bottom-1.5 right-2 bg-slate-900/75 text-white text-[10px] px-2 py-0.5 rounded pointer-events-none flex items-center space-x-1">
                       <i class="fa-solid fa-hand-pointer text-amber-300"></i>
-                      <span id="heroPosBadgeText">แนวนอน 100% • แนวตั้ง 50% • ซูม 100%</span>
+                      <span id="heroPosBadgeText">แนวนอน 99% • แนวตั้ง 50% • ซูม 100% [เห็นครบรูป]</span>
                     </div>
                   </div>
-                  <img id="settingHeroBannerPreview" src="assets/images/hero-bg-clean.jpg" class="hidden" alt="ตัวอย่างแบนเนอร์หัวเว็บไซต์">
+                  <img id="settingHeroBannerPreview" src="assets/images/school-logo-transparent.png" class="hidden" alt="ตัวอย่างแบนเนอร์หัวเว็บไซต์">
 
-                  <!-- แถบเลื่อนปรับตำแหน่ง ซ้าย-ขวา / ขึ้น-ลง / ขยายรูป -->
-                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-2.5 rounded border border-slate-200 text-[11px]">
+                  <!-- แถบเลื่อนปรับตำแหน่ง ซ้าย-ขวา / ขึ้น-ลง / ขยายรูป / โหมดแสดงภาพ -->
+                  <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-50 p-2.5 rounded border border-slate-200 text-[11px]">
                     <div>
                       <div class="flex justify-between font-semibold text-slate-700 mb-1">
-                        <span><i class="fa-solid fa-arrows-left-right mr-1 text-slate-500"></i> ขยับซ้าย - ขวา (แนวนอน)</span>
-                        <span id="lblHeroPosX" class="text-blue-800 font-mono">100%</span>
+                        <span><i class="fa-solid fa-shapes mr-1 text-slate-500"></i> โหมดแสดงผลภาพ</span>
                       </div>
-                      <input type="range" id="cfg_heroBannerPosX" min="0" max="100" value="100" oninput="onHeroPositionChange()" class="w-full accent-[#1a365d] cursor-pointer">
+                      <select id="cfg_heroBannerFit" onchange="onHeroPositionChange()" class="gov-input w-full text-xs font-semibold">
+                        <option value="contain">🌟 เห็นครบทั้งรูป (Contain)</option>
+                        <option value="cover">🖼️ เต็มพื้นที่กรอบ (Cover)</option>
+                      </select>
                     </div>
                     <div>
                       <div class="flex justify-between font-semibold text-slate-700 mb-1">
-                        <span><i class="fa-solid fa-arrows-up-down mr-1 text-slate-500"></i> ขยับขึ้น - ลง (แนวตั้ง)</span>
+                        <span><i class="fa-solid fa-arrows-left-right mr-1 text-slate-500"></i> ขยับซ้าย - ขวา</span>
+                        <span id="lblHeroPosX" class="text-blue-800 font-mono">99%</span>
+                      </div>
+                      <input type="range" id="cfg_heroBannerPosX" min="0" max="100" value="99" oninput="onHeroPositionChange()" class="w-full accent-[#1a365d] cursor-pointer">
+                    </div>
+                    <div>
+                      <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                        <span><i class="fa-solid fa-arrows-up-down mr-1 text-slate-500"></i> ขยับขึ้น - ลง</span>
                         <span id="lblHeroPosY" class="text-blue-800 font-mono">50%</span>
                       </div>
                       <input type="range" id="cfg_heroBannerPosY" min="0" max="100" value="50" oninput="onHeroPositionChange()" class="w-full accent-[#1a365d] cursor-pointer">
@@ -629,21 +638,24 @@
                         <span><i class="fa-solid fa-magnifying-glass-plus mr-1 text-slate-500"></i> ขนาดรูป (ซูมเข้า-ออก)</span>
                         <span id="lblHeroZoom" class="text-blue-800 font-mono">100%</span>
                       </div>
-                      <input type="range" id="cfg_heroBannerZoom" min="100" max="220" value="100" oninput="onHeroPositionChange()" class="w-full accent-[#1a365d] cursor-pointer">
+                      <input type="range" id="cfg_heroBannerZoom" min="20" max="220" value="100" step="5" oninput="onHeroPositionChange()" class="w-full accent-[#1a365d] cursor-pointer">
                     </div>
                   </div>
 
                   <input type="file" id="settingHeroBannerFile" accept="image/*" class="hidden" onchange="previewHeroBannerUpload(this)">
                   <input type="hidden" id="settingHeroBannerData" value="">
                   <div class="flex flex-wrap gap-2 pt-1">
+                    <button type="button" onclick="setHeroBannerPreset('logo')" class="gov-btn gov-btn-emerald text-xs">
+                      <i class="fa-solid fa-star text-amber-300 mr-1.5"></i> ใช้ภาพตราสัญลักษณ์โรงเรียน (ค่าแนะนำ)
+                    </button>
+                    <button type="button" onclick="setHeroBannerPreset('school')" class="gov-btn gov-btn-outline-blue text-xs">
+                      <i class="fa-solid fa-school mr-1.5"></i> ใช้ภาพถ่ายอาคารเรียน
+                    </button>
                     <button type="button" onclick="document.getElementById('settingHeroBannerFile').click()" class="gov-btn gov-btn-blue text-xs">
-                      <i class="fa-solid fa-upload mr-1.5"></i> อัปโหลดรูปพื้นหลังแบนเนอร์ใหม่
+                      <i class="fa-solid fa-upload mr-1.5"></i> อัปโหลดรูปแบนเนอร์ใหม่
                     </button>
                     <button type="button" onclick="resetHeroBannerPositionOnly()" class="gov-btn gov-btn-gray text-xs">
                       <i class="fa-solid fa-compress mr-1"></i> รีเซ็ตตำแหน่งรูป
-                    </button>
-                    <button type="button" onclick="resetHeroBannerDefault()" class="gov-btn gov-btn-gray text-xs">
-                      <i class="fa-solid fa-rotate-left mr-1"></i> ใช้รูปแบนเนอร์ต้นฉบับโรงเรียน
                     </button>
                   </div>
                 </div>
@@ -1783,12 +1795,16 @@
         syncLogoSlotUI(3, '');
       }
 
-      const heroBg = cfg.heroBannerImage || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg');
+      const heroBg = cfg.heroBannerImage || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
       document.getElementById('settingHeroBannerPreview').src = heroBg;
       document.getElementById('settingHeroBannerData').value = heroBg;
-      document.getElementById('cfg_heroBannerPosX').value = cfg.heroBannerPosX !== undefined ? cfg.heroBannerPosX : 100;
+      document.getElementById('cfg_heroBannerPosX').value = cfg.heroBannerPosX !== undefined ? cfg.heroBannerPosX : 99;
       document.getElementById('cfg_heroBannerPosY').value = cfg.heroBannerPosY !== undefined ? cfg.heroBannerPosY : 50;
       document.getElementById('cfg_heroBannerZoom').value = cfg.heroBannerZoom !== undefined ? cfg.heroBannerZoom : 100;
+      const fitEl = document.getElementById('cfg_heroBannerFit');
+      if (fitEl) {
+        fitEl.value = cfg.heroBannerFit || ((heroBg.endsWith('.png') || heroBg.includes('data:image/png')) ? 'contain' : 'cover');
+      }
       syncHeroBannerDragBox();
 
       const srcTimeline = (cfg.timeline && Array.isArray(cfg.timeline) && cfg.timeline.length > 0)
@@ -2689,16 +2705,23 @@
       }
       const logo2 = document.getElementById('settingLogo2Data').value;
       const logo3 = document.getElementById('settingLogo3Data').value;
-      const heroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg');
-      const posX = document.getElementById('cfg_heroBannerPosX')?.value ?? 100;
+      const heroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+      const posX = document.getElementById('cfg_heroBannerPosX')?.value ?? 99;
       const posY = document.getElementById('cfg_heroBannerPosY')?.value ?? 50;
       const zoom = document.getElementById('cfg_heroBannerZoom')?.value ?? 100;
+      const fit = document.getElementById('cfg_heroBannerFit')?.value || ((heroBg.endsWith('.png') || heroBg.includes('data:image/png')) ? 'contain' : 'cover');
 
       const headerBox = document.getElementById('previewLiveHeaderBox');
       if (headerBox) {
         headerBox.style.backgroundImage = `linear-gradient(90deg, rgba(11,36,68,0.85) 0%, rgba(11,36,68,0.45) 100%), url('${heroBg}')`;
-        headerBox.style.backgroundPosition = `center, ${posX}% ${posY}%`;
-        headerBox.style.backgroundSize = zoom == 100 ? 'cover, cover' : `cover, ${zoom}% auto`;
+        headerBox.style.backgroundRepeat = 'no-repeat';
+        if (fit === 'contain') {
+          headerBox.style.backgroundPosition = `center, ${posX}% ${posY}%`;
+          headerBox.style.backgroundSize = zoom == 100 ? 'auto, contain' : `auto, auto ${zoom}%`;
+        } else {
+          headerBox.style.backgroundPosition = `center, ${posX}% ${posY}%`;
+          headerBox.style.backgroundSize = zoom == 100 ? 'cover, cover' : `cover, ${zoom}% auto`;
+        }
       }
 
       document.getElementById('previewLiveSchool').innerText = name;
@@ -2790,16 +2813,23 @@
     }
 
     function syncHeroBannerDragBox() {
-      const heroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg');
-      const posX = document.getElementById('cfg_heroBannerPosX')?.value ?? 100;
+      const heroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+      const posX = document.getElementById('cfg_heroBannerPosX')?.value ?? 99;
       const posY = document.getElementById('cfg_heroBannerPosY')?.value ?? 50;
       const zoom = document.getElementById('cfg_heroBannerZoom')?.value ?? 100;
+      const fit = document.getElementById('cfg_heroBannerFit')?.value || ((heroBg.endsWith('.png') || heroBg.includes('data:image/png')) ? 'contain' : 'cover');
 
       const dragBox = document.getElementById('settingHeroBannerDragBox');
       if (dragBox) {
         dragBox.style.backgroundImage = `url('${heroBg}')`;
-        dragBox.style.backgroundPosition = `${posX}% ${posY}%`;
-        dragBox.style.backgroundSize = zoom == 100 ? 'cover' : `${zoom}% auto`;
+        dragBox.style.backgroundRepeat = 'no-repeat';
+        if (fit === 'contain') {
+          dragBox.style.backgroundSize = zoom == 100 ? 'contain' : `auto ${zoom}%`;
+          dragBox.style.backgroundPosition = `${posX}% ${posY}%`;
+        } else {
+          dragBox.style.backgroundSize = zoom == 100 ? 'cover' : `${zoom}% auto`;
+          dragBox.style.backgroundPosition = `${posX}% ${posY}%`;
+        }
       }
 
       const lblX = document.getElementById('lblHeroPosX');
@@ -2810,7 +2840,10 @@
       if (lblX) lblX.innerText = `${posX}%`;
       if (lblY) lblY.innerText = `${posY}%`;
       if (lblZ) lblZ.innerText = `${zoom}%`;
-      if (badge) badge.innerText = `แนวนอน ${posX}% • แนวตั้ง ${posY}% • ซูม ${zoom}%`;
+      if (badge) {
+        const modeLabel = fit === 'contain' ? 'เห็นครบรูป' : 'เต็มกรอบ';
+        badge.innerText = `แนวนอน ${posX}% • แนวตั้ง ${posY}% • ซูม ${zoom}% [${modeLabel}]`;
+      }
     }
 
     function onHeroPositionChange() {
@@ -2819,11 +2852,41 @@
     }
 
     function resetHeroBannerPositionOnly() {
-      document.getElementById('cfg_heroBannerPosX').value = 100;
+      const fitEl = document.getElementById('cfg_heroBannerFit');
+      const isContain = fitEl && fitEl.value === 'contain';
+      document.getElementById('cfg_heroBannerPosX').value = isContain ? 99 : 100;
       document.getElementById('cfg_heroBannerPosY').value = 50;
       document.getElementById('cfg_heroBannerZoom').value = 100;
       onHeroPositionChange();
       showToast('รีเซ็ตตำแหน่งและการซูมรูปแบนเนอร์แล้ว', 'info');
+    }
+
+    function setHeroBannerPreset(type) {
+      if (type === 'logo') {
+        const logoUrl = 'assets/images/school-logo-transparent.png';
+        document.getElementById('settingHeroBannerData').value = logoUrl;
+        document.getElementById('settingHeroBannerFile').value = '';
+        document.getElementById('cfg_heroBannerPosX').value = 99;
+        document.getElementById('cfg_heroBannerPosY').value = 50;
+        document.getElementById('cfg_heroBannerZoom').value = 100;
+        const fitEl = document.getElementById('cfg_heroBannerFit');
+        if (fitEl) fitEl.value = 'contain';
+        syncHeroBannerDragBox();
+        updateLivePreview();
+        showToast('เลือกใช้ภาพตราสัญลักษณ์โรงเรียนเป็นแบนเนอร์แล้ว (กดบันทึกเพื่อใช้งาน)', 'info');
+      } else if (type === 'school') {
+        const schoolUrl = 'assets/images/hero-bg-clean.jpg';
+        document.getElementById('settingHeroBannerData').value = schoolUrl;
+        document.getElementById('settingHeroBannerFile').value = '';
+        document.getElementById('cfg_heroBannerPosX').value = 100;
+        document.getElementById('cfg_heroBannerPosY').value = 50;
+        document.getElementById('cfg_heroBannerZoom').value = 100;
+        const fitEl = document.getElementById('cfg_heroBannerFit');
+        if (fitEl) fitEl.value = 'cover';
+        syncHeroBannerDragBox();
+        updateLivePreview();
+        showToast('เลือกใช้ภาพถ่ายอาคารเรียนเป็นแบนเนอร์แล้ว (กดบันทึกเพื่อใช้งาน)', 'info');
+      }
     }
 
     function initHeroBannerDragInteraction() {
@@ -2833,7 +2896,7 @@
       let isDragging = false;
       let startX = 0;
       let startY = 0;
-      let initialPosX = 100;
+      let initialPosX = 99;
       let initialPosY = 50;
 
       const startDrag = (clientX, clientY) => {
@@ -2888,12 +2951,16 @@
     function previewHeroBannerUpload(input) {
       handleImageUpload(
         input,
-        document.getElementById('settingHeroBannerPreview'),
+        null,
         document.getElementById('settingHeroBannerData'),
-        () => {
+        (base64) => {
+          const fitEl = document.getElementById('cfg_heroBannerFit');
+          if (fitEl && (base64.startsWith('data:image/png') || input.files[0]?.type === 'image/png')) {
+            fitEl.value = 'contain';
+          }
           syncHeroBannerDragBox();
           updateLivePreview();
-          showToast('อัปโหลดรูปภาพพื้นหลังแบนเนอร์เรียบร้อยแล้ว สามารถคลิกลากที่รูปเพื่อขยับตำแหน่งได้เลย', 'info');
+          showToast('อัปโหลดรูปแบนเนอร์เรียบร้อยแล้ว สามารถคลิกลากปรับตำแหน่งได้เลย', 'info');
         }
       );
     }
@@ -3031,10 +3098,11 @@
           schoolLogo: getVal('settingLogoData'),
           schoolLogo2: getVal('settingLogo2Data'),
           schoolLogo3: getVal('settingLogo3Data'),
-          heroBannerImage: getVal('settingHeroBannerData') || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg'),
-          heroBannerPosX: getParsedInt('cfg_heroBannerPosX', 0),
-          heroBannerPosY: getParsedInt('cfg_heroBannerPosY', 0),
+          heroBannerImage: getVal('settingHeroBannerData') || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png'),
+          heroBannerPosX: getParsedInt('cfg_heroBannerPosX', 99),
+          heroBannerPosY: getParsedInt('cfg_heroBannerPosY', 50),
           heroBannerZoom: getParsedInt('cfg_heroBannerZoom', 100),
+          heroBannerFit: document.getElementById('cfg_heroBannerFit')?.value || 'contain',
           affiliation: getTrimmed('cfg_affiliation'),
           departmentName: getTrimmed('cfg_departmentName'),
           academicYear: getTrimmed('cfg_academicYear'),

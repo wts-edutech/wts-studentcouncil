@@ -184,20 +184,25 @@ function applySiteConfig() {
   applyTransparentLogoToNodes('[data-cfg-logo2]', logo2, 'ตราสัญลักษณ์ที่ 2');
   applyTransparentLogoToNodes('[data-cfg-logo3]', logo3, 'ตราสัญลักษณ์ที่ 3');
 
-  // 2.5 อัปเดตรูปภาพพื้นหลังแบนเนอร์ส่วนหัว (Hero Banner Background & Position/Zoom)
-  const heroBg = cfg.heroBannerImage || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg');
-  const posX = cfg.heroBannerPosX !== undefined ? cfg.heroBannerPosX : 100;
+  // 2.5 อัปเดตรูปภาพพื้นหลังแบนเนอร์ส่วนหัว (Hero Banner Background & Position/Zoom/Fit)
+  const heroBg = cfg.heroBannerImage || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+  const posX = cfg.heroBannerPosX !== undefined ? cfg.heroBannerPosX : 99;
   const posY = cfg.heroBannerPosY !== undefined ? cfg.heroBannerPosY : 50;
   const zoom = cfg.heroBannerZoom !== undefined ? cfg.heroBannerZoom : 100;
+  const fit = cfg.heroBannerFit || ((heroBg.endsWith('.png') || heroBg.includes('data:image/png')) ? 'contain' : 'cover');
+
   document.querySelectorAll('.hero-banner-bg').forEach(el => {
     el.style.backgroundColor = '#0b2444';
     el.style.backgroundImage = `url('${heroBg}')`;
-    if (window.innerWidth > 768) {
+    el.style.backgroundRepeat = 'no-repeat';
+
+    if (fit === 'contain') {
+      const zoomPct = zoom || 100;
+      el.style.backgroundSize = zoomPct === 100 ? 'contain' : `auto ${zoomPct}%`;
       el.style.backgroundPosition = `${posX}% ${posY}%`;
-      el.style.backgroundSize = zoom == 100 ? 'cover' : `${zoom}% auto`;
     } else {
-      el.style.backgroundPosition = `85% center`;
-      el.style.backgroundSize = `cover`;
+      el.style.backgroundSize = zoom == 100 ? 'cover' : `${zoom}% auto`;
+      el.style.backgroundPosition = `${posX}% ${posY}%`;
     }
   });
 
@@ -558,38 +563,93 @@ function removeImageBackground(dataUrl, callback) {
   }
 }
 
-// แปลงไฟล์รูปภาพเป็น Base64
+// ฟังก์ชันย่อขนาดไฟล์รูปภาพด้วย HTML5 Canvas ให้มีขนาดกะทัดรัด (< 30KB) เพื่อให้บันทึกลงคลาวด์ได้ 100%
+function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComplete) {
+  try {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.naturalWidth || img.width;
+      let h = img.naturalHeight || img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round((h * maxDim) / w);
+          w = maxDim;
+        } else {
+          w = Math.round((w * maxDim) / h);
+          h = maxDim;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, w);
+      canvas.height = Math.max(1, h);
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, w, h);
+
+      let outputData;
+      if (isPng) {
+        outputData = canvas.toDataURL('image/png');
+        if (outputData.length > 50000 && maxDim > 300) {
+          return compressImageForStorage(outputData, 300, quality, true, onComplete);
+        }
+      } else {
+        outputData = canvas.toDataURL('image/jpeg', quality);
+        if (outputData.length > 50000 && maxDim > 450) {
+          return compressImageForStorage(outputData, 450, 0.72, false, onComplete);
+        }
+      }
+      onComplete(outputData);
+    };
+    img.onerror = () => onComplete(fileOrDataUri);
+    img.src = fileOrDataUri;
+  } catch (e) {
+    onComplete(fileOrDataUri);
+  }
+}
+
+// แปลงไฟล์รูปภาพเป็น Base64 พร้อมบีบอัดอัตโนมัติ
 function handleImageUpload(inputElement, previewImgElement, hiddenInputElement, callback, autoRemoveBg = false) {
   if (inputElement.files && inputElement.files[0]) {
     const file = inputElement.files[0];
     
-    if (file.size > 3 * 1024 * 1024) {
-      alert('ขนาดไฟล์รูปภาพต้องไม่เกิน 3MB');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('ขนาดไฟล์รูปภาพใหญ่เกินไป กรุณาเลือกไฟล์ขนาดไม่เกิน 10MB');
       inputElement.value = '';
       return;
     }
 
+    const isPng = file.type === 'image/png';
+    const isHero = hiddenInputElement && hiddenInputElement.id === 'settingHeroBannerData';
+    const maxDim = isHero ? 960 : 360;
+    const quality = isHero ? 0.8 : 0.85;
+
     const reader = new FileReader();
     reader.onload = function(e) {
       const rawData = e.target.result;
-      const applyResult = (finalData) => {
-        if (previewImgElement) {
-          previewImgElement.src = finalData;
-          previewImgElement.classList.remove('hidden');
-        }
-        if (hiddenInputElement) {
-          hiddenInputElement.value = finalData;
-        }
-        if (typeof callback === 'function') {
-          callback(finalData);
-        }
-      };
+      
+      compressImageForStorage(rawData, maxDim, quality, isPng, (compressedData) => {
+        const applyResult = (finalData) => {
+          if (previewImgElement) {
+            previewImgElement.src = finalData;
+            if (!isHero) {
+              previewImgElement.classList.remove('hidden');
+            }
+          }
+          if (hiddenInputElement) {
+            hiddenInputElement.value = finalData;
+          }
+          if (typeof callback === 'function') {
+            callback(finalData);
+          }
+        };
 
-      if (autoRemoveBg) {
-        removeImageBackground(rawData, applyResult);
-      } else {
-        applyResult(rawData);
-      }
+        if (autoRemoveBg) {
+          removeImageBackground(compressedData, applyResult);
+        } else {
+          applyResult(compressedData);
+        }
+      });
     };
     reader.readAsDataURL(file);
   }

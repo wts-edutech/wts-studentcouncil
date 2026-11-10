@@ -159,10 +159,10 @@ const DEFAULT_DOCUMENTS_LIST = [
 ];
 
 // การตั้งค่าระบบเริ่มต้น
-const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/hero-bg-clean.jpg';
+const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/school-logo-transparent.png';
 
 const DEFAULT_SITE_CONFIG = {
-  configVersion: '2570.9',
+  configVersion: '2570.95',
   adminUsername: 'admin',
   adminPassword: 'admin1234',
   schoolName: 'โรงเรียนวชิรธรรมสาธิต',
@@ -171,9 +171,10 @@ const DEFAULT_SITE_CONFIG = {
   schoolLogo2: '',
   schoolLogo3: '',
   heroBannerImage: DEFAULT_HERO_BANNER_IMAGE,
-  heroBannerPosX: 100,
+  heroBannerPosX: 99,
   heroBannerPosY: 50,
   heroBannerZoom: 100,
+  heroBannerFit: 'contain',
   affiliation: 'สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน • สำนักงานเขตพื้นที่การศึกษามัธยมศึกษากรุงเทพมหานคร เขต 2',
   departmentName: 'กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน',
   academicYear: '2570',
@@ -631,6 +632,8 @@ const WDSDB = {
           });
           if (putRes.ok) {
             console.log('WDSDB: Config successfully synced to Cloud!');
+          } else {
+            console.warn('WDSDB Cloud Sync Status:', putRes.status);
           }
         } catch (err) {
           console.warn('WDSDB Cloud Sync Warning:', err);
@@ -663,14 +666,12 @@ const WDSDB = {
       const remoteTime = new Date(remote._lastUpdated || 0).getTime();
       const localTime = new Date(local?._lastUpdated || 0).getTime();
 
-      // ถือว่าข้อมูลบนคลาวด์คือความจริงกลาง ถ้าข้อมูลต่างกันหรือใหม่กว่า ให้อัปเดตเข้าเครื่องทันที
-      const isCloudDifferent = !local || 
+      // ถือว่าข้อมูลบนคลาวด์คือความจริงกลางเฉพาะเมื่อคลาวด์มีข้อมูลใหม่กว่าเครื่องนี้อย่างแท้จริง (remoteTime > localTime)
+      const isCloudNewer = !local || 
         !local._lastUpdated || 
-        remote._lastUpdated !== local._lastUpdated || 
-        remoteTime > localTime ||
-        (remote.configVersion && remote.configVersion !== local.configVersion);
+        (remoteTime > localTime + 500);
 
-      if (isCloudDifferent) {
+      if (isCloudNewer) {
         const merged = { ...DEFAULT_SITE_CONFIG, ...remote };
         localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
         if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
