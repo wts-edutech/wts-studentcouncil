@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257024">
+  <link rel="stylesheet" href="css/style.css?v=257025">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -538,8 +538,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257024"></script>
-  <script src="js/app.js?v=257024"></script>
+  <script src="js/data.js?v=257025"></script>
+  <script src="js/app.js?v=257025"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];
@@ -559,7 +559,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function handleSearch() {
+    async function handleSearch() {
       const q = document.getElementById('searchInput').value.trim();
       const container = document.getElementById('searchResults');
       
@@ -568,12 +568,24 @@
         return;
       }
 
-      const results = WDSDB.searchStudent(q);
+      let results = WDSDB.searchStudent(q);
+
+      // ถ้าค้นหาในเครื่องไม่พบ ลองดึงข้อมูลสดจากระบบคลาวด์ทันที (เผื่อเพิ่งสมัครจากมือถือมา)
+      if (results.length === 0 && typeof WDSDB.syncApplicationsFromCloud === 'function') {
+        container.innerHTML = `
+          <div class="border border-slate-200 p-6 bg-slate-50 text-center text-slate-500 text-xs rounded">
+            <i class="fa-solid fa-spinner fa-spin text-lg text-[#16325c] mb-1.5 block"></i>
+            กำลังค้นหาข้อมูลล่าสุดจากระบบคลาวด์...
+          </div>
+        `;
+        await WDSDB.syncApplicationsFromCloud();
+        results = WDSDB.searchStudent(q);
+      }
 
       if (results.length === 0) {
         container.innerHTML = `
           <div class="border border-slate-200 p-4 bg-slate-50 text-center text-slate-600 text-xs rounded">
-            ไม่พบข้อมูลใบสมัครที่ตรงกับคำค้นหา "${q}" กรุณาตรวจสอบข้อมูลอีกครั้ง
+            ไม่พบข้อมูลใบสมัครที่ตรงกับคำค้นหา "${escapeHTML(q)}" กรุณาตรวจสอบข้อมูลอีกครั้ง
           </div>
         `;
         return;
