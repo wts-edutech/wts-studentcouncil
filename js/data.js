@@ -35,10 +35,10 @@ const THAI_STUDENT_FEMALE_PHOTO = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns
 
 // ข้อมูลกำหนดการเริ่มต้น
 const DEFAULT_TIMELINE = [
-  { step: 1, date: '16 - 30 พฤศจิกายน 2569', title: 'เปิดรับสมัครออนไลน์: สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)', location: 'ระบบรับสมัครออนไลน์', highlight: true },
+  { step: 1, date: '16 - 30 พฤศจิกายน 2569', title: 'เปิดรับสมัครออนไลน์: สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)', location: 'ระบบรับสมัครออนไลน์', highlight: false },
   { step: 2, date: '4 ธันวาคม 2569', title: 'ตรวจสอบคุณสมบัติผู้ลงสมัครประธานสภานักเรียนและประธานคณะสี', location: 'ห้องประชุม Minting Room', highlight: false },
   { step: 3, date: '9 ธันวาคม 2569', title: 'ผู้ลงสมัคร จับสลากหมายเลขผู้สมัคร: ประชุมชี้แจงระเบียบการหาเสียง', location: 'หอประชุมโรงเรียน', highlight: false },
-  { step: 4, date: '16 พฤศจิกายน 2569 - 2 กุมภาพันธ์ 2570', title: 'รณรงค์หาเสียง: แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด', location: 'ภายในบริเวณโรงเรียน', highlight: false },
+  { step: 4, date: '16 พฤศจิกายน 2569 - 2 กุมภาพันธ์ 2570', title: 'รณรงค์หาเสียง: แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด', location: 'ภายในบริเวณโรงเรียน', highlight: true },
   { step: 5, date: '27 มกราคม 2570', title: 'กิจกรรมดีเบตประธานสภานักเรียนและประธานคณะสี', location: 'หอประชุมโรงเรียนวชิรธรรมสาธิต', highlight: false },
   { step: 6, date: '3 กุมภาพันธ์ 2570', title: 'วันลงคะแนนเสียงเลือกตั้งใหญ่: เปิดคูหาลงคะแนนเสียง เวลา 08.30 - 15.00 น.', location: 'คูหาลงคะแนนเสียง', highlight: false },
   { step: 7, date: '8 กุมภาพันธ์ 2570', title: 'ประกาศผลการเลือกตั้งอย่างเป็นทางการ', location: 'เว็บไซต์โรงเรียนวชิรธรรมสาธิต', highlight: false }
@@ -773,12 +773,8 @@ const WDSDB = {
       const remoteTime = new Date(remote._lastUpdated || 0).getTime();
       const localTime = new Date(local?._lastUpdated || 0).getTime();
 
-      // หน้าบ้านและมือถือให้ดึงข้อมูลคลาวด์มาแสดงผลเป็นหลักเสมอ (Single Source of Truth)
-      const isClientPage = typeof window !== 'undefined' && !window.location.pathname.includes('admin');
-      const isCloudNewer = !local || 
-        !local._lastUpdated || 
-        (remoteTime >= localTime) ||
-        isClientPage;
+      // ดึงข้อมูลคลาวด์มาแสดงผลเมื่อคลาวด์ใหม่กว่า หรือเมื่อยังไม่มีข้อมูลในเครื่อง
+      const isCloudNewer = !local || !local._lastUpdated || (remoteTime > localTime);
 
       if (isCloudNewer) {
         const merged = { ...DEFAULT_SITE_CONFIG, ...remote };
@@ -787,6 +783,9 @@ const WDSDB = {
           window.dispatchEvent(new CustomEvent('wds-cloud-synced', { detail: merged }));
         }
         return merged;
+      } else if (localTime > remoteTime && remoteTime > 0) {
+        // หากข้อมูลในเครื่องใหม่กว่าคลาวด์ (เช่น เพิ่งกดบันทึกในหลังบ้าน) ให้ดันข้อมูลขึ้นคลาวด์อัตโนมัติ ป้องกันข้อมูลเด้งกลับ
+        this.saveConfig(local, true).catch(() => {});
       }
       return local;
     } catch (e) {

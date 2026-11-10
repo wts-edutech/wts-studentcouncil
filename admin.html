@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257035">
-  <script src="js/data.js?v=257035"></script>
-  <script src="js/app.js?v=257035"></script>
+  <link rel="stylesheet" href="css/style.css?v=257036">
+  <script src="js/data.js?v=257036"></script>
+  <script src="js/app.js?v=257036"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -1760,10 +1760,15 @@
 
     // รับสัญญาณเมื่อข้อมูลบนคลาวด์อัปเดตอัตโนมัติ
     window.addEventListener('wds-cloud-synced', (e) => {
-      loadSettingsIntoForm();
-      applySiteConfig();
-      updateStatsDashboard();
-      updateLivePreview();
+      // หากผู้ใช้กำลังพิมพ์อยู่ในช่อง input หรือ textarea จะไม่เขียนทับฟอร์มเพื่อป้องกันข้อมูลกระตุก/เด้งกลับ
+      const activeEl = document.activeElement;
+      const isUserTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
+      if (!isUserTyping && typeof loadSettingsIntoForm === 'function') {
+        loadSettingsIntoForm();
+      }
+      if (typeof applySiteConfig === 'function') applySiteConfig();
+      if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
+      if (typeof updateLivePreview === 'function') updateLivePreview();
       if (typeof loadApplyManagerData === 'function') loadApplyManagerData();
       if (activeTab === 'positions' && typeof loadPositionsIntoForm === 'function') loadPositionsIntoForm();
     });
@@ -2573,7 +2578,7 @@
       `).join('');
     }
 
-    function setTimelineHighlight(targetIdx) {
+    async function setTimelineHighlight(targetIdx) {
       if (!currentTimeline[targetIdx]) return;
       const wasActive = Boolean(currentTimeline[targetIdx].highlight);
       currentTimeline.forEach((item, idx) => {
@@ -2590,7 +2595,7 @@
         location: (item.location || '').trim(),
         highlight: Boolean(item.highlight)
       }));
-      WDSDB.saveConfig({ timeline: cleanedTimeline }, true);
+      await WDSDB.saveConfig({ timeline: cleanedTimeline }, true);
 
       if (!wasActive) {
         showToast(`✅ ย้ายจุดสีเขียวไปยังขั้นตอนที่ ${targetIdx + 1} และเชื่อมโยงไปหน้าแรกทันที!`, 'success');
