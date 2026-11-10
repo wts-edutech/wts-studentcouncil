@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257026">
+  <link rel="stylesheet" href="css/style.css?v=257027">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -408,7 +408,7 @@
           </div>
 
           <div class="p-5 md:p-6 space-y-3.5 text-xs sm:text-sm md:text-base text-slate-700">
-            <p class="leading-relaxed" data-cfg="applyCouncilDesc">
+            <p class="leading-relaxed whitespace-pre-line" data-cfg="applyCouncilDesc">
               สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่รวมกลุ่มจัดตั้งพรรคการเมือง จำนวน 10 ตำแหน่ง (ประธาน, รองประธาน, วิชาการ 2 คน, สันทนาการ 2 คน, ฝ่ายทั่วไป, ประชาสัมพันธ์ 2 คน, เลขานุการ)
             </p>
 
@@ -437,7 +437,7 @@
           </div>
 
           <div class="p-5 md:p-6 space-y-3.5 text-xs sm:text-sm md:text-base text-slate-700">
-            <p class="leading-relaxed" data-cfg="applyColorDesc">
+            <p class="leading-relaxed whitespace-pre-line" data-cfg="applyColorDesc">
               สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่ประสงค์ลงสมัครเป็นผู้นำคณะสี เพื่อขับเคลื่อนกิจกรรมกีฬาภายใน กิจกรรมเชียร์ และสร้างความสามัคคี
             </p>
 
@@ -518,8 +518,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257026"></script>
-  <script src="js/app.js?v=257026"></script>
+  <script src="js/data.js?v=257027"></script>
+  <script src="js/app.js?v=257027"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];
@@ -544,23 +544,23 @@
       const container = document.getElementById('searchResults');
       
       if (!q) {
-        showToast('กรุณากรอกเลขประจำตัว หรือชื่อผู้สมัคร หรือชื่อพรรค', 'error');
+        showToast('กรุณากรอกคำค้นหา เช่น เลขประจำตัว หรือชื่อผู้สมัคร', 'warning');
         return;
+      }
+
+      container.innerHTML = `
+        <div class="border border-slate-200 p-6 bg-slate-50 text-center text-slate-500 text-xs rounded">
+          <i class="fa-solid fa-spinner fa-spin text-lg text-[#16325c] mb-1.5 block"></i>
+          กำลังค้นหาและดึงข้อมูลล่าสุดจากระบบ...
+        </div>
+      `;
+      if (typeof WDSDB.syncApplicationsFromCloud === 'function') {
+        await WDSDB.syncApplicationsFromCloud();
       }
 
       let results = WDSDB.searchStudent(q);
 
-      // ถ้าค้นหาในเครื่องไม่พบ ลองดึงข้อมูลสดจากระบบคลาวด์ทันที (เผื่อเพิ่งสมัครจากมือถือมา)
-      if (results.length === 0 && typeof WDSDB.syncApplicationsFromCloud === 'function') {
-        container.innerHTML = `
-          <div class="border border-slate-200 p-6 bg-slate-50 text-center text-slate-500 text-xs rounded">
-            <i class="fa-solid fa-spinner fa-spin text-lg text-[#16325c] mb-1.5 block"></i>
-            กำลังค้นหาข้อมูลล่าสุดจากระบบคลาวด์...
-          </div>
-        `;
-        await WDSDB.syncApplicationsFromCloud();
-        results = WDSDB.searchStudent(q);
-      }
+      
 
       if (results.length === 0) {
         container.innerHTML = `
@@ -608,6 +608,22 @@
       showToast(`พบข้อมูลใบสมัครจำนวน ${results.length} รายการ`, 'info');
     }
 
+    
+    window.addEventListener('wds-cloud-synced', () => {
+      if (typeof applySiteConfig === 'function') applySiteConfig();
+      if (typeof renderTimeline === 'function') renderTimeline();
+    });
+    window.addEventListener('wds-apps-synced', () => {
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput && searchInput.value.trim()) {
+        handleSearch();
+      }
+    });
+    window.addEventListener('pageshow', () => {
+      if (typeof applySiteConfig === 'function') applySiteConfig();
+      if (typeof renderTimeline === 'function') renderTimeline();
+    });
+  
     document.addEventListener('DOMContentLoaded', () => {
       const hash = window.location.hash.replace('#', '');
       if (['rules', 'apply', 'status'].includes(hash)) {

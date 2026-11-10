@@ -604,6 +604,12 @@ const WDSDB = {
       const nextVer = ((isNaN(curVer) ? 2570.9 : curVer) + 0.01).toFixed(2);
       const merged = { ...current, ...newConfig, _lastUpdated: timestamp, configVersion: nextVer };
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
+      if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+        window.dispatchEvent(new CustomEvent('wds-cloud-synced', { detail: merged }));
+      }
+      if (typeof notifyRealtimeSync === 'function') {
+        notifyRealtimeSync('config', merged);
+      }
 
       // ส่งข้อมูลขึ้นคลาวด์กลางทันที และรอผลการบันทึกเพื่อความแม่นยำ 100%
       if (syncToCloud && CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
@@ -812,6 +818,12 @@ const WDSDB = {
     };
     list.unshift(newEntry);
     localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(list));
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      window.dispatchEvent(new CustomEvent('wds-apps-synced'));
+    }
+    if (typeof notifyRealtimeSync === 'function') {
+      notifyRealtimeSync('applications');
+    }
 
     // ซิงค์ใบสมัครขึ้นคลาวด์ในเบื้องหลัง เพื่อให้หน้าหลังบ้านเห็นทันที
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
@@ -855,6 +867,12 @@ const WDSDB = {
     };
     list.unshift(newEntry);
     localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(list));
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      window.dispatchEvent(new CustomEvent('wds-apps-synced'));
+    }
+    if (typeof notifyRealtimeSync === 'function') {
+      notifyRealtimeSync('applications');
+    }
 
     // ซิงค์ใบสมัครขึ้นคลาวด์ในเบื้องหลัง เพื่อให้หน้าหลังบ้านเห็นทันที
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
@@ -971,6 +989,12 @@ const WDSDB = {
       if (notes !== undefined) list[idx].notes = notes;
       list[idx].reviewedAt = new Date().toLocaleDateString('th-TH');
       localStorage.setItem(key, JSON.stringify(list));
+      if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+        window.dispatchEvent(new CustomEvent('wds-apps-synced'));
+      }
+      if (typeof notifyRealtimeSync === 'function') {
+        notifyRealtimeSync('applications');
+      }
 
       // ซิงค์สถานะใหม่ขึ้นคลาวด์ทันที เพื่อให้อุปกรณ์อื่น (มือถือ) อัปเดตพร้อมกันทันที
       if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {

@@ -1,3 +1,90 @@
+
+// ฟังก์ชันเรนเดอร์ขั้นตอนกำหนดการปฏิทินหน้าแรก (index.html) จากการตั้งค่าหลังบ้าน
+function renderTimeline() {
+  const timelineCardsContainer = document.getElementById('timelineCardsGrid');
+  if (!timelineCardsContainer) return;
+  if (typeof WDSDB === 'undefined') return;
+
+  const cfg = WDSDB.getConfig();
+  const list = (cfg.timeline && Array.isArray(cfg.timeline) && cfg.timeline.length > 0)
+    ? cfg.timeline
+    : (typeof DEFAULT_TIMELINE !== 'undefined' ? DEFAULT_TIMELINE : []);
+
+  const stepIcons = [
+    'fa-laptop',
+    'fa-clipboard-check',
+    'fa-bullhorn',
+    'fa-check-to-slot',
+    'fa-chart-simple',
+    'fa-laptop',
+    'fa-trophy'
+  ];
+
+  const hasAnyHighlight = list.some(item => Boolean(item.highlight));
+  const isManySteps = list.length > 5;
+  const cardMinW = isManySteps ? 'min-w-[120px] lg:min-w-0 xl:min-w-[135px]' : 'min-w-[160px]';
+  const cardPad = isManySteps ? 'p-2.5 sm:p-3 xl:p-3.5' : 'p-2.5 sm:p-4 md:p-5';
+  const dateSize = isManySteps ? 'text-[10px] sm:text-[11px] xl:text-xs' : 'text-[10.5px] sm:text-xs md:text-sm';
+  const titleSize = isManySteps ? 'text-xs sm:text-[13px] xl:text-[14.5px]' : 'text-xs sm:text-sm md:text-base lg:text-[16.5px]';
+  const subSize = isManySteps ? 'text-[9.5px] sm:text-[11px] xl:text-xs' : 'text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm';
+  const connClass = isManySteps ? 'w-1 xl:w-2' : 'w-3 xl:w-4';
+
+  timelineCardsContainer.innerHTML = list.map((item, index) => {
+    const stepNum = item.step !== undefined ? item.step : (index + 1);
+    const isHighlightStep = hasAnyHighlight ? Boolean(item.highlight) : (index === 0);
+    const iconClass = stepIcons[index % stepIcons.length];
+
+    let mainTitle = item.title || '';
+    let subDesc = '';
+    const colonIdx = mainTitle.indexOf(':');
+    if (colonIdx !== -1) {
+      subDesc = mainTitle.substring(colonIdx + 1).trim();
+      mainTitle = mainTitle.substring(0, colonIdx).trim();
+    } else if (item.location) {
+      subDesc = item.location;
+    }
+
+    const connectorHtml = index < list.length - 1
+      ? `<div class="hidden lg:flex items-center justify-center ${connClass} flex-shrink-0">
+           <div class="w-full h-[2px] bg-emerald-700/30"></div>
+         </div>`
+      : '';
+
+    if (isHighlightStep) {
+      return `
+        <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-gradient-to-b from-[#10b981] to-[#059669] text-white ${cardPad} shadow-md shadow-emerald-600/25 border-2 border-emerald-300 flex flex-col justify-between relative transition-all ring-2 ring-emerald-400/20">
+          <div>
+            <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+              <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#059669] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
+              <i class="fa-solid ${iconClass} text-white text-sm sm:text-lg md:text-xl drop-shadow-xs"></i>
+            </div>
+            <div class="${dateSize} font-bold text-[#fef08a] mb-1 leading-snug drop-shadow-xs">${escapeHTML(item.date || '')}</div>
+            <div class="font-bold ${titleSize} leading-snug text-white mb-0.5 sm:mb-1 drop-shadow-xs">${escapeHTML(mainTitle)}</div>
+            <div class="${subSize} text-emerald-50 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
+          </div>
+        </div>
+        ${connectorHtml}
+      `;
+    }
+
+    return `
+      <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition ${cardPad} shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+        <div>
+          <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+            <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">${stepNum}</span>
+            <i class="fa-solid ${iconClass} text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+          </div>
+          <div class="${dateSize} font-bold text-[#b4690e] mb-1 leading-snug">${escapeHTML(item.date || '')}</div>
+          <div class="font-bold ${titleSize} leading-snug text-slate-900 mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
+          <div class="${subSize} text-slate-600 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
+        </div>
+      </div>
+      ${connectorHtml}
+    `;
+  }).join('');
+}
+window.renderTimeline = renderTimeline;
+
 // ล้าง Service Worker เก่าทั้งหมดออกจากเบราว์เซอร์ เพื่อป้องกันการแคชหน้าเว็บเก่าในมือถือ
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
   try {
@@ -133,84 +220,7 @@ function applySiteConfig() {
     ? cfg.timeline
     : (typeof DEFAULT_TIMELINE !== 'undefined' ? DEFAULT_TIMELINE : []);
 
-  const timelineCardsContainer = document.getElementById('timelineCardsGrid');
-  if (timelineCardsContainer) {
-    const stepIcons = [
-      'fa-laptop',
-      'fa-clipboard-check',
-      'fa-bullhorn',
-      'fa-check-to-slot',
-      'fa-chart-simple'
-    ];
-
-    // ตรวจสอบว่าครู/ผู้ดูแลระบบกำหนดให้ขั้นตอนใดเป็นช่วงเวลาสำคัญ (highlight)
-    const hasAnyHighlight = list.some(item => Boolean(item.highlight));
-
-    // ปรับขนาดการ์ดและระยะเชื่อมตามจำนวนขั้นตอน (รองรับ 5-7 ขั้นตอนได้อย่างสวยงาม)
-    const isManySteps = list.length > 5;
-    const cardMinW = isManySteps ? 'min-w-[120px] lg:min-w-0 xl:min-w-[135px]' : 'min-w-[160px]';
-    const cardPad = isManySteps ? 'p-2.5 sm:p-3 xl:p-3.5' : 'p-2.5 sm:p-4 md:p-5';
-    const dateSize = isManySteps ? 'text-[10px] sm:text-[11px] xl:text-xs' : 'text-[10.5px] sm:text-xs md:text-sm';
-    const titleSize = isManySteps ? 'text-xs sm:text-[13px] xl:text-[14.5px]' : 'text-xs sm:text-sm md:text-base lg:text-[16.5px]';
-    const subSize = isManySteps ? 'text-[9.5px] sm:text-[11px] xl:text-xs' : 'text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm';
-    const connClass = isManySteps ? 'w-1 xl:w-2' : 'w-3 xl:w-4';
-
-    timelineCardsContainer.innerHTML = list.map((item, index) => {
-      const stepNum = item.step !== undefined ? item.step : (index + 1);
-      // แสดงการ์ดสีเขียวตามขั้นตอนที่ครูกำหนดไว้ หากยังไม่มีการกำหนดให้เริ่มต้นที่ขั้นตอนแรก
-      const isHighlightStep = hasAnyHighlight ? Boolean(item.highlight) : (index === 0);
-      const iconClass = stepIcons[index % stepIcons.length];
-
-      // แยกหัวข้อหลัก และรายละเอียด (คั่นด้วย :)
-      let mainTitle = item.title || '';
-      let subDesc = '';
-      const colonIdx = mainTitle.indexOf(':');
-      if (colonIdx !== -1) {
-        subDesc = mainTitle.substring(colonIdx + 1).trim();
-        mainTitle = mainTitle.substring(0, colonIdx).trim();
-      } else if (item.location) {
-        subDesc = item.location;
-      }
-
-      const connectorHtml = index < list.length - 1
-        ? `<div class="hidden lg:flex items-center justify-center ${connClass} flex-shrink-0">
-             <div class="w-full h-[2px] bg-emerald-700/30"></div>
-           </div>`
-        : '';
-
-      if (isHighlightStep) {
-        return `
-          <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-gradient-to-b from-[#10b981] to-[#059669] text-white ${cardPad} shadow-md shadow-emerald-600/25 border-2 border-emerald-300 flex flex-col justify-between relative transition-all ring-2 ring-emerald-400/20">
-            <div>
-              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-                <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#059669] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">${stepNum}</span>
-                <i class="fa-solid ${iconClass} text-white text-sm sm:text-lg md:text-xl drop-shadow-xs"></i>
-              </div>
-              <div class="${dateSize} font-bold text-[#fef08a] mb-1 leading-snug drop-shadow-xs">${escapeHTML(item.date || '')}</div>
-              <div class="font-bold ${titleSize} leading-snug text-white mb-0.5 sm:mb-1 drop-shadow-xs">${escapeHTML(mainTitle)}</div>
-              <div class="${subSize} text-emerald-50 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
-            </div>
-          </div>
-          ${connectorHtml}
-        `;
-      }
-
-      return `
-        <div class="flex-1 ${cardMinW} rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition ${cardPad} shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
-          <div>
-            <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-              <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">${stepNum}</span>
-              <i class="fa-solid ${iconClass} text-[#156548] text-sm sm:text-lg md:text-xl"></i>
-            </div>
-            <div class="${dateSize} font-bold text-[#b4690e] mb-1 leading-snug">${escapeHTML(item.date || '')}</div>
-            <div class="font-bold ${titleSize} leading-snug text-slate-900 mb-0.5 sm:mb-1">${escapeHTML(mainTitle)}</div>
-            <div class="${subSize} text-slate-600 leading-normal sm:leading-relaxed">${escapeHTML(subDesc)}</div>
-          </div>
-        </div>
-        ${connectorHtml}
-      `;
-    }).join('');
-  }
+  renderTimeline();
 
   const timelineTbody = document.getElementById('timelineTableBody');
   if (timelineTbody) {
@@ -665,6 +675,8 @@ window.addEventListener('wds-cloud-synced', (e) => {
 
 // ฟังก์ชันดึงข้อมูลล่าสุดจากระบบกลางอัตโนมัติ
 function triggerAutoSync() {
+  if (typeof applySiteConfig === 'function') applySiteConfig();
+  if (typeof renderTimeline === 'function') renderTimeline();
   if (typeof WDSDB !== 'undefined') {
     if (typeof WDSDB.syncFromCloud === 'function') WDSDB.syncFromCloud();
     if (typeof WDSDB.syncApplicationsFromCloud === 'function') WDSDB.syncApplicationsFromCloud();
@@ -685,4 +697,49 @@ window.addEventListener('pageshow', (event) => {
 window.addEventListener('DOMContentLoaded', () => {
   applySiteConfig();
   triggerAutoSync();
+});
+
+
+// ========================================================
+// ระบบเชื่อมโยงข้อมูลแบบ Real-Time ระหว่างหน้าบ้านและหลังบ้าน (0ms)
+// ========================================================
+let syncChannel = null;
+try {
+  if (typeof BroadcastChannel !== 'undefined') {
+    syncChannel = new BroadcastChannel('wds_election_realtime');
+    syncChannel.onmessage = (event) => {
+      console.log('WDS Realtime Broadcast:', event.data);
+      if (typeof applySiteConfig === 'function') applySiteConfig();
+      if (typeof renderTimeline === 'function') renderTimeline();
+      if (typeof renderDocumentsPage === 'function') renderDocumentsPage();
+      if (typeof renderPositionForms === 'function') renderPositionForms();
+      if (typeof renderColorMemberForms === 'function') renderColorMemberForms();
+      if (typeof renderApplication === 'function') renderApplication();
+      if (typeof renderTable === 'function') renderTable();
+      if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
+    };
+  }
+} catch (e) {
+  console.warn('BroadcastChannel error:', e);
+}
+
+function notifyRealtimeSync(type = 'config', detail = null) {
+  try {
+    if (syncChannel) {
+      syncChannel.postMessage({ type, detail, timestamp: Date.now() });
+    }
+  } catch (e) {}
+}
+window.notifyRealtimeSync = notifyRealtimeSync;
+
+// ดักจับการเปลี่ยนแปลง Storage จากหน้าต่าง/แท็บอื่น
+window.addEventListener('storage', (e) => {
+  if (typeof STORAGE_KEYS !== 'undefined' && 
+      (e.key === STORAGE_KEYS.CONFIG || e.key === STORAGE_KEYS.COUNCIL || e.key === STORAGE_KEYS.COLOR)) {
+    if (typeof applySiteConfig === 'function') applySiteConfig();
+    if (typeof renderTimeline === 'function') renderTimeline();
+    if (typeof renderDocumentsPage === 'function') renderDocumentsPage();
+    if (typeof renderTable === 'function') renderTable();
+    if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
+  }
 });
