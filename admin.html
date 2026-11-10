@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257023">
-  <script src="js/data.js?v=257023"></script>
-  <script src="js/app.js?v=257023"></script>
+  <link rel="stylesheet" href="css/style.css?v=257024">
+  <script src="js/data.js?v=257024"></script>
+  <script src="js/app.js?v=257024"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -2939,7 +2939,7 @@
       showToast('กรอกข้อมูลทดสอบเรียบร้อยแล้ว กด "บันทึกข้อมูล" ได้เลยครับ', 'info');
     }
 
-    function handleSaveSettings(e) {
+    async function handleSaveSettings(e) {
       if (e && typeof e.preventDefault === 'function') {
         e.preventDefault();
       }
@@ -3100,7 +3100,7 @@
           timeline: cleanedTimeline
         };
 
-        const saveRes = WDSDB.saveConfig(newConfig);
+        const saveRes = await WDSDB.saveConfig(newConfig);
         if (saveRes) {
           if (typeof applySiteConfig === 'function') applySiteConfig();
           if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
@@ -3361,22 +3361,22 @@
       document.getElementById('reviewModal').classList.add('hidden');
     }
 
-    function saveReview(e, id) {
+    async function saveReview(e, id) {
       e.preventDefault();
       const status = document.getElementById('modalStatus').value;
       const candidateNumber = document.getElementById('modalCandidateNumber').value.trim();
       const notes = document.getElementById('modalNotes').value.trim();
 
-      WDSDB.updateStatus(activeTab, id, status, candidateNumber, notes);
+      await WDSDB.updateStatus(activeTab, id, status, candidateNumber, notes);
       closeReviewModal();
       renderTable();
       updateStatsDashboard();
       showToast('บันทึกผลการตรวจสอบเรียบร้อยแล้ว', 'success');
     }
 
-    function deleteApp(id) {
+    async function deleteApp(id) {
       if (confirm(`ยืนยันการลบข้อมูลใบสมัครรหัส ${id} ออกจากระบบ?`)) {
-        WDSDB.deleteApplication(activeTab, id);
+        await WDSDB.deleteApplication(activeTab, id);
         renderTable();
         updateStatsDashboard();
         showToast('ลบรายการเรียบร้อยแล้ว', 'info');

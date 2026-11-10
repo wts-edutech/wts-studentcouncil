@@ -1,3 +1,14 @@
+// ล้าง Service Worker เก่าทั้งหมดออกจากเบราว์เซอร์ เพื่อป้องกันการแคชหน้าเว็บเก่าในมือถือ
+if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+  try {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (const registration of registrations) {
+        registration.unregister();
+      }
+    }).catch(() => {});
+  } catch(e) {}
+}
+
 /**
  * สคริปต์หลักสำหรับการทำงานส่วนกลาง และระบบผูกค่าการตั้งค่าแบบไดนามิก (Dynamic CMS Binding)
  */
@@ -644,31 +655,34 @@ window.addEventListener('wds-cloud-synced', (e) => {
   if (typeof applySiteConfig === 'function') applySiteConfig();
   if (typeof renderTimeline === 'function') renderTimeline();
   if (typeof renderPositionForms === 'function') renderPositionForms();
-});
-
-// ซิงค์อัตโนมัติเมื่อผู้ใช้สลับกลับมาเปิดหน้าเว็บ (มือถือ / แท็บเล็ต / คอมพิวเตอร์)
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && typeof WDSDB !== 'undefined') {
-    if (typeof WDSDB.syncFromCloud === 'function') WDSDB.syncFromCloud();
-    if (typeof WDSDB.syncApplicationsFromCloud === 'function') WDSDB.syncApplicationsFromCloud();
+  if (typeof renderDocumentsPage === 'function') renderDocumentsPage();
+  if (typeof renderApplication === 'function') renderApplication();
+  if (typeof initApplyManagerPage === 'function') {
+    initApplyManagerPage();
+    if (typeof renderPreview === 'function') renderPreview();
   }
 });
-window.addEventListener('focus', () => {
+
+// ฟังก์ชันดึงข้อมูลล่าสุดจากระบบกลางอัตโนมัติ
+function triggerAutoSync() {
   if (typeof WDSDB !== 'undefined') {
     if (typeof WDSDB.syncFromCloud === 'function') WDSDB.syncFromCloud();
     if (typeof WDSDB.syncApplicationsFromCloud === 'function') WDSDB.syncApplicationsFromCloud();
   }
+}
+
+// ซิงค์อัตโนมัติเมื่อผู้ใช้สลับกลับมาเปิดหน้าเว็บ (มือถือ / แท็บเล็ต / คอมพิวเตอร์)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') triggerAutoSync();
+});
+window.addEventListener('focus', triggerAutoSync);
+window.addEventListener('pageshow', (event) => {
+  // รันเสมอแม้เป็นการเปิดจาก Back-Forward Cache (bfcache) ใน Safari/iOS
+  triggerAutoSync();
 });
 
 // รันผูกค่าการตั้งค่าอัตโนมัติเมื่อเอกสารโหลด พร้อมซิงค์ข้อมูลล่าสุดจากคลาวด์
 window.addEventListener('DOMContentLoaded', () => {
   applySiteConfig();
-  if (typeof WDSDB !== 'undefined') {
-    if (typeof WDSDB.syncFromCloud === 'function') {
-      WDSDB.syncFromCloud();
-    }
-    if (typeof WDSDB.syncApplicationsFromCloud === 'function') {
-      WDSDB.syncApplicationsFromCloud();
-    }
-  }
+  triggerAutoSync();
 });

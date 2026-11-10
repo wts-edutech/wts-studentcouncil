@@ -485,41 +485,9 @@ const DEFAULT_COLOR_APPLICATIONS = [
 // Helper Functions
 const WDSDB = {
   init() {
-    const CURRENT_CONFIG_VERSION = '2570.9';
     const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
     if (!stored) {
-      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
-    } else {
-      try {
-        const parsed = JSON.parse(stored);
-        if (!parsed.configVersion || parsed.configVersion !== CURRENT_CONFIG_VERSION || parsed.minBehaviorScore !== 70 || parsed.minGpaPresident !== 2.8) {
-          // หากเป็นเวอร์ชันเก่า ให้อัปเดตข้อมูลระเบียบการและกำหนดการ 7 ขั้นตอนล่าสุดทันที
-          const updated = {
-            ...DEFAULT_SITE_CONFIG,
-            ...parsed,
-            timeline: DEFAULT_TIMELINE,
-            regPeriod: '16 - 30 พฤศจิกายน 2569',
-            adminUsername: parsed.adminUsername || DEFAULT_SITE_CONFIG.adminUsername,
-            adminPassword: parsed.adminPassword || DEFAULT_SITE_CONFIG.adminPassword,
-            minBehaviorScore: 70,
-            minGpaPresident: 2.8,
-            minGpaMember: 2.8,
-            minGpaColor: 2.5,
-            rulesCouncilList: DEFAULT_COUNCIL_RULES,
-            rulesColorList: DEFAULT_COLOR_RULES,
-            applyCouncilDesc: DEFAULT_SITE_CONFIG.applyCouncilDesc,
-            applyCouncilBullets: DEFAULT_APPLY_COUNCIL_BULLETS,
-            applyColorDesc: DEFAULT_SITE_CONFIG.applyColorDesc,
-            applyColorBullets: DEFAULT_APPLY_COLOR_BULLETS,
-            documentsList: DEFAULT_DOCUMENTS_LIST,
-            configVersion: CURRENT_CONFIG_VERSION,
-            _lastUpdated: '2026-11-09T00:00:00.000Z'
-          };
-          localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(updated));
-        }
-      } catch (e) {
-        localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify({ ...DEFAULT_SITE_CONFIG, configVersion: CURRENT_CONFIG_VERSION }));
-      }
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(DEFAULT_SITE_CONFIG));
     }
     let storedCouncil = localStorage.getItem(STORAGE_KEYS.COUNCIL);
     const storedColor = localStorage.getItem(STORAGE_KEYS.COLOR);
@@ -627,7 +595,7 @@ const WDSDB = {
     }
   },
 
-  saveConfig(newConfig, syncToCloud = true) {
+  async saveConfig(newConfig, syncToCloud = true) {
     this.init();
     try {
       const current = this.getConfig();
@@ -637,7 +605,7 @@ const WDSDB = {
       const merged = { ...current, ...newConfig, _lastUpdated: timestamp, configVersion: nextVer };
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
 
-      // ส่งข้อมูลขึ้นคลาวด์ในเบื้องหลัง เพื่อให้อุปกรณ์อื่น (มือถือ/แท็บเล็ต) ซิงค์ข้อมูลล่าสุดอัตโนมัติ
+      // ส่งข้อมูลขึ้นคลาวด์กลางทันที และรอผลการบันทึกเพื่อความแม่นยำ 100%
       if (syncToCloud && CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
         const cloudPayload = JSON.parse(JSON.stringify(merged));
         if (Array.isArray(cloudPayload.documentsList)) {
@@ -649,13 +617,18 @@ const WDSDB = {
             return d;
           });
         }
-        fetch(CLOUD_SYNC.CONFIG_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(cloudPayload)
-        }).then(r => {
-          if (r.ok) console.log('WDSDB: Config successfully synced to Cloud!');
-        }).catch(err => console.warn('WDSDB Cloud Sync Warning:', err));
+        try {
+          const putRes = await fetch(CLOUD_SYNC.CONFIG_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cloudPayload)
+          });
+          if (putRes.ok) {
+            console.log('WDSDB: Config successfully synced to Cloud!');
+          }
+        } catch (err) {
+          console.warn('WDSDB Cloud Sync Warning:', err);
+        }
       }
       return merged;
     } catch (e) {
@@ -987,7 +960,7 @@ const WDSDB = {
     return results;
   },
 
-  updateStatus(type, id, newStatus, candidateNumber, notes) {
+  async updateStatus(type, id, newStatus, candidateNumber, notes) {
     this.init();
     const key = type === 'council' ? STORAGE_KEYS.COUNCIL : STORAGE_KEYS.COLOR;
     const list = type === 'council' ? this.getCouncilList() : this.getColorList();
@@ -1015,7 +988,7 @@ const WDSDB = {
     return false;
   },
 
-  deleteApplication(type, id) {
+  async deleteApplication(type, id) {
     this.init();
     const key = type === 'council' ? STORAGE_KEYS.COUNCIL : STORAGE_KEYS.COLOR;
     let list = type === 'council' ? this.getCouncilList() : this.getColorList();

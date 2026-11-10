@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257023">
-  <script src="js/data.js?v=257023"></script>
-  <script src="js/app.js?v=257023"></script>
+  <link rel="stylesheet" href="css/style.css?v=257024">
+  <script src="js/data.js?v=257024"></script>
+  <script src="js/app.js?v=257024"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -709,7 +709,7 @@
       `;
     }
 
-    function handleSaveApplyPage(e) {
+    async function handleSaveApplyPage(e) {
       if (e && typeof e.preventDefault === 'function') e.preventDefault();
       try {
         const currentCfg = WDSDB.getConfig();
@@ -760,7 +760,7 @@
           applyColorBtnText: kBtnText
         };
 
-        const ok = WDSDB.saveConfig(updated);
+        const ok = await WDSDB.saveConfig(updated);
         if (ok) {
           if (typeof applySiteConfig === 'function') applySiteConfig();
           renderPreview();
@@ -773,6 +773,15 @@
         showToast('เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err), 'error');
       }
     }
+
+    window.addEventListener('wds-cloud-synced', () => {
+      initApplyManagerPage();
+      renderPreview();
+    });
+    window.addEventListener('pageshow', () => {
+      initApplyManagerPage();
+      renderPreview();
+    });
   </script>
 </body>
 </html>
