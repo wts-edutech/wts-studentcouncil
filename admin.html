@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257030">
-  <script src="js/data.js?v=257030"></script>
-  <script src="js/app.js?v=257030"></script>
+  <link rel="stylesheet" href="css/style.css?v=257031">
+  <script src="js/data.js?v=257031"></script>
+  <script src="js/app.js?v=257031"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -418,6 +418,9 @@
           </button>
           <button onclick="switchTab('apply')" id="tabApplyBtn" class="gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
             <i class="fa-regular fa-pen-to-square mr-1.5 text-emerald-600"></i> <span class="sm:hidden">2. หน้าสมัครออนไลน์</span><span class="hidden sm:inline">2. จัดการหน้ายื่นใบสมัครออนไลน์ (Tab 3)</span>
+          </button>
+          <button onclick="switchTab('positions')" id="tabPositionsBtn" class="gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
+            <i class="fa-solid fa-users-gear mr-1.5 text-indigo-600"></i> <span class="sm:hidden">5. ชื่อตำแหน่ง</span><span class="hidden sm:inline">5. กำหนดชื่อตำแหน่ง (สภา/คณะสี)</span>
           </button>
           <button onclick="switchTab('council')" id="tabCouncilBtn" class="gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
             <i class="fa-solid fa-landmark mr-1.5 text-blue-700"></i> <span class="sm:hidden">3. สภานักเรียน</span><span class="hidden sm:inline">3. ทะเบียนผู้สมัครสภานักเรียน</span>
@@ -1177,6 +1180,28 @@
           </div>
         </div>
 
+        <!-- แถบทางลัด: กำหนดชื่อตำแหน่งผู้สมัครทั้งสองใบสมัคร -->
+        <div class="bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 border border-indigo-200/90 rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div class="flex items-center space-x-3 text-indigo-950">
+            <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-base shrink-0 shadow-sm">
+              <i class="fa-solid fa-users-gear"></i>
+            </div>
+            <div>
+              <div class="font-bold text-xs sm:text-sm text-indigo-950 flex items-center gap-2">
+                <span>ต้องการปรับเปลี่ยนชื่อตำแหน่งในใบสมัครทั้ง 10 ลำดับ?</span>
+                <span class="text-[10px] bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full font-bold">ใหม่! ปรับได้ทั้ง 2 ฟอร์ม</span>
+              </div>
+              <p class="text-[11.5px] text-indigo-900/80 mt-0.5">
+                แก้ไขชื่อตำแหน่ง เช่น "รองประธานพรรค", "ฝ่ายวิชาการ (คนที่ 1)", "รองประธานคณะสี", "ฝ่ายสันทนาการ" ได้ที่แท็บกำหนดชื่อตำแหน่ง
+              </p>
+            </div>
+          </div>
+          <button type="button" onclick="switchTab('positions')" class="gov-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3.5 py-2 rounded-lg font-bold shrink-0 shadow-xs flex items-center gap-1.5 transition cursor-pointer w-full sm:w-auto justify-center">
+            <span>ไปที่หน้ากำหนดชื่อตำแหน่ง</span>
+            <i class="fa-solid fa-arrow-right text-[11px]"></i>
+          </button>
+        </div>
+
         <!-- 1. แผงสวิตช์ควบคุมเปิด/ปิดการรับสมัคร (Master Status Controls) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
           
@@ -1539,6 +1564,124 @@
         </div>
       </div>
 
+      <!-- VIEW 5: กำหนดชื่อตำแหน่งผู้สมัครทั้ง 2 ใบสมัคร (สภานักเรียน และ ประธานคณะสี) -->
+      <div id="viewPositions" class="hidden p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 text-xs sm:text-sm lg:text-[15px]">
+        
+        <!-- แถบแนะนำและปุ่มบันทึกด่วนด้านบน -->
+        <div class="bg-gradient-to-r from-indigo-50 via-blue-50 to-purple-50 border border-indigo-200/90 p-4 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+          <div class="flex items-start space-x-3 text-indigo-950">
+            <div class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+              <i class="fa-solid fa-users-gear text-lg"></i>
+            </div>
+            <div>
+              <div class="font-bold text-sm sm:text-base text-indigo-950 flex items-center gap-2">
+                <span>กำหนดชื่อตำแหน่งผู้สมัคร (ทั้ง 2 ใบสมัคร: สภานักเรียน และ ประธานคณะสี)</span>
+                <span class="text-[11px] bg-indigo-200/80 text-indigo-950 px-2 py-0.5 rounded-full font-bold">10 ลำดับ/ฟอร์ม</span>
+              </div>
+              <p class="text-xs sm:text-sm text-indigo-900/85 mt-0.5 leading-relaxed">
+                ปรับเปลี่ยนชื่อตำแหน่งและหัวข้อในใบสมัครออนไลน์ (apply-council.html / apply-color.html) และใบพิมพ์เอกสารทางการ A4 พร้อมซิงค์ขึ้นระบบคลาวด์ทันที
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0 w-full md:w-auto">
+            <button type="button" onclick="handleSavePositions(event)" class="gov-btn bg-indigo-700 hover:bg-indigo-800 text-white font-bold text-xs sm:text-sm px-4 py-2.5 shadow-md flex items-center justify-center cursor-pointer transition flex-1 md:flex-initial">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
+            </button>
+            <a href="apply-council.html" target="_blank" class="gov-btn bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm flex items-center justify-center" title="เปิดดูฟอร์มใบสมัครสภานักเรียน">
+              <i class="fa-solid fa-landmark mr-1.5 text-blue-700"></i> ดูฟอร์มสภา
+            </a>
+            <a href="apply-color.html" target="_blank" class="gov-btn bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm flex items-center justify-center" title="เปิดดูฟอร์มใบสมัครประธานคณะสี">
+              <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> ดูฟอร์มคณะสี
+            </a>
+            <button type="button" onclick="resetPositionsToDefaults()" class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2.5 border border-slate-300 cursor-pointer" title="คืนค่าชื่อตำแหน่งมาตรฐานทั้งหมด">
+              <i class="fa-solid fa-rotate-left mr-1"></i> คืนค่าเดิม
+            </button>
+          </div>
+        </div>
+
+        <!-- คำชี้แจงระบบ -->
+        <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-lg text-xs sm:text-sm text-blue-900 flex items-start gap-2.5">
+          <i class="fa-solid fa-circle-info text-blue-600 mt-0.5 shrink-0 text-base"></i>
+          <div>
+            <div class="font-bold text-blue-950">คำชี้แจงการใช้งาน:</div>
+            <div class="text-[12px] text-blue-900 leading-relaxed mt-0.5">
+              คุณสามารถแก้ไขชื่อตำแหน่งในแต่ละลำดับของทั้ง 2 ใบสมัครได้อิสระ เช่น เปลี่ยนชื่อ <em>"ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายวิชาการ (คนที่ 1)"</em> หรือ <em>"ฝ่ายสันทนาการ"</em> เป็นตำแหน่งอื่นตามธรรมนูญหรือระเบียบของโรงเรียน เมื่อกดปุ่ม <strong>"บันทึกและซิงค์คลาวด์"</strong> ข้อมูลจะถูกจัดเก็บลงระบบคลาวด์และส่งผลไปยังหน้าใบสมัครออนไลน์และใบพิมพ์ A4 ทันที
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 คอลัมน์เคียงข้าง: สภานักเรียน 10 ตำแหน่ง (ซ้าย) vs ประธานคณะสี 10 ตำแหน่ง (ขวา) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          
+          <!-- คอลัมน์ที่ 1: สภานักเรียน (10 ตำแหน่ง) -->
+          <div class="bg-white border-2 border-blue-200 rounded-xl overflow-hidden shadow-sm space-y-0">
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white px-4 py-3 flex items-center justify-between">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-landmark"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base leading-tight">1. ใบสมัครประธานสภานักเรียน</h4>
+                  <div class="text-[11px] text-blue-100">โครงสร้างทีม 10 ตำแหน่ง (ผู้แทนพรรค)</div>
+                </div>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
+                10 ตำแหน่ง
+              </span>
+            </div>
+
+            <div class="p-4 sm:p-5 space-y-3.5 divide-y divide-slate-100" id="positionsCouncilListContainer">
+              <!-- Rendered dynamically by JS loadPositionsIntoForm -->
+            </div>
+          </div>
+
+          <!-- คอลัมน์ที่ 2: ประธานคณะสี (10 ตำแหน่ง) -->
+          <div class="bg-white border-2 border-amber-200 rounded-xl overflow-hidden shadow-sm space-y-0">
+            <div class="bg-gradient-to-r from-amber-600 to-orange-700 text-white px-4 py-3 flex items-center justify-between">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-flag"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base leading-tight">2. ใบสมัครประธานคณะสี (5 สี)</h4>
+                  <div class="text-[11px] text-amber-100">โครงสร้างทีม 10 ตำแหน่ง (ประธาน 1 + คณะทำงาน 9)</div>
+                </div>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
+                10 ตำแหน่ง
+              </span>
+            </div>
+
+            <div class="p-4 sm:p-5 space-y-3.5 divide-y divide-slate-100" id="positionsColorListContainer">
+              <!-- Rendered dynamically by JS loadPositionsIntoForm -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- แถบบันทึกข้อมูลด้านล่าง -->
+        <div class="bg-gradient-to-r from-slate-800 to-indigo-950 p-4 sm:p-5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 text-white shadow-md">
+          <div class="flex items-center space-x-3 text-center sm:text-left">
+            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-amber-400 text-lg shrink-0 hidden sm:flex">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <div>
+              <div class="font-bold text-sm sm:text-base">บันทึกการแก้ไขชื่อตำแหน่งทั้งหมด</div>
+              <div class="text-xs text-slate-300">ซิงค์ขึ้น Cloud Bin ทันที เพื่อให้อุปกรณ์ทุกเครื่องได้รับชื่อตำแหน่งที่อัปเดตตรงกัน</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5 w-full sm:w-auto">
+            <button type="button" onclick="handleSavePositions(event)" class="gov-btn bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm py-2.5 px-5 shadow cursor-pointer transition flex-1 sm:flex-initial">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
+            </button>
+            <button type="button" onclick="resetPositionsToDefaults()" class="gov-btn bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm py-2.5 px-3.5 border border-white/30 flex items-center justify-center cursor-pointer">
+              <i class="fa-solid fa-rotate-left mr-1"></i> คืนค่าเดิม
+            </button>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
   </main>
@@ -1621,6 +1764,7 @@
       updateStatsDashboard();
       updateLivePreview();
       if (typeof loadApplyManagerData === 'function') loadApplyManagerData();
+      if (activeTab === 'positions' && typeof loadPositionsIntoForm === 'function') loadPositionsIntoForm();
     });
 
     window.addEventListener('wds-apps-synced', () => {
@@ -1634,15 +1778,18 @@
       const kBtn = document.getElementById('tabColorBtn');
       const sBtn = document.getElementById('tabSettingsBtn');
       const aBtn = document.getElementById('tabApplyBtn');
+      const pBtn = document.getElementById('tabPositionsBtn');
       const viewReg = document.getElementById('viewRegistries');
       const viewSet = document.getElementById('viewSettings');
       const viewApply = document.getElementById('viewApplyManager');
+      const viewPos = document.getElementById('viewPositions');
       const exportGrp = document.getElementById('toolbarExportGroup');
 
       if (cBtn) cBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
       if (kBtn) kBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
       if (sBtn) sBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
       if (aBtn) aBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
+      if (pBtn) pBtn.className = 'gov-tab-inactive px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap';
 
       updateStatsDashboard();
 
@@ -1651,6 +1798,7 @@
         if (viewReg) viewReg.classList.add('hidden');
         if (viewSet) viewSet.classList.remove('hidden');
         if (viewApply) viewApply.classList.add('hidden');
+        if (viewPos) viewPos.classList.add('hidden');
         if (exportGrp) exportGrp.classList.add('hidden');
         loadSettingsIntoForm();
       } else if (tab === 'apply') {
@@ -1658,13 +1806,23 @@
         if (viewReg) viewReg.classList.add('hidden');
         if (viewSet) viewSet.classList.add('hidden');
         if (viewApply) viewApply.classList.remove('hidden');
+        if (viewPos) viewPos.classList.add('hidden');
         if (exportGrp) exportGrp.classList.add('hidden');
         loadApplyManagerData();
+      } else if (tab === 'positions') {
+        if (pBtn) pBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
+        if (viewReg) viewReg.classList.add('hidden');
+        if (viewSet) viewSet.classList.add('hidden');
+        if (viewApply) viewApply.classList.add('hidden');
+        if (viewPos) viewPos.classList.remove('hidden');
+        if (exportGrp) exportGrp.classList.add('hidden');
+        loadPositionsIntoForm();
       } else if (tab === 'council') {
         if (cBtn) cBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
         if (viewReg) viewReg.classList.remove('hidden');
         if (viewSet) viewSet.classList.add('hidden');
         if (viewApply) viewApply.classList.add('hidden');
+        if (viewPos) viewPos.classList.add('hidden');
         if (exportGrp) exportGrp.classList.remove('hidden');
         renderTable();
       } else if (tab === 'color') {
@@ -1672,6 +1830,7 @@
         if (viewReg) viewReg.classList.remove('hidden');
         if (viewSet) viewSet.classList.add('hidden');
         if (viewApply) viewApply.classList.add('hidden');
+        if (viewPos) viewPos.classList.add('hidden');
         if (exportGrp) exportGrp.classList.remove('hidden');
         renderTable();
       }
@@ -2177,6 +2336,182 @@
       updateApplyMgrPill('color', true);
       renderApplyManagerPreview();
       showToast('คืนค่าข้อความมาตรฐานเรียบร้อยแล้ว (กดบันทึกเพื่อยืนยัน)', 'info');
+    }
+
+    // ==========================================
+    // 5. ระบบจัดการและแก้ไขชื่อตำแหน่งผู้สมัครทั้งสองฟอร์ม (Positions Manager)
+    // ==========================================
+    function loadPositionsIntoForm() {
+      const cfg = WDSDB.getConfig();
+      const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) 
+        ? WDSDB.getCouncilPositions() 
+        : (cfg.councilPositions || DEFAULT_COUNCIL_POSITIONS);
+      const colorPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorPositions) 
+        ? WDSDB.getColorPositions() 
+        : (cfg.colorPositions || DEFAULT_COLOR_POSITIONS);
+
+      const councilContainer = document.getElementById('positionsCouncilListContainer');
+      const colorContainer = document.getElementById('positionsColorListContainer');
+
+      if (councilContainer) {
+        councilContainer.innerHTML = councilPositions.map((pos, idx) => {
+          const num = idx + 1;
+          const isLeader = pos.isLeader || idx === 0;
+          const defaultTitle = DEFAULT_COUNCIL_POSITIONS[idx]?.title || pos.title;
+          return `
+            <div class="pt-3.5 first:pt-0 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label for="posCouncil_${idx}" class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${isLeader ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'} text-xs font-bold font-mono">
+                    ${num}
+                  </span>
+                  <span>ลำดับที่ ${num}</span>
+                  ${isLeader ? '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">หัวหน้าพรรค (ประธานสภา)</span>' : ''}
+                  <span class="text-[11px] text-slate-400 font-mono font-normal">(${pos.key})</span>
+                </label>
+                <button type="button" onclick="restoreSinglePosition('council', ${idx})" class="text-[11px] text-slate-400 hover:text-blue-700 hover:underline cursor-pointer" title="คืนค่าเดิมเฉพาะข้อนี้">
+                  <i class="fa-solid fa-rotate-left mr-0.5"></i> ค่าเดิม
+                </button>
+              </div>
+              <input 
+                type="text" 
+                id="posCouncil_${idx}" 
+                value="${escapeHTML(pos.title || '')}" 
+                oninput="updatePositionPreview('council', ${idx})"
+                data-default="${escapeHTML(defaultTitle)}"
+                class="gov-input w-full font-medium text-slate-800"
+                placeholder="ระบุชื่อตำแหน่ง เช่น ${escapeHTML(defaultTitle)}"
+              >
+              <div class="text-[11px] text-slate-500 flex items-center gap-1.5 pt-0.5 flex-wrap">
+                <span class="text-slate-400">หัวข้อในการ์ดใบสมัคร:</span>
+                <span class="font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200/80" id="previewCouncil_${idx}">
+                  ลำดับที่ ${num}. ${escapeHTML(pos.title || defaultTitle)}
+                </span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (colorContainer) {
+        colorContainer.innerHTML = colorPositions.map((pos, idx) => {
+          const num = idx + 1;
+          const isLeader = pos.isLeader || idx === 0;
+          const defaultTitle = DEFAULT_COLOR_POSITIONS[idx]?.title || pos.title;
+          return `
+            <div class="pt-3.5 first:pt-0 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label for="posColor_${idx}" class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-1.5">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${isLeader ? 'bg-amber-600 text-white' : 'bg-slate-200 text-slate-700'} text-xs font-bold font-mono">
+                    ${num}
+                  </span>
+                  <span>ลำดับที่ ${num}</span>
+                  ${isLeader ? '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold">หัวหน้าทีม (ประธานสี)</span>' : `<span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-semibold">สมาชิกคณะทำงานคนที่ ${idx}</span>`}
+                  <span class="text-[11px] text-slate-400 font-mono font-normal">(${pos.key})</span>
+                </label>
+                <button type="button" onclick="restoreSinglePosition('color', ${idx})" class="text-[11px] text-slate-400 hover:text-amber-700 hover:underline cursor-pointer" title="คืนค่าเดิมเฉพาะข้อนี้">
+                  <i class="fa-solid fa-rotate-left mr-0.5"></i> ค่าเดิม
+                </button>
+              </div>
+              <input 
+                type="text" 
+                id="posColor_${idx}" 
+                value="${escapeHTML(pos.title || '')}" 
+                oninput="updatePositionPreview('color', ${idx})"
+                data-default="${escapeHTML(defaultTitle)}"
+                class="gov-input w-full font-medium text-slate-800"
+                placeholder="ระบุชื่อตำแหน่ง เช่น ${escapeHTML(defaultTitle)}"
+              >
+              <div class="text-[11px] text-slate-500 flex items-center gap-1.5 pt-0.5 flex-wrap">
+                <span class="text-slate-400">หัวข้อในการ์ดใบสมัคร:</span>
+                <span class="font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/80" id="previewColor_${idx}">
+                  ลำดับที่ ${num}. ${escapeHTML(pos.title || defaultTitle)}
+                </span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function updatePositionPreview(type, idx) {
+      const input = document.getElementById(`pos${type === 'council' ? 'Council' : 'Color'}_${idx}`);
+      const preview = document.getElementById(`preview${type === 'council' ? 'Council' : 'Color'}_${idx}`);
+      if (input && preview) {
+        const val = input.value.trim() || input.placeholder;
+        preview.textContent = `ลำดับที่ ${idx + 1}. ${val}`;
+      }
+    }
+
+    function restoreSinglePosition(type, idx) {
+      const input = document.getElementById(`pos${type === 'council' ? 'Council' : 'Color'}_${idx}`);
+      if (input && input.dataset.default) {
+        input.value = input.dataset.default;
+        updatePositionPreview(type, idx);
+        showToast(`คืนค่าตำแหน่งลำดับที่ ${idx + 1} เป็น: "${input.dataset.default}"`, 'info');
+      }
+    }
+
+    async function handleSavePositions(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      try {
+        const currentCfg = WDSDB.getConfig();
+        const baseCouncil = JSON.parse(JSON.stringify(currentCfg.councilPositions || DEFAULT_COUNCIL_POSITIONS));
+        const baseColor = JSON.parse(JSON.stringify(currentCfg.colorPositions || DEFAULT_COLOR_POSITIONS));
+
+        const newCouncil = baseCouncil.map((pos, idx) => {
+          const input = document.getElementById(`posCouncil_${idx}`);
+          const title = input ? input.value.trim() : pos.title;
+          return {
+            ...pos,
+            title: title || pos.title
+          };
+        });
+
+        const newColor = baseColor.map((pos, idx) => {
+          const input = document.getElementById(`posColor_${idx}`);
+          const title = input ? input.value.trim() : pos.title;
+          return {
+            ...pos,
+            title: title || pos.title,
+            roleName: title || pos.roleName || pos.title
+          };
+        });
+
+        showToast('☁️ กำลังบันทึกและซิงค์ชื่อตำแหน่งขึ้นคลาวด์...', 'info');
+
+        const ok = await WDSDB.saveConfig({
+          councilPositions: newCouncil,
+          colorPositions: newColor
+        });
+
+        if (ok) {
+          loadPositionsIntoForm();
+          showToast('✅ บันทึกและซิงค์ชื่อตำแหน่งทั้ง 2 ใบสมัครขึ้นคลาวด์สำเร็จ!', 'success');
+        } else {
+          showToast('บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
+        }
+      } catch (err) {
+        console.error('Save Positions Error:', err);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err), 'error');
+      }
+    }
+
+    async function resetPositionsToDefaults() {
+      if (!confirm('ต้องการคืนค่าชื่อตำแหน่งทั้งหมดของทั้งสองใบสมัครกลับเป็นค่าเริ่มต้นมาตรฐานใช่หรือไม่?')) return;
+      try {
+        showToast('☁️ กำลังคืนค่าเริ่มต้นและซิงค์คลาวด์...', 'info');
+        const ok = await WDSDB.saveConfig({
+          councilPositions: JSON.parse(JSON.stringify(DEFAULT_COUNCIL_POSITIONS)),
+          colorPositions: JSON.parse(JSON.stringify(DEFAULT_COLOR_POSITIONS))
+        });
+        if (ok) {
+          loadPositionsIntoForm();
+          showToast('✅ คืนค่าชื่อตำแหน่งมาตรฐานและซิงค์คลาวด์เรียบร้อยแล้ว!', 'success');
+        }
+      } catch (e) {
+        showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+      }
     }
 
     function renderTimelineAdminTable() {
@@ -3306,7 +3641,8 @@
 
       let membersTableHtml = '';
       if (activeTab === 'council') {
-        const rows = COUNCIL_POSITIONS.map((pos, i) => {
+        const cPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
+        const rows = cPositions.map((pos, i) => {
           const m = item.members?.[pos.key] || {};
           return `
             <tr>

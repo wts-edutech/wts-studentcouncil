@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257030">
+  <link rel="stylesheet" href="css/style.css?v=257031">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -137,8 +137,8 @@
       <!-- ส่วนที่ 2: ข้อมูลผู้ลงสมัครประธานคณะสี -->
       <div class="gov-card">
         <div class="gov-card-header">
-          <span>ส่วนที่ 2: ข้อมูลผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)</span>
-          <span class="text-xs bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-semibold">ประธานคณะสี</span>
+          <span>ส่วนที่ 2: ลำดับที่ 1. <span id="colorLeaderHeaderTitle">ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)</span></span>
+          <span id="colorLeaderBadgeTitle" class="text-xs bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-semibold">ประธานคณะสี</span>
         </div>
 
         <div class="p-5 grid grid-cols-1 md:grid-cols-12 gap-4 items-start text-xs sm:text-sm">
@@ -163,7 +163,7 @@
           <!-- Inputs -->
           <div class="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             <div class="sm:col-span-2 md:col-span-3">
-              <label class="block font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล (ผู้ลงสมัครประธานคณะสี) <span class="text-red-600">*</span></label>
+              <label class="block font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล (<span id="colorLeaderLabelTitle">ผู้ลงสมัครประธานคณะสี</span>) <span class="text-red-600">*</span></label>
               <input type="text" id="leaderName" required placeholder="เช่น นายธีรภัทร ชาญวิชัย" class="gov-input w-full">
             </div>
 
@@ -212,7 +212,7 @@
               <label class="flex items-center space-x-2 cursor-pointer">
                 <input type="checkbox" id="leaderAgreed" required class="rounded text-[#16325c] border-slate-300">
                 <span class="text-xs text-slate-700">
-                  ผู้ลงสมัครประธานคณะสี ยินยอมและยอมรับข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span>
+                  <span id="colorLeaderAgreeTitle">ผู้ลงสมัครประธานคณะสี</span> ยินยอมและยอมรับข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span>
                 </span>
               </label>
             </div>
@@ -341,8 +341,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257030"></script>
-  <script src="js/app.js?v=257030"></script>
+  <script src="js/data.js?v=257031"></script>
+  <script src="js/app.js?v=257031"></script>
   <script>
     function previewLeaderPhoto(input) {
       if (input.files && input.files[0]) {
@@ -385,10 +385,18 @@
       if (!container) return;
       const cfg = WDSDB.getConfig();
       const minGpa = cfg.minGpaMember || 2.50;
+
+      const leaderPos = (typeof WDSDB !== 'undefined' && WDSDB.getColorLeaderPosition) ? WDSDB.getColorLeaderPosition() : DEFAULT_COLOR_POSITIONS[0];
+      if (document.getElementById('colorLeaderHeaderTitle')) document.getElementById('colorLeaderHeaderTitle').textContent = leaderPos.title;
+      if (document.getElementById('colorLeaderBadgeTitle')) document.getElementById('colorLeaderBadgeTitle').textContent = leaderPos.roleName || leaderPos.title;
+      if (document.getElementById('colorLeaderLabelTitle')) document.getElementById('colorLeaderLabelTitle').textContent = leaderPos.title;
+      if (document.getElementById('colorLeaderAgreeTitle')) document.getElementById('colorLeaderAgreeTitle').textContent = leaderPos.title;
+
+      const memberPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : COLOR_MEMBER_POSITIONS;
       let html = '';
 
-      COLOR_MEMBER_POSITIONS.forEach((pos, idx) => {
-        const num = idx + 1;
+      memberPositions.forEach((pos, idx) => {
+        const num = idx + 2; // ลำดับที่ 2 ถึง 10 (ต่อจากประธานคณะสีที่เป็นลำดับที่ 1)
         html += `
           <div class="gov-card">
             <div class="gov-card-header">
@@ -505,8 +513,10 @@
         return;
       }
 
+      const leaderPos = (typeof WDSDB !== 'undefined' && WDSDB.getColorLeaderPosition) ? WDSDB.getColorLeaderPosition() : DEFAULT_COLOR_POSITIONS[0];
+      const memberPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : COLOR_MEMBER_POSITIONS;
       const members = [];
-      for (let pos of COLOR_MEMBER_POSITIONS) {
+      for (let pos of memberPositions) {
         const key = pos.key;
         const name = document.getElementById(`name_${key}`).value.trim();
         const room = document.getElementById(`room_${key}`).value;
@@ -551,6 +561,7 @@
         agreementAccepted: true,
         agreementYear: cfg.colorAgreementYear,
         leader: {
+          role: leaderPos.title,
           fullname: leaderName,
           grade: 'ม.4',
           room: leaderRoom,
@@ -619,7 +630,8 @@
         'นางสาวพิชญาภา อัศวกุล'
       ];
 
-      COLOR_MEMBER_POSITIONS.forEach((pos, idx) => {
+      const memberPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : COLOR_MEMBER_POSITIONS;
+      memberPositions.forEach((pos, idx) => {
         const key = pos.key;
         document.getElementById(`name_${key}`).value = sampleColorNames[idx];
         document.getElementById(`room_${key}`).value = ((idx % 14) + 1).toString();

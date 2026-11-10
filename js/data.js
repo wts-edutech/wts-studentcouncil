@@ -161,6 +161,37 @@ const DEFAULT_DOCUMENTS_LIST = [
 // การตั้งค่าระบบเริ่มต้น
 const DEFAULT_HERO_BANNER_IMAGE = 'assets/images/school-logo-transparent.png';
 
+// โครงสร้างตำแหน่งสภานักเรียนมาตรฐาน 10 ตำแหน่ง
+const DEFAULT_COUNCIL_POSITIONS = [
+  { key: 'president', title: 'ผู้ลงสมัครประธานสภานักเรียน', isLeader: true, shortTitle: 'ประธานสภานักเรียน' },
+  { key: 'vice_president', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งรองประธานพรรค', isLeader: false, shortTitle: 'รองประธานพรรค' },
+  { key: 'academic_1', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายวิชาการ (คนที่ 1)', isLeader: false, shortTitle: 'ฝ่ายวิชาการ 1' },
+  { key: 'academic_2', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายวิชาการ (คนที่ 2)', isLeader: false, shortTitle: 'ฝ่ายวิชาการ 2' },
+  { key: 'recreation_1', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายสันทนาการ (คนที่ 1)', isLeader: false, shortTitle: 'ฝ่ายสันทนาการ 1' },
+  { key: 'recreation_2', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายสันทนาการ (คนที่ 2)', isLeader: false, shortTitle: 'ฝ่ายสันทนาการ 2' },
+  { key: 'general', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายทั่วไป', isLeader: false, shortTitle: 'ฝ่ายทั่วไป' },
+  { key: 'pr_1', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายประชาสัมพันธ์ (คนที่ 1)', isLeader: false, shortTitle: 'ฝ่ายประชาสัมพันธ์ 1' },
+  { key: 'pr_2', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายประชาสัมพันธ์ (คนที่ 2)', isLeader: false, shortTitle: 'ฝ่ายประชาสัมพันธ์ 2' },
+  { key: 'secretary', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งเลขานุการ', isLeader: false, shortTitle: 'เลขานุการ' }
+];
+
+// โครงสร้างตำแหน่งคณะสีมาตรฐาน 10 ตำแหน่ง (ลำดับที่ 1 ประธานคณะสี + ลำดับที่ 2-10 สมาชิกคณะทำงาน 9 ตำแหน่ง)
+const DEFAULT_COLOR_POSITIONS = [
+  { key: 'leader', title: 'ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)', isLeader: true, roleName: 'ประธานคณะสี', shortTitle: 'ประธานคณะสี' },
+  { key: 'vice_president', title: 'รองประธานคณะสี', isLeader: false, roleName: 'รองประธานคณะสี', shortTitle: 'รองประธานคณะสี' },
+  { key: 'general_1', title: 'ฝ่ายทั่วไป (คนที่ 1)', isLeader: false, roleName: 'ฝ่ายทั่วไป (คนที่ 1)', shortTitle: 'ฝ่ายทั่วไป 1' },
+  { key: 'general_2', title: 'ฝ่ายทั่วไป (คนที่ 2)', isLeader: false, roleName: 'ฝ่ายทั่วไป (คนที่ 2)', shortTitle: 'ฝ่ายทั่วไป 2' },
+  { key: 'pr_1', title: 'ฝ่ายประชาสัมพันธ์ (คนที่ 1)', isLeader: false, roleName: 'ฝ่ายประชาสัมพันธ์ (คนที่ 1)', shortTitle: 'ฝ่ายประชาสัมพันธ์ 1' },
+  { key: 'pr_2', title: 'ฝ่ายประชาสัมพันธ์ (คนที่ 2)', isLeader: false, roleName: 'ฝ่ายประชาสัมพันธ์ (คนที่ 2)', shortTitle: 'ฝ่ายประชาสัมพันธ์ 2' },
+  { key: 'recreation_1', title: 'ฝ่ายสันทนาการ (คนที่ 1)', isLeader: false, roleName: 'ฝ่ายสันทนาการ (คนที่ 1)', shortTitle: 'ฝ่ายสันทนาการ 1' },
+  { key: 'recreation_2', title: 'ฝ่ายสันทนาการ (คนที่ 2)', isLeader: false, roleName: 'ฝ่ายสันทนาการ (คนที่ 2)', shortTitle: 'ฝ่ายสันทนาการ 2' },
+  { key: 'recreation_3', title: 'ฝ่ายสันทนาการ (คนที่ 3)', isLeader: false, roleName: 'ฝ่ายสันทนาการ (คนที่ 3)', shortTitle: 'ฝ่ายสันทนาการ 3' },
+  { key: 'secretary', title: 'เลขานุการคณะสี', isLeader: false, roleName: 'เลขานุการคณะสี', shortTitle: 'เลขานุการคณะสี' }
+];
+
+let COUNCIL_POSITIONS = DEFAULT_COUNCIL_POSITIONS;
+let COLOR_MEMBER_POSITIONS = DEFAULT_COLOR_POSITIONS.filter(p => !p.isLeader);
+
 const DEFAULT_SITE_CONFIG = {
   configVersion: '2570.95',
   adminUsername: 'admin',
@@ -300,7 +331,9 @@ const DEFAULT_SITE_CONFIG = {
       showDate: false,
       dateText: ''
     }
-  ]
+  ],
+  councilPositions: JSON.parse(JSON.stringify(DEFAULT_COUNCIL_POSITIONS)),
+  colorPositions: JSON.parse(JSON.stringify(DEFAULT_COLOR_POSITIONS))
 };
 
 // ข้อมูลคณะสี 5 สีของโรงเรียน
@@ -310,33 +343,6 @@ const COLOR_HOUSES = [
   { id: 'parichat', name: 'คณะปาริชาต', colorCode: '#b91c1c', tag: 'สีแดง' },
   { id: 'euang', name: 'คณะสีเอื้องช่อแสด', colorCode: '#c2410c', tag: 'สีแสด' },
   { id: 'inthanin', name: 'คณะสีอินทนิล', colorCode: '#047857', tag: 'สีเขียว' }
-];
-
-// โครงสร้างตำแหน่งสภานักเรียน 10 ตำแหน่ง
-const COUNCIL_POSITIONS = [
-  { key: 'president', title: 'ผู้ลงสมัครประธานสภานักเรียน', isLeader: true },
-  { key: 'vice_president', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งรองประธานพรรค' },
-  { key: 'academic_1', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายวิชาการ (คนที่ 1)' },
-  { key: 'academic_2', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายวิชาการ (คนที่ 2)' },
-  { key: 'recreation_1', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายสันทนาการ (คนที่ 1)' },
-  { key: 'recreation_2', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายสันทนาการ (คนที่ 2)' },
-  { key: 'general', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายทั่วไป' },
-  { key: 'pr_1', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายประชาสัมพันธ์ (คนที่ 1)' },
-  { key: 'pr_2', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายประชาสัมพันธ์ (คนที่ 2)' },
-  { key: 'secretary', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งเลขานุการ' }
-];
-
-// โครงสร้างตำแหน่งสมาชิกคณะสี 9 ตำแหน่ง (นอกเหนือจากประธานคณะสี)
-const COLOR_MEMBER_POSITIONS = [
-  { key: 'vice_president', title: 'รองประธานคณะสี', roleName: 'รองประธานคณะสี' },
-  { key: 'general_1', title: 'ฝ่ายทั่วไป (คนที่ 1)', roleName: 'ฝ่ายทั่วไป (คนที่ 1)' },
-  { key: 'general_2', title: 'ฝ่ายทั่วไป (คนที่ 2)', roleName: 'ฝ่ายทั่วไป (คนที่ 2)' },
-  { key: 'pr_1', title: 'ฝ่ายประชาสัมพันธ์ (คนที่ 1)', roleName: 'ฝ่ายประชาสัมพันธ์ (คนที่ 1)' },
-  { key: 'pr_2', title: 'ฝ่ายประชาสัมพันธ์ (คนที่ 2)', roleName: 'ฝ่ายประชาสัมพันธ์ (คนที่ 2)' },
-  { key: 'recreation_1', title: 'ฝ่ายสันทนาการ (คนที่ 1)', roleName: 'ฝ่ายสันทนาการ (คนที่ 1)' },
-  { key: 'recreation_2', title: 'ฝ่ายสันทนาการ (คนที่ 2)', roleName: 'ฝ่ายสันทนาการ (คนที่ 2)' },
-  { key: 'recreation_3', title: 'ฝ่ายสันทนาการ (คนที่ 3)', roleName: 'ฝ่ายสันทนาการ (คนที่ 3)' },
-  { key: 'secretary', title: 'เลขานุการคณะสี', roleName: 'เลขานุการคณะสี' }
 ];
 
 // ข้อมูลจำลองสำหรับทดสอบระบบ (ตั้งค่าว่างสำหรับเปิดรับสมัครจริง)
@@ -584,6 +590,14 @@ const WDSDB = {
       if (!merged.colorSignatures || !Array.isArray(merged.colorSignatures) || merged.colorSignatures.length === 0) {
         merged.colorSignatures = JSON.parse(JSON.stringify(DEFAULT_SITE_CONFIG.colorSignatures));
       }
+      if (!merged.councilPositions || !Array.isArray(merged.councilPositions) || merged.councilPositions.length === 0) {
+        merged.councilPositions = JSON.parse(JSON.stringify(DEFAULT_COUNCIL_POSITIONS));
+      }
+      if (!merged.colorPositions || !Array.isArray(merged.colorPositions) || merged.colorPositions.length === 0) {
+        merged.colorPositions = JSON.parse(JSON.stringify(DEFAULT_COLOR_POSITIONS));
+      }
+      COUNCIL_POSITIONS = merged.councilPositions;
+      COLOR_MEMBER_POSITIONS = merged.colorPositions.filter(p => !p.isLeader);
       if (!merged.contactPerson) {
         merged.contactPerson = 'คุณครูสีวลี ยืนยาว';
       }
@@ -684,6 +698,32 @@ const WDSDB = {
       console.warn('WDSDB syncFromCloud:', e.message);
       return null;
     }
+  },
+
+  // ดึงรายการตำแหน่งผู้สมัครสภานักเรียนทั้ง 10 ตำแหน่ง
+  getCouncilPositions() {
+    const cfg = this.getConfig();
+    return (cfg.councilPositions && Array.isArray(cfg.councilPositions) && cfg.councilPositions.length > 0)
+      ? cfg.councilPositions
+      : DEFAULT_COUNCIL_POSITIONS;
+  },
+
+  // ดึงรายการตำแหน่งผู้สมัครประธานคณะสีและคณะทำงานทั้ง 10 ตำแหน่ง
+  getColorPositions() {
+    const cfg = this.getConfig();
+    return (cfg.colorPositions && Array.isArray(cfg.colorPositions) && cfg.colorPositions.length > 0)
+      ? cfg.colorPositions
+      : DEFAULT_COLOR_POSITIONS;
+  },
+
+  // ดึงเฉพาะตำแหน่งสมาชิกคณะทำงานคณะสี (9 ตำแหน่ง นอกเหนือจากประธานคณะสี)
+  getColorMemberPositions() {
+    return this.getColorPositions().filter(p => !p.isLeader);
+  },
+
+  // ดึงข้อมูลตำแหน่งประธานคณะสี (หัวหน้าทีม ลำดับที่ 1)
+  getColorLeaderPosition() {
+    return this.getColorPositions().find(p => p.isLeader) || DEFAULT_COLOR_POSITIONS[0];
   },
 
   // ซิงค์ใบสมัครจากคลาวด์เข้าหน้าหลังบ้านและหน้าตรวจสอบสถานะ
@@ -920,7 +960,7 @@ const WDSDB = {
         if (mem && (mem.studentId.includes(q) || mem.fullname.toLowerCase().includes(q))) {
           matched = true;
           student = mem;
-          const posObj = COUNCIL_POSITIONS.find(p => p.key === posKey);
+          const posObj = this.getCouncilPositions().find(p => p.key === posKey);
           matchedRole = posObj ? posObj.title : posKey;
         }
       });

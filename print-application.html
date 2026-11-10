@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257030">
+  <link rel="stylesheet" href="css/style.css?v=257031">
   <style>
     @page {
       size: A4 portrait;
@@ -68,8 +68,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257030"></script>
-  <script src="js/app.js?v=257030"></script>
+  <script src="js/data.js?v=257031"></script>
+  <script src="js/app.js?v=257031"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -262,16 +262,10 @@
               </tr>
             </thead>
             <tbody>
-              ${renderPositionRow(1, 'ผู้ลงสมัครประธานสภานักเรียน', m.president)}
-              ${renderPositionRow(2, 'รองประธานพรรค', m.vice_president)}
-              ${renderPositionRow(3, 'ฝ่ายวิชาการ (คนที่ 1)', m.academic_1)}
-              ${renderPositionRow(4, 'ฝ่ายวิชาการ (คนที่ 2)', m.academic_2)}
-              ${renderPositionRow(5, 'ฝ่ายสันทนาการ (คนที่ 1)', m.recreation_1)}
-              ${renderPositionRow(6, 'ฝ่ายสันทนาการ (คนที่ 2)', m.recreation_2)}
-              ${renderPositionRow(7, 'ฝ่ายทั่วไป', m.general)}
-              ${renderPositionRow(8, 'ฝ่ายประชาสัมพันธ์ (คนที่ 1)', m.pr_1)}
-              ${renderPositionRow(9, 'ฝ่ายประชาสัมพันธ์ (คนที่ 2)', m.pr_2)}
-              ${renderPositionRow(10, 'เลขานุการ', m.secretary)}
+              ${(() => {
+                const cPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : (cfg.councilPositions || DEFAULT_COUNCIL_POSITIONS);
+                return cPositions.map((pos, idx) => renderPositionRow(idx + 1, pos.shortTitle || pos.title, m[pos.key])).join('');
+              })()}
             </tbody>
           </table>
         </div>
@@ -391,7 +385,7 @@
           </div>
           <div class="flex-grow text-xs space-y-1">
             <div class="font-bold text-sm text-slate-900 border-b border-slate-300 pb-1">
-              ข้อมูลผู้ลงสมัครประธานคณะสี
+              ข้อมูล${((typeof WDSDB !== 'undefined' && WDSDB.getColorLeaderPosition) ? WDSDB.getColorLeaderPosition().title : (cfg.colorPositions?.[0]?.title || 'ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)'))}
             </div>
             <div class="grid grid-cols-2 gap-2 pt-1">
               <div><strong>ชื่อ-นามสกุล:</strong> <span class="dotted-line font-bold">${leader.fullname || '............................................................'}</span></div>
@@ -439,8 +433,12 @@
     }
 
     function renderColorMembersRows(members) {
+      const colorMembers = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) 
+        ? WDSDB.getColorMemberPositions() 
+        : (COLOR_MEMBER_POSITIONS || []);
+
       if (!members || members.length === 0) {
-        return COLOR_MEMBER_POSITIONS.map((pos, idx) => `
+        return colorMembers.map((pos, idx) => `
           <tr>
             <td class="text-center">${idx + 1}</td>
             <td>................................................</td>
@@ -457,7 +455,7 @@
         <tr>
           <td class="text-center font-bold">${idx + 1}</td>
           <td>${mem.fullname}</td>
-          <td>${mem.role || 'คณะทำงาน'}</td>
+          <td>${mem.role || colorMembers[idx]?.title || 'คณะทำงาน'}</td>
           <td class="text-center">ม.${mem.grade || '4'}/${mem.room}</td>
           <td class="text-center font-mono">${mem.studentId}</td>
           <td class="text-center font-semibold text-green-800">${mem.behaviorScore}</td>

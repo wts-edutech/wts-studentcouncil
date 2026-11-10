@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257030">
+  <link rel="stylesheet" href="css/style.css?v=257031">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -215,15 +215,16 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257030"></script>
-  <script src="js/app.js?v=257030"></script>
+  <script src="js/data.js?v=257031"></script>
+  <script src="js/app.js?v=257031"></script>
   <script>
     function renderPositionForms() {
       const container = document.getElementById('positionsContainer');
       const cfg = WDSDB.getConfig();
+      const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
       let html = '';
 
-      COUNCIL_POSITIONS.forEach((pos, idx) => {
+      councilPositions.forEach((pos, idx) => {
         const isLeader = pos.isLeader;
         const num = idx + 1;
         const minGpa = (pos.key === 'president' || pos.key === 'secretary') ? cfg.minGpaPresident : cfg.minGpaMember;
@@ -259,7 +260,7 @@
 
               <div class="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 <div class="sm:col-span-2 md:col-span-3">
-                  <label class="block font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล <span class="text-red-600">*</span></label>
+                  <label class="block font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล (${pos.title}) <span class="text-red-600">*</span></label>
                   <input type="text" id="name_${pos.key}" required placeholder="เช่น นายรักเรียน เพียรศึกษา" class="gov-input w-full">
                 </div>
 
@@ -337,8 +338,9 @@
       const advisorPhone = document.getElementById('advisorPhone').value.trim();
 
       const membersData = {};
+      const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
 
-      for (let pos of COUNCIL_POSITIONS) {
+      for (let pos of councilPositions) {
         const key = pos.key;
         const name = document.getElementById(`name_${key}`).value.trim();
         const room = document.getElementById(`room_${key}`).value;
@@ -361,6 +363,7 @@
         }
 
         membersData[key] = {
+          role: pos.title,
           fullname: name,
           grade: 'ม.4',
           room: room,
@@ -420,7 +423,8 @@
         'นางสาวสุภัทรา ชาญชัย'
       ];
 
-      COUNCIL_POSITIONS.forEach((pos, idx) => {
+      const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
+      councilPositions.forEach((pos, idx) => {
         const key = pos.key;
         document.getElementById(`name_${key}`).value = sampleNames[idx];
         document.getElementById(`room_${key}`).value = (idx % 6 + 1).toString();
