@@ -201,7 +201,8 @@ function applySiteConfig() {
       el.style.backgroundSize = zoomPct === 100 ? 'contain' : `auto ${zoomPct}%`;
       el.style.backgroundPosition = `${posX}% ${posY}%`;
     } else {
-      el.style.backgroundSize = zoom == 100 ? 'cover' : `${zoom}% auto`;
+      const zoomPct = Math.max(100, Number(zoom) || 100);
+      el.style.backgroundSize = zoomPct === 100 ? 'cover' : `${zoomPct}% auto`;
       el.style.backgroundPosition = `${posX}% ${posY}%`;
     }
   });
@@ -563,7 +564,7 @@ function removeImageBackground(dataUrl, callback) {
   }
 }
 
-// ฟังก์ชันย่อขนาดไฟล์รูปภาพด้วย HTML5 Canvas ให้มีขนาดกะทัดรัด (< 30KB) เพื่อให้บันทึกลงคลาวด์ได้ 100%
+// ฟังก์ชันย่อขนาดไฟล์รูปภาพด้วย HTML5 Canvas ให้มีความคมชัดสูงแบบ HD และขนาดไฟล์พอดีคลาวด์ (< 85KB)
 function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComplete) {
   try {
     const img = new Image();
@@ -590,13 +591,13 @@ function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComple
       let outputData;
       if (isPng) {
         outputData = canvas.toDataURL('image/png');
-        if (outputData.length > 50000 && maxDim > 300) {
-          return compressImageForStorage(outputData, 300, quality, true, onComplete);
+        if (outputData.length > 85000 && maxDim > 400) {
+          return compressImageForStorage(outputData, 400, quality, true, onComplete);
         }
       } else {
         outputData = canvas.toDataURL('image/jpeg', quality);
-        if (outputData.length > 50000 && maxDim > 450) {
-          return compressImageForStorage(outputData, 450, 0.72, false, onComplete);
+        if (outputData.length > 85000 && maxDim > 1080) {
+          return compressImageForStorage(outputData, 1080, 0.80, false, onComplete);
         }
       }
       onComplete(outputData);
@@ -621,8 +622,8 @@ function handleImageUpload(inputElement, previewImgElement, hiddenInputElement, 
 
     const isPng = file.type === 'image/png';
     const isHero = hiddenInputElement && hiddenInputElement.id === 'settingHeroBannerData';
-    const maxDim = isHero ? 960 : 360;
-    const quality = isHero ? 0.8 : 0.85;
+    const maxDim = isHero ? 1440 : 400;
+    const quality = isHero ? 0.85 : 0.88;
 
     const reader = new FileReader();
     reader.onload = function(e) {
