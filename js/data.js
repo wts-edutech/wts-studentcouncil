@@ -630,6 +630,65 @@ const WDSDB = {
     }
   },
 
+  // ฟังก์ชันส่งข้อมูลใบสมัครขึ้นคลาวด์ พร้อมระบบบีบอัดรูปป้องกัน 413 Payload Too Large
+  async pushApplicationsToCloud(type, list) {
+    if (!CLOUD_SYNC.IS_ENABLED || typeof fetch === 'undefined') return false;
+    const url = type === 'council' ? CLOUD_SYNC.COUNCIL_URL : CLOUD_SYNC.COLOR_URL;
+
+    const sanitizeList = (origList, stripMemberPhotos = false, stripAllPhotos = false) => {
+      return origList.map(item => {
+        const copy = JSON.parse(JSON.stringify(item));
+        if (stripAllPhotos) {
+          if (copy.leader) copy.leader.photo = '';
+          if (copy.members) {
+            if (Array.isArray(copy.members)) copy.members = copy.members.map(m => ({ ...m, photo: '' }));
+            else Object.keys(copy.members).forEach(k => { if (copy.members[k]) copy.members[k].photo = ''; });
+          }
+        } else if (stripMemberPhotos) {
+          if (copy.members) {
+            if (Array.isArray(copy.members)) copy.members = copy.members.map(m => ({ ...m, photo: '' }));
+            else Object.keys(copy.members).forEach(k => {
+              if (k !== 'president' && k !== 'leader' && copy.members[k]) copy.members[k].photo = '';
+            });
+          }
+        }
+        return copy;
+      });
+    };
+
+    try {
+      let payload = JSON.stringify(list);
+      // หากขนาดเกิน 55KB ให้ตัดรูปรองในคลาวด์ออกเพื่อป้องกัน 413 (ข้อมูลตัวหนังสือและรูปในเครื่องผู้สมัครยังอยู่ครบ 100%)
+      if (payload.length > 55000) {
+        payload = JSON.stringify(sanitizeList(list, true, false));
+      }
+
+      let res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      });
+
+      if (res.status === 413 || !res.ok) {
+        console.warn('WDSDB: Retrying app push without bulky photos to guarantee sync...');
+        const lightweight = sanitizeList(list, true, true);
+        res = await fetch(url, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lightweight)
+        });
+      }
+
+      if (res.ok) {
+        console.log(`WDSDB: ${type} applications synced to Cloud successfully!`);
+      }
+      return res.ok;
+    } catch (e) {
+      console.warn(`WDSDB pushApplicationsToCloud ${type} error:`, e);
+      return false;
+    }
+  },
+
   async saveConfig(newConfig, syncToCloud = true) {
     this.init();
     try {
@@ -782,16 +841,22 @@ const WDSDB = {
         const map = new Map();
         cleanRemote.forEach(item => map.set(item.id, item));
 
-        // เก็บเฉพาะใบสมัครที่เพิ่งกรอกสดๆ ในเครื่องนี้ (ภายใน 5 นาที) ที่ยังไม่ได้ขึ้นคลาวด์
+        // ผสานใบสมัครในเครื่องนี้เข้ากับคลาวด์เสมอ (ไม่ลบทิ้ง) และซิงค์ขึ้นคลาวด์หากคลาวด์ยังไม่มี
         let needPush = false;
-        const now = Date.now();
         localCouncil.forEach(locItem => {
           if (locItem && locItem.id && locItem.id !== 'COUNCIL-2570-001' && locItem.partyName !== 'พรรคก้าวใหม่ วชิรธรรม') {
             if (!map.has(locItem.id)) {
-              const age = locItem._createdTimestamp ? (now - locItem._createdTimestamp) : 0;
-              if (age > 0 && age < 5 * 60 * 1000) {
-                map.set(locItem.id, locItem);
-                needPush = true;
+              map.set(locItem.id, locItem);
+              needPush = true;
+            } else {
+              // ดึงภาพจากเครื่องท้องถิ่นมาเสริมหากคลาวด์ลดทอนภาพไว้
+              const remoteItem = map.get(locItem.id);
+              if (locItem.members && remoteItem.members) {
+                Object.keys(locItem.members).forEach(k => {
+                  if (locItem.members[k]?.photo && !remoteItem.members[k]?.photo) {
+                    remoteItem.members[k].photo = locItem.members[k].photo;
+                  }
+                });
               }
             }
           }
@@ -801,11 +866,7 @@ const WDSDB = {
         localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(mergedCouncil));
 
         if (needPush && CLOUD_SYNC.IS_ENABLED) {
-          fetch(CLOUD_SYNC.COUNCIL_URL, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(mergedCouncil)
-          }).catch(() => {});
+          this.pushApplicationsToCloud('council', mergedCouncil);
         }
       }
 
@@ -816,14 +877,15 @@ const WDSDB = {
         cleanRemoteColor.forEach(item => mapColor.set(item.id, item));
 
         let needPushColor = false;
-        const now = Date.now();
         localColor.forEach(locItem => {
           if (locItem && locItem.id) {
             if (!mapColor.has(locItem.id)) {
-              const age = locItem._createdTimestamp ? (now - locItem._createdTimestamp) : 0;
-              if (age > 0 && age < 5 * 60 * 1000) {
-                mapColor.set(locItem.id, locItem);
-                needPushColor = true;
+              mapColor.set(locItem.id, locItem);
+              needPushColor = true;
+            } else {
+              const remoteItem = mapColor.get(locItem.id);
+              if (locItem.leader?.photo && !remoteItem.leader?.photo) {
+                remoteItem.leader.photo = locItem.leader.photo;
               }
             }
           }
@@ -833,11 +895,7 @@ const WDSDB = {
         localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(mergedColor));
 
         if (needPushColor && CLOUD_SYNC.IS_ENABLED) {
-          fetch(CLOUD_SYNC.COLOR_URL, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(mergedColor)
-          }).catch(() => {});
+          this.pushApplicationsToCloud('color', mergedColor);
         }
       }
 
@@ -902,22 +960,18 @@ const WDSDB = {
       notifyRealtimeSync('applications');
     }
 
-    // ซิงค์ใบสมัครขึ้นคลาวด์ในเบื้องหลัง เพื่อให้หน้าหลังบ้านเห็นทันที
+    // ซิงค์ใบสมัครขึ้นคลาวด์ทันที พร้อมระบบบีบอัดป้องกัน 413 เพื่อให้หน้าหลังบ้านเห็นทันที
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
       const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
       fetch(bustUrl, { cache: 'no-store' })
         .then(r => r.ok ? r.json() : [])
-        .then(remoteList => {
+        .then(async remoteList => {
           const arr = Array.isArray(remoteList)
             ? remoteList.filter(item => item && item.id !== 'COUNCIL-2570-001' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม')
             : [];
           if (!arr.some(item => item.id === newEntry.id)) {
             arr.unshift(newEntry);
-            return fetch(CLOUD_SYNC.COUNCIL_URL, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(arr)
-            });
+            await WDSDB.pushApplicationsToCloud('council', arr);
           }
         })
         .catch(err => console.warn('Cloud council sync:', err));
@@ -951,20 +1005,16 @@ const WDSDB = {
       notifyRealtimeSync('applications');
     }
 
-    // ซิงค์ใบสมัครขึ้นคลาวด์ในเบื้องหลัง เพื่อให้หน้าหลังบ้านเห็นทันที
+    // ซิงค์ใบสมัครขึ้นคลาวด์ทันที พร้อมระบบบีบอัดป้องกัน 413 เพื่อให้หน้าหลังบ้านเห็นทันที
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
       const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
       fetch(bustUrl, { cache: 'no-store' })
         .then(r => r.ok ? r.json() : [])
-        .then(remoteList => {
+        .then(async remoteList => {
           const arr = Array.isArray(remoteList) ? remoteList : [];
           if (!arr.some(item => item.id === newEntry.id)) {
             arr.unshift(newEntry);
-            return fetch(CLOUD_SYNC.COLOR_URL, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(arr)
-            });
+            await WDSDB.pushApplicationsToCloud('color', arr);
           }
         })
         .catch(err => console.warn('Cloud color sync:', err));

@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257032">
-  <script src="js/data.js?v=257032"></script>
-  <script src="js/app.js?v=257032"></script>
+  <link rel="stylesheet" href="css/style.css?v=257035">
+  <script src="js/data.js?v=257035"></script>
+  <script src="js/app.js?v=257035"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -1746,6 +1746,7 @@
           updateStatsDashboard();
           updateLivePreview();
           if (typeof loadApplyManagerData === 'function') loadApplyManagerData();
+      if (typeof loadPositionsIntoForm === 'function') loadPositionsIntoForm();
           showToast('✅ ซิงค์ข้อมูลล่าสุดจากคลาวด์เรียบร้อยแล้ว!', 'success');
         } else {
           updateStatsDashboard();
@@ -2245,7 +2246,7 @@
       `;
     }
 
-    function handleSaveApplyManager(e) {
+    async function handleSaveApplyManager(e) {
       if (e && typeof e.preventDefault === 'function') e.preventDefault();
       try {
         const currentCfg = WDSDB.getConfig();
@@ -2296,7 +2297,7 @@
           applyColorBtnText: kBtnText
         };
 
-        const ok = WDSDB.saveConfig(updated);
+        const ok = await WDSDB.saveConfig(updated);
         if (ok) {
           if (typeof applySiteConfig === 'function') applySiteConfig();
           renderApplyManagerPreview();
@@ -4037,10 +4038,21 @@
     // เมื่อเปิดหน้าเว็บ ตรวจสอบสิทธิ์การเข้าใช้งานก่อนแสดงผล
     window.addEventListener('DOMContentLoaded', async () => {
       checkAuthAndRender();
-      if (typeof WDSDB !== 'undefined' && typeof WDSDB.syncFromCloud === 'function') {
-        const synced = await WDSDB.syncFromCloud();
-        if (synced && typeof loadSettingsIntoForm === 'function') {
-          loadSettingsIntoForm();
+      if (typeof WDSDB !== 'undefined') {
+        try {
+          if (typeof WDSDB.syncFromCloud === 'function') {
+            const synced = await WDSDB.syncFromCloud();
+            if (synced && typeof loadSettingsIntoForm === 'function') {
+              loadSettingsIntoForm();
+            }
+          }
+          if (typeof WDSDB.syncApplicationsFromCloud === 'function') {
+            await WDSDB.syncApplicationsFromCloud();
+            if (typeof renderTable === 'function') renderTable();
+            if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
+          }
+        } catch (e) {
+          console.warn('Admin DOMContentLoaded sync error:', e);
         }
       }
     });
