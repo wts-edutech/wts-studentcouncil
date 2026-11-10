@@ -625,13 +625,13 @@ function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComple
       let outputData;
       if (isPng) {
         outputData = canvas.toDataURL('image/png');
-        if (outputData.length > 85000 && maxDim > 400) {
-          return compressImageForStorage(outputData, 400, quality, true, onComplete);
+        if (outputData.length > 40000 && maxDim > 300) {
+          return compressImageForStorage(outputData, 300, quality, true, onComplete);
         }
       } else {
         outputData = canvas.toDataURL('image/jpeg', quality);
-        if (outputData.length > 85000 && maxDim > 1080) {
-          return compressImageForStorage(outputData, 1080, 0.80, false, onComplete);
+        if (outputData.length > 42000 && maxDim > 640) {
+          return compressImageForStorage(outputData, Math.max(640, Math.round(maxDim * 0.75)), Math.max(0.60, quality - 0.1), false, onComplete);
         }
       }
       onComplete(outputData);

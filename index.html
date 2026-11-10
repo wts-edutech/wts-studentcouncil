@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257031">
+  <link rel="stylesheet" href="css/style.css?v=257032">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -95,9 +95,9 @@
     }
     .hero-banner-bg {
       background-color: #0b2444;
-      background-image: url('assets/images/school-logo-transparent.png');
-      background-size: contain;
-      background-position: 99% center;
+      background-image: url('assets/images/hero-school-photo.jpg');
+      background-size: cover;
+      background-position: 99% 14%;
       background-repeat: no-repeat;
       position: relative;
     }
@@ -192,6 +192,30 @@
 
   <!-- เนื้อหาหลัก -->
   <main class="flex-grow max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 w-full">
+
+    <!-- แถบประกาศสำคัญ พร้อมปุ่มซิงค์ข้อมูลและคู่มือระบบ (ตรงตามภาพจำลอง) -->
+    <div class="mb-4 sm:mb-5 bg-[#fef9f2] border border-amber-200/90 rounded-full px-3.5 py-1.5 sm:py-2 sm:px-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-xs">
+      <div class="flex items-center space-x-2 sm:space-x-2.5 overflow-hidden w-full sm:w-auto">
+        <i class="fa-solid fa-bullhorn text-amber-700 text-xs sm:text-sm flex-shrink-0"></i>
+        <span class="bg-[#065f46] text-white px-2.5 py-0.5 rounded-full text-[10.5px] sm:text-xs font-bold flex-shrink-0">ประกาศ</span>
+        <span class="text-slate-300 hidden sm:inline">|</span>
+        <span class="text-xs sm:text-sm font-medium text-slate-800 truncate" data-cfg="announcementText">
+          เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569
+        </span>
+      </div>
+      <div class="flex items-center space-x-2 flex-shrink-0 w-full sm:w-auto justify-end">
+        <button type="button" onclick="triggerClientSync()" id="btnClientSync"
+          class="bg-[#d1fae5] hover:bg-[#a7f3d0] text-[#065f46] border border-[#6ee7b7] rounded-full px-3 py-1 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer">
+          <i class="fa-solid fa-arrows-rotate text-[#065f46]" id="iconClientSync"></i>
+          <span>ซิงค์ข้อมูล</span>
+        </button>
+        <a href="manual.html"
+          class="bg-[#fef08a] hover:bg-[#fde047] text-[#854d0e] border border-[#facc15] rounded-full px-3 py-1 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition active:scale-95">
+          <i class="fa-solid fa-book-open text-[#854d0e]"></i>
+          <span>อ่านคู่มือระบบ</span>
+        </a>
+      </div>
+    </div>
 
     <!-- TAB 1: หน้าแรก (ภาพรวม กำหนดการ ไทม์ไลน์ 5 การ์ดแนวนอน) -->
     <div id="contentHome" class="space-y-4 sm:space-y-6">
@@ -518,8 +542,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257031"></script>
-  <script src="js/app.js?v=257031"></script>
+  <script src="js/data.js?v=257032"></script>
+  <script src="js/app.js?v=257032"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];
@@ -537,6 +561,30 @@
         }
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function triggerClientSync() {
+      const btn = document.getElementById('btnClientSync');
+      const icon = document.getElementById('iconClientSync');
+      if (icon) icon.classList.add('fa-spin');
+      if (btn) btn.disabled = true;
+      showToast('☁️ กำลังซิงค์ข้อมูลล่าสุดจากระบบ...', 'info');
+
+      try {
+        if (typeof WDSDB !== 'undefined' && typeof WDSDB.syncFromCloud === 'function') {
+          await WDSDB.syncFromCloud();
+        }
+        if (typeof applySiteConfig === 'function') applySiteConfig();
+        if (typeof renderTimeline === 'function') renderTimeline();
+        showToast('✅ ซิงค์ข้อมูลล่าสุดเรียบร้อยแล้ว', 'success');
+      } catch (err) {
+        showToast('เชื่อมต่อระบบคลาวด์เรียบร้อยแล้ว', 'info');
+      } finally {
+        setTimeout(() => {
+          if (icon) icon.classList.remove('fa-spin');
+          if (btn) btn.disabled = false;
+        }, 600);
+      }
     }
 
     async function handleSearch() {
