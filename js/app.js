@@ -331,7 +331,14 @@ function renderRulesAndApplyContent(cfg) {
   // รายการสรุปในการ์ดยื่นใบสมัครสภานักเรียน (Tab 3)
   const applyCouncilBulletsEl = document.getElementById('applyCouncilBulletsBox');
   if (applyCouncilBulletsEl && Array.isArray(cfg.applyCouncilBullets)) {
-    applyCouncilBulletsEl.innerHTML = cfg.applyCouncilBullets.map(b => `<div>• ${escapeHTML(b)}</div>`).join('');
+    const cYear = cfg.councilAgreementYear || cfg.academicYear;
+    applyCouncilBulletsEl.innerHTML = cfg.applyCouncilBullets.map(b => {
+      let text = String(b || '');
+      if (cYear && /ข้อตกลงสภานักเรียน\s*ปีการศึกษา\s*\d+/.test(text)) {
+        text = text.replace(/(ข้อตกลงสภานักเรียน\s*ปีการศึกษา\s*)\d+/, `$1${cYear}`);
+      }
+      return `<div>• ${escapeHTML(text)}</div>`;
+    }).join('');
   }
 
   // ป้ายรายชื่อคณะสีในการ์ดยื่นใบสมัครคณะสี (Tab 3)
@@ -354,7 +361,14 @@ function renderRulesAndApplyContent(cfg) {
   // รายการสรุปในการ์ดยื่นใบสมัครคณะสี (Tab 3)
   const applyColorBulletsEl = document.getElementById('applyColorBulletsBox');
   if (applyColorBulletsEl && Array.isArray(cfg.applyColorBullets)) {
-    applyColorBulletsEl.innerHTML = cfg.applyColorBullets.map(b => `<div>• ${escapeHTML(b)}</div>`).join('');
+    const kYear = cfg.colorAgreementYear || cfg.academicYear;
+    applyColorBulletsEl.innerHTML = cfg.applyColorBullets.map(b => {
+      let text = String(b || '');
+      if (kYear && /ข้อตกลงสภานักเรียน\s*ปีการศึกษา\s*\d+/.test(text)) {
+        text = text.replace(/(ข้อตกลงสภานักเรียน\s*ปีการศึกษา\s*)\d+/, `$1${kYear}`);
+      }
+      return `<div>• ${escapeHTML(text)}</div>`;
+    }).join('');
   }
 
   // ควบคุมสถานะเปิด/ปิดรับสมัครสภานักเรียน
@@ -598,8 +612,8 @@ function removeImageBackground(dataUrl, callback) {
   }
 }
 
-// ฟังก์ชันย่อขนาดไฟล์รูปภาพด้วย HTML5 Canvas ให้มีความคมชัดสูงแบบ HD และขนาดไฟล์พอดีคลาวด์ (< 85KB)
-function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComplete) {
+// ฟังก์ชันย่อขนาดไฟล์รูปภาพด้วย HTML5 Canvas ให้มีความคมชัดและพอดีกับขีดจำกัดของคลาวด์
+function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComplete, maxLen = 45000) {
   try {
     const img = new Image();
     img.onload = () => {
@@ -625,13 +639,23 @@ function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComple
       let outputData;
       if (isPng) {
         outputData = canvas.toDataURL('image/png');
-        if (outputData.length > 40000 && maxDim > 300) {
-          return compressImageForStorage(outputData, 300, quality, true, onComplete);
+        if (outputData.length > maxLen && maxDim > 160) {
+          return compressImageForStorage(outputData, Math.max(160, Math.round(maxDim * 0.72)), quality, true, onComplete, maxLen);
+        }
+        if (outputData.length > maxLen) {
+          outputData = canvas.toDataURL('image/jpeg', 0.75);
         }
       } else {
         outputData = canvas.toDataURL('image/jpeg', quality);
-        if (outputData.length > 42000 && maxDim > 640) {
-          return compressImageForStorage(outputData, Math.max(640, Math.round(maxDim * 0.75)), Math.max(0.60, quality - 0.1), false, onComplete);
+        if (outputData.length > maxLen && (maxDim > 480 || quality > 0.45)) {
+          return compressImageForStorage(
+            outputData,
+            Math.max(480, Math.round(maxDim * 0.78)),
+            Math.max(0.45, Number((quality - 0.08).toFixed(2))),
+            false,
+            onComplete,
+            maxLen
+          );
         }
       }
       onComplete(outputData);
@@ -654,10 +678,11 @@ function handleImageUpload(inputElement, previewImgElement, hiddenInputElement, 
       return;
     }
 
-    const isPng = file.type === 'image/png';
     const isHero = hiddenInputElement && hiddenInputElement.id === 'settingHeroBannerData';
-    const maxDim = isHero ? 1440 : 400;
-    const quality = isHero ? 0.85 : 0.88;
+    const isPng = !isHero && (file.type === 'image/png');
+    const maxDim = isHero ? 1280 : 360;
+    const quality = isHero ? 0.80 : 0.85;
+    const maxLen = isHero ? 48000 : 25000;
 
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -665,26 +690,38 @@ function handleImageUpload(inputElement, previewImgElement, hiddenInputElement, 
       
       compressImageForStorage(rawData, maxDim, quality, isPng, (compressedData) => {
         const applyResult = (finalData) => {
-          if (previewImgElement) {
-            previewImgElement.src = finalData;
-            if (!isHero) {
-              previewImgElement.classList.remove('hidden');
+          const finish = (safeData) => {
+            if (previewImgElement) {
+              previewImgElement.src = safeData;
+              if (!isHero) {
+                previewImgElement.classList.remove('hidden');
+              }
             }
-          }
-          if (hiddenInputElement) {
-            hiddenInputElement.value = finalData;
-          }
-          if (typeof callback === 'function') {
-            callback(finalData);
+            if (hiddenInputElement) {
+              hiddenInputElement.value = safeData;
+            }
+            if (typeof callback === 'function') {
+              callback(safeData);
+            }
+          };
+
+          if (!isHero && safeDataTooBig(finalData, 28000)) {
+            compressImageForStorage(finalData, 220, 0.8, finalData.startsWith('data:image/png'), finish, 26000);
+          } else {
+            finish(finalData);
           }
         };
+
+        function safeDataTooBig(d, limit) {
+          return typeof d === 'string' && d.startsWith('data:') && d.length > limit;
+        }
 
         if (autoRemoveBg) {
           removeImageBackground(compressedData, applyResult);
         } else {
           applyResult(compressedData);
         }
-      });
+      }, maxLen);
     };
     reader.readAsDataURL(file);
   }

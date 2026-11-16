@@ -761,8 +761,11 @@ const WDSDB = {
         notifyRealtimeSync('config', merged);
       }
 
-      // ส่งข้อมูลขึ้นคลาวด์กลางทันที และรอผลการบันทึกเพื่อความแม่นยำ 100%
+      // ส่งข้อมูลขึ้นคลาวด์กลางทันที และตรวจสอบสถานะผลลัพธ์จริง
+      let cloudSyncOk = true;
+      let cloudSyncError = '';
       if (syncToCloud && CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
+        cloudSyncOk = false;
         const cloudPayload = JSON.parse(JSON.stringify(merged));
         if (Array.isArray(cloudPayload.documentsList)) {
           cloudPayload.documentsList = cloudPayload.documentsList.map(doc => {
@@ -781,10 +784,15 @@ const WDSDB = {
             body: payloadStr
           });
 
-          // หากติดข้อจำกัดขนาดของคลาวด์ (413 Payload Too Large) ให้ลดขนาดข้อมูลและลองใหม่อัตโนมัติ
-          if (putRes.status === 413 && cloudPayload.heroBannerImage && cloudPayload.heroBannerImage.startsWith('data:')) {
-            console.warn('WDSDB Cloud Sync 413: Fallback hero banner to asset path');
-            cloudPayload.heroBannerImage = 'assets/images/hero-school-photo.jpg';
+          // หากติด 413 เพราะไฟล์เอกสารแนบขนาดใหญ่ ให้ตัด fileData เฉพาะเอกสารก่อนเพื่อรักษารูปแบนเนอร์/โลโก้ไว้
+          if (putRes.status === 413 && Array.isArray(cloudPayload.documentsList)) {
+            cloudPayload.documentsList = cloudPayload.documentsList.map(doc => {
+              const d = { ...doc };
+              if (d.fileData && d.fileData.length > 15000) {
+                delete d.fileData;
+              }
+              return d;
+            });
             payloadStr = JSON.stringify(cloudPayload);
             putRes = await fetch(CLOUD_SYNC.CONFIG_URL, {
               method: 'PUT',
@@ -794,15 +802,20 @@ const WDSDB = {
           }
 
           if (putRes.ok) {
+            cloudSyncOk = true;
             console.log('WDSDB: Config successfully synced to Cloud!');
           } else {
-            console.warn('WDSDB Cloud Sync Status:', putRes.status);
+            cloudSyncError = putRes.status === 413
+              ? 'ขนาดข้อมูลหรือรูปภาพที่อัปโหลดใหญ่เกินขีดจำกัดคลาวด์ (HTTP 413)'
+              : `เซิร์ฟเวอร์คลาวด์ตอบกลับสถานะ HTTP ${putRes.status}`;
+            console.warn('WDSDB Cloud Sync Status:', putRes.status, cloudSyncError);
           }
         } catch (err) {
+          cloudSyncError = err.message || 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์คลาวด์ได้';
           console.warn('WDSDB Cloud Sync Warning:', err);
         }
       }
-      return merged;
+      return { ...merged, _cloudSyncOk: cloudSyncOk, _cloudSyncError: cloudSyncError };
     } catch (e) {
       console.error('WDSDB saveConfig error:', e);
       if (e.name === 'QuotaExceededError' || e.code === 22) {

@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257040">
-  <script src="js/data.js?v=257040"></script>
-  <script src="js/app.js?v=257040"></script>
+  <link rel="stylesheet" href="css/style.css?v=257041">
+  <script src="js/data.js?v=257041"></script>
+  <script src="js/app.js?v=257041"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -485,25 +485,25 @@
                     <label class="block font-semibold text-slate-200 mb-1">
                       ชื่อผู้ใช้งาน (Username) <span class="text-red-400">*</span>
                     </label>
-                    <input type="text" id="cfg_adminUsername" autocomplete="username" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono font-bold text-sm" placeholder="เช่น admin">
+                    <input type="text" id="cfg_adminUsername" autocomplete="off" data-lpignore="true" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono font-bold text-sm" placeholder="เช่น admin">
                   </div>
                   <div>
                     <label class="block font-semibold text-slate-200 mb-1">
                       รหัสผ่านใหม่ (หากจะเปลี่ยน)
                     </label>
-                    <input type="password" id="cfg_adminNewPassword" autocomplete="new-password" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="เว้นว่างไว้หากไม่เปลี่ยน">
+                    <input type="password" id="cfg_adminNewPassword" autocomplete="new-password" data-lpignore="true" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="เว้นว่างไว้หากไม่เปลี่ยน">
                   </div>
                   <div>
                     <label class="block font-semibold text-slate-200 mb-1">
                       ยืนยันรหัสผ่านใหม่อีกครั้ง
                     </label>
-                    <input type="password" id="cfg_adminConfirmPassword" autocomplete="new-password" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
+                    <input type="password" id="cfg_adminConfirmPassword" autocomplete="new-password" data-lpignore="true" class="gov-input w-full bg-slate-800 border-slate-600 text-white focus:bg-slate-700 font-mono text-sm" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
                   </div>
                   <div>
                     <label class="block font-semibold text-amber-300 mb-1">
                       รหัสผ่านปัจจุบัน (ยืนยันสิทธิ์) <span class="text-red-400">*</span>
                     </label>
-                    <input type="password" id="cfg_adminCurrentPassword" autocomplete="current-password" class="gov-input w-full bg-slate-800 border-amber-500/50 text-white focus:bg-slate-700 font-mono text-sm" placeholder="รหัสผ่านปัจจุบัน">
+                    <input type="password" id="cfg_adminCurrentPassword" autocomplete="off" data-lpignore="true" class="gov-input w-full bg-slate-800 border-amber-500/50 text-white focus:bg-slate-700 font-mono text-sm" placeholder="รหัสผ่านปัจจุบัน">
                   </div>
                 </div>
 
@@ -767,17 +767,17 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
                     <label class="block font-semibold text-slate-700 mb-1">ปีการศึกษาที่เปิดรับสมัคร <span class="text-red-600">*</span></label>
-                    <input type="text" id="cfg_academicYear" required oninput="updateLivePreview()" class="gov-input w-full font-bold text-amber-900">
+                    <input type="text" id="cfg_academicYear" required oninput="onAcademicYearInput(this.value)" class="gov-input w-full font-bold text-amber-900">
                   </div>
 
                   <div>
                     <label class="block font-semibold text-slate-700 mb-1">ปีข้อตกลงสภานักเรียน <span class="text-red-600">*</span></label>
-                    <input type="text" id="cfg_councilAgreementYear" required class="gov-input w-full">
+                    <input type="text" id="cfg_councilAgreementYear" required oninput="onAgreementYearChange('council', this.value)" class="gov-input w-full">
                   </div>
 
                   <div>
                     <label class="block font-semibold text-slate-700 mb-1">ปีข้อตกลงคณะสี <span class="text-red-600">*</span></label>
-                    <input type="text" id="cfg_colorAgreementYear" required class="gov-input w-full">
+                    <input type="text" id="cfg_colorAgreementYear" required oninput="onAgreementYearChange('color', this.value)" class="gov-input w-full">
                   </div>
 
                   <div class="sm:col-span-3">
@@ -1744,6 +1744,43 @@
     let currentCouncilSignatures = []; // รายการผู้ลงนามใบสมัครสภานักเรียน
     let currentColorSignatures = [];   // รายการผู้ลงนามใบสมัครประธานคณะสี
     let activeSignatureSubTab = 'council'; // 'council' | 'color'
+    let settingsFormDirty = false;
+    let settingsLoadedOnce = false;
+    let prevLoadedAcademicYear = '';
+
+    function markSettingsDirty() {
+      settingsFormDirty = true;
+    }
+
+    function onAcademicYearInput(val) {
+      markSettingsDirty();
+      const newYear = String(val || '').trim();
+      if (/^\d{4}$/.test(newYear)) {
+        ['cfg_rulesHeaderTitle', 'cfg_applyHeaderTitle', 'cfg_docsPageHeaderTitle'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el && el.value) {
+            if (prevLoadedAcademicYear && el.value.includes(prevLoadedAcademicYear)) {
+              el.value = el.value.replace(new RegExp(prevLoadedAcademicYear, 'g'), newYear);
+            } else if (/(ประจำปีการศึกษา\s*)\d{4}/.test(el.value)) {
+              el.value = el.value.replace(/(ประจำปีการศึกษา\s*)\d{4}/g, `$1${newYear}`);
+            }
+          }
+        });
+        prevLoadedAcademicYear = newYear;
+      }
+      updateLivePreview();
+    }
+
+    function onAgreementYearChange(type, val) {
+      markSettingsDirty();
+      const y = String(val || '').trim();
+      if (!/^\d{4}$/.test(y)) return;
+      const targetId = type === 'council' ? 'cfg_applyCouncilBullets' : 'cfg_applyColorBullets';
+      const el = document.getElementById(targetId);
+      if (el && el.value && /ข้อตกลงสภานักเรียน\s*ปีการศึกษา\s*\d{4}/.test(el.value)) {
+        el.value = el.value.replace(/(ข้อตกลงสภานักเรียน\s*ปีการศึกษา\s*)\d{4}/g, `$1${y}`);
+      }
+    }
 
     function updateStatsDashboard() {
       const councils = WDSDB.getCouncilList();
@@ -1789,10 +1826,10 @@
 
     // รับสัญญาณเมื่อข้อมูลบนคลาวด์อัปเดตอัตโนมัติ
     window.addEventListener('wds-cloud-synced', (e) => {
-      // หากผู้ใช้กำลังพิมพ์อยู่ในช่อง input หรือ textarea จะไม่เขียนทับฟอร์มเพื่อป้องกันข้อมูลกระตุก/เด้งกลับ
+      // หากผู้ใช้กำลังแก้ไขข้อมูลอยู่ จะไม่เขียนทับฟอร์มเพื่อป้องกันข้อมูลเด้งกลับ
       const activeEl = document.activeElement;
       const isUserTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
-      if (!isUserTyping && typeof loadSettingsIntoForm === 'function') {
+      if (!isUserTyping && !settingsFormDirty && typeof loadSettingsIntoForm === 'function') {
         loadSettingsIntoForm();
       }
       if (typeof applySiteConfig === 'function') applySiteConfig();
@@ -1837,7 +1874,9 @@
         if (viewApply) viewApply.classList.add('hidden');
         if (viewPos) viewPos.classList.add('hidden');
         if (exportGrp) exportGrp.classList.add('hidden');
-        loadSettingsIntoForm();
+        if (!settingsLoadedOnce || !settingsFormDirty) {
+          loadSettingsIntoForm();
+        }
       } else if (tab === 'apply') {
         if (aBtn) aBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
         if (viewReg) viewReg.classList.add('hidden');
@@ -1853,7 +1892,9 @@
         if (viewApply) viewApply.classList.add('hidden');
         if (viewPos) viewPos.classList.remove('hidden');
         if (exportGrp) exportGrp.classList.add('hidden');
-        loadPositionsIntoForm();
+        if (!positionsEditorDirty) {
+          loadPositionsIntoForm();
+        }
       } else if (tab === 'council') {
         if (cBtn) cBtn.className = 'gov-tab-active px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#1a365d] whitespace-nowrap';
         if (viewReg) viewReg.classList.remove('hidden');
@@ -1875,6 +1916,9 @@
 
     function loadSettingsIntoForm() {
       const cfg = WDSDB.getConfig();
+      settingsFormDirty = false;
+      settingsLoadedOnce = true;
+      prevLoadedAcademicYear = cfg.academicYear || '';
       document.getElementById('cfg_adminUsername').value = cfg.adminUsername || 'admin';
       document.getElementById('cfg_adminNewPassword').value = '';
       document.getElementById('cfg_adminConfirmPassword').value = '';
@@ -3402,6 +3446,7 @@
     }
 
     function clearLogoSlot(slotNum) {
+      markSettingsDirty();
       const hiddenEl = document.getElementById(`settingLogo${slotNum}Data`);
       const fileEl = document.getElementById(`settingLogo${slotNum}File`);
       if (hiddenEl) hiddenEl.value = '';
@@ -3412,8 +3457,10 @@
     }
 
     function previewLogoUpload(input, slotNum = 1) {
+      markSettingsDirty();
       if (slotNum === 1) {
         handleImageUpload(input, document.getElementById('settingLogoPreview'), document.getElementById('settingLogoData'), (base64) => {
+          markSettingsDirty();
           updateLivePreview();
           showToast('อัปโหลดและลบพื้นหลังตราโรงเรียนหลัก (ตราที่ 1) เรียบร้อยแล้ว', 'info');
         }, true);
@@ -3421,6 +3468,7 @@
         const previewEl = document.getElementById(`settingLogo${slotNum}Preview`);
         const hiddenEl = document.getElementById(`settingLogo${slotNum}Data`);
         handleImageUpload(input, previewEl, hiddenEl, (base64) => {
+          markSettingsDirty();
           syncLogoSlotUI(slotNum, base64);
           updateLivePreview();
           showToast(`อัปโหลดและลบพื้นหลังตราสัญลักษณ์ที่ ${slotNum} เรียบร้อยแล้ว`, 'info');
@@ -3484,6 +3532,7 @@
     }
 
     function resetHeroBannerPositionOnly() {
+      markSettingsDirty();
       const fitEl = document.getElementById('cfg_heroBannerFit');
       const isContain = fitEl && fitEl.value === 'contain';
       document.getElementById('cfg_heroBannerPosX').value = isContain ? 99 : 100;
@@ -3494,6 +3543,7 @@
     }
 
     function setHeroBannerPreset(type) {
+      markSettingsDirty();
       if (type === 'logo') {
         const logoUrl = 'assets/images/school-logo-transparent.png';
         document.getElementById('settingHeroBannerData').value = logoUrl;
@@ -3531,6 +3581,7 @@
 
       const startDrag = (clientX, clientY) => {
         isDragging = true;
+        markSettingsDirty();
         startX = clientX;
         startY = clientY;
         initialPosX = parseFloat(document.getElementById('cfg_heroBannerPosX').value) || 0;
@@ -3579,49 +3630,51 @@
     }
 
     function previewHeroBannerUpload(input) {
+      markSettingsDirty();
       handleImageUpload(
         input,
         null,
         document.getElementById('settingHeroBannerData'),
         (base64) => {
-          const fitEl = document.getElementById('cfg_heroBannerFit');
-          if (fitEl && (base64.startsWith('data:image/png') || input.files[0]?.type === 'image/png')) {
-            fitEl.value = 'contain';
-          }
+          markSettingsDirty();
           syncHeroBannerDragBox();
           updateLivePreview();
-          showToast('อัปโหลดรูปแบนเนอร์เรียบร้อยแล้ว สามารถคลิกลากปรับตำแหน่งได้เลย', 'info');
+          showToast('อัปโหลดและปรับขนาดรูปแบนเนอร์เรียบร้อยแล้ว กด "บันทึกข้อมูลเว็บไซต์ทั้งหมด" เพื่อใช้งาน', 'info');
         }
       );
     }
 
     function previewLineQrUpload(input) {
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('settingLineQrPreview').src = e.target.result;
-          document.getElementById('settingLineQrData').value = e.target.result;
+      markSettingsDirty();
+      handleImageUpload(
+        input,
+        document.getElementById('settingLineQrPreview'),
+        document.getElementById('settingLineQrData'),
+        () => {
+          markSettingsDirty();
           showToast('เปลี่ยนรูปภาพ QR Code กลุ่ม LINE แล้ว (กดบันทึกเพื่อใช้งาน)', 'info');
-        };
-        reader.readAsDataURL(file);
-      }
+        },
+        false
+      );
     }
 
     function resetHeroBannerDefault() {
-      const defaultHero = typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-bg-clean.jpg';
+      markSettingsDirty();
+      const defaultHero = typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-school-photo.jpg';
       document.getElementById('settingHeroBannerPreview').src = defaultHero;
       document.getElementById('settingHeroBannerData').value = defaultHero;
       document.getElementById('settingHeroBannerFile').value = '';
-      document.getElementById('cfg_heroBannerPosX').value = 100;
-      document.getElementById('cfg_heroBannerPosY').value = 50;
+      document.getElementById('cfg_heroBannerPosX').value = 99;
+      document.getElementById('cfg_heroBannerPosY').value = 14;
       document.getElementById('cfg_heroBannerZoom').value = 100;
-      syncHeroBannerDragBox();
-      updateLivePreview();
+      const fitEl = document.getElementById('cfg_heroBannerFit');
+      if (fitEl) fitEl.value = 'cover';
+      onHeroFitModeChange();
       showToast('คืนค่ารูปแบนเนอร์ต้นฉบับโรงเรียนแล้ว (กดบันทึกเพื่อยืนยัน)', 'info');
     }
 
     function fillQuickSampleData() {
+      markSettingsDirty();
       document.getElementById('cfg_schoolName').value = 'โรงเรียนเตรียมอุดมศึกษาน้อมเกล้า';
       document.getElementById('cfg_academicYear').value = '2571';
       document.getElementById('cfg_councilAgreementYear').value = '2569';
@@ -3678,8 +3731,14 @@
         const newAdminPass = getTrimmed('cfg_adminNewPassword');
         const confirmAdminPass = getTrimmed('cfg_adminConfirmPassword');
 
-        // จัดการเปลี่ยนรหัสผ่านเฉพาะเมื่อผู้ใช้กรอกรหัสผ่านปัจจุบันเข้ามาเพื่อยืนยันสิทธิ์
-        if (currentAdminPass) {
+        // จัดการเปลี่ยนรหัสผ่านเฉพาะเมื่อผู้ใช้ต้องการเปลี่ยนชื่อผู้ใช้หรือตั้งรหัสผ่านใหม่จริง ๆ
+        const wantsCredentialChange = Boolean(newAdminPass) || (Boolean(newAdminUser) && newAdminUser !== finalAdminUser);
+        if (wantsCredentialChange) {
+          if (!currentAdminPass) {
+            showToast('กรุณากรอกรหัสผ่านปัจจุบันในช่องสีเหลืองเพื่อยืนยันการเปลี่ยนชื่อผู้ใช้/รหัสผ่าน', 'error');
+            document.getElementById('cfg_adminCurrentPassword')?.focus();
+            return;
+          }
           if (newAdminPass && newAdminPass.length < 4) {
             showToast('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร', 'error');
             document.getElementById('cfg_adminNewPassword')?.focus();
@@ -3703,6 +3762,8 @@
           if (document.getElementById('cfg_adminConfirmPassword')) document.getElementById('cfg_adminConfirmPassword').value = '';
           const userDisplay = document.getElementById('headerAdminUserDisplay');
           if (userDisplay) userDisplay.textContent = finalAdminUser;
+        } else if (currentAdminPass) {
+          if (document.getElementById('cfg_adminCurrentPassword')) document.getElementById('cfg_adminCurrentPassword').value = '';
         }
 
         const schoolNameVal = getTrimmed('cfg_schoolName');
@@ -3803,7 +3864,12 @@
           if (typeof applySiteConfig === 'function') applySiteConfig();
           if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
           if (typeof updateLivePreview === 'function') updateLivePreview();
-          showToast('✅ บันทึกข้อมูลและซิงค์คลาวด์สำเร็จ! มือถือทุกเครื่องจะแสดงข้อมูลล่าสุดอัตโนมัติ', 'success');
+          if (saveRes._cloudSyncOk === false) {
+            showToast('⚠️ บันทึกในเครื่องนี้แล้ว แต่ซิงค์ขึ้นคลาวด์ไม่สำเร็จ: ' + (saveRes._cloudSyncError || 'กรุณาลดขนาดไฟล์รูป/เอกสารแล้วลองใหม่'), 'error');
+          } else {
+            settingsFormDirty = false;
+            showToast('✅ บันทึกข้อมูลและซิงค์คลาวด์สำเร็จ! มือถือทุกเครื่องจะแสดงข้อมูลล่าสุดอัตโนมัติ', 'success');
+          }
         }
       } catch (err) {
         console.error('Save Settings Error:', err);
@@ -4328,12 +4394,17 @@
 
     // เมื่อเปิดหน้าเว็บ ตรวจสอบสิทธิ์การเข้าใช้งานก่อนแสดงผล
     window.addEventListener('DOMContentLoaded', async () => {
+      const settingsForm = document.getElementById('settingsCmsForm');
+      if (settingsForm) {
+        settingsForm.addEventListener('input', markSettingsDirty);
+        settingsForm.addEventListener('change', markSettingsDirty);
+      }
       checkAuthAndRender();
       if (typeof WDSDB !== 'undefined') {
         try {
           if (typeof WDSDB.syncFromCloud === 'function') {
             const synced = await WDSDB.syncFromCloud();
-            if (synced && typeof loadSettingsIntoForm === 'function') {
+            if (synced && !settingsFormDirty && typeof loadSettingsIntoForm === 'function') {
               loadSettingsIntoForm();
             }
           }
