@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257042">
+  <link rel="stylesheet" href="css/style.css?v=257043">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -36,7 +36,7 @@
           <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน">
         </div>
         <div class="min-w-0 flex-1">
-          <h1 class="text-xs sm:text-base font-bold leading-tight truncate sm:whitespace-normal">ใบสมัครรับเลือกตั้งประธานคณะสี</h1>
+          <h1 data-cfg="colorFormHeaderTitle" class="text-xs sm:text-base font-bold leading-tight truncate sm:whitespace-normal">ใบสมัครรับเลือกตั้งประธานคณะสี</h1>
           <p class="text-[10px] sm:text-xs text-slate-200 truncate"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • ปีการศึกษา <span data-cfg="academicYear">2570</span> (5 คณะสี)</p>
         </div>
       </div>
@@ -58,7 +58,7 @@
       <!-- ส่วนที่ 1: เลือกคณะสี & ข้อมูลพรรค/ทีมงาน -->
       <div class="gov-card">
         <div class="gov-card-header">
-          <span>ส่วนที่ 1: เลือกคณะสีและข้อมูลทีมงาน</span>
+          <span data-cfg="colorSection1Title">ส่วนที่ 1: เลือกคณะสีและข้อมูลทีมงาน</span>
           <span class="text-xs text-red-600">* ข้อมูลจำเป็น</span>
         </div>
 
@@ -137,7 +137,7 @@
       <!-- ส่วนที่ 2: ข้อมูลผู้ลงสมัครประธานคณะสี -->
       <div class="gov-card">
         <div class="gov-card-header">
-          <span>ส่วนที่ 2: ลำดับที่ 1. <span id="colorLeaderHeaderTitle">ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)</span></span>
+          <span><span id="colorSection2Prefix">ส่วนที่ 2: ลำดับที่ 1. </span><span id="colorLeaderHeaderTitle">ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)</span></span>
           <span id="colorLeaderBadgeTitle" class="text-xs bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-semibold">ประธานคณะสี</span>
         </div>
 
@@ -238,7 +238,7 @@
       <!-- ส่วนที่ 3/4: ข้อตกลงของสภานักเรียน -->
       <div class="gov-card">
         <div class="gov-card-header">
-          <span><span id="colorAgreementSectionNum">ส่วนที่ 3</span>: ข้อตกลงและคำรับรองของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></span>
+          <span><span id="colorAgreementSectionNum">ส่วนที่ 3</span>: <span data-cfg="colorAgreementTitle">ข้อตกลงและคำรับรองของสภานักเรียน</span> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></span>
         </div>
 
         <div class="p-5 space-y-4 text-xs sm:text-sm">
@@ -340,8 +340,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257042"></script>
-  <script src="js/app.js?v=257042"></script>
+  <script src="js/data.js?v=257043"></script>
+  <script src="js/app.js?v=257043"></script>
   <script>
     function previewLeaderPhoto(input) {
       if (input.files && input.files[0]) {
@@ -408,6 +408,9 @@
       const minGpa = cfg.minGpaMember || 2.50;
 
       const leaderPos = (typeof WDSDB !== 'undefined' && WDSDB.getColorLeaderPosition) ? WDSDB.getColorLeaderPosition() : DEFAULT_COLOR_POSITIONS[0];
+      if (document.getElementById('colorSection2Prefix')) {
+        document.getElementById('colorSection2Prefix').textContent = (cfg.colorSection2Prefix !== undefined) ? cfg.colorSection2Prefix : 'ส่วนที่ 2: ลำดับที่ 1. ';
+      }
       if (document.getElementById('colorLeaderHeaderTitle')) document.getElementById('colorLeaderHeaderTitle').textContent = leaderPos.title;
       if (document.getElementById('colorLeaderBadgeTitle')) document.getElementById('colorLeaderBadgeTitle').textContent = leaderPos.roleName || leaderPos.title;
       if (document.getElementById('colorLeaderLabelTitle')) document.getElementById('colorLeaderLabelTitle').textContent = leaderPos.title;
@@ -427,7 +430,10 @@
 
       const titleEl = document.getElementById('colorSection3Title');
       if (titleEl) {
-        titleEl.textContent = `ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน (${memberPositions.length} ตำแหน่ง)`;
+        const s3Base = (cfg.colorSection3Title || 'ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน').trim();
+        titleEl.textContent = s3Base.includes('{count}')
+          ? s3Base.replace(/\{count\}/g, memberPositions.length)
+          : `${s3Base} (${memberPositions.length} ตำแหน่ง)`;
       }
       const summaryEl = document.getElementById('colorSection3Summary');
       if (summaryEl) {
@@ -438,6 +444,7 @@
 
       const currentSig = JSON.stringify({
         memberPositions,
+        colorCardPrefix: cfg.colorCardPrefix,
         minGpa,
         minBehaviorScore: cfg.minBehaviorScore,
         schoolName: cfg.schoolName,
@@ -472,11 +479,14 @@
       memberPositions.forEach((pos, idx) => {
         const num = idx + 2; // ลำดับที่ 2 เป็นต้นไป (ต่อจากประธานคณะสีที่เป็นลำดับที่ 1)
         const safeTitle = escapeHTML(pos.title || '');
+        const prefixText = (typeof formatCardHeadingPrefix === 'function')
+          ? formatCardHeadingPrefix(cfg.colorCardPrefix, num)
+          : `ลำดับที่ ${num}. `;
         html += `
           <div class="gov-card">
             <div class="gov-card-header">
               <span class="text-xs sm:text-sm font-bold text-[#16325c]">
-                ลำดับที่ ${num}. ${safeTitle}
+                ${escapeHTML(prefixText)}${safeTitle}
               </span>
               <span class="text-xs text-slate-500">
                 (GPAX ขั้นต่ำ ${Number(minGpa).toFixed(2)} | คะแนนพฤติกรรม ≥ ${cfg.minBehaviorScore})

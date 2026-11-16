@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257042">
+  <link rel="stylesheet" href="css/style.css?v=257043">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -36,7 +36,7 @@
           <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน">
         </div>
         <div class="min-w-0 flex-1">
-          <h1 class="text-xs sm:text-base font-bold leading-tight truncate sm:whitespace-normal">ใบสมัครรับเลือกตั้งประธานสภานักเรียน</h1>
+          <h1 data-cfg="councilFormHeaderTitle" class="text-xs sm:text-base font-bold leading-tight truncate sm:whitespace-normal">ใบสมัครรับเลือกตั้งประธานสภานักเรียน</h1>
           <p class="text-[10px] sm:text-xs text-slate-200 truncate"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> • ปีการศึกษา <span data-cfg="academicYear">2570</span> (<span id="councilHeaderCount">10</span> ตำแหน่ง)</p>
         </div>
       </div>
@@ -58,7 +58,7 @@
       <!-- ส่วนที่ 1: ข้อมูลพรรค -->
       <div class="gov-card">
         <div class="gov-card-header">
-          <span>ส่วนที่ 1: ข้อมูลพรรคและครูที่ปรึกษาพรรค</span>
+          <span data-cfg="councilSection1Title">ส่วนที่ 1: ข้อมูลพรรคและครูที่ปรึกษาพรรค</span>
           <span class="text-xs text-red-600">* ข้อมูลจำเป็น</span>
         </div>
 
@@ -112,7 +112,7 @@
       <!-- ส่วนที่ 3: ข้อตกลงของสภานักเรียน -->
       <div class="gov-card">
         <div class="gov-card-header">
-          <span>ส่วนที่ 3: ข้อตกลงและคำรับรองของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2568</span></span>
+          <span><span data-cfg="councilSection3Title">ส่วนที่ 3: ข้อตกลงและคำรับรองของสภานักเรียน</span> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2568</span></span>
         </div>
 
         <div class="p-5 space-y-4 text-xs sm:text-sm">
@@ -215,8 +215,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257042"></script>
-  <script src="js/app.js?v=257042"></script>
+  <script src="js/data.js?v=257043"></script>
+  <script src="js/app.js?v=257043"></script>
   <script>
     let lastRenderedCouncilSig = '';
 
@@ -229,12 +229,31 @@
       const headerCountEl = document.getElementById('councilHeaderCount');
       if (headerCountEl) headerCountEl.textContent = councilPositions.length;
       const s2TitleEl = document.getElementById('councilSection2Title');
-      if (s2TitleEl) s2TitleEl.textContent = `ส่วนที่ 2: รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน (${councilPositions.length} ตำแหน่ง)`;
+      if (s2TitleEl) {
+        const baseS2 = (cfg.councilSection2Title || 'ส่วนที่ 2: รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน').trim();
+        if (baseS2.includes('{count}')) {
+          s2TitleEl.textContent = baseS2.replace(/\{count\}/g, councilPositions.length);
+        } else if (cfg.councilSection2ShowCount !== false) {
+          s2TitleEl.textContent = `${baseS2} (${councilPositions.length} ตำแหน่ง)`;
+        } else {
+          s2TitleEl.textContent = baseS2;
+        }
+      }
       const s2BadgeEl = document.getElementById('councilSection2Badge');
-      if (s2BadgeEl) s2BadgeEl.textContent = `ครบทั้ง ${councilPositions.length} ตำแหน่ง`;
+      if (s2BadgeEl) {
+        const badgeTpl = cfg.councilSection2BadgeText !== undefined ? cfg.councilSection2BadgeText : 'ครบทั้ง {count} ตำแหน่ง';
+        const badgeText = String(badgeTpl || '').replace(/\{count\}/g, councilPositions.length).trim();
+        if (badgeText) {
+          s2BadgeEl.textContent = badgeText;
+          s2BadgeEl.classList.remove('hidden');
+        } else {
+          s2BadgeEl.classList.add('hidden');
+        }
+      }
 
       const currentSig = JSON.stringify({
         councilPositions,
+        councilCardPrefix: cfg.councilCardPrefix,
         minGpaPresident: cfg.minGpaPresident,
         minGpaMember: cfg.minGpaMember,
         minBehaviorScore: cfg.minBehaviorScore,
@@ -268,12 +287,15 @@
           ? Number(cfg.minGpaPresident || 2.80)
           : Number(cfg.minGpaMember || 2.50);
         const safeTitle = escapeHTML(pos.title || '');
+        const prefixText = (typeof formatCardHeadingPrefix === 'function')
+          ? formatCardHeadingPrefix(cfg.councilCardPrefix, num)
+          : `ลำดับที่ ${num}. `;
 
         html += `
           <div class="gov-card">
             <div class="gov-card-header">
               <span class="text-xs sm:text-sm font-bold text-[#16325c]">
-                ลำดับที่ ${num}. ${safeTitle}
+                ${escapeHTML(prefixText)}${safeTitle}
               </span>
               <span class="text-xs text-slate-500">
                 (GPAX ขั้นต่ำ ${minGpa.toFixed(2)} | คะแนนพฤติกรรม ≥ ${cfg.minBehaviorScore})

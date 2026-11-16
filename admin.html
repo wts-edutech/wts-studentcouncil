@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257042">
-  <script src="js/data.js?v=257042"></script>
-  <script src="js/app.js?v=257042"></script>
+  <link rel="stylesheet" href="css/style.css?v=257043">
+  <script src="js/data.js?v=257043"></script>
+  <script src="js/app.js?v=257043"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -1640,6 +1640,46 @@
               </div>
             </div>
 
+            <!-- กล่องแก้ไขหัวข้อต่างๆ ของฟอร์มสภานักเรียน -->
+            <div class="p-4 bg-blue-50/50 border-b border-blue-200 space-y-2.5 text-xs">
+              <div class="font-bold text-blue-950 flex items-center gap-1.5">
+                <i class="fa-solid fa-heading text-blue-700"></i>
+                <span>แก้ไขหัวข้อต่างๆ ในหน้าใบสมัครสภานักเรียน (apply-council.html)</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อหลักบนสุดของหน้าแบบฟอร์ม</label>
+                  <input type="text" id="posCfg_councilFormHeaderTitle" oninput="markPositionsDirty()" class="gov-input w-full text-xs font-bold text-[#1a365d]" placeholder="ใบสมัครรับเลือกตั้งประธานสภานักเรียน">
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อส่วนที่ 1</label>
+                  <input type="text" id="posCfg_councilSection1Title" oninput="markPositionsDirty()" class="gov-input w-full text-xs" placeholder="ส่วนที่ 1: ข้อมูลพรรคและครูที่ปรึกษาพรรค">
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อส่วนที่ 2 (รายชื่อผู้สมัคร)</label>
+                  <input type="text" id="posCfg_councilSection2Title" oninput="markPositionsDirty()" class="gov-input w-full text-xs font-bold text-blue-950" placeholder="ส่วนที่ 2: รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน">
+                  <label class="inline-flex items-center gap-1.5 mt-1 cursor-pointer text-[11px] text-slate-600">
+                    <input type="checkbox" id="posCfg_councilSection2ShowCount" onchange="markPositionsDirty()" class="rounded text-blue-700">
+                    <span>ต่อท้ายด้วยจำนวนตำแหน่งอัตโนมัติ (เช่น (10 ตำแหน่ง))</span>
+                  </label>
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5">ป้ายกำกับมุมขวาส่วนที่ 2</label>
+                  <input type="text" id="posCfg_councilSection2BadgeText" oninput="markPositionsDirty()" class="gov-input w-full text-xs" placeholder="ครบทั้ง {count} ตำแหน่ง">
+                  <div class="text-[10px] text-slate-400 mt-0.5">ใช้ {count} แทนจำนวน หรือเว้นว่างเพื่อซ่อน</div>
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5">คำนำหน้าหัวข้อการ์ดแต่ละลำดับ</label>
+                  <input type="text" id="posCfg_councilCardPrefix" oninput="onCardPrefixInput('council')" class="gov-input w-full text-xs font-mono" placeholder="ลำดับที่ {n}. ">
+                  <div class="text-[10px] text-slate-400 mt-0.5">ใช้ {n} แทนเลขลำดับ หรือเว้นว่างเพื่อแสดงเฉพาะชื่อ</div>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อส่วนที่ 3 (ข้อตกลง)</label>
+                  <input type="text" id="posCfg_councilSection3Title" oninput="markPositionsDirty()" class="gov-input w-full text-xs" placeholder="ส่วนที่ 3: ข้อตกลงและคำรับรองของสภานักเรียน">
+                </div>
+              </div>
+            </div>
+
             <div class="p-4 sm:p-5 space-y-3.5 divide-y divide-slate-100" id="positionsCouncilListContainer">
               <!-- Rendered dynamically by JS loadPositionsIntoForm -->
             </div>
@@ -1671,6 +1711,40 @@
                 <button type="button" onclick="addPositionRow('color')" class="px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-white shadow-sm cursor-pointer transition flex items-center gap-1" title="เพิ่มตำแหน่งในส่วนที่ 3 (สมาชิกคณะสี)">
                   <i class="fa-solid fa-plus"></i> เพิ่ม
                 </button>
+              </div>
+            </div>
+
+            <!-- กล่องแก้ไขหัวข้อต่างๆ ของฟอร์มประธานคณะสี -->
+            <div class="p-4 bg-amber-50/50 border-b border-amber-200 space-y-2.5 text-xs">
+              <div class="font-bold text-amber-950 flex items-center gap-1.5">
+                <i class="fa-solid fa-heading text-amber-700"></i>
+                <span>แก้ไขหัวข้อต่างๆ ในหน้าใบสมัครประธานคณะสี (apply-color.html)</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อหลักบนสุดของหน้าแบบฟอร์ม</label>
+                  <input type="text" id="posCfg_colorFormHeaderTitle" oninput="markPositionsDirty()" class="gov-input w-full text-xs font-bold text-[#1a365d]" placeholder="ใบสมัครรับเลือกตั้งประธานคณะสี">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อส่วนที่ 1</label>
+                  <input type="text" id="posCfg_colorSection1Title" oninput="markPositionsDirty()" class="gov-input w-full text-xs" placeholder="ส่วนที่ 1: เลือกคณะสีและข้อมูลทีมงาน">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5">คำนำหน้าหัวข้อส่วนที่ 2 (ประธานสี)</label>
+                  <input type="text" id="posCfg_colorSection2Prefix" oninput="markPositionsDirty(); updatePositionPreview('color', 0, true)" class="gov-input w-full text-xs" placeholder="ส่วนที่ 2: ลำดับที่ 1. ">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อส่วนที่ 3 (กรณีมีสมาชิก)</label>
+                  <input type="text" id="posCfg_colorSection3Title" oninput="markPositionsDirty()" class="gov-input w-full text-xs" placeholder="ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5">คำนำหน้าหัวข้อการ์ดส่วนที่ 3</label>
+                  <input type="text" id="posCfg_colorCardPrefix" oninput="onCardPrefixInput('color')" class="gov-input w-full text-xs font-mono" placeholder="ลำดับที่ {n}. ">
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-0.5">หัวข้อส่วนข้อตกลง</label>
+                  <input type="text" id="posCfg_colorAgreementTitle" oninput="markPositionsDirty()" class="gov-input w-full text-xs" placeholder="ข้อตกลงและคำรับรองของสภานักเรียน">
+                </div>
               </div>
             </div>
 
@@ -2426,6 +2500,25 @@
     let editingColorPositions = [];
     let positionsEditorDirty = false;
 
+    function markPositionsDirty() {
+      positionsEditorDirty = true;
+    }
+
+    function getLiveCardPrefix(type, num) {
+      const inputId = type === 'council' ? 'posCfg_councilCardPrefix' : 'posCfg_colorCardPrefix';
+      const el = document.getElementById(inputId);
+      const tpl = el ? el.value : 'ลำดับที่ {n}. ';
+      return (typeof formatCardHeadingPrefix === 'function')
+        ? formatCardHeadingPrefix(tpl, num)
+        : String(tpl).replace(/\{n\}/g, String(num));
+    }
+
+    function onCardPrefixInput(type) {
+      markPositionsDirty();
+      const list = type === 'council' ? editingCouncilPositions : editingColorPositions;
+      list.forEach((_, idx) => updatePositionPreview(type, idx, true));
+    }
+
     function loadPositionsIntoForm() {
       const cfg = WDSDB.getConfig();
       const rawCouncil = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions)
@@ -2434,6 +2527,26 @@
       const rawColor = (typeof WDSDB !== 'undefined' && WDSDB.getColorPositions)
         ? WDSDB.getColorPositions()
         : (cfg.colorPositions || DEFAULT_COLOR_POSITIONS);
+
+      const setPosInput = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val !== undefined && val !== null ? val : '';
+      };
+      setPosInput('posCfg_councilFormHeaderTitle', cfg.councilFormHeaderTitle ?? DEFAULT_SITE_CONFIG.councilFormHeaderTitle);
+      setPosInput('posCfg_councilSection1Title', cfg.councilSection1Title ?? DEFAULT_SITE_CONFIG.councilSection1Title);
+      setPosInput('posCfg_councilSection2Title', cfg.councilSection2Title ?? DEFAULT_SITE_CONFIG.councilSection2Title);
+      const showCountChk = document.getElementById('posCfg_councilSection2ShowCount');
+      if (showCountChk) showCountChk.checked = cfg.councilSection2ShowCount !== false;
+      setPosInput('posCfg_councilSection2BadgeText', cfg.councilSection2BadgeText !== undefined ? cfg.councilSection2BadgeText : DEFAULT_SITE_CONFIG.councilSection2BadgeText);
+      setPosInput('posCfg_councilCardPrefix', cfg.councilCardPrefix !== undefined ? cfg.councilCardPrefix : DEFAULT_SITE_CONFIG.councilCardPrefix);
+      setPosInput('posCfg_councilSection3Title', cfg.councilSection3Title ?? DEFAULT_SITE_CONFIG.councilSection3Title);
+
+      setPosInput('posCfg_colorFormHeaderTitle', cfg.colorFormHeaderTitle ?? DEFAULT_SITE_CONFIG.colorFormHeaderTitle);
+      setPosInput('posCfg_colorSection1Title', cfg.colorSection1Title ?? DEFAULT_SITE_CONFIG.colorSection1Title);
+      setPosInput('posCfg_colorSection2Prefix', cfg.colorSection2Prefix !== undefined ? cfg.colorSection2Prefix : DEFAULT_SITE_CONFIG.colorSection2Prefix);
+      setPosInput('posCfg_colorSection3Title', cfg.colorSection3Title ?? DEFAULT_SITE_CONFIG.colorSection3Title);
+      setPosInput('posCfg_colorCardPrefix', cfg.colorCardPrefix !== undefined ? cfg.colorCardPrefix : DEFAULT_SITE_CONFIG.colorCardPrefix);
+      setPosInput('posCfg_colorAgreementTitle', cfg.colorAgreementTitle ?? DEFAULT_SITE_CONFIG.colorAgreementTitle);
 
       editingCouncilPositions = JSON.parse(JSON.stringify(rawCouncil)).map((p, i) => ({
         ...p,
@@ -2534,7 +2647,7 @@
           <div class="text-[11px] text-slate-500 flex items-center gap-1.5 pt-0.5 flex-wrap">
             <span class="text-slate-400">หัวข้อในการ์ดใบสมัคร:</span>
             <span class="font-bold ${previewTone} px-2 py-0.5 rounded border" id="${previewId}">
-              ลำดับที่ ${num}. ${escapeHTML(pos.title || placeholderText)}
+              ${escapeHTML((!isCouncil && isLeader) ? (document.getElementById('posCfg_colorSection2Prefix')?.value ?? 'ส่วนที่ 2: ลำดับที่ 1. ') : getLiveCardPrefix(type, num))}${escapeHTML(pos.title || placeholderText)}
             </span>
           </div>
         </div>
@@ -2677,11 +2790,11 @@
       renderPositionsEditor();
     }
 
-    function updatePositionPreview(type, idx) {
+    function updatePositionPreview(type, idx, skipDirty = false) {
       const list = type === 'council' ? editingCouncilPositions : editingColorPositions;
       const input = document.getElementById(`pos${type === 'council' ? 'Council' : 'Color'}_${idx}`);
       const preview = document.getElementById(`preview${type === 'council' ? 'Council' : 'Color'}_${idx}`);
-      if (input && list[idx]) {
+      if (input && list[idx] && !skipDirty) {
         const rawVal = input.value;
         list[idx].title = rawVal;
         list[idx].shortTitle = rawVal;
@@ -2690,9 +2803,12 @@
       }
       if (input && preview) {
         const val = input.value.trim() || input.placeholder;
-        preview.textContent = `ลำดับที่ ${idx + 1}. ${val}`;
+        const prefixText = (type === 'color' && idx === 0)
+          ? (document.getElementById('posCfg_colorSection2Prefix')?.value ?? 'ส่วนที่ 2: ลำดับที่ 1. ')
+          : getLiveCardPrefix(type, idx + 1);
+        preview.textContent = `${prefixText}${val}`;
       }
-      if (type === 'color') {
+      if (type === 'color' && !skipDirty) {
         updatePositionsCountBadges();
       }
     }
@@ -2731,17 +2847,40 @@
           return;
         }
 
-        showToast('☁️ กำลังบันทึกและซิงค์ตำแหน่งขึ้นคลาวด์...', 'info');
+        const getPosCfgVal = (id, fallback = '') => {
+          const el = document.getElementById(id);
+          return el ? el.value : fallback;
+        };
+        const headingsPayload = {
+          councilFormHeaderTitle: getPosCfgVal('posCfg_councilFormHeaderTitle', DEFAULT_SITE_CONFIG.councilFormHeaderTitle).trim() || DEFAULT_SITE_CONFIG.councilFormHeaderTitle,
+          councilSection1Title: getPosCfgVal('posCfg_councilSection1Title', DEFAULT_SITE_CONFIG.councilSection1Title).trim() || DEFAULT_SITE_CONFIG.councilSection1Title,
+          councilSection2Title: getPosCfgVal('posCfg_councilSection2Title', DEFAULT_SITE_CONFIG.councilSection2Title).trim() || DEFAULT_SITE_CONFIG.councilSection2Title,
+          councilSection2ShowCount: document.getElementById('posCfg_councilSection2ShowCount')?.checked !== false,
+          councilSection2BadgeText: getPosCfgVal('posCfg_councilSection2BadgeText', DEFAULT_SITE_CONFIG.councilSection2BadgeText).trim(),
+          councilCardPrefix: getPosCfgVal('posCfg_councilCardPrefix', DEFAULT_SITE_CONFIG.councilCardPrefix),
+          councilSection3Title: getPosCfgVal('posCfg_councilSection3Title', DEFAULT_SITE_CONFIG.councilSection3Title).trim() || DEFAULT_SITE_CONFIG.councilSection3Title,
+          colorFormHeaderTitle: getPosCfgVal('posCfg_colorFormHeaderTitle', DEFAULT_SITE_CONFIG.colorFormHeaderTitle).trim() || DEFAULT_SITE_CONFIG.colorFormHeaderTitle,
+          colorSection1Title: getPosCfgVal('posCfg_colorSection1Title', DEFAULT_SITE_CONFIG.colorSection1Title).trim() || DEFAULT_SITE_CONFIG.colorSection1Title,
+          colorSection2Prefix: getPosCfgVal('posCfg_colorSection2Prefix', DEFAULT_SITE_CONFIG.colorSection2Prefix),
+          colorSection3Title: getPosCfgVal('posCfg_colorSection3Title', DEFAULT_SITE_CONFIG.colorSection3Title).trim() || DEFAULT_SITE_CONFIG.colorSection3Title,
+          colorCardPrefix: getPosCfgVal('posCfg_colorCardPrefix', DEFAULT_SITE_CONFIG.colorCardPrefix),
+          colorAgreementTitle: getPosCfgVal('posCfg_colorAgreementTitle', DEFAULT_SITE_CONFIG.colorAgreementTitle).trim() || DEFAULT_SITE_CONFIG.colorAgreementTitle
+        };
+
+        showToast('☁️ กำลังบันทึกและซิงค์หัวข้อและตำแหน่งขึ้นคลาวด์...', 'info');
 
         const ok = await WDSDB.saveConfig({
+          ...headingsPayload,
           councilPositions: newCouncil,
           colorPositions: newColor
         });
 
-        if (ok) {
+        if (ok && ok._cloudSyncOk === false) {
+          showToast('⚠️ บันทึกในเครื่องแล้ว แต่ซิงค์ขึ้นคลาวด์ไม่สำเร็จ: ' + (ok._cloudSyncError || ''), 'error');
+        } else if (ok) {
           positionsEditorDirty = false;
           loadPositionsIntoForm();
-          showToast('✅ บันทึกและซิงค์จำนวนและชื่อตำแหน่งทั้ง 2 ใบสมัครขึ้นคลาวด์สำเร็จ!', 'success');
+          showToast('✅ บันทึกและซิงค์หัวข้อและตำแหน่งทั้ง 2 ใบสมัครขึ้นคลาวด์สำเร็จ!', 'success');
         } else {
           showToast('บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
         }
@@ -2752,17 +2891,30 @@
     }
 
     async function resetPositionsToDefaults() {
-      if (!confirm('ต้องการคืนค่าจำนวนและชื่อตำแหน่งทั้งหมดของทั้งสองใบสมัครกลับเป็นค่าเริ่มต้นมาตรฐาน (สภา 10 ตำแหน่ง / คณะสี 1 ตำแหน่ง) ใช่หรือไม่?')) return;
+      if (!confirm('ต้องการคืนค่าหัวข้อ จำนวน และชื่อตำแหน่งทั้งหมดของทั้งสองใบสมัครกลับเป็นค่าเริ่มต้นมาตรฐาน (สภา 10 ตำแหน่ง / คณะสี 1 ตำแหน่ง) ใช่หรือไม่?')) return;
       try {
         showToast('☁️ กำลังคืนค่าเริ่มต้นและซิงค์คลาวด์...', 'info');
         const ok = await WDSDB.saveConfig({
+          councilFormHeaderTitle: DEFAULT_SITE_CONFIG.councilFormHeaderTitle,
+          councilSection1Title: DEFAULT_SITE_CONFIG.councilSection1Title,
+          councilSection2Title: DEFAULT_SITE_CONFIG.councilSection2Title,
+          councilSection2ShowCount: DEFAULT_SITE_CONFIG.councilSection2ShowCount,
+          councilSection2BadgeText: DEFAULT_SITE_CONFIG.councilSection2BadgeText,
+          councilCardPrefix: DEFAULT_SITE_CONFIG.councilCardPrefix,
+          councilSection3Title: DEFAULT_SITE_CONFIG.councilSection3Title,
+          colorFormHeaderTitle: DEFAULT_SITE_CONFIG.colorFormHeaderTitle,
+          colorSection1Title: DEFAULT_SITE_CONFIG.colorSection1Title,
+          colorSection2Prefix: DEFAULT_SITE_CONFIG.colorSection2Prefix,
+          colorSection3Title: DEFAULT_SITE_CONFIG.colorSection3Title,
+          colorCardPrefix: DEFAULT_SITE_CONFIG.colorCardPrefix,
+          colorAgreementTitle: DEFAULT_SITE_CONFIG.colorAgreementTitle,
           councilPositions: JSON.parse(JSON.stringify(DEFAULT_COUNCIL_POSITIONS)),
           colorPositions: JSON.parse(JSON.stringify(DEFAULT_COLOR_POSITIONS))
         });
         if (ok) {
           positionsEditorDirty = false;
           loadPositionsIntoForm();
-          showToast('✅ คืนค่าจำนวนและชื่อตำแหน่งมาตรฐานและซิงค์คลาวด์เรียบร้อยแล้ว!', 'success');
+          showToast('✅ คืนค่าหัวข้อและตำแหน่งมาตรฐานและซิงค์คลาวด์เรียบร้อยแล้ว!', 'success');
         }
       } catch (e) {
         showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');

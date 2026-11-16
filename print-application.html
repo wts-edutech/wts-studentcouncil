@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257042">
+  <link rel="stylesheet" href="css/style.css?v=257043">
   <style>
     @page {
       size: A4 portrait;
@@ -68,8 +68,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257042"></script>
-  <script src="js/app.js?v=257042"></script>
+  <script src="js/data.js?v=257043"></script>
+  <script src="js/app.js?v=257043"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -258,8 +258,12 @@
                 displayList.push({ title: val.role || k, mem: val });
               }
             });
+            const rawS2Title = (cfg.councilSection2Title || 'รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน').replace(/^ส่วนที่\s*\d+\s*:\s*/i, '').trim();
+            const finalS2Title = rawS2Title.includes('{count}')
+              ? rawS2Title.replace(/\{count\}/g, displayList.length)
+              : (cfg.councilSection2ShowCount !== false ? `${rawS2Title} (${displayList.length} ตำแหน่ง)` : rawS2Title);
             return `
-              <div class="text-xs font-bold mb-1">รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน (${displayList.length} ตำแหน่ง):</div>
+              <div class="text-xs font-bold mb-1">${finalS2Title}:</div>
               <table class="formal-table text-[11px]">
                 <thead>
                   <tr class="bg-slate-100">

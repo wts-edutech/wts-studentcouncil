@@ -74,6 +74,12 @@ function formatPositionGroupSummary(positions) {
     .join(' • ');
 }
 
+// ฟังก์ชันจัดรูปแบบคำนำหน้าหัวข้อการ์ดตำแหน่ง (รองรับ {n} แทนลำดับ หรือเว้นว่าง)
+function formatCardHeadingPrefix(template, num, fallback = 'ลำดับที่ {n}. ') {
+  const tpl = (template !== undefined && template !== null) ? String(template) : fallback;
+  return tpl.replace(/\{n\}/g, String(num));
+}
+
 // ตราสัญลักษณ์เริ่มต้น (ตราโรงเรียนวชิรธรรมสาธิต พื้นหลังโปร่งใส, ตราสภานักเรียน, ตราคณะสี)
 const DEFAULT_SCHOOL_LOGO = "assets/images/school-logo-transparent.png";
 const DEFAULT_LOGO_2 = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffffff' stroke='%231e3a8a' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='42' fill='%23eff6ff' stroke='%233b82f6' stroke-width='1.5'/%3E%3Cpolygon points='50,20 58,38 78,38 62,50 68,68 50,57 32,68 38,50 22,38 42,38' fill='%231e3a8a' stroke='%23c59b27' stroke-width='1.5'/%3E%3Ctext x='50' y='86' font-family='sans-serif' font-size='8.5' font-weight='bold' fill='%231e3a8a' text-anchor='middle'%3Eสภานักเรียน%3C/text%3E%3C/svg%3E";
@@ -373,6 +379,19 @@ const DEFAULT_SITE_CONFIG = {
       dateText: ''
     }
   ],
+  councilFormHeaderTitle: 'ใบสมัครรับเลือกตั้งประธานสภานักเรียน',
+  councilSection1Title: 'ส่วนที่ 1: ข้อมูลพรรคและครูที่ปรึกษาพรรค',
+  councilSection2Title: 'ส่วนที่ 2: รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน',
+  councilSection2ShowCount: true,
+  councilSection2BadgeText: 'ครบทั้ง {count} ตำแหน่ง',
+  councilSection3Title: 'ส่วนที่ 3: ข้อตกลงและคำรับรองของสภานักเรียน',
+  councilCardPrefix: 'ลำดับที่ {n}. ',
+  colorFormHeaderTitle: 'ใบสมัครรับเลือกตั้งประธานคณะสี',
+  colorSection1Title: 'ส่วนที่ 1: เลือกคณะสีและข้อมูลทีมงาน',
+  colorSection2Prefix: 'ส่วนที่ 2: ลำดับที่ 1. ',
+  colorSection3Title: 'ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน',
+  colorAgreementTitle: 'ข้อตกลงและคำรับรองของสภานักเรียน',
+  colorCardPrefix: 'ลำดับที่ {n}. ',
   councilPositions: JSON.parse(JSON.stringify(DEFAULT_COUNCIL_POSITIONS)),
   colorPositions: JSON.parse(JSON.stringify(DEFAULT_COLOR_POSITIONS))
 };
