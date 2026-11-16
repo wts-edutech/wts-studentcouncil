@@ -24,6 +24,35 @@ function getFreshCloudUrl(url) {
   return `${url}${sep}_cb=${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 }
 
+// ฟังก์ชันดึงและแปลง JSON จาก Cloud อย่างปลอดภัย โดยตัดโค้ด HTML/แบนเนอร์ส่วนเกินออกก่อน JSON.parse เสมอ
+async function fetchCleanJson(url, options = {}) {
+  try {
+    const res = await fetch(url, options);
+    if (!res.ok) return null;
+    let text = await res.text();
+    text = (text || '').trim();
+    if (!text) return null;
+    const doctypeIdx = text.indexOf('<!doctype');
+    if (doctypeIdx !== -1) {
+      text = text.substring(0, doctypeIdx).trim();
+    }
+    const htmlIdx = text.indexOf('<html');
+    if (htmlIdx !== -1) {
+      text = text.substring(0, htmlIdx).trim();
+    }
+    const lastBrace = text.lastIndexOf('}');
+    const lastBracket = text.lastIndexOf(']');
+    const endIdx = Math.max(lastBrace, lastBracket);
+    if (endIdx !== -1 && endIdx < text.length - 1) {
+      text = text.substring(0, endIdx + 1).trim();
+    }
+    return JSON.parse(text);
+  } catch (err) {
+    console.warn('fetchCleanJson parse error for', url, err);
+    return null;
+  }
+}
+
 // ตราสัญลักษณ์เริ่มต้น (ตราโรงเรียนวชิรธรรมสาธิต พื้นหลังโปร่งใส, ตราสภานักเรียน, ตราคณะสี)
 const DEFAULT_SCHOOL_LOGO = "assets/images/school-logo-transparent.png";
 const DEFAULT_LOGO_2 = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffffff' stroke='%231e3a8a' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='42' fill='%23eff6ff' stroke='%233b82f6' stroke-width='1.5'/%3E%3Cpolygon points='50,20 58,38 78,38 62,50 68,68 50,57 32,68 38,50 22,38 42,38' fill='%231e3a8a' stroke='%23c59b27' stroke-width='1.5'/%3E%3Ctext x='50' y='86' font-family='sans-serif' font-size='8.5' font-weight='bold' fill='%231e3a8a' text-anchor='middle'%3Eสภานักเรียน%3C/text%3E%3C/svg%3E";
@@ -134,17 +163,17 @@ const DEFAULT_DOCUMENTS_LIST = [
   },
   {
     "id": 4,
-    "title": "แบบฟอร์มใบสมัครเปล่า: ประธานสภานักเรียน (A4)",
+    "title": "ประกาศโรงเรียนวชิรธรรมสาธิต เรื่องเลือกตั้งประธานสภานักเรียน",
     "desc": "สำหรับพิมพ์เพื่อนำไปกรอกข้อมูลด้วยลายมือและติดรูปถ่ายด้วยตนเอง",
-    "signer": "ผู้สมัครและครูที่ปรึกษา",
+    "signer": "ผู้อำนวยการโรงเรียนวชิรธรรมสาธิต",
     "btnText": "พิมพ์ฟอร์ม",
     "actionType": "print_council"
   },
   {
     "id": 5,
-    "title": "แบบฟอร์มใบสมัครเปล่า: ประธานคณะสี 5 สี (A4)",
+    "title": "ประกาศโรงเรียนวชิรธรรมสาธิต เรื่องเลือกตั้งประธานคณะสี",
     "desc": "สำหรับพิมพ์เพื่อนำไปกรอกข้อมูลด้วยลายมือและติดรูปถ่ายด้วยตนเอง",
-    "signer": "ผู้สมัครและครูที่ปรึกษาพรรค",
+    "signer": "ผู้อำนวยการโรงเรียนวชิรธรรมสาธิต",
     "btnText": "พิมพ์ฟอร์ม",
     "actionType": "print_color"
   },
@@ -763,9 +792,8 @@ const WDSDB = {
     if (!CLOUD_SYNC.IS_ENABLED || typeof fetch === 'undefined') return null;
     try {
       const freshUrl = getFreshCloudUrl(CLOUD_SYNC.CONFIG_URL);
-      const res = await fetch(freshUrl, { cache: 'no-store' });
-      if (!res.ok) return null;
-      const remote = await res.json();
+      const remote = await fetchCleanJson(freshUrl, { cache: 'no-store' });
+      if (!remote || typeof remote !== 'object') return null;
       if (!remote || typeof remote !== 'object') return null;
 
       const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
@@ -827,8 +855,8 @@ const WDSDB = {
       const councilUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
       const colorUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
       const [rCouncil, rColor] = await Promise.all([
-        fetch(councilUrl, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch(colorUrl, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
+        fetchCleanJson(councilUrl, { cache: 'no-store' }),
+        fetchCleanJson(colorUrl, { cache: 'no-store' })
       ]);
 
       if (Array.isArray(rCouncil)) {
@@ -962,8 +990,7 @@ const WDSDB = {
     // ซิงค์ใบสมัครขึ้นคลาวด์ทันที พร้อมระบบบีบอัดป้องกัน 413 เพื่อให้หน้าหลังบ้านเห็นทันที
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
       const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
-      fetch(bustUrl, { cache: 'no-store' })
-        .then(r => r.ok ? r.json() : [])
+      fetchCleanJson(bustUrl, { cache: 'no-store' })
         .then(async remoteList => {
           const arr = Array.isArray(remoteList)
             ? remoteList.filter(item => item && item.id !== 'COUNCIL-2570-001' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม')
@@ -1007,8 +1034,7 @@ const WDSDB = {
     // ซิงค์ใบสมัครขึ้นคลาวด์ทันที พร้อมระบบบีบอัดป้องกัน 413 เพื่อให้หน้าหลังบ้านเห็นทันที
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
       const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
-      fetch(bustUrl, { cache: 'no-store' })
-        .then(r => r.ok ? r.json() : [])
+      fetchCleanJson(bustUrl, { cache: 'no-store' })
         .then(async remoteList => {
           const arr = Array.isArray(remoteList) ? remoteList : [];
           if (!arr.some(item => item.id === newEntry.id)) {

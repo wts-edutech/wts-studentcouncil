@@ -772,6 +772,7 @@ window.addEventListener('wds-cloud-synced', (e) => {
 function triggerAutoSync() {
   if (typeof applySiteConfig === 'function') applySiteConfig();
   if (typeof renderTimeline === 'function') renderTimeline();
+  if (typeof renderDocumentsPage === 'function') renderDocumentsPage();
   if (typeof WDSDB !== 'undefined') {
     if (typeof WDSDB.syncFromCloud === 'function') WDSDB.syncFromCloud();
     if (typeof WDSDB.syncApplicationsFromCloud === 'function') WDSDB.syncApplicationsFromCloud();

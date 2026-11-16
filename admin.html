@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257036">
-  <script src="js/data.js?v=257036"></script>
-  <script src="js/app.js?v=257036"></script>
+  <link rel="stylesheet" href="css/style.css?v=257039">
+  <script src="js/data.js?v=257039"></script>
+  <script src="js/app.js?v=257039"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -984,9 +984,14 @@
                   <h4 class="font-bold text-[#1a365d] flex items-center">
                     <i class="fa-solid fa-folder-open mr-2 text-slate-600"></i> แก้ไขหน้าแบบฟอร์มเอกสารประกอบการรับสมัคร (ดาวน์โหลดแบบฟอร์มเอกสาร)
                   </h4>
-                  <button type="button" onclick="addDocumentAdminRow()" class="gov-btn gov-btn-blue text-[11px]">
-                    <i class="fa-solid fa-plus mr-1"></i> เพิ่มรายการเอกสาร
-                  </button>
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="handleSaveDocumentsAdmin(event)" id="btnSaveDocsDirect" class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-3.5 py-1.5 shadow flex items-center cursor-pointer">
+                      <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกข้อมูลเอกสารทันที
+                    </button>
+                    <button type="button" onclick="addDocumentAdminRow()" class="gov-btn gov-btn-blue text-[11px]">
+                      <i class="fa-solid fa-plus mr-1"></i> เพิ่มรายการเอกสาร
+                    </button>
+                  </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -2722,26 +2727,26 @@
               <input type="text" value="${escapeHTML(doc.title)}"
                 oninput="updateDocField(${idx}, 'title', this.value)"
                 placeholder="ชื่อแบบฟอร์มเอกสาร"
-                class="gov-input w-full text-xs font-bold py-1 px-2 text-[#1a365d]">
+                class="doc-input-title gov-input w-full text-xs font-bold py-1 px-2 text-[#1a365d]">
               <input type="text" value="${escapeHTML(doc.desc)}"
                 oninput="updateDocField(${idx}, 'desc', this.value)"
                 placeholder="คำอธิบายใต้ชื่อเอกสาร"
-                class="gov-input w-full text-[11px] text-slate-600 py-1 px-2">
+                class="doc-input-desc gov-input w-full text-[11px] text-slate-600 py-1 px-2">
             </td>
             <td class="p-1.5">
               <input type="text" value="${escapeHTML(doc.signer)}"
                 oninput="updateDocField(${idx}, 'signer', this.value)"
                 placeholder="ผู้มีหน้าที่ลงนาม"
-                class="gov-input w-full text-xs py-1 px-2">
+                class="doc-input-signer gov-input w-full text-xs py-1 px-2">
             </td>
             <td class="p-1.5 space-y-1">
               <div class="flex gap-1.5 items-center">
                 <input type="text" value="${escapeHTML(doc.btnText)}"
                   oninput="updateDocField(${idx}, 'btnText', this.value)"
                   placeholder="ข้อความปุ่ม"
-                  class="gov-input w-full text-xs py-1 px-2 font-medium">
+                  class="doc-input-btn gov-input w-full text-xs py-1 px-2 font-medium">
               </div>
-              <select onchange="onDocActionTypeChange(${idx}, this.value)" class="gov-select w-full text-[11px] py-1 px-1.5 font-semibold text-slate-800 bg-white">
+              <select onchange="onDocActionTypeChange(${idx}, this.value)" class="doc-select-action gov-select w-full text-[11px] py-1 px-1.5 font-semibold text-slate-800 bg-white">
                 <option value="consent" ${doc.actionType === 'consent' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: หนังสือยินยอมผู้ปกครอง</option>
                 <option value="behavior" ${doc.actionType === 'behavior' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: ใบรับรองคะแนนพฤติกรรม</option>
                 <option value="regulation" ${doc.actionType === 'regulation' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: แบบรับทราบระเบียบการ</option>
@@ -2832,6 +2837,75 @@
       });
       renderDocumentsAdminTable();
       showToast(`เพิ่มรายการเอกสารลำดับที่ ${nextId} แล้ว สามารถเลือกไฟล์เอกสารได้ทันที`, 'info');
+    }
+
+        // ดึงค่าสดๆ จากตารางในหน้าเว็บ 100% ป้องกันกรณีพิมพ์แล้วค่าในหน่วยความจำไม่ตรง
+    function scrapeDocumentsFromDOM() {
+      const tbody = document.getElementById('documentsAdminTbody');
+      if (!tbody) return currentDocuments;
+      const rows = tbody.querySelectorAll('tr');
+      const scraped = [];
+      rows.forEach((row, idx) => {
+        const orig = currentDocuments[idx] || {};
+        const titleEl = row.querySelector('.doc-input-title');
+        const descEl = row.querySelector('.doc-input-desc');
+        const signerEl = row.querySelector('.doc-input-signer');
+        const btnEl = row.querySelector('.doc-input-btn');
+        const actionEl = row.querySelector('.doc-select-action');
+        scraped.push({
+          ...orig,
+          id: idx + 1,
+          title: titleEl ? titleEl.value.trim() : (orig.title || ''),
+          desc: descEl ? descEl.value.trim() : (orig.desc || ''),
+          signer: signerEl ? signerEl.value.trim() : (orig.signer || ''),
+          btnText: btnEl ? btnEl.value.trim() : (orig.btnText || 'เปิดพิมพ์ A4'),
+          actionType: actionEl ? actionEl.value : (orig.actionType || 'consent')
+        });
+      });
+      if (scraped.length > 0) {
+        currentDocuments = scraped;
+      }
+      return currentDocuments;
+    }
+
+    // ฟังก์ชันบันทึกเอกสารโดยตรงจากกล่องแก้ไขแบบฟอร์มเอกสาร
+    async function handleSaveDocumentsAdmin(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      const btn = document.getElementById('btnSaveDocsDirect');
+      const origText = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> กำลังบันทึก...';
+      }
+
+      try {
+        const docs = scrapeDocumentsFromDOM();
+        const headerTitle = (document.getElementById('cfg_docsPageHeaderTitle')?.value || '').trim();
+        const cardTitle = (document.getElementById('cfg_docsCardTitle')?.value || '').trim();
+        const cardSubtitle = (document.getElementById('cfg_docsCardSubtitle')?.value || '').trim();
+
+        const updated = {
+          docsPageHeaderTitle: headerTitle,
+          docsCardTitle: cardTitle,
+          docsCardSubtitle: cardSubtitle,
+          documentsList: docs
+        };
+
+        const ok = await WDSDB.saveConfig(updated, true);
+        if (ok) {
+          showToast('✅ บันทึกรายการเอกสารสำเร็จ! เชื่อมโยงไปหน้าดาวน์โหลดและคลาวด์แล้ว', 'success');
+        } else {
+          showToast('บันทึกข้อมูลเรียบร้อยแล้ว', 'info');
+        }
+      } catch (err) {
+        console.error('Save docs error:', err);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err), 'error');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }
+      }
     }
 
     function removeDocumentAdminRow(index) {
@@ -3506,7 +3580,7 @@
           docsPageHeaderTitle: getTrimmed('cfg_docsPageHeaderTitle'),
           docsCardTitle: getTrimmed('cfg_docsCardTitle'),
           docsCardSubtitle: getTrimmed('cfg_docsCardSubtitle'),
-          documentsList: (currentDocuments || []).map((doc, idx) => ({
+          documentsList: (scrapeDocumentsFromDOM() || []).map((doc, idx) => ({
             id: idx + 1,
             title: (doc.title || '').trim(),
             desc: (doc.desc || '').trim(),
