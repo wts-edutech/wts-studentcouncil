@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257039">
-  <script src="js/data.js?v=257039"></script>
-  <script src="js/app.js?v=257039"></script>
+  <link rel="stylesheet" href="css/style.css?v=257040">
+  <script src="js/data.js?v=257040"></script>
+  <script src="js/app.js?v=257040"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -1579,16 +1579,16 @@
               <i class="fa-solid fa-users-gear text-lg"></i>
             </div>
             <div>
-              <div class="font-bold text-sm sm:text-base text-indigo-950 flex items-center gap-2">
-                <span>กำหนดชื่อตำแหน่งผู้สมัคร (ทั้ง 2 ใบสมัคร: สภานักเรียน และ ประธานคณะสี)</span>
-                <span class="text-[11px] bg-indigo-200/80 text-indigo-950 px-2 py-0.5 rounded-full font-bold">10 ลำดับ/ฟอร์ม</span>
+              <div class="font-bold text-sm sm:text-base text-indigo-950 flex items-center gap-2 flex-wrap">
+                <span>กำหนดจำนวนและชื่อตำแหน่งผู้สมัคร (ทั้ง 2 ใบสมัคร: สภานักเรียน และ ประธานคณะสี)</span>
+                <span id="positionsTotalSummaryBadge" class="text-[11px] bg-indigo-200/80 text-indigo-950 px-2 py-0.5 rounded-full font-bold">เพิ่ม-ลด-แก้ไขได้อิสระ</span>
               </div>
               <p class="text-xs sm:text-sm text-indigo-900/85 mt-0.5 leading-relaxed">
-                ปรับเปลี่ยนชื่อตำแหน่งและหัวข้อในใบสมัครออนไลน์ (apply-council.html / apply-color.html) และใบพิมพ์เอกสารทางการ A4 พร้อมซิงค์ขึ้นระบบคลาวด์ทันที
+                เพิ่ม ลดจำนวน จัดเรียงลำดับ และเปลี่ยนชื่อตำแหน่งในใบสมัครออนไลน์ (โดยเฉพาะส่วนที่ 3 คณะทำงานคณะสี และส่วนที่ 2 สภานักเรียน) พร้อมใบพิมพ์เอกสาร A4 และซิงค์ขึ้นระบบคลาวด์ทันที
               </p>
             </div>
           </div>
-          <div class="flex items-center gap-2 flex-shrink-0 w-full md:w-auto">
+          <div class="flex items-center gap-2 flex-shrink-0 w-full md:w-auto flex-wrap">
             <button type="button" onclick="handleSavePositions(event)" class="gov-btn bg-indigo-700 hover:bg-indigo-800 text-white font-bold text-xs sm:text-sm px-4 py-2.5 shadow-md flex items-center justify-center cursor-pointer transition flex-1 md:flex-initial">
               <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกและซิงค์คลาวด์
             </button>
@@ -1598,7 +1598,7 @@
             <a href="apply-color.html" target="_blank" class="gov-btn bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 shadow-sm flex items-center justify-center" title="เปิดดูฟอร์มใบสมัครประธานคณะสี">
               <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> ดูฟอร์มคณะสี
             </a>
-            <button type="button" onclick="resetPositionsToDefaults()" class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2.5 border border-slate-300 cursor-pointer" title="คืนค่าชื่อตำแหน่งมาตรฐานทั้งหมด">
+            <button type="button" onclick="resetPositionsToDefaults()" class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2.5 border border-slate-300 cursor-pointer" title="คืนค่าชื่อและจำนวนตำแหน่งมาตรฐานทั้งหมด">
               <i class="fa-solid fa-rotate-left mr-1"></i> คืนค่าเดิม
             </button>
           </div>
@@ -1610,55 +1610,79 @@
           <div>
             <div class="font-bold text-blue-950">คำชี้แจงการใช้งาน:</div>
             <div class="text-[12px] text-blue-900 leading-relaxed mt-0.5">
-              คุณสามารถแก้ไขชื่อตำแหน่งในแต่ละลำดับของทั้ง 2 ใบสมัครได้อิสระ เช่น เปลี่ยนชื่อ <em>"ผู้แทนพรรคเพื่อดำรงตำแหน่งฝ่ายวิชาการ (คนที่ 1)"</em> หรือ <em>"ฝ่ายสันทนาการ"</em> เป็นตำแหน่งอื่นตามธรรมนูญหรือระเบียบของโรงเรียน เมื่อกดปุ่ม <strong>"บันทึกและซิงค์คลาวด์"</strong> ข้อมูลจะถูกจัดเก็บลงระบบคลาวด์และส่งผลไปยังหน้าใบสมัครออนไลน์และใบพิมพ์ A4 ทันที
+              คุณสามารถ <strong>เพิ่มตำแหน่งใหม่</strong>, <strong>ลบ/ลดจำนวนตำแหน่ง</strong>, <strong>สลับลำดับขึ้น-ลง</strong> และ <strong>แก้ไขชื่อตำแหน่ง</strong> ในแต่ละลำดับของทั้ง 2 ใบสมัครได้อย่างอิสระ (สำหรับใบสมัครประธานคณะสี ตำแหน่งลำดับที่ 2 เป็นต้นไปคือ <strong>ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน</strong>) เมื่อแก้ไขเสร็จแล้วให้กดปุ่ม <strong>"บันทึกและซิงค์คลาวด์"</strong> เพื่อให้หน้าใบสมัครออนไลน์และใบพิมพ์ A4 อัปเดตตรงกันทุกเครื่องทันที
             </div>
           </div>
         </div>
 
-        <!-- 2 คอลัมน์เคียงข้าง: สภานักเรียน 10 ตำแหน่ง (ซ้าย) vs ประธานคณะสี 10 ตำแหน่ง (ขวา) -->
+        <!-- 2 คอลัมน์เคียงข้าง: สภานักเรียน (ซ้าย) vs ประธานคณะสี และส่วนที่ 3 (ขวา) -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
           
-          <!-- คอลัมน์ที่ 1: สภานักเรียน (10 ตำแหน่ง) -->
+          <!-- คอลัมน์ที่ 1: สภานักเรียน -->
           <div class="bg-white border-2 border-blue-200 rounded-xl overflow-hidden shadow-sm space-y-0">
-            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white px-4 py-3 flex items-center justify-between">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm">
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white px-4 py-3 flex items-center justify-between gap-2">
+              <div class="flex items-center space-x-2.5 min-w-0">
+                <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm shrink-0">
                   <i class="fa-solid fa-landmark"></i>
                 </div>
-                <div>
+                <div class="min-w-0">
                   <h4 class="font-bold text-sm sm:text-base leading-tight">1. ใบสมัครประธานสภานักเรียน</h4>
-                  <div class="text-[11px] text-blue-100">โครงสร้างทีม 10 ตำแหน่ง (ผู้แทนพรรค)</div>
+                  <div id="councilPosSubtitle" class="text-[11px] text-blue-100">โครงสร้างทีม 10 ตำแหน่ง (ผู้แทนพรรค)</div>
                 </div>
               </div>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
-                10 ตำแหน่ง
-              </span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span id="councilPosCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
+                  10 ตำแหน่ง
+                </span>
+                <button type="button" onclick="addPositionRow('council')" class="px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-white shadow-sm cursor-pointer transition flex items-center gap-1" title="เพิ่มตำแหน่งใหม่ในใบสมัครสภานักเรียน">
+                  <i class="fa-solid fa-plus"></i> เพิ่ม
+                </button>
+              </div>
             </div>
 
             <div class="p-4 sm:p-5 space-y-3.5 divide-y divide-slate-100" id="positionsCouncilListContainer">
               <!-- Rendered dynamically by JS loadPositionsIntoForm -->
             </div>
+
+            <div class="px-4 sm:px-5 py-3 bg-blue-50/60 border-t border-blue-100 flex justify-between items-center gap-2">
+              <span class="text-[11px] text-blue-800">ลำดับที่ 1 (ประธานสภา) จะถูกล็อกเป็นหัวหน้าพรรค</span>
+              <button type="button" onclick="addPositionRow('council')" class="gov-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 shadow-sm cursor-pointer">
+                <i class="fa-solid fa-plus mr-1"></i> เพิ่มตำแหน่งสภา
+              </button>
+            </div>
           </div>
 
-          <!-- คอลัมน์ที่ 2: ประธานคณะสี (10 ตำแหน่ง) -->
+          <!-- คอลัมน์ที่ 2: ประธานคณะสี และส่วนที่ 3 -->
           <div class="bg-white border-2 border-amber-200 rounded-xl overflow-hidden shadow-sm space-y-0">
-            <div class="bg-gradient-to-r from-amber-600 to-orange-700 text-white px-4 py-3 flex items-center justify-between">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm">
+            <div class="bg-gradient-to-r from-amber-600 to-orange-700 text-white px-4 py-3 flex items-center justify-between gap-2">
+              <div class="flex items-center space-x-2.5 min-w-0">
+                <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm shrink-0">
                   <i class="fa-solid fa-flag"></i>
                 </div>
-                <div>
+                <div class="min-w-0">
                   <h4 class="font-bold text-sm sm:text-base leading-tight">2. ใบสมัครประธานคณะสี (5 สี)</h4>
-                  <div class="text-[11px] text-amber-100">โครงสร้างทีม 10 ตำแหน่ง (ประธาน 1 + คณะทำงาน 9)</div>
+                  <div id="colorPosSubtitle" class="text-[11px] text-amber-100">โครงสร้างทีม 10 ตำแหน่ง (ประธาน 1 + ส่วนที่ 3 คณะทำงาน 9)</div>
                 </div>
               </div>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
-                10 ตำแหน่ง
-              </span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span id="colorPosCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
+                  10 ตำแหน่ง
+                </span>
+                <button type="button" onclick="addPositionRow('color')" class="px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-white shadow-sm cursor-pointer transition flex items-center gap-1" title="เพิ่มตำแหน่งในส่วนที่ 3 (สมาชิกคณะสี)">
+                  <i class="fa-solid fa-plus"></i> เพิ่ม
+                </button>
+              </div>
             </div>
 
-            <div class="p-4 sm:p-5 space-y-3.5 divide-y divide-slate-100" id="positionsColorListContainer">
+            <div class="p-4 sm:p-5 space-y-3.5" id="positionsColorListContainer">
               <!-- Rendered dynamically by JS loadPositionsIntoForm -->
+            </div>
+
+            <div class="px-4 sm:px-5 py-3 bg-amber-50/70 border-t border-amber-200 flex justify-between items-center gap-2">
+              <span class="text-[11px] text-amber-900">ตำแหน่งลำดับที่ 2 เป็นต้นไปคือ <strong>ส่วนที่ 3</strong></span>
+              <button type="button" onclick="addPositionRow('color')" class="gov-btn bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-1.5 shadow-sm cursor-pointer">
+                <i class="fa-solid fa-plus mr-1"></i> เพิ่มตำแหน่งในส่วนที่ 3
+              </button>
             </div>
           </div>
 
@@ -1775,7 +1799,9 @@
       if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
       if (typeof updateLivePreview === 'function') updateLivePreview();
       if (typeof loadApplyManagerData === 'function') loadApplyManagerData();
-      if (activeTab === 'positions' && typeof loadPositionsIntoForm === 'function') loadPositionsIntoForm();
+      if (activeTab === 'positions' && !isUserTyping && !positionsEditorDirty && typeof loadPositionsIntoForm === 'function') {
+        loadPositionsIntoForm();
+      }
     });
 
     window.addEventListener('wds-apps-synced', () => {
@@ -2350,107 +2376,280 @@
     }
 
     // ==========================================
-    // 5. ระบบจัดการและแก้ไขชื่อตำแหน่งผู้สมัครทั้งสองฟอร์ม (Positions Manager)
+    // 5. ระบบจัดการและแก้ไขจำนวน/ชื่อตำแหน่งผู้สมัครทั้งสองฟอร์ม (Positions Manager)
     // ==========================================
+    let editingCouncilPositions = [];
+    let editingColorPositions = [];
+    let positionsEditorDirty = false;
+
     function loadPositionsIntoForm() {
       const cfg = WDSDB.getConfig();
-      const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) 
-        ? WDSDB.getCouncilPositions() 
+      const rawCouncil = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions)
+        ? WDSDB.getCouncilPositions()
         : (cfg.councilPositions || DEFAULT_COUNCIL_POSITIONS);
-      const colorPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorPositions) 
-        ? WDSDB.getColorPositions() 
+      const rawColor = (typeof WDSDB !== 'undefined' && WDSDB.getColorPositions)
+        ? WDSDB.getColorPositions()
         : (cfg.colorPositions || DEFAULT_COLOR_POSITIONS);
 
+      editingCouncilPositions = JSON.parse(JSON.stringify(rawCouncil)).map((p, i) => ({
+        ...p,
+        isLeader: i === 0 ? true : !!p.isLeader
+      }));
+      editingColorPositions = JSON.parse(JSON.stringify(rawColor)).map((p, i) => ({
+        ...p,
+        isLeader: i === 0 ? true : false
+      }));
+      positionsEditorDirty = false;
+      renderPositionsEditor();
+    }
+
+    function syncEditingPositionInputs(type) {
+      const list = type === 'council' ? editingCouncilPositions : editingColorPositions;
+      const prefix = type === 'council' ? 'posCouncil_' : 'posColor_';
+      list.forEach((pos, idx) => {
+        const input = document.getElementById(`${prefix}${idx}`);
+        if (input) {
+          const val = input.value;
+          pos.title = val;
+          pos.shortTitle = val;
+          if (type === 'color') pos.roleName = val;
+        }
+      });
+    }
+
+    function buildPositionEditorRowHtml(type, pos, idx, total) {
+      const num = idx + 1;
+      const isCouncil = type === 'council';
+      const isLeader = isCouncil ? (pos.isLeader || idx === 0) : (idx === 0 || pos.isLeader);
+      const defaultsList = isCouncil ? DEFAULT_COUNCIL_POSITIONS : DEFAULT_COLOR_POSITIONS;
+      const matchedDefault = defaultsList.find(d => d.key === pos.key) || defaultsList[idx];
+      const defaultTitle = matchedDefault?.title || '';
+
+      const accentBadge = isCouncil
+        ? (isLeader ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700')
+        : (isLeader ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-900');
+      const previewTone = isCouncil
+        ? 'text-blue-900 bg-blue-50 border-blue-200/80'
+        : 'text-amber-900 bg-amber-50 border-amber-200/80';
+      const hoverRestore = isCouncil ? 'hover:text-blue-700' : 'hover:text-amber-700';
+
+      const roleTag = isCouncil
+        ? (isLeader ? '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">หัวหน้าพรรค (ประธานสภา)</span>' : '')
+        : (isLeader
+            ? '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold">ส่วนที่ 2 • หัวหน้าทีม (ประธานสี)</span>'
+            : `<span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-semibold">ส่วนที่ 3 • คนที่ ${idx}</span>`);
+
+      const inputId = `${isCouncil ? 'posCouncil' : 'posColor'}_${idx}`;
+      const previewId = `${isCouncil ? 'previewCouncil' : 'previewColor'}_${idx}`;
+      const placeholderText = defaultTitle || 'ระบุชื่อตำแหน่ง เช่น ฝ่ายกิจกรรม';
+
+      const moveUpDisabled = idx <= 1 ? 'opacity-30 pointer-events-none' : '';
+      const moveDownDisabled = idx >= total - 1 ? 'opacity-30 pointer-events-none' : '';
+
+      return `
+        <div class="pt-3.5 first:pt-0 space-y-1.5" data-pos-row="${type}-${idx}">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <label for="${inputId}" class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${accentBadge} text-xs font-bold font-mono shrink-0">
+                ${num}
+              </span>
+              <span>ลำดับที่ ${num}</span>
+              ${roleTag}
+              <span class="text-[11px] text-slate-400 font-mono font-normal">(${escapeHTML(pos.key)})</span>
+            </label>
+            <div class="flex items-center gap-1">
+              ${!isLeader ? `
+                <button type="button" onclick="movePositionRow('${type}', ${idx}, -1)" class="px-1.5 py-0.5 text-[11px] text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded border border-slate-200 cursor-pointer ${moveUpDisabled}" title="เลื่อนขึ้น">
+                  <i class="fa-solid fa-arrow-up"></i>
+                </button>
+                <button type="button" onclick="movePositionRow('${type}', ${idx}, 1)" class="px-1.5 py-0.5 text-[11px] text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded border border-slate-200 cursor-pointer ${moveDownDisabled}" title="เลื่อนลง">
+                  <i class="fa-solid fa-arrow-down"></i>
+                </button>
+              ` : ''}
+              ${defaultTitle ? `
+                <button type="button" onclick="restoreSinglePosition('${type}', ${idx})" class="px-1.5 py-0.5 text-[11px] text-slate-400 ${hoverRestore} hover:underline cursor-pointer" title="คืนค่าเดิมเฉพาะข้อนี้">
+                  <i class="fa-solid fa-rotate-left mr-0.5"></i> ค่าเดิม
+                </button>
+              ` : ''}
+              ${!isLeader ? `
+                <button type="button" onclick="removePositionRow('${type}', ${idx})" class="px-2 py-0.5 text-[11px] text-red-600 hover:text-white hover:bg-red-600 rounded border border-red-200 cursor-pointer transition font-semibold" title="ลบตำแหน่งนี้">
+                  <i class="fa-solid fa-trash-can mr-0.5"></i> ลบ
+                </button>
+              ` : '<span class="text-[10px] text-slate-400 px-1.5 py-0.5 bg-slate-100 rounded"><i class="fa-solid fa-lock mr-0.5"></i> หลัก</span>'}
+            </div>
+          </div>
+          <input 
+            type="text" 
+            id="${inputId}" 
+            value="${escapeHTML(pos.title || '')}" 
+            oninput="updatePositionPreview('${type}', ${idx})"
+            data-default="${escapeHTML(defaultTitle)}"
+            class="gov-input w-full font-medium text-slate-800"
+            placeholder="ระบุชื่อตำแหน่ง เช่น ${escapeHTML(placeholderText)}"
+          >
+          <div class="text-[11px] text-slate-500 flex items-center gap-1.5 pt-0.5 flex-wrap">
+            <span class="text-slate-400">หัวข้อในการ์ดใบสมัคร:</span>
+            <span class="font-bold ${previewTone} px-2 py-0.5 rounded border" id="${previewId}">
+              ลำดับที่ ${num}. ${escapeHTML(pos.title || placeholderText)}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    function updatePositionsCountBadges() {
+      const councilCount = editingCouncilPositions.length;
+      const colorCount = editingColorPositions.length;
+      const colorMemberCount = Math.max(0, colorCount - 1);
+
+      const summaryBadge = document.getElementById('positionsTotalSummaryBadge');
+      if (summaryBadge) {
+        summaryBadge.textContent = `สภา ${councilCount} ตำแหน่ง • คณะสี ${colorCount} ตำแหน่ง (ส่วนที่ 3: ${colorMemberCount})`;
+      }
+
+      const cBadge = document.getElementById('councilPosCountBadge');
+      if (cBadge) cBadge.textContent = `${councilCount} ตำแหน่ง`;
+      const cSub = document.getElementById('councilPosSubtitle');
+      if (cSub) cSub.textContent = `โครงสร้างทีม ${councilCount} ตำแหน่ง (ผู้แทนพรรค)`;
+
+      const kBadge = document.getElementById('colorPosCountBadge');
+      if (kBadge) kBadge.textContent = `${colorCount} ตำแหน่ง`;
+      const kSub = document.getElementById('colorPosSubtitle');
+      if (kSub) kSub.textContent = `โครงสร้างทีม ${colorCount} ตำแหน่ง (ประธาน 1 + ส่วนที่ 3 คณะทำงาน ${colorMemberCount})`;
+
+      const s3SummaryEl = document.getElementById('colorAdminSection3Summary');
+      if (s3SummaryEl && typeof formatPositionGroupSummary === 'function') {
+        s3SummaryEl.textContent = formatPositionGroupSummary(editingColorPositions.slice(1));
+      }
+      const s3CountEl = document.getElementById('colorAdminSection3Count');
+      if (s3CountEl) {
+        s3CountEl.textContent = colorMemberCount;
+      }
+    }
+
+    function renderPositionsEditor() {
       const councilContainer = document.getElementById('positionsCouncilListContainer');
       const colorContainer = document.getElementById('positionsColorListContainer');
 
       if (councilContainer) {
-        councilContainer.innerHTML = councilPositions.map((pos, idx) => {
-          const num = idx + 1;
-          const isLeader = pos.isLeader || idx === 0;
-          const defaultTitle = DEFAULT_COUNCIL_POSITIONS[idx]?.title || pos.title;
-          return `
-            <div class="pt-3.5 first:pt-0 space-y-1.5">
-              <div class="flex items-center justify-between">
-                <label for="posCouncil_${idx}" class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-1.5">
-                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${isLeader ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'} text-xs font-bold font-mono">
-                    ${num}
-                  </span>
-                  <span>ลำดับที่ ${num}</span>
-                  ${isLeader ? '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">หัวหน้าพรรค (ประธานสภา)</span>' : ''}
-                  <span class="text-[11px] text-slate-400 font-mono font-normal">(${pos.key})</span>
-                </label>
-                <button type="button" onclick="restoreSinglePosition('council', ${idx})" class="text-[11px] text-slate-400 hover:text-blue-700 hover:underline cursor-pointer" title="คืนค่าเดิมเฉพาะข้อนี้">
-                  <i class="fa-solid fa-rotate-left mr-0.5"></i> ค่าเดิม
-                </button>
-              </div>
-              <input 
-                type="text" 
-                id="posCouncil_${idx}" 
-                value="${escapeHTML(pos.title || '')}" 
-                oninput="updatePositionPreview('council', ${idx})"
-                data-default="${escapeHTML(defaultTitle)}"
-                class="gov-input w-full font-medium text-slate-800"
-                placeholder="ระบุชื่อตำแหน่ง เช่น ${escapeHTML(defaultTitle)}"
-              >
-              <div class="text-[11px] text-slate-500 flex items-center gap-1.5 pt-0.5 flex-wrap">
-                <span class="text-slate-400">หัวข้อในการ์ดใบสมัคร:</span>
-                <span class="font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200/80" id="previewCouncil_${idx}">
-                  ลำดับที่ ${num}. ${escapeHTML(pos.title || defaultTitle)}
-                </span>
-              </div>
-            </div>
-          `;
-        }).join('');
+        councilContainer.innerHTML = editingCouncilPositions
+          .map((pos, idx) => buildPositionEditorRowHtml('council', pos, idx, editingCouncilPositions.length))
+          .join('');
       }
 
       if (colorContainer) {
-        colorContainer.innerHTML = colorPositions.map((pos, idx) => {
-          const num = idx + 1;
-          const isLeader = pos.isLeader || idx === 0;
-          const defaultTitle = DEFAULT_COLOR_POSITIONS[idx]?.title || pos.title;
-          return `
-            <div class="pt-3.5 first:pt-0 space-y-1.5">
-              <div class="flex items-center justify-between">
-                <label for="posColor_${idx}" class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-1.5">
-                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${isLeader ? 'bg-amber-600 text-white' : 'bg-slate-200 text-slate-700'} text-xs font-bold font-mono">
-                    ${num}
-                  </span>
-                  <span>ลำดับที่ ${num}</span>
-                  ${isLeader ? '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold">หัวหน้าทีม (ประธานสี)</span>' : `<span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-semibold">สมาชิกคณะทำงานคนที่ ${idx}</span>`}
-                  <span class="text-[11px] text-slate-400 font-mono font-normal">(${pos.key})</span>
-                </label>
-                <button type="button" onclick="restoreSinglePosition('color', ${idx})" class="text-[11px] text-slate-400 hover:text-amber-700 hover:underline cursor-pointer" title="คืนค่าเดิมเฉพาะข้อนี้">
-                  <i class="fa-solid fa-rotate-left mr-0.5"></i> ค่าเดิม
-                </button>
+        const leaderPos = editingColorPositions[0];
+        const memberPositions = editingColorPositions.slice(1);
+        const leaderHtml = leaderPos
+          ? `<div class="pb-3 border-b border-slate-200">${buildPositionEditorRowHtml('color', leaderPos, 0, editingColorPositions.length)}</div>`
+          : '';
+
+        const summaryText = (typeof formatPositionGroupSummary === 'function')
+          ? formatPositionGroupSummary(memberPositions)
+          : '';
+
+        const section3HeaderHtml = `
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-2 mt-2">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="font-bold text-xs sm:text-sm text-[#16325c] flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-amber-600"></i>
+                <span>ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน (<span id="colorAdminSection3Count">${memberPositions.length}</span> ตำแหน่ง)</span>
               </div>
-              <input 
-                type="text" 
-                id="posColor_${idx}" 
-                value="${escapeHTML(pos.title || '')}" 
-                oninput="updatePositionPreview('color', ${idx})"
-                data-default="${escapeHTML(defaultTitle)}"
-                class="gov-input w-full font-medium text-slate-800"
-                placeholder="ระบุชื่อตำแหน่ง เช่น ${escapeHTML(defaultTitle)}"
-              >
-              <div class="text-[11px] text-slate-500 flex items-center gap-1.5 pt-0.5 flex-wrap">
-                <span class="text-slate-400">หัวข้อในการ์ดใบสมัคร:</span>
-                <span class="font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/80" id="previewColor_${idx}">
-                  ลำดับที่ ${num}. ${escapeHTML(pos.title || defaultTitle)}
-                </span>
-              </div>
+              <button type="button" onclick="addPositionRow('color')" class="px-2.5 py-1 rounded text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer transition flex items-center gap-1">
+                <i class="fa-solid fa-plus"></i> เพิ่มตำแหน่งส่วนที่ 3
+              </button>
             </div>
-          `;
-        }).join('');
+            <div class="text-[11px] bg-white/90 text-amber-900 border border-amber-200/80 px-2.5 py-1 rounded font-semibold" id="colorAdminSection3Summary">
+              ${escapeHTML(summaryText)}
+            </div>
+          </div>
+        `;
+
+        const membersHtml = memberPositions.length > 0
+          ? `<div class="space-y-3.5 divide-y divide-slate-100">${memberPositions.map((pos, mIdx) => buildPositionEditorRowHtml('color', pos, mIdx + 1, editingColorPositions.length)).join('')}</div>`
+          : `<div class="p-4 text-center text-xs text-slate-400 border border-dashed border-slate-300 rounded-lg bg-slate-50">
+               ยังไม่มีตำแหน่งสมาชิกในส่วนที่ 3 กดปุ่ม <strong>"+ เพิ่มตำแหน่งส่วนที่ 3"</strong> เพื่อเพิ่มตำแหน่ง
+             </div>`;
+
+        colorContainer.innerHTML = leaderHtml + section3HeaderHtml + membersHtml;
       }
+
+      updatePositionsCountBadges();
+    }
+
+    function addPositionRow(type) {
+      syncEditingPositionInputs(type);
+      const list = type === 'council' ? editingCouncilPositions : editingColorPositions;
+      const newKey = `pos_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`;
+      const nextNum = type === 'color' ? list.length : list.length + 1;
+      const defaultName = type === 'color'
+        ? `ตำแหน่งคณะทำงานเพิ่มเติม (คนที่ ${nextNum})`
+        : `ผู้แทนพรรคเพิ่มเติม (ลำดับที่ ${nextNum})`;
+
+      list.push({
+        key: newKey,
+        title: defaultName,
+        isLeader: false,
+        roleName: defaultName,
+        shortTitle: defaultName
+      });
+      positionsEditorDirty = true;
+      renderPositionsEditor();
+
+      const newIdx = list.length - 1;
+      const newInput = document.getElementById(`pos${type === 'council' ? 'Council' : 'Color'}_${newIdx}`);
+      if (newInput) {
+        newInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        newInput.focus();
+        newInput.select();
+      }
+      showToast(`เพิ่มตำแหน่งลำดับที่ ${list.length} แล้ว (อย่าลืมกด "บันทึกและซิงค์คลาวด์")`, 'info');
+    }
+
+    function removePositionRow(type, idx) {
+      if (idx <= 0) {
+        showToast('ไม่สามารถลบตำแหน่งหัวหน้าลำดับที่ 1 ได้', 'error');
+        return;
+      }
+      syncEditingPositionInputs(type);
+      const list = type === 'council' ? editingCouncilPositions : editingColorPositions;
+      const target = list[idx];
+      if (!target) return;
+      list.splice(idx, 1);
+      positionsEditorDirty = true;
+      renderPositionsEditor();
+      showToast(`ลบตำแหน่ง "${target.title || idx + 1}" แล้ว (กดบันทึกเพื่อยืนยัน)`, 'info');
+    }
+
+    function movePositionRow(type, idx, delta) {
+      syncEditingPositionInputs(type);
+      const list = type === 'council' ? editingCouncilPositions : editingColorPositions;
+      const targetIdx = idx + delta;
+      if (idx <= 0 || targetIdx <= 0 || targetIdx >= list.length) return;
+      const temp = list[idx];
+      list[idx] = list[targetIdx];
+      list[targetIdx] = temp;
+      positionsEditorDirty = true;
+      renderPositionsEditor();
     }
 
     function updatePositionPreview(type, idx) {
+      const list = type === 'council' ? editingCouncilPositions : editingColorPositions;
       const input = document.getElementById(`pos${type === 'council' ? 'Council' : 'Color'}_${idx}`);
       const preview = document.getElementById(`preview${type === 'council' ? 'Council' : 'Color'}_${idx}`);
+      if (input && list[idx]) {
+        const rawVal = input.value;
+        list[idx].title = rawVal;
+        list[idx].shortTitle = rawVal;
+        if (type === 'color') list[idx].roleName = rawVal;
+        positionsEditorDirty = true;
+      }
       if (input && preview) {
         const val = input.value.trim() || input.placeholder;
         preview.textContent = `ลำดับที่ ${idx + 1}. ${val}`;
+      }
+      if (type === 'color') {
+        updatePositionsCountBadges();
       }
     }
 
@@ -2466,30 +2665,29 @@
     async function handleSavePositions(e) {
       if (e && typeof e.preventDefault === 'function') e.preventDefault();
       try {
-        const currentCfg = WDSDB.getConfig();
-        const baseCouncil = JSON.parse(JSON.stringify(currentCfg.councilPositions || DEFAULT_COUNCIL_POSITIONS));
-        const baseColor = JSON.parse(JSON.stringify(currentCfg.colorPositions || DEFAULT_COLOR_POSITIONS));
+        syncEditingPositionInputs('council');
+        syncEditingPositionInputs('color');
 
-        const newCouncil = baseCouncil.map((pos, idx) => {
-          const input = document.getElementById(`posCouncil_${idx}`);
-          const title = input ? input.value.trim() : pos.title;
+        const cleanList = (arr, isColor) => arr.map((pos, idx) => {
+          const title = String(pos.title || '').trim() || `ตำแหน่งที่ ${idx + 1}`;
           return {
             ...pos,
-            title: title || pos.title
+            isLeader: idx === 0,
+            title,
+            shortTitle: title,
+            ...(isColor ? { roleName: title } : {})
           };
         });
 
-        const newColor = baseColor.map((pos, idx) => {
-          const input = document.getElementById(`posColor_${idx}`);
-          const title = input ? input.value.trim() : pos.title;
-          return {
-            ...pos,
-            title: title || pos.title,
-            roleName: title || pos.roleName || pos.title
-          };
-        });
+        const newCouncil = cleanList(editingCouncilPositions, false);
+        const newColor = cleanList(editingColorPositions, true);
 
-        showToast('☁️ กำลังบันทึกและซิงค์ชื่อตำแหน่งขึ้นคลาวด์...', 'info');
+        if (newCouncil.length === 0 || newColor.length === 0) {
+          showToast('ต้องมีอย่างน้อย 1 ตำแหน่งในแต่ละแบบฟอร์ม', 'error');
+          return;
+        }
+
+        showToast('☁️ กำลังบันทึกและซิงค์ตำแหน่งขึ้นคลาวด์...', 'info');
 
         const ok = await WDSDB.saveConfig({
           councilPositions: newCouncil,
@@ -2497,8 +2695,9 @@
         });
 
         if (ok) {
+          positionsEditorDirty = false;
           loadPositionsIntoForm();
-          showToast('✅ บันทึกและซิงค์ชื่อตำแหน่งทั้ง 2 ใบสมัครขึ้นคลาวด์สำเร็จ!', 'success');
+          showToast('✅ บันทึกและซิงค์จำนวนและชื่อตำแหน่งทั้ง 2 ใบสมัครขึ้นคลาวด์สำเร็จ!', 'success');
         } else {
           showToast('บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
         }
@@ -2509,7 +2708,7 @@
     }
 
     async function resetPositionsToDefaults() {
-      if (!confirm('ต้องการคืนค่าชื่อตำแหน่งทั้งหมดของทั้งสองใบสมัครกลับเป็นค่าเริ่มต้นมาตรฐานใช่หรือไม่?')) return;
+      if (!confirm('ต้องการคืนค่าจำนวนและชื่อตำแหน่งทั้งหมดของทั้งสองใบสมัครกลับเป็นค่าเริ่มต้นมาตรฐาน (10 ตำแหน่ง) ใช่หรือไม่?')) return;
       try {
         showToast('☁️ กำลังคืนค่าเริ่มต้นและซิงค์คลาวด์...', 'info');
         const ok = await WDSDB.saveConfig({
@@ -2517,8 +2716,9 @@
           colorPositions: JSON.parse(JSON.stringify(DEFAULT_COLOR_POSITIONS))
         });
         if (ok) {
+          positionsEditorDirty = false;
           loadPositionsIntoForm();
-          showToast('✅ คืนค่าชื่อตำแหน่งมาตรฐานและซิงค์คลาวด์เรียบร้อยแล้ว!', 'success');
+          showToast('✅ คืนค่าจำนวนและชื่อตำแหน่งมาตรฐานและซิงค์คลาวด์เรียบร้อยแล้ว!', 'success');
         }
       } catch (e) {
         showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
@@ -3716,18 +3916,30 @@
 
       const modal = document.getElementById('reviewModal');
       const content = document.getElementById('reviewModalContent');
-      const leader = activeTab === 'council' ? item.members?.president : item.leader;
+      const cPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
+      const leader = activeTab === 'council'
+        ? (item.members?.president || item.members?.[cPositions[0]?.key] || Object.values(item.members || {})[0])
+        : item.leader;
       const cfg = WDSDB.getConfig();
 
       let membersTableHtml = '';
       if (activeTab === 'council') {
-        const cPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
-        const rows = cPositions.map((pos, i) => {
-          const m = item.members?.[pos.key] || {};
+        const displayList = cPositions.map(pos => ({
+          key: pos.key,
+          title: pos.title,
+          m: item.members?.[pos.key] || {}
+        }));
+        Object.entries(item.members || {}).forEach(([k, val]) => {
+          if (!cPositions.some(p => p.key === k) && val && val.fullname) {
+            displayList.push({ key: k, title: val.role || k, m: val });
+          }
+        });
+        const rows = displayList.map((entry, i) => {
+          const m = entry.m || {};
           return `
             <tr>
               <td class="text-center font-bold">${i + 1}</td>
-              <td>${pos.title}</td>
+              <td>${escapeHTML(m.role || entry.title)}</td>
               <td class="font-semibold">${escapeHTML(m.fullname || '-')}</td>
               <td class="text-center">ม.4/${escapeHTML(m.room || '-')}</td>
               <td class="text-center font-mono">${escapeHTML(m.studentId || '-')}</td>
@@ -3739,7 +3951,7 @@
         membersTableHtml = `
           <div class="border border-slate-300 rounded overflow-hidden">
             <div class="bg-slate-100 px-3 py-1.5 font-bold text-slate-700 border-b border-slate-300">
-              รายชื่อผู้สมัครทั้ง 10 ตำแหน่งในพรรค
+              รายชื่อผู้สมัครในพรรค (${displayList.length} ตำแหน่ง)
             </div>
             <div class="overflow-x-auto max-h-48">
               <table class="gov-sys-table text-[11px]">

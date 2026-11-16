@@ -53,6 +53,27 @@ async function fetchCleanJson(url, options = {}) {
   }
 }
 
+// ฟังก์ชันสรุปกลุ่มตำแหน่งอัตโนมัติ (เช่น "รองประธานคณะสี 1 • ฝ่ายทั่วไป 2 • ...")
+function formatPositionGroupSummary(positions) {
+  if (!Array.isArray(positions) || positions.length === 0) return 'ไม่มีตำแหน่งสมาชิกเพิ่มเติม';
+  const groups = new Map();
+  positions.forEach(pos => {
+    const raw = String(pos.title || pos.roleName || '').trim();
+    if (!raw) return;
+    const base = raw
+      .replace(/\s*\(คนที่\s*\d+\)\s*$/i, '')
+      .replace(/\s*คนที่\s*\d+\s*$/i, '')
+      .replace(/\s*\(\d+\)\s*$/, '')
+      .replace(/\s+\d+$/, '')
+      .trim();
+    const label = base || raw;
+    groups.set(label, (groups.get(label) || 0) + 1);
+  });
+  return Array.from(groups.entries())
+    .map(([name, count]) => `${name} ${count}`)
+    .join(' • ');
+}
+
 // ตราสัญลักษณ์เริ่มต้น (ตราโรงเรียนวชิรธรรมสาธิต พื้นหลังโปร่งใส, ตราสภานักเรียน, ตราคณะสี)
 const DEFAULT_SCHOOL_LOGO = "assets/images/school-logo-transparent.png";
 const DEFAULT_LOGO_2 = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffffff' stroke='%231e3a8a' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='42' fill='%23eff6ff' stroke='%233b82f6' stroke-width='1.5'/%3E%3Cpolygon points='50,20 58,38 78,38 62,50 68,68 50,57 32,68 38,50 22,38 42,38' fill='%231e3a8a' stroke='%23c59b27' stroke-width='1.5'/%3E%3Ctext x='50' y='86' font-family='sans-serif' font-size='8.5' font-weight='bold' fill='%231e3a8a' text-anchor='middle'%3Eสภานักเรียน%3C/text%3E%3C/svg%3E";
@@ -726,6 +747,12 @@ const WDSDB = {
       const curVer = typeof current.configVersion === 'string' ? parseFloat(current.configVersion) : 2570.9;
       const nextVer = ((isNaN(curVer) ? 2570.9 : curVer) + 0.01).toFixed(2);
       const merged = { ...current, ...newConfig, _lastUpdated: timestamp, configVersion: nextVer };
+      if (Array.isArray(merged.councilPositions) && merged.councilPositions.length > 0) {
+        COUNCIL_POSITIONS = merged.councilPositions;
+      }
+      if (Array.isArray(merged.colorPositions) && merged.colorPositions.length > 0) {
+        COLOR_MEMBER_POSITIONS = merged.colorPositions.filter((p, idx) => idx > 0 && !p.isLeader);
+      }
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
       if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
         window.dispatchEvent(new CustomEvent('wds-cloud-synced', { detail: merged }));
@@ -794,7 +821,6 @@ const WDSDB = {
       const freshUrl = getFreshCloudUrl(CLOUD_SYNC.CONFIG_URL);
       const remote = await fetchCleanJson(freshUrl, { cache: 'no-store' });
       if (!remote || typeof remote !== 'object') return null;
-      if (!remote || typeof remote !== 'object') return null;
 
       const stored = localStorage.getItem(STORAGE_KEYS.CONFIG);
       const local = stored ? JSON.parse(stored) : null;
@@ -806,6 +832,12 @@ const WDSDB = {
 
       if (isCloudNewer) {
         const merged = { ...DEFAULT_SITE_CONFIG, ...remote };
+        if (Array.isArray(merged.councilPositions) && merged.councilPositions.length > 0) {
+          COUNCIL_POSITIONS = merged.councilPositions;
+        }
+        if (Array.isArray(merged.colorPositions) && merged.colorPositions.length > 0) {
+          COLOR_MEMBER_POSITIONS = merged.colorPositions.filter((p, idx) => idx > 0 && !p.isLeader);
+        }
         localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
         if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
           window.dispatchEvent(new CustomEvent('wds-cloud-synced', { detail: merged }));
@@ -822,7 +854,7 @@ const WDSDB = {
     }
   },
 
-  // ดึงรายการตำแหน่งผู้สมัครสภานักเรียนทั้ง 10 ตำแหน่ง
+  // ดึงรายการตำแหน่งผู้สมัครสภานักเรียนทั้งหมด
   getCouncilPositions() {
     const cfg = this.getConfig();
     return (cfg.councilPositions && Array.isArray(cfg.councilPositions) && cfg.councilPositions.length > 0)
@@ -830,7 +862,7 @@ const WDSDB = {
       : DEFAULT_COUNCIL_POSITIONS;
   },
 
-  // ดึงรายการตำแหน่งผู้สมัครประธานคณะสีและคณะทำงานทั้ง 10 ตำแหน่ง
+  // ดึงรายการตำแหน่งผู้สมัครประธานคณะสีและคณะทำงานทั้งหมด
   getColorPositions() {
     const cfg = this.getConfig();
     return (cfg.colorPositions && Array.isArray(cfg.colorPositions) && cfg.colorPositions.length > 0)
@@ -838,14 +870,17 @@ const WDSDB = {
       : DEFAULT_COLOR_POSITIONS;
   },
 
-  // ดึงเฉพาะตำแหน่งสมาชิกคณะทำงานคณะสี (9 ตำแหน่ง นอกเหนือจากประธานคณะสี)
+  // ดึงเฉพาะตำแหน่งสมาชิกคณะทำงานคณะสี (ส่วนที่ 3 นอกเหนือจากประธานคณะสี)
   getColorMemberPositions() {
-    return this.getColorPositions().filter(p => !p.isLeader);
+    const all = this.getColorPositions();
+    const leader = this.getColorLeaderPosition();
+    return all.filter((p, idx) => idx > 0 && p.key !== leader.key && !p.isLeader);
   },
 
   // ดึงข้อมูลตำแหน่งประธานคณะสี (หัวหน้าทีม ลำดับที่ 1)
   getColorLeaderPosition() {
-    return this.getColorPositions().find(p => p.isLeader) || DEFAULT_COLOR_POSITIONS[0];
+    const all = this.getColorPositions();
+    return all.find(p => p.isLeader) || all[0] || DEFAULT_COLOR_POSITIONS[0];
   },
 
   // ซิงค์ใบสมัครจากคลาวด์เข้าหน้าหลังบ้านและหน้าตรวจสอบสถานะ

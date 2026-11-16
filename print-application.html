@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257039">
+  <link rel="stylesheet" href="css/style.css?v=257040">
   <style>
     @page {
       size: A4 portrait;
@@ -68,8 +68,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257039"></script>
-  <script src="js/app.js?v=257039"></script>
+  <script src="js/data.js?v=257040"></script>
+  <script src="js/app.js?v=257040"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -245,29 +245,40 @@
           </div>
         </div>
 
-        <!-- 10 Positions Table -->
+        <!-- Positions Table -->
         <div class="mb-3">
-          <div class="text-xs font-bold mb-1">รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน (ครบทั้ง 10 ตำแหน่ง):</div>
-          <table class="formal-table text-[11px]">
-            <thead>
-              <tr class="bg-slate-100">
-                <th style="width: 5%;">ที่</th>
-                <th style="width: 25%;">ตำแหน่งในสภานักเรียน</th>
-                <th style="width: 25%;">ชื่อ - นามสกุล</th>
-                <th style="width: 8%;">ห้อง</th>
-                <th style="width: 11%;">เลขประจำตัว</th>
-                <th style="width: 9%;">คะแนนคงเหลือ</th>
-                <th style="width: 8%;">เกรดเฉลี่ย</th>
-                <th style="width: 9%;">ข้อตกลง</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${(() => {
-                const cPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : (cfg.councilPositions || DEFAULT_COUNCIL_POSITIONS);
-                return cPositions.map((pos, idx) => renderPositionRow(idx + 1, pos.shortTitle || pos.title, m[pos.key])).join('');
-              })()}
-            </tbody>
-          </table>
+          ${(() => {
+            const cPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : (cfg.councilPositions || DEFAULT_COUNCIL_POSITIONS);
+            const displayList = cPositions.map(pos => ({
+              title: pos.title || pos.shortTitle,
+              mem: m[pos.key]
+            }));
+            Object.entries(m || {}).forEach(([k, val]) => {
+              if (!cPositions.some(p => p.key === k) && val && val.fullname) {
+                displayList.push({ title: val.role || k, mem: val });
+              }
+            });
+            return `
+              <div class="text-xs font-bold mb-1">รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน (${displayList.length} ตำแหน่ง):</div>
+              <table class="formal-table text-[11px]">
+                <thead>
+                  <tr class="bg-slate-100">
+                    <th style="width: 5%;">ที่</th>
+                    <th style="width: 25%;">ตำแหน่งในสภานักเรียน</th>
+                    <th style="width: 25%;">ชื่อ - นามสกุล</th>
+                    <th style="width: 8%;">ห้อง</th>
+                    <th style="width: 11%;">เลขประจำตัว</th>
+                    <th style="width: 9%;">คะแนนคงเหลือ</th>
+                    <th style="width: 8%;">เกรดเฉลี่ย</th>
+                    <th style="width: 9%;">ข้อตกลง</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${displayList.map((entry, idx) => renderPositionRow(idx + 1, entry.title, entry.mem)).join('')}
+                </tbody>
+              </table>
+            `;
+          })()}
         </div>
 
         <!-- Agreement statement -->
@@ -403,7 +414,11 @@
 
         <!-- Team Members Table -->
         <div class="mb-3">
-          <div class="text-xs font-bold mb-1">รายชื่อคณะทำงานและสมาชิกในพรรค/ทีมงานคณะสี:</div>
+          ${(() => {
+            const colorMemPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : (COLOR_MEMBER_POSITIONS || []);
+            const memCount = (members && members.length > 0) ? members.length : colorMemPositions.length;
+            return `<div class="text-xs font-bold mb-1">รายชื่อคณะทำงานและสมาชิกในพรรค/ทีมงานคณะสี (${memCount} ตำแหน่ง):</div>`;
+          })()}
           <table class="formal-table text-[11px]">
             <thead>
               <tr class="bg-slate-100">
