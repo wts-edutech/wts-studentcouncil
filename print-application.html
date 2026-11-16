@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257041">
+  <link rel="stylesheet" href="css/style.css?v=257042">
   <style>
     @page {
       size: A4 portrait;
@@ -68,8 +68,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257041"></script>
-  <script src="js/app.js?v=257041"></script>
+  <script src="js/data.js?v=257042"></script>
+  <script src="js/app.js?v=257042"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -412,30 +412,34 @@
           </div>
         </div>
 
-        <!-- Team Members Table -->
-        <div class="mb-3">
-          ${(() => {
-            const colorMemPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : (COLOR_MEMBER_POSITIONS || []);
-            const memCount = (members && members.length > 0) ? members.length : colorMemPositions.length;
-            return `<div class="text-xs font-bold mb-1">รายชื่อคณะทำงานและสมาชิกในพรรค/ทีมงานคณะสี (${memCount} ตำแหน่ง):</div>`;
-          })()}
-          <table class="formal-table text-[11px]">
-            <thead>
-              <tr class="bg-slate-100">
-                <th style="width: 6%;">ที่</th>
-                <th style="width: 28%;">ชื่อ - นามสกุล</th>
-                <th style="width: 20%;">บทบาทหน้าที่ในคณะสี</th>
-                <th style="width: 10%;">ห้อง</th>
-                <th style="width: 14%;">เลขประจำตัว</th>
-                <th style="width: 11%;">คะแนนพฤติกรรม</th>
-                <th style="width: 11%;">เกรดเฉลี่ย</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${renderColorMembersRows(members)}
-            </tbody>
-          </table>
-        </div>
+        <!-- Team Members Table (แสดงเฉพาะเมื่อมีสมาชิกในทีมหรือมีการตั้งค่าตำแหน่งเพิ่มเติม) -->
+        ${(() => {
+          const colorMemPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : (COLOR_MEMBER_POSITIONS || []);
+          const hasMembersData = Array.isArray(members) && members.length > 0;
+          const memCount = hasMembersData ? members.length : colorMemPositions.length;
+          if (memCount === 0) return '';
+          return `
+            <div class="mb-3">
+              <div class="text-xs font-bold mb-1">รายชื่อคณะทำงานและสมาชิกในพรรค/ทีมงานคณะสี (${memCount} ตำแหน่ง):</div>
+              <table class="formal-table text-[11px]">
+                <thead>
+                  <tr class="bg-slate-100">
+                    <th style="width: 6%;">ที่</th>
+                    <th style="width: 28%;">ชื่อ - นามสกุล</th>
+                    <th style="width: 20%;">บทบาทหน้าที่ในคณะสี</th>
+                    <th style="width: 10%;">ห้อง</th>
+                    <th style="width: 14%;">เลขประจำตัว</th>
+                    <th style="width: 11%;">คะแนนพฤติกรรม</th>
+                    <th style="width: 11%;">เกรดเฉลี่ย</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${renderColorMembersRows(members)}
+                </tbody>
+              </table>
+            </div>
+          `;
+        })()}
 
         <!-- Agreement statement -->
         <div class="border border-black p-2 text-[11px] mb-3 bg-slate-50">

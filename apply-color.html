@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257041">
+  <link rel="stylesheet" href="css/style.css?v=257042">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -220,14 +220,13 @@
         </div>
       </div>
 
-      <!-- ส่วนที่ 3: สมาชิกคณะสีและคณะทำงาน (ปรับเพิ่ม-ลด-แก้ไขตำแหน่งได้จากระบบหลังบ้าน) -->
-      <div class="space-y-4">
+      <!-- ส่วนที่ 3: สมาชิกคณะสีและคณะทำงาน (แสดงเมื่อมีการกำหนดตำแหน่งสมาชิกเพิ่มเติมในระบบหลังบ้าน) -->
+      <div id="colorSection3Wrapper" class="space-y-4 hidden">
         <div class="flex items-center justify-between border-b border-slate-300 pb-2 gap-2 flex-wrap">
           <h3 id="colorSection3Title" class="text-base font-bold text-[#16325c]">
-            ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน (9 ตำแหน่ง)
+            ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน (0 ตำแหน่ง)
           </h3>
           <span id="colorSection3Summary" class="text-xs bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded font-semibold">
-            รองประธานคณะสี 1 • ฝ่ายทั่วไป 2 • ฝ่ายประชาสัมพันธ์ 2 • ฝ่ายสันทนาการ 3 • เลขานุการคณะสี 1
           </span>
         </div>
 
@@ -236,10 +235,10 @@
         </div>
       </div>
 
-      <!-- ส่วนที่ 4: ข้อตกลงของสภานักเรียน -->
+      <!-- ส่วนที่ 3/4: ข้อตกลงของสภานักเรียน -->
       <div class="gov-card">
         <div class="gov-card-header">
-          <span>ส่วนที่ 4: ข้อตกลงและคำรับรองของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></span>
+          <span><span id="colorAgreementSectionNum">ส่วนที่ 3</span>: ข้อตกลงและคำรับรองของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2567</span></span>
         </div>
 
         <div class="p-5 space-y-4 text-xs sm:text-sm">
@@ -341,8 +340,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257041"></script>
-  <script src="js/app.js?v=257041"></script>
+  <script src="js/data.js?v=257042"></script>
+  <script src="js/app.js?v=257042"></script>
   <script>
     function previewLeaderPhoto(input) {
       if (input.files && input.files[0]) {
@@ -416,6 +415,16 @@
 
       const memberPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : COLOR_MEMBER_POSITIONS;
 
+      const section3Wrapper = document.getElementById('colorSection3Wrapper');
+      const agreementSectionNumEl = document.getElementById('colorAgreementSectionNum');
+      if (memberPositions.length === 0) {
+        if (section3Wrapper) section3Wrapper.classList.add('hidden');
+        if (agreementSectionNumEl) agreementSectionNumEl.textContent = 'ส่วนที่ 3';
+      } else {
+        if (section3Wrapper) section3Wrapper.classList.remove('hidden');
+        if (agreementSectionNumEl) agreementSectionNumEl.textContent = 'ส่วนที่ 4';
+      }
+
       const titleEl = document.getElementById('colorSection3Title');
       if (titleEl) {
         titleEl.textContent = `ส่วนที่ 3: รายชื่อสมาชิกคณะสีและคณะทำงาน (${memberPositions.length} ตำแหน่ง)`;
@@ -434,7 +443,7 @@
         schoolName: cfg.schoolName,
         colorAgreementYear: cfg.colorAgreementYear
       });
-      if (lastRenderedColorMemberSig === currentSig && container.children.length > 0) {
+      if (lastRenderedColorMemberSig === currentSig && (memberPositions.length === 0 || container.children.length > 0)) {
         return;
       }
 
@@ -455,11 +464,7 @@
 
       if (memberPositions.length === 0) {
         lastRenderedColorMemberSig = currentSig;
-        container.innerHTML = `
-          <div class="gov-card p-6 text-center text-slate-500 text-xs sm:text-sm">
-            ไม่มีตำแหน่งสมาชิกเพิ่มเติมในส่วนที่ 3 ตามการตั้งค่าระบบปัจจุบัน
-          </div>
-        `;
+        container.innerHTML = '';
         return;
       }
 

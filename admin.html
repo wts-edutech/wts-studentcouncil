@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257041">
-  <script src="js/data.js?v=257041"></script>
-  <script src="js/app.js?v=257041"></script>
+  <link rel="stylesheet" href="css/style.css?v=257042">
+  <script src="js/data.js?v=257042"></script>
+  <script src="js/app.js?v=257042"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -2752,7 +2752,7 @@
     }
 
     async function resetPositionsToDefaults() {
-      if (!confirm('ต้องการคืนค่าจำนวนและชื่อตำแหน่งทั้งหมดของทั้งสองใบสมัครกลับเป็นค่าเริ่มต้นมาตรฐาน (10 ตำแหน่ง) ใช่หรือไม่?')) return;
+      if (!confirm('ต้องการคืนค่าจำนวนและชื่อตำแหน่งทั้งหมดของทั้งสองใบสมัครกลับเป็นค่าเริ่มต้นมาตรฐาน (สภา 10 ตำแหน่ง / คณะสี 1 ตำแหน่ง) ใช่หรือไม่?')) return;
       try {
         showToast('☁️ กำลังคืนค่าเริ่มต้นและซิงค์คลาวด์...', 'info');
         const ok = await WDSDB.saveConfig({
@@ -4039,38 +4039,41 @@
         `;
       } else {
         const memList = item.members || [];
-        const rows = memList.map((m, i) => `
-          <tr>
-            <td class="text-center font-bold">${i + 1}</td>
-            <td>${escapeHTML(m.role || 'คณะทำงาน')}</td>
-            <td class="font-semibold">${escapeHTML(m.fullname || '-')}</td>
-            <td class="text-center">ม.4/${escapeHTML(m.room || '-')}</td>
-            <td class="text-center font-mono">${escapeHTML(m.studentId || '-')}</td>
-            <td class="text-center font-bold ${m.behaviorScore < cfg.minBehaviorScore ? 'text-red-600' : 'text-green-700'}">${m.behaviorScore !== undefined ? m.behaviorScore : '-'}</td>
-          </tr>
-        `).join('');
-        membersTableHtml = `
-          <div class="border border-slate-300 rounded overflow-hidden">
-            <div class="bg-slate-100 px-3 py-1.5 font-bold text-slate-700 border-b border-slate-300">
-              รายชื่อคณะทำงานในทีม (${memList.length} คน)
+        const configuredMemCount = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions().length : 0;
+        if (memList.length > 0 || configuredMemCount > 0) {
+          const rows = memList.map((m, i) => `
+            <tr>
+              <td class="text-center font-bold">${i + 1}</td>
+              <td>${escapeHTML(m.role || 'คณะทำงาน')}</td>
+              <td class="font-semibold">${escapeHTML(m.fullname || '-')}</td>
+              <td class="text-center">ม.4/${escapeHTML(m.room || '-')}</td>
+              <td class="text-center font-mono">${escapeHTML(m.studentId || '-')}</td>
+              <td class="text-center font-bold ${m.behaviorScore < cfg.minBehaviorScore ? 'text-red-600' : 'text-green-700'}">${m.behaviorScore !== undefined ? m.behaviorScore : '-'}</td>
+            </tr>
+          `).join('');
+          membersTableHtml = `
+            <div class="border border-slate-300 rounded overflow-hidden">
+              <div class="bg-slate-100 px-3 py-1.5 font-bold text-slate-700 border-b border-slate-300">
+                รายชื่อคณะทำงานในทีม (${memList.length} คน)
+              </div>
+              <div class="overflow-x-auto max-h-44">
+                <table class="gov-sys-table text-[11px]">
+                  <thead>
+                    <tr>
+                      <th class="w-8">ที่</th>
+                      <th>บทบาทหน้าที่</th>
+                      <th>ชื่อ-นามสกุล</th>
+                      <th class="w-16">ห้อง</th>
+                      <th class="w-20">เลขประจำตัว</th>
+                      <th class="w-16">คะแนน</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rows || '<tr><td colspan="6" class="text-center p-2 text-slate-400">ไม่มีข้อมูลคณะทำงานเพิ่มเติม</td></tr>'}</tbody>
+                </table>
+              </div>
             </div>
-            <div class="overflow-x-auto max-h-44">
-              <table class="gov-sys-table text-[11px]">
-                <thead>
-                  <tr>
-                    <th class="w-8">ที่</th>
-                    <th>บทบาทหน้าที่</th>
-                    <th>ชื่อ-นามสกุล</th>
-                    <th class="w-16">ห้อง</th>
-                    <th class="w-20">เลขประจำตัว</th>
-                    <th class="w-16">คะแนน</th>
-                  </tr>
-                </thead>
-                <tbody>${rows || '<tr><td colspan="6" class="text-center p-2 text-slate-400">ไม่มีข้อมูลคณะทำงานเพิ่มเติม</td></tr>'}</tbody>
-              </table>
-            </div>
-          </div>
-        `;
+          `;
+        }
       }
 
       content.innerHTML = `

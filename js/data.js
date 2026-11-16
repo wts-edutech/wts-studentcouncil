@@ -225,18 +225,9 @@ const DEFAULT_COUNCIL_POSITIONS = [
   { key: 'secretary', title: 'ผู้แทนพรรคเพื่อดำรงตำแหน่งเลขานุการ', isLeader: false, shortTitle: 'เลขานุการ' }
 ];
 
-// โครงสร้างตำแหน่งคณะสีมาตรฐาน 10 ตำแหน่ง (ลำดับที่ 1 ประธานคณะสี + ลำดับที่ 2-10 สมาชิกคณะทำงาน 9 ตำแหน่ง)
+// โครงสร้างตำแหน่งคณะสีเริ่มต้น: เฉพาะตำแหน่งประธานคณะสี (หัวหน้าทีม ลำดับที่ 1) — สามารถเพิ่มตำแหน่งสมาชิกส่วนที่ 3 ในหลังบ้านได้
 const DEFAULT_COLOR_POSITIONS = [
-  { key: 'leader', title: 'ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)', isLeader: true, roleName: 'ประธานคณะสี', shortTitle: 'ประธานคณะสี' },
-  { key: 'vice_president', title: 'รองประธานคณะสี', isLeader: false, roleName: 'รองประธานคณะสี', shortTitle: 'รองประธานคณะสี' },
-  { key: 'general_1', title: 'ฝ่ายทั่วไป (คนที่ 1)', isLeader: false, roleName: 'ฝ่ายทั่วไป (คนที่ 1)', shortTitle: 'ฝ่ายทั่วไป 1' },
-  { key: 'general_2', title: 'ฝ่ายทั่วไป (คนที่ 2)', isLeader: false, roleName: 'ฝ่ายทั่วไป (คนที่ 2)', shortTitle: 'ฝ่ายทั่วไป 2' },
-  { key: 'pr_1', title: 'ฝ่ายประชาสัมพันธ์ (คนที่ 1)', isLeader: false, roleName: 'ฝ่ายประชาสัมพันธ์ (คนที่ 1)', shortTitle: 'ฝ่ายประชาสัมพันธ์ 1' },
-  { key: 'pr_2', title: 'ฝ่ายประชาสัมพันธ์ (คนที่ 2)', isLeader: false, roleName: 'ฝ่ายประชาสัมพันธ์ (คนที่ 2)', shortTitle: 'ฝ่ายประชาสัมพันธ์ 2' },
-  { key: 'recreation_1', title: 'ฝ่ายสันทนาการ (คนที่ 1)', isLeader: false, roleName: 'ฝ่ายสันทนาการ (คนที่ 1)', shortTitle: 'ฝ่ายสันทนาการ 1' },
-  { key: 'recreation_2', title: 'ฝ่ายสันทนาการ (คนที่ 2)', isLeader: false, roleName: 'ฝ่ายสันทนาการ (คนที่ 2)', shortTitle: 'ฝ่ายสันทนาการ 2' },
-  { key: 'recreation_3', title: 'ฝ่ายสันทนาการ (คนที่ 3)', isLeader: false, roleName: 'ฝ่ายสันทนาการ (คนที่ 3)', shortTitle: 'ฝ่ายสันทนาการ 3' },
-  { key: 'secretary', title: 'เลขานุการคณะสี', isLeader: false, roleName: 'เลขานุการคณะสี', shortTitle: 'เลขานุการคณะสี' }
+  { key: 'leader', title: 'ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)', isLeader: true, roleName: 'ประธานคณะสี', shortTitle: 'ประธานคณะสี' }
 ];
 
 let COUNCIL_POSITIONS = DEFAULT_COUNCIL_POSITIONS;
@@ -293,7 +284,7 @@ const DEFAULT_SITE_CONFIG = {
   applyColorCloseNotice: 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร',
   applyColorTitle: '2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)',
   applyColorBadge: '5 คณะสี',
-  applyColorDesc: "ผู้สมัครรับเลือกตั้งเป็นประธานคณะสีต้องจัดตั้งทีมงานโดยให้มีสมาชิกภายในทีม จำนวน 10 คน และมีผู้แทนเพื่อดำรงตำแหน่ง\nดังต่อไปนี้  ประธานคณะสี 1 คน ,  รองประธานคณะสี 1 คน , สมาชิกคณะสีฝ่ายทั่วไป 2 คน, สมาชิกคณะสีฝ่ายประชาสัมพันธ์ 2 คน , สมาชิกคณะสีฝ่ายสันทนาการ 3 คน , เลขานุการคณะสี 1 คน",
+  applyColorDesc: "ผู้สมัครรับเลือกตั้งเป็นประธานคณะสีลงสมัครในนามผู้ลงสมัครประธานคณะสี (1 คน) เมื่อชนะการเลือกตั้งแล้วจึงจัดตั้งคณะกรรมการคณะสีในลำดับถัดไป",
   applyColorHousesText: '1. คณะสีอัญชัน, 2. คณะสีนนทรี, 3. คณะปาริชาต, 4. คณะสีเอื้องช่อแสด, 5. คณะสีอินทนิล',
   applyColorBullets: DEFAULT_APPLY_COLOR_BULLETS,
   applyColorBtnText: 'เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)',
