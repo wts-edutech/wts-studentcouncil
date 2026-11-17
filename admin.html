@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257047">
-  <script src="js/data.js?v=257047"></script>
-  <script src="js/app.js?v=257047"></script>
+  <link rel="stylesheet" href="css/style.css?v=257048">
+  <script src="js/data.js?v=257048"></script>
+  <script src="js/app.js?v=257048"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -655,11 +655,15 @@
                       <i class="fa-solid fa-school mr-1.5"></i> ใช้ภาพถ่ายอาคารเรียน
                     </button>
                     <button type="button" onclick="document.getElementById('settingHeroBannerFile').click()" class="gov-btn gov-btn-blue text-xs">
-                      <i class="fa-solid fa-upload mr-1.5"></i> อัปโหลดรูปแบนเนอร์ใหม่
+                      <i class="fa-solid fa-upload mr-1.5"></i> อัปโหลดรูปแบนเนอร์ใหม่ (คมชัด HD 1920px)
                     </button>
                     <button type="button" onclick="resetHeroBannerPositionOnly()" class="gov-btn gov-btn-gray text-xs">
                       <i class="fa-solid fa-compress mr-1"></i> รีเซ็ตตำแหน่งรูป
                     </button>
+                  </div>
+                  <div class="text-[10.5px] text-slate-500 mt-1">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-600 mr-1"></i>
+                    ระบบรองรับภาพความละเอียดสูง (Full HD 1920px) โดยไม่บีบจนภาพแตก และเปิดพื้นที่ฝั่งขวาให้โชว์ตัวอาคารสว่างคมชัด
                   </div>
                 </div>
 
@@ -2358,15 +2362,24 @@
         syncLogoSlotUI(3, '');
       }
 
-      const heroBg = cfg.heroBannerImage || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
-      document.getElementById('settingHeroBannerPreview').src = heroBg;
-      document.getElementById('settingHeroBannerData').value = heroBg;
+      const rawHeroBg = cfg.heroBannerImage || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+      const fallbackHeroPreview = typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-school-photo.jpg';
+      const resolvedHeroPreview = typeof resolveCloudMediaImage === 'function'
+        ? resolveCloudMediaImage(rawHeroBg, (loadedData) => {
+            document.getElementById('settingHeroBannerPreview').src = loadedData;
+            syncHeroBannerDragBox();
+            updateLivePreview();
+          })
+        : rawHeroBg;
+      document.getElementById('settingHeroBannerPreview').src = resolvedHeroPreview || fallbackHeroPreview;
+      document.getElementById('settingHeroBannerData').value = rawHeroBg;
       document.getElementById('cfg_heroBannerPosX').value = cfg.heroBannerPosX !== undefined ? cfg.heroBannerPosX : 99;
       document.getElementById('cfg_heroBannerPosY').value = cfg.heroBannerPosY !== undefined ? cfg.heroBannerPosY : 50;
       document.getElementById('cfg_heroBannerZoom').value = cfg.heroBannerZoom !== undefined ? cfg.heroBannerZoom : 100;
       const fitEl = document.getElementById('cfg_heroBannerFit');
       if (fitEl) {
-        fitEl.value = cfg.heroBannerFit || ((heroBg.endsWith('.png') || heroBg.includes('data:image/png')) ? 'contain' : 'cover');
+        const inspectSrc = resolvedHeroPreview || rawHeroBg;
+        fitEl.value = cfg.heroBannerFit || ((inspectSrc.endsWith('.png') || inspectSrc.includes('data:image/png')) ? 'contain' : 'cover');
       }
       onHeroFitModeChange();
 
@@ -4323,7 +4336,10 @@
       }
       const logo2 = document.getElementById('settingLogo2Data').value;
       const logo3 = document.getElementById('settingLogo3Data').value;
-      const heroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+      const rawHeroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+      const heroBg = typeof resolveCloudMediaImage === 'function'
+        ? (resolveCloudMediaImage(rawHeroBg, () => updateLivePreview()) || 'assets/images/hero-school-photo.jpg')
+        : rawHeroBg;
       const posX = document.getElementById('cfg_heroBannerPosX')?.value ?? 99;
       const posY = document.getElementById('cfg_heroBannerPosY')?.value ?? 50;
       const zoom = document.getElementById('cfg_heroBannerZoom')?.value ?? 100;
@@ -4331,7 +4347,7 @@
 
       const headerBox = document.getElementById('previewLiveHeaderBox');
       if (headerBox) {
-        headerBox.style.backgroundImage = `linear-gradient(90deg, rgba(11,36,68,0.85) 0%, rgba(11,36,68,0.45) 100%), url('${heroBg}')`;
+        headerBox.style.backgroundImage = `linear-gradient(90deg, rgba(7,29,54,0.95) 0%, rgba(7,29,54,0.82) 34%, rgba(7,29,54,0.32) 48%, rgba(7,29,54,0) 62%), url('${heroBg}')`;
         headerBox.style.backgroundRepeat = 'no-repeat';
         if (fit === 'contain') {
           headerBox.style.backgroundPosition = `center, ${posX}% ${posY}%`;
@@ -4437,7 +4453,10 @@
     }
 
     function syncHeroBannerDragBox() {
-      const heroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+      const rawHeroBg = document.getElementById('settingHeroBannerData').value || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+      const heroBg = typeof resolveCloudMediaImage === 'function'
+        ? (resolveCloudMediaImage(rawHeroBg, () => syncHeroBannerDragBox()) || 'assets/images/hero-school-photo.jpg')
+        : rawHeroBg;
       const posX = document.getElementById('cfg_heroBannerPosX')?.value ?? 99;
       const posY = document.getElementById('cfg_heroBannerPosY')?.value ?? 50;
       const zoom = document.getElementById('cfg_heroBannerZoom')?.value ?? 100;
@@ -4589,19 +4608,46 @@
       window.addEventListener('touchend', stopDrag);
     }
 
-    function previewHeroBannerUpload(input) {
+    async function previewHeroBannerUpload(input) {
+      if (!input || !input.files || !input.files[0]) return;
+      const file = input.files[0];
+      if (file.size > 20 * 1024 * 1024) {
+        alert('ขนาดไฟล์รูปภาพใหญ่เกินไป กรุณาเลือกไฟล์ขนาดไม่เกิน 20MB');
+        input.value = '';
+        return;
+      }
       markSettingsDirty();
-      handleImageUpload(
-        input,
-        null,
-        document.getElementById('settingHeroBannerData'),
-        (base64) => {
-          markSettingsDirty();
-          syncHeroBannerDragBox();
-          updateLivePreview();
-          showToast('อัปโหลดและปรับขนาดรูปแบนเนอร์เรียบร้อยแล้ว กด "บันทึกข้อมูลเว็บไซต์ทั้งหมด" เพื่อใช้งาน', 'info');
+      showToast('⏳ กำลังเตรียมภาพแบนเนอร์ความละเอียดสูง (HD 1920px) และอัปโหลดขึ้นคลาวด์...', 'info');
+      try {
+        const rawData = await readFileAsDataUrlPromise(file);
+        // บีบอัดที่ความละเอียดสูง 1920px (สูงถึง 82 KB เพื่อเก็บใน Cloud Media Bin โดยไม่ลดความคมชัด)
+        const hdData = await compressPrImagePromise(rawData, 1920, 0.88, 82000);
+        let finalHeroRef = '';
+
+        if (typeof uploadPrImageToCloudBin === 'function' && hdData) {
+          const upRes = await uploadPrImageToCloudBin(hdData);
+          if (upRes && upRes.ok && upRes.id) {
+            finalHeroRef = `cloudbin:${upRes.id}`;
+          }
         }
-      );
+        // Fallback กรณีอัปโหลด Bin แยกไม่สำเร็จ ให้ย่อพอดี Config หลัก
+        if (!finalHeroRef) {
+          finalHeroRef = await compressPrImagePromise(rawData, 1440, 0.78, 45000);
+        }
+
+        document.getElementById('settingHeroBannerData').value = finalHeroRef;
+        const prevImg = document.getElementById('settingHeroBannerPreview');
+        if (prevImg) prevImg.src = hdData || finalHeroRef;
+        markSettingsDirty();
+        syncHeroBannerDragBox();
+        updateLivePreview();
+        showToast('✅ อัปโหลดแบนเนอร์คมชัดระดับ HD สำเร็จ! กด "บันทึกข้อมูลเว็บไซต์ทั้งหมด" เพื่อเผยแพร่', 'success');
+      } catch (err) {
+        console.error('Hero banner upload error:', err);
+        showToast('เกิดข้อผิดพลาดในการอัปโหลดแบนเนอร์: ' + (err.message || err), 'error');
+      } finally {
+        input.value = '';
+      }
     }
 
     function previewLineQrUpload(input) {

@@ -252,6 +252,24 @@ async function hydratePrImagesList(imagesList) {
   return results.some(Boolean);
 }
 
+// คืน URL พร้อมใช้งานของภาพแบนเนอร์/สื่อ (รองรับ cloudbin:... และดึงจากคลาวด์ให้อัตโนมัติ)
+function resolveCloudMediaImage(rawVal, onCloudReady) {
+  const s = String(rawVal || '').trim();
+  if (!s) return '';
+  if (s.startsWith('cloudbin:') || /^https?:\/\/(www\.)?extendsclass\.com\/api\/json-storage\/bin\//i.test(s)) {
+    const norm = normalizeCloudBinUrl(s);
+    const cached = getCachedPrImage(norm);
+    if (cached) return cached;
+    if (typeof onCloudReady === 'function' && norm) {
+      fetchPrImageFromCloudBin(norm).then(loaded => {
+        if (loaded) onCloudReady(loaded);
+      }).catch(() => {});
+    }
+    return '';
+  }
+  return s;
+}
+
 function buildCloudSafeConfigPayload(mergedCfg, aggressiveDocsStrip = false) {
   const payload = JSON.parse(JSON.stringify(mergedCfg || {}));
   if (Array.isArray(payload.documentsList)) {

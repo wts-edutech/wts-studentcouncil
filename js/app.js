@@ -184,28 +184,39 @@ function applySiteConfig() {
   applyTransparentLogoToNodes('[data-cfg-logo2]', logo2, 'ตราสัญลักษณ์ที่ 2');
   applyTransparentLogoToNodes('[data-cfg-logo3]', logo3, 'ตราสัญลักษณ์ที่ 3');
 
-  // 2.5 อัปเดตรูปภาพพื้นหลังแบนเนอร์ส่วนหัว (Hero Banner Background & Position/Zoom/Fit)
-  const heroBg = cfg.heroBannerImage || (typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/school-logo-transparent.png');
+  // 2.5 อัปเดตรูปภาพพื้นหลังแบนเนอร์ส่วนหัว (Hero Banner Background & Position/Zoom/Fit + รองรับ Cloud Media Bin)
+  const fallbackHero = typeof DEFAULT_HERO_BANNER_IMAGE !== 'undefined' ? DEFAULT_HERO_BANNER_IMAGE : 'assets/images/hero-school-photo.jpg';
+  const rawHeroBg = cfg.heroBannerImage || fallbackHero;
   const posX = cfg.heroBannerPosX !== undefined ? cfg.heroBannerPosX : 99;
   const posY = cfg.heroBannerPosY !== undefined ? cfg.heroBannerPosY : 50;
   const zoom = cfg.heroBannerZoom !== undefined ? cfg.heroBannerZoom : 100;
-  const fit = cfg.heroBannerFit || ((heroBg.endsWith('.png') || heroBg.includes('data:image/png')) ? 'contain' : 'cover');
 
-  document.querySelectorAll('.hero-banner-bg').forEach(el => {
-    el.style.backgroundColor = '#0b2444';
-    el.style.backgroundImage = `url('${heroBg}')`;
-    el.style.backgroundRepeat = 'no-repeat';
+  const applyHeroBgNodes = (imgSrc) => {
+    const finalSrc = imgSrc || fallbackHero;
+    const fit = cfg.heroBannerFit || ((finalSrc.endsWith('.png') || finalSrc.includes('data:image/png')) ? 'contain' : 'cover');
+    document.querySelectorAll('.hero-banner-bg').forEach(el => {
+      el.style.backgroundColor = '#0b2444';
+      el.style.backgroundImage = `url('${finalSrc}')`;
+      el.style.backgroundRepeat = 'no-repeat';
 
-    if (fit === 'contain') {
-      const zoomPct = zoom || 100;
-      el.style.backgroundSize = zoomPct === 100 ? 'contain' : `auto ${zoomPct}%`;
-      el.style.backgroundPosition = `${posX}% ${posY}%`;
-    } else {
-      const zoomPct = Math.max(100, Number(zoom) || 100);
-      el.style.backgroundSize = zoomPct === 100 ? 'cover' : `${zoomPct}% auto`;
-      el.style.backgroundPosition = `${posX}% ${posY}%`;
-    }
-  });
+      if (fit === 'contain') {
+        const zoomPct = zoom || 100;
+        el.style.backgroundSize = zoomPct === 100 ? 'contain' : `auto ${zoomPct}%`;
+        el.style.backgroundPosition = `${posX}% ${posY}%`;
+      } else {
+        const zoomPct = Math.max(100, Number(zoom) || 100);
+        el.style.backgroundSize = zoomPct === 100 ? 'cover' : `${zoomPct}% auto`;
+        el.style.backgroundPosition = `${posX}% ${posY}%`;
+      }
+    });
+  };
+
+  if (typeof resolveCloudMediaImage === 'function') {
+    const resolvedHero = resolveCloudMediaImage(rawHeroBg, (loadedData) => applyHeroBgNodes(loadedData));
+    applyHeroBgNodes(resolvedHero || fallbackHero);
+  } else {
+    applyHeroBgNodes(rawHeroBg);
+  }
 
   // 3. อัปเดต Title ของแท็บเบราว์เซอร์
   if (cfg.schoolName) {
@@ -732,50 +743,82 @@ function removeImageBackground(dataUrl, callback) {
   }
 }
 
-// ฟังก์ชันย่อขนาดไฟล์รูปภาพด้วย HTML5 Canvas ให้มีความคมชัดและพอดีกับขีดจำกัดของคลาวด์
+// ฟังก์ชันย่อขนาดไฟล์รูปภาพด้วย HTML5 Canvas จากภาพต้นฉบับโดยตรง (เลือก WebP/JPEG ที่คมที่สุดภายในงบขนาดไฟล์)
 function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComplete, maxLen = 45000) {
   try {
     const img = new Image();
     img.onload = () => {
-      let w = img.naturalWidth || img.width;
-      let h = img.naturalHeight || img.height;
-      if (w > maxDim || h > maxDim) {
-        if (w > h) {
-          h = Math.round((h * maxDim) / w);
-          w = maxDim;
-        } else {
-          w = Math.round((w * maxDim) / h);
-          h = maxDim;
-        }
-      }
+      const origW = img.naturalWidth || img.width;
+      const origH = img.naturalHeight || img.height;
       const canvas = document.createElement('canvas');
-      canvas.width = Math.max(1, w);
-      canvas.height = Math.max(1, h);
       const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, 0, 0, w, h);
 
-      let outputData;
+      const encodeFromOriginal = (dimLimit, q, asPng) => {
+        let w = origW;
+        let h = origH;
+        if (w > dimLimit || h > dimLimit) {
+          if (w > h) {
+            h = Math.round((h * dimLimit) / w);
+            w = dimLimit;
+          } else {
+            w = Math.round((w * dimLimit) / h);
+            h = dimLimit;
+          }
+        }
+        canvas.width = Math.max(1, w);
+        canvas.height = Math.max(1, h);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        if (asPng) {
+          const pngOut = canvas.toDataURL('image/png');
+          if (pngOut.length <= maxLen) return pngOut;
+          try {
+            const webpOut = canvas.toDataURL('image/webp', Math.max(0.75, q));
+            if (webpOut.startsWith('data:image/webp') && webpOut.length <= maxLen) return webpOut;
+          } catch (e) {}
+          return pngOut;
+        }
+
+        const jpegOut = canvas.toDataURL('image/jpeg', q);
+        let best = jpegOut;
+        try {
+          const webpOut = canvas.toDataURL('image/webp', q);
+          if (webpOut.startsWith('data:image/webp') && webpOut.length < jpegOut.length) {
+            best = webpOut;
+          }
+        } catch (e) {}
+        return best;
+      };
+
+      let curDim = maxDim;
+      let curQ = quality;
+      let outputData = encodeFromOriginal(curDim, curQ, isPng);
+
       if (isPng) {
-        outputData = canvas.toDataURL('image/png');
-        if (outputData.length > maxLen && maxDim > 160) {
-          return compressImageForStorage(outputData, Math.max(160, Math.round(maxDim * 0.72)), quality, true, onComplete, maxLen);
+        while (outputData.length > maxLen && curDim > 180) {
+          curDim = Math.max(180, Math.round(curDim * 0.78));
+          outputData = encodeFromOriginal(curDim, curQ, true);
         }
         if (outputData.length > maxLen) {
-          outputData = canvas.toDataURL('image/jpeg', 0.75);
+          outputData = encodeFromOriginal(curDim, 0.80, false);
         }
       } else {
-        outputData = canvas.toDataURL('image/jpeg', quality);
-        if (outputData.length > maxLen && (maxDim > 480 || quality > 0.45)) {
-          return compressImageForStorage(
-            outputData,
-            Math.max(480, Math.round(maxDim * 0.78)),
-            Math.max(0.45, Number((quality - 0.08).toFixed(2))),
-            false,
-            onComplete,
-            maxLen
-          );
+        // คงความคมชัดพิกเซลเดิมก่อน ค่อยๆ ปรับ quality แล้วจึงค่อยลดความกว้างเมื่อจำเป็นจริง
+        let guard = 0;
+        while (outputData.length > maxLen && guard < 12) {
+          guard++;
+          if (curQ > 0.68) {
+            curQ = Math.max(0.65, Number((curQ - 0.06).toFixed(2)));
+          } else if (curDim > 560) {
+            curDim = Math.max(560, Math.round(curDim * 0.85));
+          } else if (curQ > 0.50) {
+            curQ = Math.max(0.50, Number((curQ - 0.06).toFixed(2)));
+          } else {
+            break;
+          }
+          outputData = encodeFromOriginal(curDim, curQ, false);
         }
       }
       onComplete(outputData);

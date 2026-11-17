@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257047">
+  <link rel="stylesheet" href="css/style.css?v=257048">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -101,6 +101,14 @@
       background-repeat: no-repeat;
       position: relative;
     }
+    .hero-banner-overlay {
+      background: linear-gradient(90deg, #071d36 0%, rgba(7, 29, 54, 0.92) 38%, rgba(7, 29, 54, 0.48) 54%, rgba(7, 29, 54, 0) 68%);
+    }
+    @media (min-width: 768px) {
+      .hero-banner-overlay {
+        background: linear-gradient(90deg, #071d36 0%, rgba(7, 29, 54, 0.92) 30%, rgba(7, 29, 54, 0.42) 44%, rgba(7, 29, 54, 0) 56%);
+      }
+    }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -114,8 +122,8 @@
 
   <!-- แบนเนอร์หัวเว็บไซต์โรงเรียน -->
   <header class="hero-banner-bg text-white border-b border-slate-800/30 shadow-md relative overflow-hidden">
-    <!-- แผ่น Gradient สไตล์คอมพิวเตอร์: ฝั่งซ้ายสีน้ำเงินเข้มสนิท ตัวหนังสือคมชัด ฝั่งขวาโปร่งใสโชว์ภาพอาคารเรียนและท้องฟ้าสดใส 100% -->
-    <div class="absolute inset-0 bg-gradient-to-r from-[#071d36] via-[#071d36] via-[58%] sm:via-[52%] to-transparent pointer-events-none z-0"></div>
+    <!-- แผ่น Gradient เฉพาะฝั่งซ้ายใต้ตัวหนังสือ ให้ฝั่งขวาโชว์อาคารเรียนและท้องฟ้าคมชัดสว่าง 100% -->
+    <div class="absolute inset-0 hero-banner-overlay pointer-events-none z-0"></div>
 
     <div class="relative z-10 max-w-6xl mx-auto py-3 sm:py-6 px-3 sm:px-8">
       <div class="max-w-[70%] sm:max-w-xl md:max-w-2xl space-y-1.5 sm:space-y-3">
@@ -588,8 +596,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257047"></script>
-  <script src="js/app.js?v=257047"></script>
+  <script src="js/data.js?v=257048"></script>
+  <script src="js/app.js?v=257048"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];
