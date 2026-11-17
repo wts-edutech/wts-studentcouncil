@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257049">
+  <link rel="stylesheet" href="css/style.css?v=257050">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -582,22 +582,54 @@
   </div>
 
   <!-- ส่วนท้ายเว็บไซต์ -->
-  <footer class="bg-[#eef3f1] text-slate-600 text-xs sm:text-sm md:text-base py-5 border-t border-slate-200">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-2.5">
-      <div>
-        <p class="font-bold text-slate-800 text-xs sm:text-sm md:text-base"><span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></p>
-        <p class="text-slate-600 text-[11px] sm:text-xs md:text-sm mt-1"><span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span> | ติดต่อ: <span data-cfg="contactPerson" class="font-semibold text-slate-700">คุณครูสีวลี ยืนยาว</span> โทรศัพท์: <span data-cfg="schoolPhone" class="font-semibold text-slate-700">0990499597</span></p>
+  <footer class="bg-gradient-to-b from-[#0b2444] to-[#071930] text-slate-200 py-6 sm:py-7 border-t-2 border-amber-400/70 shadow-inner mt-auto">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row justify-between items-center lg:items-start gap-5">
+      
+      <!-- ฝั่งซ้าย: ตราโรงเรียน + ชื่อหน่วยงาน + ที่อยู่และผู้ประสานงาน -->
+      <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3.5 sm:gap-4">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/10 border border-white/15 p-1.5 flex items-center justify-center flex-shrink-0 shadow-sm" data-cfg-logo>
+          <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
+        </div>
+        <div class="space-y-1.5">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+            <span class="font-bold text-white text-sm sm:text-base tracking-wide" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
+            <span class="hidden sm:inline text-amber-400/70">•</span>
+            <span class="text-amber-300 font-semibold text-xs sm:text-sm" data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span>
+          </div>
+          <p class="text-slate-300 text-[11px] sm:text-xs leading-relaxed">
+            <i class="fa-solid fa-location-dot text-amber-400/90 mr-1.5"></i><span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span>
+          </p>
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-0.5 text-[11px] sm:text-xs">
+            <span class="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 px-3 py-1 rounded-full text-slate-200 whitespace-nowrap">
+              <i class="fa-solid fa-user-check text-amber-300 text-[11px]"></i>
+              <span>ติดต่อ: <strong data-cfg="contactPerson" class="font-semibold text-white">คุณครูสีวลี ยืนยาว</strong></span>
+            </span>
+            <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 rounded-full text-emerald-100 whitespace-nowrap">
+              <i class="fa-solid fa-phone text-emerald-300 text-[11px]"></i>
+              <span>โทรศัพท์: <strong data-cfg="schoolPhone" class="font-semibold text-white tracking-wide">0990499597</strong></span>
+            </span>
+          </div>
+        </div>
       </div>
-      <div class="text-slate-600 text-xs sm:text-sm font-medium flex items-center justify-center sm:justify-end space-x-2">
-        <span>ระบบรับสมัครเลือกตั้งผู้นำนักเรียน ปีการศึกษา <span data-cfg="academicYear">2570</span></span>
-        <a href="admin.html" class="text-slate-400 hover:text-slate-600 text-xs ml-1 transition" title="สำหรับผู้ดูแลระบบ/คณะกรรมการ" aria-label="ระบบหลังบ้าน"><i class="fa-solid fa-lock"></i></a>
+
+      <!-- ฝั่งขวา: ข้อมูลระบบ + ปุ่มผู้ดูแลระบบ -->
+      <div class="flex flex-col items-center lg:items-end justify-center gap-2 border-t border-white/10 lg:border-t-0 pt-3.5 lg:pt-0 w-full lg:w-auto">
+        <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-200 whitespace-nowrap">
+          <i class="fa-solid fa-check-to-slot text-amber-300"></i>
+          <span>ระบบรับสมัครเลือกตั้งผู้นำนักเรียน ปีการศึกษา <strong data-cfg="academicYear" class="text-amber-300 font-bold">2570</strong></span>
+        </div>
+        <a href="admin.html" class="inline-flex items-center gap-1.5 text-[11px] text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 px-3 py-1 rounded-full transition" title="สำหรับผู้ดูแลระบบ/คณะกรรมการ" aria-label="ระบบหลังบ้าน">
+          <i class="fa-solid fa-lock text-amber-300 text-[10px]"></i>
+          <span>สำหรับผู้ดูแลระบบ</span>
+        </a>
       </div>
+
     </div>
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257049"></script>
-  <script src="js/app.js?v=257049"></script>
+  <script src="js/data.js?v=257050"></script>
+  <script src="js/app.js?v=257050"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];

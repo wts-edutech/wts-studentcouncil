@@ -92,8 +92,8 @@ if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
       for (const registration of registrations) {
         registration.unregister();
       }
-    }).catch(() => {});
-  } catch(e) {}
+    }).catch(() => { });
+  } catch (e) { }
 }
 
 /**
@@ -161,7 +161,7 @@ function applySiteConfig() {
         el.classList.remove('hidden');
         if (el.tagName === 'IMG') {
           el.src = cleanSrc;
-          el.onerror = function() {
+          el.onerror = function () {
             this.onerror = null;
             this.src = fallbackLogo;
           };
@@ -309,8 +309,8 @@ function renderRulesAndApplyContent(cfg) {
       const label = parts[0].trim();
       const rest = parts.slice(1).join(':').trim();
       const isFooter = label.includes('ครูที่ปรึกษา') || label.includes('ความยินยอม');
-      const containerClass = isFooter 
-        ? 'mt-2 pt-2 border-t border-slate-100/90 py-0.5' 
+      const containerClass = isFooter
+        ? 'mt-2 pt-2 border-t border-slate-100/90 py-0.5'
         : 'py-0.5';
       return `
         <div class="${containerClass} text-slate-800 text-xs sm:text-sm md:text-[14.5px] leading-snug sm:leading-normal">
@@ -707,7 +707,7 @@ function removeImageBackground(dataUrl, callback) {
     if (!dataUrl.startsWith('data:')) {
       img.crossOrigin = 'Anonymous';
     }
-    img.onload = function() {
+    img.onload = function () {
       try {
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
@@ -734,7 +734,7 @@ function removeImageBackground(dataUrl, callback) {
         callback(dataUrl);
       }
     };
-    img.onerror = function() {
+    img.onerror = function () {
       callback(dataUrl);
     };
     img.src = dataUrl;
@@ -777,7 +777,7 @@ function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComple
           try {
             const webpOut = canvas.toDataURL('image/webp', Math.max(0.75, q));
             if (webpOut.startsWith('data:image/webp') && webpOut.length <= maxLen) return webpOut;
-          } catch (e) {}
+          } catch (e) { }
           return pngOut;
         }
 
@@ -788,7 +788,7 @@ function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComple
           if (webpOut.startsWith('data:image/webp') && webpOut.length < jpegOut.length) {
             best = webpOut;
           }
-        } catch (e) {}
+        } catch (e) { }
         return best;
       };
 
@@ -834,7 +834,7 @@ function compressImageForStorage(fileOrDataUri, maxDim, quality, isPng, onComple
 function handleImageUpload(inputElement, previewImgElement, hiddenInputElement, callback, autoRemoveBg = false) {
   if (inputElement.files && inputElement.files[0]) {
     const file = inputElement.files[0];
-    
+
     if (file.size > 10 * 1024 * 1024) {
       alert('ขนาดไฟล์รูปภาพใหญ่เกินไป กรุณาเลือกไฟล์ขนาดไม่เกิน 10MB');
       inputElement.value = '';
@@ -848,9 +848,9 @@ function handleImageUpload(inputElement, previewImgElement, hiddenInputElement, 
     const maxLen = isHero ? 48000 : 25000;
 
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       const rawData = e.target.result;
-      
+
       compressImageForStorage(rawData, maxDim, quality, isPng, (compressedData) => {
         const applyResult = (finalData) => {
           const finish = (safeData) => {
@@ -899,7 +899,7 @@ function showToast(message, type = 'success') {
   toast.id = 'govToast';
   const bgColor = type === 'success' ? 'bg-[#15803d]' : (type === 'error' ? 'bg-red-800' : 'bg-[#1e3a8a]');
   toast.className = `fixed bottom-5 right-5 z-[9999] text-white px-5 py-3 rounded-lg shadow-2xl text-xs sm:text-sm font-semibold flex items-center space-x-2.5 transition-all duration-300 transform translate-y-6 opacity-0 ${bgColor} font-formal border border-white/20`;
-  
+
   const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info');
   toast.innerHTML = `
     <i class="fa-solid ${icon} text-base sm:text-lg"></i>
@@ -1024,7 +1024,7 @@ function notifyRealtimeSync(type = 'config', detail = null) {
     if (syncChannel) {
       syncChannel.postMessage({ type, detail, timestamp: Date.now() });
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 window.notifyRealtimeSync = notifyRealtimeSync;
 
@@ -1124,7 +1124,7 @@ function renderRulesPrGallery(cfg) {
           updatePrLightboxView();
         }
       }
-    }).catch(() => {});
+    }).catch(() => { });
   }
 
   const targetEl = pos === 'top' ? topEl : bottomEl;
@@ -1134,8 +1134,8 @@ function renderRulesPrGallery(cfg) {
   const gridClass = items.length === 1
     ? 'grid grid-cols-1 max-w-2xl mx-auto gap-4'
     : (items.length === 2
-        ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
-        : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4');
+      ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
+      : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4');
 
   const cardsHtml = items.map((item, idx) => {
     const imgContent = item.isLoading
@@ -1268,8 +1268,8 @@ if (typeof document !== 'undefined') {
 
 // ดักจับการเปลี่ยนแปลง Storage จากหน้าต่าง/แท็บอื่น
 window.addEventListener('storage', (e) => {
-  if (typeof STORAGE_KEYS !== 'undefined' && 
-      (e.key === STORAGE_KEYS.CONFIG || e.key === STORAGE_KEYS.COUNCIL || e.key === STORAGE_KEYS.COLOR)) {
+  if (typeof STORAGE_KEYS !== 'undefined' &&
+    (e.key === STORAGE_KEYS.CONFIG || e.key === STORAGE_KEYS.COUNCIL || e.key === STORAGE_KEYS.COLOR)) {
     if (typeof applySiteConfig === 'function') applySiteConfig();
     if (typeof renderTimeline === 'function') renderTimeline();
     if (typeof renderDocumentsPage === 'function') renderDocumentsPage();
