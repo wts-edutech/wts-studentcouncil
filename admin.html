@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257043">
-  <script src="js/data.js?v=257043"></script>
-  <script src="js/app.js?v=257043"></script>
+  <link rel="stylesheet" href="css/style.css?v=257044">
+  <script src="js/data.js?v=257044"></script>
+  <script src="js/app.js?v=257044"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -857,42 +857,203 @@
               </div>
 
               <!-- กล่องที่ 5: แก้ไขข้อความหน้าระเบียบและเกณฑ์การรับสมัคร (Tab 2) -->
+              <!-- กล่องที่ 5: แก้ไขข้อความหน้า "ระเบียบและเกณฑ์การรับสมัคร / ประกาศรับสมัคร (ลิงก์ PDF)" (Tab 2) -->
               <div class="border border-slate-300 rounded p-4 bg-slate-50/70 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-2 flex-wrap gap-2">
-                  <h4 class="font-bold text-[#1a365d] flex items-center">
-                    <i class="fa-solid fa-book-bookmark mr-2 text-slate-600"></i> แก้ไขข้อความหน้า "ระเบียบและเกณฑ์การรับสมัคร"
-                  </h4>
-                  <span class="text-[11px] bg-blue-100 text-blue-900 px-2 py-0.5 rounded font-semibold">แท็บที่ 2 หน้าแรก</span>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h4 class="font-bold text-[#1a365d] flex items-center">
+                      <i class="fa-solid fa-file-pdf mr-2 text-red-600"></i> แก้ไขหน้า "ประกาศรับสมัคร / ระเบียบการ (ลิงก์ PDF)"
+                    </h4>
+                    <span class="text-[11px] bg-blue-100 text-blue-900 px-2 py-0.5 rounded font-semibold">แท็บที่ 2 หน้าแรก</span>
+                  </div>
+                  <button type="button" id="btnSaveRulesPdfDirect" onclick="handleSaveRulesPdfDirect(event)"
+                    class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-3.5 py-1.5 shadow flex items-center cursor-pointer">
+                    <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกประกาศรับสมัคร (PDF) ทันที
+                  </button>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
                     <label class="block font-semibold text-slate-700 mb-1">หัวข้อหลักหน้าระเบียบ</label>
-                    <input type="text" id="cfg_rulesHeaderTitle" class="gov-input w-full">
+                    <input type="text" id="cfg_rulesHeaderTitle" oninput="markSettingsDirty()" class="gov-input w-full">
                   </div>
                   <div>
                     <label class="block font-semibold text-slate-700 mb-1">ข้อความกำกับมุมขวาบน</label>
-                    <input type="text" id="cfg_rulesHeaderSubtitle" class="gov-input w-full">
+                    <input type="text" id="cfg_rulesHeaderSubtitle" oninput="markSettingsDirty()" class="gov-input w-full">
                   </div>
-
-                  <div class="sm:col-span-2 pt-2 border-t border-slate-200">
-                    <label class="block font-semibold text-[#1a365d] mb-1">หัวข้อหมวดที่ 1 (สภานักเรียน)</label>
-                    <input type="text" id="cfg_rulesSection1Title" class="gov-input w-full font-bold mb-2">
-                    <label class="block font-semibold text-slate-700 mb-1">
-                      รายการเกณฑ์หมวดที่ 1 (บรรทัดละ 1 ข้อ • ไม่ต้องใส่เลขอาราบิกนำหน้า • ใช้เครื่องหมาย <code class="bg-slate-200 px-1 rounded">:</code> เพื่อทำตัวหนาหัวข้อนำหน้า)
-                    </label>
-                    <textarea id="cfg_rulesCouncilList" rows="6" class="gov-input w-full text-xs leading-relaxed"></textarea>
-                  </div>
-
-                  <div class="sm:col-span-2 pt-2 border-t border-slate-200">
-                    <label class="block font-semibold text-[#1a365d] mb-1">หัวข้อหมวดที่ 2 (ประธานคณะสี)</label>
-                    <input type="text" id="cfg_rulesSection2Title" class="gov-input w-full font-bold mb-2">
-                    <label class="block font-semibold text-slate-700 mb-1">
-                      รายการเกณฑ์หมวดที่ 2 (บรรทัดละ 1 ข้อ • ไม่ต้องใส่เลขอาราบิกนำหน้า • ใช้เครื่องหมาย <code class="bg-slate-200 px-1 rounded">:</code> เพื่อทำตัวหนาหัวข้อนำหน้า)
-                    </label>
-                    <textarea id="cfg_rulesColorList" rows="5" class="gov-input w-full text-xs leading-relaxed"></textarea>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1">รูปแบบการแสดงผลหน้าเว็บ</label>
+                    <select id="cfg_rulesDisplayMode" onchange="markSettingsDirty(); toggleRulesModeAdminUI()" class="gov-select w-full font-semibold text-[#1a365d] bg-white">
+                      <option value="pdf">📄 แสดงเป็นลิงก์ PDF แทนข้อความเดิม (แนะนำ)</option>
+                      <option value="text">📝 แสดงเป็นข้อความรายการเกณฑ์ข้อ 1–9</option>
+                    </select>
                   </div>
                 </div>
+
+                <!-- ตั้งค่าลิงก์ PDF ทั้ง 2 หมวด -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <!-- หมวดที่ 1: ประธานสภานักเรียน -->
+                  <div class="bg-white border border-slate-300 rounded-lg p-3.5 space-y-2.5 shadow-2xs">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                      <span class="font-bold text-[#1a365d] text-xs sm:text-sm">
+                        <i class="fa-solid fa-landmark mr-1 text-blue-700"></i> หมวดที่ 1: ประธานสภานักเรียน
+                      </span>
+                      <span class="text-[10px] bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded font-semibold">PDF Link 1</span>
+                    </div>
+
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-700 mb-1">ชื่อหัวข้อหมวดที่ 1</label>
+                      <input type="text" id="cfg_rulesSection1Title" oninput="markSettingsDirty()" class="gov-input w-full font-bold text-xs">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-slate-700 mb-1">คำอธิบายใต้หัวข้อการ์ด PDF</label>
+                        <input type="text" id="cfg_rulesCouncilPdfDesc" oninput="markSettingsDirty()" class="gov-input w-full text-xs" placeholder="ดาวน์โหลด/เปิดอ่านประกาศรับสมัคร...">
+                      </div>
+                      <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-slate-700 mb-1">ข้อความบนปุ่มกดเปิด PDF</label>
+                        <input type="text" id="cfg_rulesCouncilPdfBtnText" oninput="markSettingsDirty()" class="gov-input w-full text-xs" placeholder="เปิดอ่านประกาศรับสมัคร (PDF)">
+                      </div>
+                    </div>
+
+                    <div class="p-2.5 bg-amber-50/70 border border-amber-200 rounded space-y-1.5">
+                      <label class="block text-[11px] font-bold text-amber-900">
+                        <i class="fa-solid fa-link mr-1 text-amber-700"></i> วางลิงก์ URL ไฟล์ PDF (แนะนำ — Google Drive / เว็บโรงเรียน)
+                      </label>
+                      <div class="flex gap-1.5">
+                        <input type="url" id="cfg_rulesCouncilPdfUrl" oninput="markSettingsDirty(); renderRulesPdfAdminStatus('council')"
+                          placeholder="https://drive.google.com/file/d/.../view"
+                          class="gov-input w-full text-xs bg-white font-mono">
+                        <button type="button" onclick="testRulesPdfLink('council')"
+                          class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] px-2.5 border border-slate-300 whitespace-nowrap" title="ทดสอบเปิดลิงก์ในแท็บใหม่">
+                          <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> ทดสอบ
+                        </button>
+                        <button type="button" onclick="clearRulesPdfUrl('council')"
+                          class="gov-btn bg-red-50 hover:bg-red-100 text-red-700 text-[11px] px-2 border border-red-200" title="ล้างลิงก์ URL">
+                          <i class="fa-solid fa-xmark"></i>
+                        </button>
+                      </div>
+                      <div class="text-[10px] text-slate-600">หากใช้ Google Drive กรุณาตั้งค่าแชร์ลิงก์เป็น <strong>"ทุกคนที่มีลิงก์"</strong></div>
+                    </div>
+
+                    <div class="p-2.5 bg-blue-50/70 border border-blue-200 rounded space-y-1.5">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="text-[11px] font-bold text-blue-900">
+                          <i class="fa-solid fa-file-arrow-up mr-1 text-blue-600"></i> หรืออัปโหลดไฟล์ PDF ขนาดเล็ก (ไม่เกิน 35 KB)
+                        </span>
+                        <span id="rulesPdfStatus_council" class="text-[10px] font-semibold"></span>
+                      </div>
+                      <input type="file" id="rulesPdfFileInput_council" accept=".pdf,application/pdf" class="hidden" onchange="handleRulesPdfUpload('council', this)">
+                      <div class="flex gap-1.5 items-center">
+                        <button type="button" onclick="document.getElementById('rulesPdfFileInput_council').click()"
+                          class="gov-btn gov-btn-blue text-[11px] py-1.5 px-2.5 flex-grow shadow-2xs">
+                          <i class="fa-solid fa-cloud-arrow-up mr-1"></i> เลือกไฟล์ PDF จากเครื่อง
+                        </button>
+                        <button type="button" id="btnPreviewUploadedRulesPdf_council" onclick="previewUploadedRulesPdf('council')"
+                          class="hidden gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] py-1.5 px-2 border border-slate-300" title="เปิดดูไฟล์ PDF ที่แนบไว้">
+                          <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button type="button" id="btnClearUploadedRulesPdf_council" onclick="clearRulesPdfData('council')"
+                          class="hidden gov-btn bg-red-50 hover:bg-red-100 text-red-700 text-[11px] py-1.5 px-2 border border-red-200" title="ลบไฟล์ PDF ที่อัปโหลด">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- หมวดที่ 2: ประธานคณะสี -->
+                  <div class="bg-white border border-slate-300 rounded-lg p-3.5 space-y-2.5 shadow-2xs">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                      <span class="font-bold text-amber-800 text-xs sm:text-sm">
+                        <i class="fa-solid fa-flag mr-1 text-amber-600"></i> หมวดที่ 2: ประธานคณะสี (5 คณะสี)
+                      </span>
+                      <span class="text-[10px] bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded font-semibold">PDF Link 2</span>
+                    </div>
+
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-700 mb-1">ชื่อหัวข้อหมวดที่ 2</label>
+                      <input type="text" id="cfg_rulesSection2Title" oninput="markSettingsDirty()" class="gov-input w-full font-bold text-xs">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-slate-700 mb-1">คำอธิบายใต้หัวข้อการ์ด PDF</label>
+                        <input type="text" id="cfg_rulesColorPdfDesc" oninput="markSettingsDirty()" class="gov-input w-full text-xs" placeholder="ดาวน์โหลด/เปิดอ่านประกาศรับสมัคร...">
+                      </div>
+                      <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-slate-700 mb-1">ข้อความบนปุ่มกดเปิด PDF</label>
+                        <input type="text" id="cfg_rulesColorPdfBtnText" oninput="markSettingsDirty()" class="gov-input w-full text-xs" placeholder="เปิดอ่านประกาศรับสมัคร (PDF)">
+                      </div>
+                    </div>
+
+                    <div class="p-2.5 bg-amber-50/70 border border-amber-200 rounded space-y-1.5">
+                      <label class="block text-[11px] font-bold text-amber-900">
+                        <i class="fa-solid fa-link mr-1 text-amber-700"></i> วางลิงก์ URL ไฟล์ PDF (แนะนำ — Google Drive / เว็บโรงเรียน)
+                      </label>
+                      <div class="flex gap-1.5">
+                        <input type="url" id="cfg_rulesColorPdfUrl" oninput="markSettingsDirty(); renderRulesPdfAdminStatus('color')"
+                          placeholder="https://drive.google.com/file/d/.../view"
+                          class="gov-input w-full text-xs bg-white font-mono">
+                        <button type="button" onclick="testRulesPdfLink('color')"
+                          class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] px-2.5 border border-slate-300 whitespace-nowrap" title="ทดสอบเปิดลิงก์ในแท็บใหม่">
+                          <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> ทดสอบ
+                        </button>
+                        <button type="button" onclick="clearRulesPdfUrl('color')"
+                          class="gov-btn bg-red-50 hover:bg-red-100 text-red-700 text-[11px] px-2 border border-red-200" title="ล้างลิงก์ URL">
+                          <i class="fa-solid fa-xmark"></i>
+                        </button>
+                      </div>
+                      <div class="text-[10px] text-slate-600">หากใช้ Google Drive กรุณาตั้งค่าแชร์ลิงก์เป็น <strong>"ทุกคนที่มีลิงก์"</strong></div>
+                    </div>
+
+                    <div class="p-2.5 bg-blue-50/70 border border-blue-200 rounded space-y-1.5">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="text-[11px] font-bold text-blue-900">
+                          <i class="fa-solid fa-file-arrow-up mr-1 text-blue-600"></i> หรืออัปโหลดไฟล์ PDF ขนาดเล็ก (ไม่เกิน 35 KB)
+                        </span>
+                        <span id="rulesPdfStatus_color" class="text-[10px] font-semibold"></span>
+                      </div>
+                      <input type="file" id="rulesPdfFileInput_color" accept=".pdf,application/pdf" class="hidden" onchange="handleRulesPdfUpload('color', this)">
+                      <div class="flex gap-1.5 items-center">
+                        <button type="button" onclick="document.getElementById('rulesPdfFileInput_color').click()"
+                          class="gov-btn gov-btn-blue text-[11px] py-1.5 px-2.5 flex-grow shadow-2xs">
+                          <i class="fa-solid fa-cloud-arrow-up mr-1"></i> เลือกไฟล์ PDF จากเครื่อง
+                        </button>
+                        <button type="button" id="btnPreviewUploadedRulesPdf_color" onclick="previewUploadedRulesPdf('color')"
+                          class="hidden gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] py-1.5 px-2 border border-slate-300" title="เปิดดูไฟล์ PDF ที่แนบไว้">
+                          <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button type="button" id="btnClearUploadedRulesPdf_color" onclick="clearRulesPdfData('color')"
+                          class="hidden gov-btn bg-red-50 hover:bg-red-100 text-red-700 text-[11px] py-1.5 px-2 border border-red-200" title="ลบไฟล์ PDF ที่อัปโหลด">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ข้อความรายการเกณฑ์เดิม (พับเก็บไว้เมื่อเลือกโหมดลิงก์ PDF) -->
+                <details id="rulesTextEditorDetails" class="bg-white border border-slate-200 rounded p-3">
+                  <summary class="cursor-pointer font-semibold text-xs text-slate-700 select-none flex items-center justify-between">
+                    <span><i class="fa-solid fa-list-ol mr-1.5 text-slate-500"></i> แก้ไขข้อความรายการเกณฑ์ข้อ 1–9 แบบเดิม (ใช้เฉพาะเมื่อเลือกรูปแบบแสดงผลเป็นข้อความ)</span>
+                    <span class="text-[10px] text-slate-400">คลิกเพื่อกาง/พับ</span>
+                  </summary>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 mt-2 border-t border-slate-200">
+                    <div>
+                      <label class="block font-semibold text-slate-700 mb-1 text-xs">
+                        รายการเกณฑ์หมวดที่ 1 (บรรทัดละ 1 ข้อ • ใช้ <code class="bg-slate-200 px-1 rounded">:</code> เพื่อทำตัวหนาหัวข้อนำหน้า)
+                      </label>
+                      <textarea id="cfg_rulesCouncilList" rows="5" oninput="markSettingsDirty()" class="gov-input w-full text-xs leading-relaxed"></textarea>
+                    </div>
+                    <div>
+                      <label class="block font-semibold text-slate-700 mb-1 text-xs">
+                        รายการเกณฑ์หมวดที่ 2 (บรรทัดละ 1 ข้อ • ใช้ <code class="bg-slate-200 px-1 rounded">:</code> เพื่อทำตัวหนาหัวข้อนำหน้า)
+                      </label>
+                      <textarea id="cfg_rulesColorList" rows="5" oninput="markSettingsDirty()" class="gov-input w-full text-xs leading-relaxed"></textarea>
+                    </div>
+                  </div>
+                </details>
               </div>
 
               <!-- กล่องที่ 6: แก้ไขข้อความหน้าเลือกประเภทการยื่นใบสมัครออนไลน์ (Tab 3) -->
@@ -1821,6 +1982,10 @@
     let settingsFormDirty = false;
     let settingsLoadedOnce = false;
     let prevLoadedAcademicYear = '';
+    const rulesPdfUploads = {
+      council: { data: '', fileName: '', fileSize: '' },
+      color: { data: '', fileName: '', fileSize: '' }
+    };
 
     function markSettingsDirty() {
       settingsFormDirty = true;
@@ -2026,13 +2191,35 @@
       document.getElementById('settingLineQrPreview').src = qrImg;
       document.getElementById('settingLineQrData').value = qrImg;
 
-      // โหลดค่าหน้าระเบียบและเกณฑ์การรับสมัคร (Tab 2)
+      // โหลดค่าหน้าระเบียบและเกณฑ์การรับสมัคร / ประกาศรับสมัคร PDF (Tab 2)
       document.getElementById('cfg_rulesHeaderTitle').value = cfg.rulesHeaderTitle || '';
       document.getElementById('cfg_rulesHeaderSubtitle').value = cfg.rulesHeaderSubtitle || '';
+      const rulesModeEl = document.getElementById('cfg_rulesDisplayMode');
+      if (rulesModeEl) rulesModeEl.value = cfg.rulesDisplayMode === 'text' ? 'text' : 'pdf';
       document.getElementById('cfg_rulesSection1Title').value = cfg.rulesSection1Title || '';
+      document.getElementById('cfg_rulesCouncilPdfDesc').value = cfg.rulesCouncilPdfDesc ?? (DEFAULT_SITE_CONFIG.rulesCouncilPdfDesc || '');
+      document.getElementById('cfg_rulesCouncilPdfBtnText').value = cfg.rulesCouncilPdfBtnText ?? (DEFAULT_SITE_CONFIG.rulesCouncilPdfBtnText || '');
+      document.getElementById('cfg_rulesCouncilPdfUrl').value = cfg.rulesCouncilPdfUrl || '';
+      rulesPdfUploads.council = {
+        data: cfg.rulesCouncilPdfData || '',
+        fileName: cfg.rulesCouncilPdfFileName || '',
+        fileSize: cfg.rulesCouncilPdfFileSize || ''
+      };
       document.getElementById('cfg_rulesCouncilList').value = (cfg.rulesCouncilList || []).map(s => String(s || '').replace(/^\s*\d+[\.\)]\s*/, '').trim()).join('\n');
+
       document.getElementById('cfg_rulesSection2Title').value = cfg.rulesSection2Title || '';
+      document.getElementById('cfg_rulesColorPdfDesc').value = cfg.rulesColorPdfDesc ?? (DEFAULT_SITE_CONFIG.rulesColorPdfDesc || '');
+      document.getElementById('cfg_rulesColorPdfBtnText').value = cfg.rulesColorPdfBtnText ?? (DEFAULT_SITE_CONFIG.rulesColorPdfBtnText || '');
+      document.getElementById('cfg_rulesColorPdfUrl').value = cfg.rulesColorPdfUrl || '';
+      rulesPdfUploads.color = {
+        data: cfg.rulesColorPdfData || '',
+        fileName: cfg.rulesColorPdfFileName || '',
+        fileSize: cfg.rulesColorPdfFileSize || ''
+      };
       document.getElementById('cfg_rulesColorList').value = (cfg.rulesColorList || []).map(s => String(s || '').replace(/^\s*\d+[\.\)]\s*/, '').trim()).join('\n');
+      renderRulesPdfAdminStatus('council');
+      renderRulesPdfAdminStatus('color');
+      toggleRulesModeAdminUI();
 
       // โหลดค่าหน้าเลือกประเภทการยื่นใบสมัครออนไลน์ (Tab 3)
       document.getElementById('cfg_applyHeaderTitle').value = cfg.applyHeaderTitle || '';
@@ -3314,6 +3501,209 @@
       renderDocumentsAdminTable();
     }
 
+    // ====== ฟังก์ชันจัดการลิงก์และไฟล์ PDF หน้าประกาศรับสมัคร (Tab 2) ======
+    const RULES_PDF_META = {
+      council: {
+        titleInput: 'cfg_rulesSection1Title',
+        descInput: 'cfg_rulesCouncilPdfDesc',
+        btnInput: 'cfg_rulesCouncilPdfBtnText',
+        urlInput: 'cfg_rulesCouncilPdfUrl',
+        listInput: 'cfg_rulesCouncilList',
+        fileInput: 'rulesPdfFileInput_council',
+        statusEl: 'rulesPdfStatus_council',
+        previewBtn: 'btnPreviewUploadedRulesPdf_council',
+        clearBtn: 'btnClearUploadedRulesPdf_council',
+        defaultTitle: 'หมวดที่ 1: เกณฑ์คุณสมบัติผู้สมัครประธานสภานักเรียน',
+        defaultDesc: DEFAULT_SITE_CONFIG.rulesCouncilPdfDesc || '',
+        defaultBtn: DEFAULT_SITE_CONFIG.rulesCouncilPdfBtnText || 'เปิดอ่านประกาศรับสมัคร (PDF)'
+      },
+      color: {
+        titleInput: 'cfg_rulesSection2Title',
+        descInput: 'cfg_rulesColorPdfDesc',
+        btnInput: 'cfg_rulesColorPdfBtnText',
+        urlInput: 'cfg_rulesColorPdfUrl',
+        listInput: 'cfg_rulesColorList',
+        fileInput: 'rulesPdfFileInput_color',
+        statusEl: 'rulesPdfStatus_color',
+        previewBtn: 'btnPreviewUploadedRulesPdf_color',
+        clearBtn: 'btnClearUploadedRulesPdf_color',
+        defaultTitle: 'หมวดที่ 2: เกณฑ์คุณสมบัติผู้สมัครประธานคณะสี (5 คณะสี)',
+        defaultDesc: DEFAULT_SITE_CONFIG.rulesColorPdfDesc || '',
+        defaultBtn: DEFAULT_SITE_CONFIG.rulesColorPdfBtnText || 'เปิดอ่านประกาศรับสมัคร (PDF)'
+      }
+    };
+
+    function toggleRulesModeAdminUI() {
+      const mode = document.getElementById('cfg_rulesDisplayMode')?.value || 'pdf';
+      const detailsEl = document.getElementById('rulesTextEditorDetails');
+      if (detailsEl) {
+        detailsEl.open = (mode === 'text');
+      }
+    }
+
+    function renderRulesPdfAdminStatus(key) {
+      const meta = RULES_PDF_META[key];
+      const up = rulesPdfUploads[key];
+      if (!meta || !up) return;
+      const statusEl = document.getElementById(meta.statusEl);
+      const previewBtn = document.getElementById(meta.previewBtn);
+      const clearBtn = document.getElementById(meta.clearBtn);
+      const hasUrl = Boolean((document.getElementById(meta.urlInput)?.value || '').trim());
+
+      if (statusEl) {
+        if (up.data) {
+          const suffix = hasUrl ? ' (ใช้ URL ด้านบนก่อน)' : '';
+          statusEl.className = 'text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300';
+          statusEl.textContent = `✓ ${up.fileName || 'PDF'} (${up.fileSize || 'มีไฟล์'})${suffix}`;
+        } else if (hasUrl) {
+          statusEl.className = 'text-[10px] font-semibold text-emerald-700';
+          statusEl.textContent = 'ใช้ลิงก์ URL ด้านบน';
+        } else {
+          statusEl.className = 'text-[10px] text-amber-700 font-semibold';
+          statusEl.textContent = 'ยังไม่ได้แนบ PDF';
+        }
+      }
+      if (previewBtn) previewBtn.classList.toggle('hidden', !up.data);
+      if (clearBtn) clearBtn.classList.toggle('hidden', !up.data);
+    }
+
+    function handleRulesPdfUpload(key, input) {
+      const meta = RULES_PDF_META[key];
+      if (!meta || !input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const maxDirectBytes = 35 * 1024; // ~35KB raw => ~47KB Base64 เพื่อไม่ให้ชนเพดานคลาวด์ ~95KB
+      if (file.size > maxDirectBytes) {
+        alert(
+          `ไฟล์ "${file.name}" มีขนาด ${formatFileSize(file.size)} เกินพื้นที่คลาวด์สำหรับไฟล์แนบตรง (~35 KB)\n\n` +
+          `แนะนำ: ให้นำไฟล์ PDF ไปอัปโหลดลง Google Drive (ตั้งค่าแชร์: ทุกคนที่มีลิงก์) แล้วนำลิงก์มาวางในช่อง URL ด้านบนแทน เพื่อให้เปิดอ่านได้จากทุกเครื่องครับ`
+        );
+        input.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        rulesPdfUploads[key] = {
+          data: e.target.result || '',
+          fileName: file.name,
+          fileSize: formatFileSize(file.size)
+        };
+        markSettingsDirty();
+        renderRulesPdfAdminStatus(key);
+        showToast(`แนบไฟล์ "${file.name}" สำเร็จ! กดปุ่ม "บันทึกประกาศรับสมัคร (PDF)" เพื่อเผยแพร่`, 'success');
+      };
+      reader.onerror = function() {
+        showToast('เกิดข้อผิดพลาดในการอ่านไฟล์ PDF', 'error');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearRulesPdfData(key) {
+      const meta = RULES_PDF_META[key];
+      if (!meta) return;
+      rulesPdfUploads[key] = { data: '', fileName: '', fileSize: '' };
+      const fileInput = document.getElementById(meta.fileInput);
+      if (fileInput) fileInput.value = '';
+      markSettingsDirty();
+      renderRulesPdfAdminStatus(key);
+      showToast('ลบไฟล์ PDF ที่อัปโหลดออกแล้ว', 'info');
+    }
+
+    function clearRulesPdfUrl(key) {
+      const meta = RULES_PDF_META[key];
+      if (!meta) return;
+      const el = document.getElementById(meta.urlInput);
+      if (el) el.value = '';
+      markSettingsDirty();
+      renderRulesPdfAdminStatus(key);
+      showToast('ล้างลิงก์ URL แล้ว', 'info');
+    }
+
+    function testRulesPdfLink(key) {
+      const meta = RULES_PDF_META[key];
+      if (!meta) return;
+      const rawUrl = (document.getElementById(meta.urlInput)?.value || '').trim();
+      const safeUrl = typeof sanitizePdfHref === 'function' ? sanitizePdfHref(rawUrl) : rawUrl;
+      if (!safeUrl) {
+        showToast('กรุณาวางลิงก์ URL ไฟล์ PDF ก่อนทดสอบเปิด', 'warning');
+        document.getElementById(meta.urlInput)?.focus();
+        return;
+      }
+      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    function previewUploadedRulesPdf(key) {
+      const up = rulesPdfUploads[key];
+      if (!up || !up.data) {
+        showToast('ยังไม่มีไฟล์ PDF ที่อัปโหลดไว้ในหมวดนี้', 'info');
+        return;
+      }
+      if (typeof openDataPdfSafely === 'function') {
+        openDataPdfSafely(null, up.data, up.fileName || `announcement_${key}.pdf`);
+      }
+    }
+
+    function buildRulesPdfSettingsPayload() {
+      const getT = (id) => (document.getElementById(id)?.value || '').trim();
+      const getLines = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value.split('\n').map(s => s.replace(/^\s*\d+[\.\)]\s*/, '').trim()).filter(Boolean) : [];
+      };
+      const cleanHref = (raw) => (typeof sanitizePdfHref === 'function' ? sanitizePdfHref(raw) : String(raw || '').trim());
+      const modeVal = document.getElementById('cfg_rulesDisplayMode')?.value === 'text' ? 'text' : 'pdf';
+
+      return {
+        rulesHeaderTitle: getT('cfg_rulesHeaderTitle'),
+        rulesHeaderSubtitle: getT('cfg_rulesHeaderSubtitle'),
+        rulesDisplayMode: modeVal,
+        rulesSection1Title: getT('cfg_rulesSection1Title') || RULES_PDF_META.council.defaultTitle,
+        rulesCouncilList: getLines('cfg_rulesCouncilList'),
+        rulesCouncilPdfDesc: getT('cfg_rulesCouncilPdfDesc') || RULES_PDF_META.council.defaultDesc,
+        rulesCouncilPdfBtnText: getT('cfg_rulesCouncilPdfBtnText') || RULES_PDF_META.council.defaultBtn,
+        rulesCouncilPdfUrl: cleanHref(getT('cfg_rulesCouncilPdfUrl')),
+        rulesCouncilPdfData: rulesPdfUploads.council.data || '',
+        rulesCouncilPdfFileName: rulesPdfUploads.council.fileName || '',
+        rulesCouncilPdfFileSize: rulesPdfUploads.council.fileSize || '',
+        rulesSection2Title: getT('cfg_rulesSection2Title') || RULES_PDF_META.color.defaultTitle,
+        rulesColorList: getLines('cfg_rulesColorList'),
+        rulesColorPdfDesc: getT('cfg_rulesColorPdfDesc') || RULES_PDF_META.color.defaultDesc,
+        rulesColorPdfBtnText: getT('cfg_rulesColorPdfBtnText') || RULES_PDF_META.color.defaultBtn,
+        rulesColorPdfUrl: cleanHref(getT('cfg_rulesColorPdfUrl')),
+        rulesColorPdfData: rulesPdfUploads.color.data || '',
+        rulesColorPdfFileName: rulesPdfUploads.color.fileName || '',
+        rulesColorPdfFileSize: rulesPdfUploads.color.fileSize || ''
+      };
+    }
+
+    async function handleSaveRulesPdfDirect(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      const btn = document.getElementById('btnSaveRulesPdfDirect');
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> กำลังบันทึก...';
+      }
+      try {
+        const payload = buildRulesPdfSettingsPayload();
+        const saveRes = await WDSDB.saveConfig(payload, true);
+        if (saveRes) {
+          if (typeof applySiteConfig === 'function') applySiteConfig();
+          if (saveRes._cloudSyncOk === false) {
+            showToast('⚠️ บันทึกในเครื่องแล้ว แต่ซิงค์คลาวด์ไม่สำเร็จ: ' + (saveRes._cloudSyncError || 'กรุณาใช้ลิงก์ Google Drive แทน'), 'error');
+          } else {
+            showToast('✅ บันทึกลิงก์ประกาศรับสมัคร (PDF) และซิงค์คลาวด์สำเร็จ!', 'success');
+          }
+        }
+      } catch (err) {
+        console.error('Save Rules PDF Error:', err);
+        showToast('เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err), 'error');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+      }
+    }
+
     // ====== ฟังก์ชันจัดการช่องลงนามและผู้เซ็นเอกสารท้ายใบสมัคร (Signatures Management) ======
     function switchSignatureSubTab(subTab) {
       activeSignatureSubTab = subTab;
@@ -3967,12 +4357,7 @@
           lineGroupTitle: getTrimmed('cfg_lineGroupTitle'),
           lineGroupDesc: getTrimmed('cfg_lineGroupDesc'),
           lineGroupQr: getVal('settingLineQrData') || 'assets/images/line-group-qr.jpg',
-          rulesHeaderTitle: getTrimmed('cfg_rulesHeaderTitle'),
-          rulesHeaderSubtitle: getTrimmed('cfg_rulesHeaderSubtitle'),
-          rulesSection1Title: getTrimmed('cfg_rulesSection1Title'),
-          rulesCouncilList: getSplitLines('cfg_rulesCouncilList'),
-          rulesSection2Title: getTrimmed('cfg_rulesSection2Title'),
-          rulesColorList: getSplitLines('cfg_rulesColorList'),
+          ...buildRulesPdfSettingsPayload(),
           applyHeaderTitle: getTrimmed('cfg_applyHeaderTitle'),
           applyHeaderSubtitle: getTrimmed('cfg_applyHeaderSubtitle'),
           applyCouncilTitle: getTrimmed('cfg_applyCouncilTitle'),

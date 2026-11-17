@@ -316,17 +316,134 @@ function renderRulesAndApplyContent(cfg) {
     `;
   };
 
-  // หมวดที่ 1: สภานักเรียน
-  const councilRulesOl = document.getElementById('rulesCouncilOl');
-  if (councilRulesOl && Array.isArray(cfg.rulesCouncilList)) {
-    councilRulesOl.innerHTML = cfg.rulesCouncilList.map(formatRuleItem).filter(Boolean).join('');
-  }
+  const rulesSections = [
+    {
+      key: 'council',
+      pdfBoxId: 'rulesCouncilPdfBox',
+      listBoxId: 'rulesCouncilOl',
+      rulesList: cfg.rulesCouncilList,
+      descField: 'rulesCouncilPdfDesc',
+      btnField: 'rulesCouncilPdfBtnText',
+      urlField: 'rulesCouncilPdfUrl',
+      dataField: 'rulesCouncilPdfData',
+      nameField: 'rulesCouncilPdfFileName',
+      sizeField: 'rulesCouncilPdfFileSize',
+      defaultDesc: 'ดาวน์โหลด/เปิดอ่านประกาศรับสมัคร คุณสมบัติ และหลักเกณฑ์ผู้ลงสมัครประธานสภานักเรียน (ไฟล์ PDF)'
+    },
+    {
+      key: 'color',
+      pdfBoxId: 'rulesColorPdfBox',
+      listBoxId: 'rulesColorOl',
+      rulesList: cfg.rulesColorList,
+      descField: 'rulesColorPdfDesc',
+      btnField: 'rulesColorPdfBtnText',
+      urlField: 'rulesColorPdfUrl',
+      dataField: 'rulesColorPdfData',
+      nameField: 'rulesColorPdfFileName',
+      sizeField: 'rulesColorPdfFileSize',
+      defaultDesc: 'ดาวน์โหลด/เปิดอ่านประกาศรับสมัคร คุณสมบัติ และหลักเกณฑ์ผู้ลงสมัครประธานคณะสี 5 คณะสี (ไฟล์ PDF)'
+    }
+  ];
 
-  // หมวดที่ 2: ประธานคณะสี
-  const colorRulesOl = document.getElementById('rulesColorOl');
-  if (colorRulesOl && Array.isArray(cfg.rulesColorList)) {
-    colorRulesOl.innerHTML = cfg.rulesColorList.map(formatRuleItem).filter(Boolean).join('');
-  }
+  const rulesMode = cfg.rulesDisplayMode === 'text' ? 'text' : 'pdf';
+  const sanitizeUrl = typeof sanitizePdfHref === 'function' ? sanitizePdfHref : (u) => String(u || '').trim();
+
+  const buildRulePdfCardHtml = (sec) => {
+    const desc = (cfg[sec.descField] || sec.defaultDesc || '').trim();
+    const btnText = (cfg[sec.btnField] || 'เปิดอ่านประกาศรับสมัคร (PDF)').trim();
+    const extUrl = sanitizeUrl(cfg[sec.urlField]);
+    const fileData = cfg[sec.dataField] || '';
+    const fileName = (cfg[sec.nameField] || `ประกาศรับสมัคร_${sec.key}.pdf`).trim();
+    const fileSize = (cfg[sec.sizeField] || '').trim();
+
+    let statusBadgeHtml = '';
+    let actionHtml = '';
+
+    if (extUrl) {
+      statusBadgeHtml = `
+        <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] sm:text-xs font-medium">
+          <i class="fa-solid fa-link text-emerald-600"></i>
+          <span>พร้อมเปิดอ่านจากลิงก์เอกสาร PDF ออนไลน์</span>
+        </div>
+      `;
+      actionHtml = `
+        <a href="${escapeHTML(extUrl)}" target="_blank" rel="noopener noreferrer"
+          class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-4 sm:px-6 inline-flex items-center justify-center whitespace-nowrap shadow-sm flex-shrink-0">
+          <i class="fa-solid fa-file-pdf mr-2"></i>
+          <span>${escapeHTML(btnText)}</span>
+          <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-[11px] opacity-80"></i>
+        </a>
+      `;
+    } else if (fileData) {
+      statusBadgeHtml = `
+        <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] sm:text-xs font-medium max-w-full">
+          <i class="fa-solid fa-file-check text-emerald-600 flex-shrink-0"></i>
+          <span class="truncate">${escapeHTML(fileName)}${fileSize ? ` (${escapeHTML(fileSize)})` : ''}</span>
+        </div>
+      `;
+      actionHtml = `
+        <a href="#open-pdf-${sec.key}" onclick="return openRulesSectionPdf(event, '${sec.key}')"
+          class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-4 sm:px-6 inline-flex items-center justify-center whitespace-nowrap shadow-sm flex-shrink-0">
+          <i class="fa-solid fa-file-pdf mr-2"></i>
+          <span>${escapeHTML(btnText)}</span>
+          <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-[11px] opacity-80"></i>
+        </a>
+      `;
+    } else {
+      statusBadgeHtml = `
+        <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-50 border border-amber-200 text-amber-800 text-[11px] sm:text-xs font-medium">
+          <i class="fa-solid fa-clock text-amber-600"></i>
+          <span>รอผู้ดูแลระบบแนบลิงก์ไฟล์ประกาศ PDF</span>
+        </div>
+      `;
+      actionHtml = `
+        <button type="button" onclick="showRulesPdfUnavailable()"
+          class="btn-gov-outline text-xs sm:text-sm py-2.5 px-4 text-slate-600 border-dashed inline-flex items-center justify-center whitespace-nowrap flex-shrink-0">
+          <i class="fa-regular fa-file-pdf mr-2 text-red-500"></i>
+          <span>รออัปเดตลิงก์ PDF</span>
+        </button>
+      `;
+    }
+
+    return `
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/90 hover:bg-slate-50 border border-slate-200 rounded-lg p-4 sm:p-5 transition">
+        <div class="flex items-start gap-3 sm:gap-4 min-w-0">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center flex-shrink-0 text-red-600 text-xl sm:text-2xl shadow-2xs">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-xs sm:text-sm md:text-[15px] text-slate-700 leading-relaxed font-medium">
+              ${escapeHTML(desc)}
+            </div>
+            ${statusBadgeHtml}
+          </div>
+        </div>
+        <div class="flex items-center justify-end md:justify-center flex-shrink-0">
+          ${actionHtml}
+        </div>
+      </div>
+    `;
+  };
+
+  rulesSections.forEach(sec => {
+    const pdfBox = document.getElementById(sec.pdfBoxId);
+    const listBox = document.getElementById(sec.listBoxId);
+    if (rulesMode === 'text') {
+      if (pdfBox) pdfBox.classList.add('hidden');
+      if (listBox) {
+        listBox.classList.remove('hidden');
+        if (Array.isArray(sec.rulesList)) {
+          listBox.innerHTML = sec.rulesList.map(formatRuleItem).filter(Boolean).join('');
+        }
+      }
+    } else {
+      if (listBox) listBox.classList.add('hidden');
+      if (pdfBox) {
+        pdfBox.classList.remove('hidden');
+        pdfBox.innerHTML = buildRulePdfCardHtml(sec);
+      }
+    }
+  });
 
   // รายการสรุปในการ์ดยื่นใบสมัครสภานักเรียน (Tab 3)
   const applyCouncilBulletsEl = document.getElementById('applyCouncilBulletsBox');
@@ -864,6 +981,37 @@ function notifyRealtimeSync(type = 'config', detail = null) {
   } catch (e) {}
 }
 window.notifyRealtimeSync = notifyRealtimeSync;
+
+// เปิดลิงก์หรือไฟล์ PDF ประกาศรับสมัครประจำหมวดจาก Config อย่างปลอดภัย
+function openRulesSectionPdf(event, sectionKey) {
+  if (event && typeof event.preventDefault === 'function') event.preventDefault();
+  if (typeof WDSDB === 'undefined') return false;
+  const cfg = WDSDB.getConfig();
+  const isCouncil = sectionKey === 'council';
+  const rawUrl = isCouncil ? cfg.rulesCouncilPdfUrl : cfg.rulesColorPdfUrl;
+  const safeUrl = typeof sanitizePdfHref === 'function' ? sanitizePdfHref(rawUrl) : String(rawUrl || '').trim();
+  const fileData = isCouncil ? cfg.rulesCouncilPdfData : cfg.rulesColorPdfData;
+  const fileName = isCouncil ? cfg.rulesCouncilPdfFileName : cfg.rulesColorPdfFileName;
+  const target = safeUrl || fileData;
+  if (!target) {
+    showRulesPdfUnavailable();
+    return false;
+  }
+  if (typeof openDataPdfSafely === 'function') {
+    return openDataPdfSafely(event, target, fileName || `announcement_${sectionKey}.pdf`);
+  }
+  window.open(target, '_blank', 'noopener,noreferrer');
+  return false;
+}
+
+function showRulesPdfUnavailable() {
+  const msg = 'ผู้ดูแลระบบยังไม่ได้แนบลิงก์ไฟล์ประกาศ PDF สำหรับหมวดนี้ กรุณารออัปเดตลิงก์เอกสารเร็วๆ นี้ครับ';
+  if (typeof showToast === 'function') {
+    showToast(msg, 'info');
+  } else {
+    alert(msg);
+  }
+}
 
 // ดักจับการเปลี่ยนแปลง Storage จากหน้าต่าง/แท็บอื่น
 window.addEventListener('storage', (e) => {

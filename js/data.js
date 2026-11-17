@@ -80,6 +80,67 @@ function formatCardHeadingPrefix(template, num, fallback = 'ลำดับท�
   return tpl.replace(/\{n\}/g, String(num));
 }
 
+// ฟังก์ชันตรวจสอบและจัดรูปแบบลิงก์ไฟล์ PDF ให้ปลอดภัยและเปิดได้จริง
+function sanitizePdfHref(rawUrl) {
+  const s = String(rawUrl || '').trim();
+  if (!s) return '';
+  if (/^(javascript|vbscript|data:text\/html):/i.test(s)) return '';
+  if (/^(https?:\/\/|\/|\.\/|\.\.\/|assets\/|data:application\/pdf)/i.test(s)) {
+    return s;
+  }
+  // กรณีวางโดเมนโดยไม่มี https:// เช่น drive.google.com/... หรือ www.example.com/...
+  if (/^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(s)) {
+    return 'https://' + s;
+  }
+  return s;
+}
+
+// เปิดไฟล์ PDF ที่เก็บแบบ Data URL (Base64) ผ่าน Blob URL เพื่อไม่ให้ Chrome บล็อกการเปิดแท็บใหม่
+function openDataPdfSafely(event, dataUrl, fileName = 'announcement.pdf') {
+  if (event && typeof event.preventDefault === 'function') event.preventDefault();
+  if (!dataUrl || typeof dataUrl !== 'string') return false;
+  if (!dataUrl.startsWith('data:')) {
+    const safeUrl = sanitizePdfHref(dataUrl);
+    if (safeUrl && typeof window !== 'undefined' && typeof window.open === 'function') {
+      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+    }
+    return false;
+  }
+  try {
+    const commaIdx = dataUrl.indexOf(',');
+    if (commaIdx === -1) return false;
+    const header = dataUrl.substring(0, commaIdx);
+    const base64 = dataUrl.substring(commaIdx + 1);
+    const mimeMatch = header.match(/data:([^;]+)/i);
+    const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mime });
+    const blobUrl = URL.createObjectURL(blob);
+    const opened = typeof window !== 'undefined' && typeof window.open === 'function'
+      ? window.open(blobUrl, '_blank', 'noopener')
+      : null;
+    if (!opened && typeof document !== 'undefined') {
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = fileName || 'announcement.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+  } catch (err) {
+    console.warn('openDataPdfSafely fallback:', err);
+    if (typeof window !== 'undefined' && typeof window.open === 'function') {
+      window.open(dataUrl, '_blank');
+    }
+  }
+  return false;
+}
+
 // ตราสัญลักษณ์เริ่มต้น (ตราโรงเรียนวชิรธรรมสาธิต พื้นหลังโปร่งใส, ตราสภานักเรียน, ตราคณะสี)
 const DEFAULT_SCHOOL_LOGO = "assets/images/school-logo-transparent.png";
 const DEFAULT_LOGO_2 = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffffff' stroke='%231e3a8a' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='42' fill='%23eff6ff' stroke='%233b82f6' stroke-width='1.5'/%3E%3Cpolygon points='50,20 58,38 78,38 62,50 68,68 50,57 32,68 38,50 22,38 42,38' fill='%231e3a8a' stroke='%23c59b27' stroke-width='1.5'/%3E%3Ctext x='50' y='86' font-family='sans-serif' font-size='8.5' font-weight='bold' fill='%231e3a8a' text-anchor='middle'%3Eสภานักเรียน%3C/text%3E%3C/svg%3E";
@@ -273,10 +334,23 @@ const DEFAULT_SITE_CONFIG = {
   schoolWebsite: 'https://www.wt.ac.th',
   rulesHeaderTitle: 'ประกาศและคุณสมบัติของผู้สมัครรับเลือกตั้ง ประจำปีการศึกษา 2570',
   rulesHeaderSubtitle: 'ข้อบังคับกลุ่มบริหารกิจการนักเรียน',
+  rulesDisplayMode: 'pdf',
   rulesSection1Title: 'หมวดที่ 1: เกณฑ์คุณสมบัติผู้สมัครประธานสภานักเรียน',
   rulesCouncilList: DEFAULT_COUNCIL_RULES,
+  rulesCouncilPdfDesc: 'ดาวน์โหลด/เปิดอ่านประกาศรับสมัคร คุณสมบัติ และหลักเกณฑ์ผู้ลงสมัครประธานสภานักเรียน (ไฟล์ PDF)',
+  rulesCouncilPdfBtnText: 'เปิดอ่านประกาศรับสมัคร (PDF)',
+  rulesCouncilPdfUrl: '',
+  rulesCouncilPdfData: '',
+  rulesCouncilPdfFileName: '',
+  rulesCouncilPdfFileSize: '',
   rulesSection2Title: 'หมวดที่ 2: เกณฑ์คุณสมบัติผู้สมัครประธานคณะสี (5 คณะสี)',
   rulesColorList: DEFAULT_COLOR_RULES,
+  rulesColorPdfDesc: 'ดาวน์โหลด/เปิดอ่านประกาศรับสมัคร คุณสมบัติ และหลักเกณฑ์ผู้ลงสมัครประธานคณะสี 5 คณะสี (ไฟล์ PDF)',
+  rulesColorPdfBtnText: 'เปิดอ่านประกาศรับสมัคร (PDF)',
+  rulesColorPdfUrl: '',
+  rulesColorPdfData: '',
+  rulesColorPdfFileName: '',
+  rulesColorPdfFileSize: '',
   applyHeaderTitle: 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570',
   applyHeaderSubtitle: 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย',
   applyCouncilIsOpen: true,
@@ -586,6 +660,9 @@ const WDSDB = {
       if (!merged.timeline || !Array.isArray(merged.timeline) || merged.timeline.length === 0) {
         merged.timeline = DEFAULT_TIMELINE;
       }
+      if (merged.rulesDisplayMode !== 'pdf' && merged.rulesDisplayMode !== 'text') {
+        merged.rulesDisplayMode = 'pdf';
+      }
       if (!merged.rulesCouncilList || !Array.isArray(merged.rulesCouncilList) || merged.rulesCouncilList.length === 0) {
         merged.rulesCouncilList = DEFAULT_COUNCIL_RULES;
       } else {
@@ -816,7 +893,7 @@ const WDSDB = {
             console.log('WDSDB: Config successfully synced to Cloud!');
           } else {
             cloudSyncError = putRes.status === 413
-              ? 'ขนาดข้อมูลหรือรูปภาพที่อัปโหลดใหญ่เกินขีดจำกัดคลาวด์ (HTTP 413)'
+              ? 'ขนาดข้อมูล รูปภาพ หรือไฟล์ PDF ที่อัปโหลดใหญ่เกินขีดจำกัดคลาวด์ (HTTP 413) แนะนำให้ฝากไฟล์ PDF บน Google Drive แล้วนำลิงก์มาวางแทน'
               : `เซิร์ฟเวอร์คลาวด์ตอบกลับสถานะ HTTP ${putRes.status}`;
             console.warn('WDSDB Cloud Sync Status:', putRes.status, cloudSyncError);
           }
