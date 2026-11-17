@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257048">
+  <link rel="stylesheet" href="css/style.css?v=257049">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -201,9 +201,11 @@
   <!-- เนื้อหาหลัก -->
   <main class="flex-grow max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 w-full">
 
-    <!-- TAB 1: หน้าแรก (ภาพรวม กำหนดการ ไทม์ไลน์ 5 การ์ดแนวนอน) -->
+    <!-- TAB 1: หน้าแรก (ภาพรวม กำหนดการ ไทม์ไลน์ 5 การ์ดแนวนอน + รูป PR) -->
     <div id="contentHome" class="space-y-4 sm:space-y-6">
       
+      <div id="homePrSectionTop" class="hidden"></div>
+
       <div class="py-1 sm:py-2 space-y-3 sm:space-y-5">
         <!-- หัวข้อกำหนดการ พร้อมไอคอนปฏิทินสีเขียวอ่อน -->
         <div class="flex items-start space-x-2.5 sm:space-x-4">
@@ -347,6 +349,8 @@
         </div>
       </div>
 
+      <div id="homePrSectionBottom" class="hidden"></div>
+
     </div>
 
     <!-- TAB 2: ระเบียบและเกณฑ์การรับสมัคร -->
@@ -359,8 +363,6 @@
 
         <div class="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-5 text-xs sm:text-sm md:text-base text-slate-800">
           
-          <div id="rulesPrSectionTop" class="hidden"></div>
-
           <div class="border border-slate-300 rounded-lg p-4 sm:p-6 md:p-7 bg-white space-y-3 sm:space-y-4 shadow-xs">
             <h3 class="font-bold text-sm sm:text-base md:text-lg lg:text-xl text-[#16325c] border-b border-slate-200 pb-2.5 sm:pb-3 flex items-center justify-between" data-cfg="rulesSection1Title">
               หมวดที่ 1: เกณฑ์คุณสมบัติผู้สมัครประธานสภานักเรียน
@@ -413,8 +415,6 @@
               <div class="py-1"><strong>ความยินยอม:</strong> ได้รับความยินยอมจากผู้ปกครอง และยอมรับ <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2570</span></strong></div>
             </div>
           </div>
-
-          <div id="rulesPrSectionBottom" class="hidden"></div>
 
           <div class="text-right pt-2 sm:pt-4">
             <button onclick="setActiveTab('apply')" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-5 sm:px-7 shadow-sm">
@@ -596,8 +596,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257048"></script>
-  <script src="js/app.js?v=257048"></script>
+  <script src="js/data.js?v=257049"></script>
+  <script src="js/app.js?v=257049"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];

@@ -1100,8 +1100,8 @@ function getResolvedPrGalleryItems(cfg) {
 }
 
 function renderRulesPrGallery(cfg) {
-  const topEl = document.getElementById('rulesPrSectionTop');
-  const bottomEl = document.getElementById('rulesPrSectionBottom');
+  const topEl = document.getElementById('homePrSectionTop');
+  const bottomEl = document.getElementById('homePrSectionBottom');
   if (!topEl && !bottomEl) return;
 
   const items = getResolvedPrGalleryItems(cfg);
