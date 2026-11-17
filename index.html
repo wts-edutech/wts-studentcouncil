@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257044">
+  <link rel="stylesheet" href="css/style.css?v=257045">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -375,6 +375,8 @@
 
         <div class="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-5 text-xs sm:text-sm md:text-base text-slate-800">
           
+          <div id="rulesPrSectionTop" class="hidden"></div>
+
           <div class="border border-slate-300 rounded-lg p-4 sm:p-6 md:p-7 bg-white space-y-3 sm:space-y-4 shadow-xs">
             <h3 class="font-bold text-sm sm:text-base md:text-lg lg:text-xl text-[#16325c] border-b border-slate-200 pb-2.5 sm:pb-3 flex items-center justify-between" data-cfg="rulesSection1Title">
               หมวดที่ 1: เกณฑ์คุณสมบัติผู้สมัครประธานสภานักเรียน
@@ -427,6 +429,8 @@
               <div class="py-1"><strong>ความยินยอม:</strong> ได้รับความยินยอมจากผู้ปกครอง และยอมรับ <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2570</span></strong></div>
             </div>
           </div>
+
+          <div id="rulesPrSectionBottom" class="hidden"></div>
 
           <div class="text-right pt-2 sm:pt-4">
             <button onclick="setActiveTab('apply')" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-5 sm:px-7 shadow-sm">
@@ -553,6 +557,46 @@
 
   </main>
 
+  <!-- หน้าต่างขยายดูรูปภาพประชาสัมพันธ์ (PR Lightbox) -->
+  <div id="rulesPrLightboxModal" onclick="if(event.target===this) closePrLightbox()" class="hidden fixed inset-0 z-[999] bg-black/85 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
+    <div class="relative max-w-4xl w-full flex flex-col items-center">
+      <div class="w-full flex items-center justify-between text-white mb-2.5 px-1">
+        <span id="rulesPrLightboxCounter" class="text-xs sm:text-sm font-semibold bg-white/15 px-3 py-1 rounded-full">1 / 1</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="openPrLightboxOriginal()" class="bg-white/15 hover:bg-white/25 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดภาพเต็ม
+          </button>
+          <button type="button" onclick="closePrLightbox()" class="bg-white/15 hover:bg-red-600 text-white w-9 h-9 rounded-lg flex items-center justify-center transition" aria-label="ปิดหน้าต่างรูปภาพ">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="relative w-full flex items-center justify-center bg-slate-900/60 rounded-xl border border-white/15 p-2 sm:p-3">
+        <button type="button" id="rulesPrLightboxPrevBtn" onclick="stepPrLightbox(-1)"
+          class="hidden sm:flex absolute left-2 sm:left-3 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white items-center justify-center transition border border-white/20" aria-label="รูปก่อนหน้า">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <img id="rulesPrLightboxImg" src="" alt="ภาพประชาสัมพันธ์" class="max-h-[75vh] max-w-full object-contain rounded-lg select-none">
+        <button type="button" id="rulesPrLightboxNextBtn" onclick="stepPrLightbox(1)"
+          class="hidden sm:flex absolute right-2 sm:right-3 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white items-center justify-center transition border border-white/20" aria-label="รูปถัดไป">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div id="rulesPrLightboxMobileNav" class="flex sm:hidden items-center justify-center gap-3 mt-2.5">
+        <button type="button" onclick="stepPrLightbox(-1)" class="bg-white/15 hover:bg-white/25 text-white text-xs px-4 py-1.5 rounded-lg">
+          <i class="fa-solid fa-chevron-left mr-1"></i> ก่อนหน้า
+        </button>
+        <button type="button" onclick="stepPrLightbox(1)" class="bg-white/15 hover:bg-white/25 text-white text-xs px-4 py-1.5 rounded-lg">
+          ถัดไป <i class="fa-solid fa-chevron-right ml-1"></i>
+        </button>
+      </div>
+
+      <p id="rulesPrLightboxCaption" class="hidden text-center text-white/95 text-xs sm:text-sm md:text-base mt-3 bg-white/10 px-4 py-2 rounded-lg max-w-2xl"></p>
+    </div>
+  </div>
+
   <!-- ส่วนท้ายเว็บไซต์ -->
   <footer class="bg-[#eef3f1] text-slate-600 text-xs sm:text-sm md:text-base py-5 border-t border-slate-200">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-2.5">
@@ -568,8 +612,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257044"></script>
-  <script src="js/app.js?v=257044"></script>
+  <script src="js/data.js?v=257045"></script>
+  <script src="js/app.js?v=257045"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];

@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257044">
-  <script src="js/data.js?v=257044"></script>
-  <script src="js/app.js?v=257044"></script>
+  <link rel="stylesheet" href="css/style.css?v=257045">
+  <script src="js/data.js?v=257045"></script>
+  <script src="js/app.js?v=257045"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -868,7 +868,7 @@
                   </div>
                   <button type="button" id="btnSaveRulesPdfDirect" onclick="handleSaveRulesPdfDirect(event)"
                     class="gov-btn bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-3.5 py-1.5 shadow flex items-center cursor-pointer">
-                    <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกประกาศรับสมัคร (PDF) ทันที
+                    <i class="fa-solid fa-floppy-disk mr-1.5"></i> บันทึกประกาศ (PDF) และรูป PR ทันที
                   </button>
                 </div>
 
@@ -1030,6 +1030,53 @@
                         </button>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <!-- ส่วนที่ 2: ภาพประชาสัมพันธ์ / โปสเตอร์ PR ในแท็บที่ 2 -->
+                <div class="bg-white border border-slate-300 rounded-lg p-3.5 sm:p-4 space-y-3 shadow-2xs">
+                  <div class="flex items-center justify-between border-b border-slate-200 pb-2 flex-wrap gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-bold text-[#1a365d] text-xs sm:text-sm flex items-center">
+                        <i class="fa-solid fa-bullhorn mr-1.5 text-amber-600"></i> รูปภาพประชาสัมพันธ์ / โปสเตอร์ PR (แท็บที่ 2)
+                      </span>
+                      <span id="rulesPrQuotaBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200"></span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                      <input type="file" id="rulesPrMultiFileInput" accept="image/*" multiple class="hidden" onchange="handlePrFilesUpload(this)">
+                      <button type="button" onclick="document.getElementById('rulesPrMultiFileInput').click()"
+                        class="gov-btn gov-btn-blue text-[11px] py-1.5 px-2.5 shadow-2xs flex items-center">
+                        <i class="fa-solid fa-images mr-1"></i> + อัปโหลดรูป PR (เลือกได้หลายรูป)
+                      </button>
+                      <button type="button" onclick="addPrImageUrlRow()"
+                        class="gov-btn bg-amber-600 hover:bg-amber-700 text-white text-[11px] py-1.5 px-2.5 shadow-2xs flex items-center">
+                        <i class="fa-solid fa-link mr-1"></i> + เพิ่มด้วยลิงก์ URL (ไม่จำกัดรูป)
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-700 mb-1">หัวข้อส่วนรูปภาพ PR</label>
+                      <input type="text" id="cfg_rulesPrTitle" oninput="markSettingsDirty()" class="gov-input w-full text-xs" placeholder="สื่อประชาสัมพันธ์ (PR)">
+                    </div>
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-700 mb-1">ตำแหน่งที่แสดงบนหน้า "ระเบียบการรับสมัคร"</label>
+                      <select id="cfg_rulesPrPosition" onchange="markSettingsDirty()" class="gov-select w-full text-xs font-semibold text-[#1a365d] bg-white">
+                        <option value="bottom">แสดงด้านล่าง หมวดที่ 1–2 (แนะนำ)</option>
+                        <option value="top">แสดงด้านบนสุด ก่อนหมวดที่ 1</option>
+                        <option value="hidden">ซ่อนส่วนรูป PR ชั่วคราว</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div id="rulesPrAdminList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- รายการภาพ PR เรนเดอร์อัตโนมัติ -->
+                  </div>
+
+                  <div class="text-[10.5px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-2 leading-relaxed">
+                    <i class="fa-solid fa-circle-info text-blue-600 mr-1"></i>
+                    <strong>เคล็ดลับ:</strong> สามารถกด <strong>"+ อัปโหลดรูป PR"</strong> (ระบบจะย่อบีบอัดให้อัตโนมัติเพื่อให้ซิงค์คลาวด์ได้) หรือหากมีรูปโปสเตอร์จำนวนมาก/ไฟล์ใหญ่ แนะนำให้อัปโหลดรูปลง Google Drive (แชร์: ทุกคนที่มีลิงก์) แล้วกด <strong>"+ เพิ่มด้วยลิงก์ URL"</strong> ได้ไม่จำกัดจำนวนรูปครับ
                   </div>
                 </div>
 
@@ -1986,6 +2033,7 @@
       council: { data: '', fileName: '', fileSize: '' },
       color: { data: '', fileName: '', fileSize: '' }
     };
+    let currentRulesPrImages = []; // รายการรูปภาพ PR ประชาสัมพันธ์ในแท็บที่ 2
 
     function markSettingsDirty() {
       settingsFormDirty = true;
@@ -2220,6 +2268,21 @@
       renderRulesPdfAdminStatus('council');
       renderRulesPdfAdminStatus('color');
       toggleRulesModeAdminUI();
+
+      // โหลดค่าส่วนรูปภาพประชาสัมพันธ์ (PR) แท็บที่ 2
+      const prTitleEl = document.getElementById('cfg_rulesPrTitle');
+      if (prTitleEl) prTitleEl.value = cfg.rulesPrTitle ?? (DEFAULT_SITE_CONFIG.rulesPrTitle || 'สื่อประชาสัมพันธ์ (PR)');
+      const prPosEl = document.getElementById('cfg_rulesPrPosition');
+      if (prPosEl) prPosEl.value = ['top', 'bottom', 'hidden'].includes(cfg.rulesPrPosition) ? cfg.rulesPrPosition : 'bottom';
+      currentRulesPrImages = Array.isArray(cfg.rulesPrImages)
+        ? cfg.rulesPrImages.map((item, i) => ({
+            id: (item && item.id) || `pr_${Date.now()}_${i}`,
+            src: String((item && (item.src || item.url)) || ''),
+            caption: String((item && item.caption) || ''),
+            isLink: !(item && typeof item.src === 'string' && item.src.startsWith('data:'))
+          }))
+        : [];
+      renderRulesPrAdminList();
 
       // โหลดค่าหน้าเลือกประเภทการยื่นใบสมัครออนไลน์ (Tab 3)
       document.getElementById('cfg_applyHeaderTitle').value = cfg.applyHeaderTitle || '';
@@ -3670,8 +3733,303 @@
         rulesColorPdfUrl: cleanHref(getT('cfg_rulesColorPdfUrl')),
         rulesColorPdfData: rulesPdfUploads.color.data || '',
         rulesColorPdfFileName: rulesPdfUploads.color.fileName || '',
-        rulesColorPdfFileSize: rulesPdfUploads.color.fileSize || ''
+        rulesColorPdfFileSize: rulesPdfUploads.color.fileSize || '',
+        rulesPrTitle: getT('cfg_rulesPrTitle') || (DEFAULT_SITE_CONFIG.rulesPrTitle || 'สื่อประชาสัมพันธ์ (PR)'),
+        rulesPrPosition: ['top', 'bottom', 'hidden'].includes(document.getElementById('cfg_rulesPrPosition')?.value)
+          ? document.getElementById('cfg_rulesPrPosition').value
+          : 'bottom',
+        rulesPrImages: (currentRulesPrImages || [])
+          .map((item, idx) => {
+            const cleanSrc = typeof sanitizePdfHref === 'function'
+              ? sanitizePdfHref(item.src, true)
+              : String(item.src || '').trim();
+            return {
+              id: item.id || `pr_${idx + 1}`,
+              src: cleanSrc,
+              caption: String(item.caption || '').trim()
+            };
+          })
+          .filter(item => Boolean(item.src))
       };
+    }
+
+    // ====== ฟังก์ชันจัดการรูปภาพประชาสัมพันธ์ (PR) แท็บที่ 2 ======
+    const CLOUD_PR_SAFE_LIMIT = 88000;
+
+    function estimateCloudConfigPayloadBytes(overridePrImages = null) {
+      try {
+        const cur = WDSDB.getConfig();
+        const savedImages = Array.isArray(overridePrImages) ? overridePrImages : currentRulesPrImages;
+        const previewCfg = {
+          ...cur,
+          rulesCouncilPdfData: rulesPdfUploads.council.data || '',
+          rulesColorPdfData: rulesPdfUploads.color.data || '',
+          rulesPrImages: (savedImages || []).map(x => ({ id: x.id, src: x.src, caption: x.caption }))
+        };
+        return JSON.stringify(previewCfg).length;
+      } catch (e) {
+        return 55000;
+      }
+    }
+
+    function updateRulesPrQuotaBadge() {
+      const badge = document.getElementById('rulesPrQuotaBadge');
+      if (!badge) return;
+      const usedBytes = estimateCloudConfigPayloadBytes();
+      const usedKb = (usedBytes / 1024).toFixed(1);
+      const limitKb = (CLOUD_PR_SAFE_LIMIT / 1024).toFixed(0);
+      const count = currentRulesPrImages.length;
+      if (usedBytes > CLOUD_PR_SAFE_LIMIT) {
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800 border border-red-300';
+        badge.textContent = `${count} รูป • พื้นที่คลาวด์เกิน (${usedKb} / ${limitKb} KB) แนะนำใช้ลิงก์ URL`;
+      } else if (usedBytes > CLOUD_PR_SAFE_LIMIT * 0.85) {
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300';
+        badge.textContent = `${count} รูป • พื้นที่คลาวด์ ${usedKb} / ${limitKb} KB (ใกล้เต็ม)`;
+      } else {
+        badge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200';
+        badge.textContent = `${count} รูป • พื้นที่คลาวด์ ${usedKb} / ${limitKb} KB`;
+      }
+    }
+
+    function renderRulesPrAdminList() {
+      const container = document.getElementById('rulesPrAdminList');
+      updateRulesPrQuotaBadge();
+      if (!container) return;
+
+      if (!Array.isArray(currentRulesPrImages) || currentRulesPrImages.length === 0) {
+        container.innerHTML = `
+          <div class="md:col-span-2 p-5 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-xs">
+            <i class="fa-regular fa-images text-2xl text-slate-300 mb-1.5 block"></i>
+            ยังไม่มีรูปภาพ PR ประชาสัมพันธ์ — กดปุ่ม <strong>"+ อัปโหลดรูป PR"</strong> หรือ <strong>"+ เพิ่มด้วยลิงก์ URL"</strong> ด้านบนได้เลยครับ
+          </div>
+        `;
+        return;
+      }
+
+      const resolvePreview = typeof resolvePrImageSrc === 'function' ? resolvePrImageSrc : (s) => s;
+      container.innerHTML = currentRulesPrImages.map((item, idx) => {
+        const isData = typeof item.src === 'string' && item.src.startsWith('data:');
+        const previewSrc = resolvePreview(item.src);
+        const kbBadge = isData
+          ? `<span class="text-[9.5px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">ไฟล์อัปโหลด (${formatFileSize(item.src.length * 0.75)})</span>`
+          : `<span class="text-[9.5px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold">ลิงก์ URL / Drive</span>`;
+
+        return `
+          <div class="border border-slate-200 rounded-lg p-3 bg-slate-50/70 space-y-2.5 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-1.5">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-xs text-[#1a365d]">ภาพที่ ${idx + 1}</span>
+                ${kbBadge}
+              </div>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="movePrImage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}
+                  class="px-1.5 py-0.5 rounded border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-[10px] disabled:opacity-30" title="เลื่อนขึ้น">
+                  <i class="fa-solid fa-arrow-up"></i>
+                </button>
+                <button type="button" onclick="movePrImage(${idx}, 1)" ${idx === currentRulesPrImages.length - 1 ? 'disabled' : ''}
+                  class="px-1.5 py-0.5 rounded border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-[10px] disabled:opacity-30" title="เลื่อนลง">
+                  <i class="fa-solid fa-arrow-down"></i>
+                </button>
+                <button type="button" onclick="removePrImage(${idx})"
+                  class="px-1.5 py-0.5 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 text-[10px]" title="ลบภาพนี้">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex gap-3 items-start">
+              <div id="rulesPrPreviewBox_${idx}" class="w-24 h-24 sm:w-28 sm:h-28 rounded border border-slate-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                ${buildPrPreviewInnerHtml(previewSrc, idx)}
+              </div>
+
+              <div class="flex-grow min-w-0 space-y-2">
+                ${isData ? `
+                  <div>
+                    <input type="file" id="rulesPrReplaceInput_${idx}" accept="image/*" class="hidden" onchange="replaceSinglePrFile(${idx}, this)">
+                    <button type="button" onclick="document.getElementById('rulesPrReplaceInput_${idx}').click()"
+                      class="gov-btn bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] py-1 px-2.5">
+                      <i class="fa-solid fa-arrows-rotate mr-1"></i> เปลี่ยนรูปภาพใหม่
+                    </button>
+                  </div>
+                ` : `
+                  <div>
+                    <label class="block text-[10.5px] font-semibold text-slate-700 mb-0.5">ลิงก์ URL รูปภาพ (Google Drive / เว็บไซต์)</label>
+                    <input type="url" value="${escapeHTML(item.src || '')}"
+                      oninput="updatePrField(${idx}, 'src', this.value)"
+                      placeholder="https://drive.google.com/file/d/.../view"
+                      class="gov-input w-full text-[11px] bg-white font-mono py-1 px-2">
+                  </div>
+                `}
+
+                <div>
+                  <label class="block text-[10.5px] font-semibold text-slate-700 mb-0.5">คำบรรยายใต้ภาพ (ใส่หรือไม่ใส่ก็ได้)</label>
+                  <input type="text" value="${escapeHTML(item.caption || '')}"
+                    oninput="updatePrField(${idx}, 'caption', this.value)"
+                    placeholder="เช่น กำหนดการรับสมัคร / คุณสมบัติผู้สมัคร"
+                    class="gov-input w-full text-xs bg-white py-1 px-2">
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function compressPrImageWithBudget(rawDataUrl, targetLen, onDone) {
+      const maxDim = targetLen >= 20000 ? 1080 : (targetLen >= 13000 ? 860 : 680);
+      const startQuality = targetLen >= 20000 ? 0.78 : 0.68;
+      if (typeof compressImageForStorage === 'function') {
+        compressImageForStorage(rawDataUrl, maxDim, startQuality, false, onDone, targetLen);
+      } else {
+        onDone(rawDataUrl);
+      }
+    }
+
+    function handlePrFilesUpload(input) {
+      const files = Array.from((input && input.files) || []);
+      if (files.length === 0) return;
+
+      const curBytes = estimateCloudConfigPayloadBytes();
+      const remainingBytes = Math.max(0, CLOUD_PR_SAFE_LIMIT - curBytes);
+      if (remainingBytes < 6000) {
+        alert(
+          'พื้นที่คลาวด์สำหรับอัปโหลดรูปโดยตรงเต็มแล้ว (ใกล้ขีดจำกัด ~88 KB)\n\n' +
+          'แนะนำ: ลบรูปเก่าที่ไม่ใช้ หรือนำรูปไปฝากไว้ใน Google Drive (แชร์: ทุกคนที่มีลิงก์) แล้วกดปุ่ม "+ เพิ่มด้วยลิงก์ URL" แทน (ใส่ได้ไม่จำกัดรูปครับ)'
+        );
+        input.value = '';
+        return;
+      }
+
+      const targetPerImg = Math.min(24000, Math.max(6000, Math.floor((remainingBytes - 1000) / files.length)));
+      let processedCount = 0;
+      let addedCount = 0;
+      let skippedCount = 0;
+
+      files.forEach((file, offset) => {
+        if (file.size > 15 * 1024 * 1024) {
+          skippedCount++;
+          processedCount++;
+          if (processedCount === files.length) finalizePrUploadBatch(addedCount, skippedCount, input);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          compressPrImageWithBudget(e.target.result, targetPerImg, (compressed) => {
+            const nextBytes = estimateCloudConfigPayloadBytes() + (compressed ? compressed.length : 0) + 60;
+            if (compressed && nextBytes <= CLOUD_PR_SAFE_LIMIT + 1500) {
+              currentRulesPrImages.push({
+                id: `pr_${Date.now()}_${offset}`,
+                src: compressed,
+                caption: '',
+                isLink: false
+              });
+              addedCount++;
+            } else {
+              skippedCount++;
+            }
+            processedCount++;
+            if (processedCount === files.length) finalizePrUploadBatch(addedCount, skippedCount, input);
+          });
+        };
+        reader.onerror = function() {
+          skippedCount++;
+          processedCount++;
+          if (processedCount === files.length) finalizePrUploadBatch(addedCount, skippedCount, input);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function finalizePrUploadBatch(addedCount, skippedCount, input) {
+      if (input) input.value = '';
+      if (addedCount > 0) {
+        markSettingsDirty();
+        renderRulesPrAdminList();
+      }
+      if (skippedCount > 0 && addedCount === 0) {
+        alert('ไม่สามารถเพิ่มรูปภาพได้ เนื่องจากพื้นที่คลาวด์เต็ม แนะนำให้ใช้ปุ่ม "+ เพิ่มด้วยลิงก์ URL (Google Drive)" แทนครับ');
+      } else if (skippedCount > 0) {
+        showToast(`เพิ่มรูปภาพสำเร็จ ${addedCount} รูป (ข้าม ${skippedCount} รูปเพราะพื้นที่คลาวด์เต็ม แนะนำใช้ลิงก์ URL)`, 'warning');
+      } else if (addedCount > 0) {
+        showToast(`เพิ่มรูปภาพ PR สำเร็จ ${addedCount} รูป! กดบันทึกเพื่อแสดงบนหน้าเว็บ`, 'success');
+      }
+    }
+
+    function replaceSinglePrFile(idx, input) {
+      if (!currentRulesPrImages[idx] || !input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const withoutThis = currentRulesPrImages.filter((_, i) => i !== idx);
+      const remainingBytes = Math.max(6000, CLOUD_PR_SAFE_LIMIT - estimateCloudConfigPayloadBytes(withoutThis));
+      const targetLen = Math.min(24000, remainingBytes - 500);
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        compressPrImageWithBudget(e.target.result, targetLen, (compressed) => {
+          currentRulesPrImages[idx].src = compressed;
+          currentRulesPrImages[idx].isLink = false;
+          input.value = '';
+          markSettingsDirty();
+          renderRulesPrAdminList();
+          showToast('เปลี่ยนรูปภาพ PR เรียบร้อยแล้ว', 'success');
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addPrImageUrlRow() {
+      currentRulesPrImages.push({
+        id: `pr_${Date.now()}`,
+        src: '',
+        caption: '',
+        isLink: true
+      });
+      markSettingsDirty();
+      renderRulesPrAdminList();
+    }
+
+    function buildPrPreviewInnerHtml(previewSrc, idx) {
+      if (!previewSrc) {
+        return `<span class="text-[10px] text-slate-400 text-center p-1">รอใส่ภาพ/ลิงก์</span>`;
+      }
+      return `
+        <img src="${escapeHTML(previewSrc)}" alt="ตัวอย่างภาพที่ ${idx + 1}"
+          onerror="this.classList.add('hidden'); if(this.nextElementSibling) this.nextElementSibling.classList.remove('hidden');"
+          class="w-full h-full object-contain">
+        <div class="hidden text-[9.5px] text-center text-red-500 p-1">โหลดภาพไม่ได้</div>
+      `;
+    }
+
+    function updatePrField(idx, field, val) {
+      if (!currentRulesPrImages[idx]) return;
+      currentRulesPrImages[idx][field] = val;
+      markSettingsDirty();
+      if (field === 'src') {
+        clearTimeout(updatePrField._timer);
+        updatePrField._timer = setTimeout(() => {
+          const box = document.getElementById(`rulesPrPreviewBox_${idx}`);
+          const resolvePreview = typeof resolvePrImageSrc === 'function' ? resolvePrImageSrc : (s) => s;
+          if (box && currentRulesPrImages[idx]) {
+            box.innerHTML = buildPrPreviewInnerHtml(resolvePreview(currentRulesPrImages[idx].src), idx);
+          }
+          updateRulesPrQuotaBadge();
+        }, 350);
+      }
+    }
+
+    function movePrImage(idx, delta) {
+      const target = idx + delta;
+      if (target < 0 || target >= currentRulesPrImages.length) return;
+      const tmp = currentRulesPrImages[idx];
+      currentRulesPrImages[idx] = currentRulesPrImages[target];
+      currentRulesPrImages[target] = tmp;
+      markSettingsDirty();
+      renderRulesPrAdminList();
+    }
+
+    function removePrImage(idx) {
+      currentRulesPrImages.splice(idx, 1);
+      markSettingsDirty();
+      renderRulesPrAdminList();
+      showToast('ลบรูปภาพ PR ออกจากรายการแล้ว', 'info');
     }
 
     async function handleSaveRulesPdfDirect(e) {
@@ -3690,7 +4048,7 @@
           if (saveRes._cloudSyncOk === false) {
             showToast('⚠️ บันทึกในเครื่องแล้ว แต่ซิงค์คลาวด์ไม่สำเร็จ: ' + (saveRes._cloudSyncError || 'กรุณาใช้ลิงก์ Google Drive แทน'), 'error');
           } else {
-            showToast('✅ บันทึกลิงก์ประกาศรับสมัคร (PDF) และซิงค์คลาวด์สำเร็จ!', 'success');
+            showToast('✅ บันทึกประกาศ (PDF) และรูปภาพ PR ซิงค์คลาวด์สำเร็จ!', 'success');
           }
         }
       } catch (err) {

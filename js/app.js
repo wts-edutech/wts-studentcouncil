@@ -445,6 +445,9 @@ function renderRulesAndApplyContent(cfg) {
     }
   });
 
+  // เรนเดอร์ส่วนรูปภาพประชาสัมพันธ์ (PR) ในแท็บที่ 2 (ด้านบนหรือด้านล่างหมวดที่ 1–2)
+  renderRulesPrGallery(cfg);
+
   // รายการสรุปในการ์ดยื่นใบสมัครสภานักเรียน (Tab 3)
   const applyCouncilBulletsEl = document.getElementById('applyCouncilBulletsBox');
   if (applyCouncilBulletsEl && Array.isArray(cfg.applyCouncilBullets)) {
@@ -1011,6 +1014,169 @@ function showRulesPdfUnavailable() {
   } else {
     alert(msg);
   }
+}
+
+// ========================================================
+// ส่วนแสดงผลภาพประชาสัมพันธ์ (PR Gallery & Lightbox) แท็บที่ 2
+// ========================================================
+let activePrGalleryItems = [];
+let activePrLightboxIndex = 0;
+
+function getResolvedPrGalleryItems(cfg) {
+  const list = cfg && Array.isArray(cfg.rulesPrImages) ? cfg.rulesPrImages : [];
+  const resolveSrc = typeof resolvePrImageSrc === 'function' ? resolvePrImageSrc : (s) => String(s || '').trim();
+  return list
+    .map(item => {
+      if (!item || typeof item !== 'object') return null;
+      const src = resolveSrc(item.src || item.url || '');
+      if (!src) return null;
+      return {
+        src,
+        rawUrl: String(item.src || item.url || '').trim(),
+        caption: String(item.caption || '').trim()
+      };
+    })
+    .filter(Boolean);
+}
+
+function renderRulesPrGallery(cfg) {
+  const topEl = document.getElementById('rulesPrSectionTop');
+  const bottomEl = document.getElementById('rulesPrSectionBottom');
+  if (!topEl && !bottomEl) return;
+
+  const items = getResolvedPrGalleryItems(cfg);
+  activePrGalleryItems = items;
+  const pos = cfg && ['top', 'bottom', 'hidden'].includes(cfg.rulesPrPosition) ? cfg.rulesPrPosition : 'bottom';
+
+  if (topEl) { topEl.classList.add('hidden'); topEl.innerHTML = ''; }
+  if (bottomEl) { bottomEl.classList.add('hidden'); bottomEl.innerHTML = ''; }
+
+  if (pos === 'hidden' || items.length === 0) return;
+
+  const targetEl = pos === 'top' ? topEl : bottomEl;
+  if (!targetEl) return;
+
+  const sectionTitle = (cfg && cfg.rulesPrTitle ? String(cfg.rulesPrTitle).trim() : '') || 'สื่อประชาสัมพันธ์ (PR)';
+  const gridClass = items.length === 1
+    ? 'grid grid-cols-1 max-w-2xl mx-auto gap-4'
+    : (items.length === 2
+        ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
+        : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4');
+
+  const cardsHtml = items.map((item, idx) => `
+    <div class="group border border-slate-200 rounded-lg overflow-hidden bg-slate-50/70 hover:bg-white hover:border-[#16325c]/40 hover:shadow-md transition flex flex-col">
+      <button type="button" onclick="openPrLightbox(${idx})"
+        class="relative w-full bg-slate-100/80 flex items-center justify-center overflow-hidden cursor-zoom-in focus:outline-none">
+        <img src="${escapeHTML(item.src)}"
+          alt="${escapeHTML(item.caption || `${sectionTitle} ภาพที่ ${idx + 1}`)}"
+          loading="lazy"
+          onerror="this.classList.add('hidden'); if(this.nextElementSibling) this.nextElementSibling.classList.remove('hidden');"
+          class="w-full max-h-[420px] object-contain transition duration-300 group-hover:scale-[1.015]">
+        <div class="hidden p-6 text-center text-xs text-slate-500 space-y-1">
+          <i class="fa-regular fa-image text-2xl text-slate-400 block"></i>
+          <div>ไม่สามารถโหลดภาพนี้ได้</div>
+          <div class="text-[10.5px] text-slate-400">หากเป็นลิงก์ Google Drive กรุณาตั้งค่าแชร์เป็น "ทุกคนที่มีลิงก์"</div>
+        </div>
+        <span class="opacity-0 group-hover:opacity-100 transition absolute bottom-2.5 right-2.5 bg-[#0f2942]/85 text-white text-[11px] font-semibold px-2.5 py-1 rounded-md shadow flex items-center gap-1.5 pointer-events-none">
+          <i class="fa-solid fa-magnifying-glass-plus"></i> ขยายดูภาพ
+        </span>
+      </button>
+      ${item.caption ? `
+        <div class="px-3.5 py-2.5 bg-white border-t border-slate-200 text-xs sm:text-sm text-slate-700 font-medium leading-snug text-center">
+          ${escapeHTML(item.caption)}
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+
+  targetEl.innerHTML = `
+    <div class="border border-slate-300 rounded-lg p-4 sm:p-6 md:p-7 bg-white space-y-3 sm:space-y-4 shadow-xs">
+      <h3 class="font-bold text-sm sm:text-base md:text-lg lg:text-xl text-[#16325c] border-b border-slate-200 pb-2.5 sm:pb-3 flex items-center justify-between gap-2 flex-wrap">
+        <span class="flex items-center">
+          <i class="fa-solid fa-bullhorn text-amber-600 mr-2"></i>
+          <span>${escapeHTML(sectionTitle)}</span>
+        </span>
+        <span class="text-[11px] sm:text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-full">
+          ${items.length} ภาพ • คลิกที่ภาพเพื่อขยายใหญ่
+        </span>
+      </h3>
+      <div class="${gridClass}">
+        ${cardsHtml}
+      </div>
+    </div>
+  `;
+  targetEl.classList.remove('hidden');
+}
+
+function updatePrLightboxView() {
+  const item = activePrGalleryItems[activePrLightboxIndex];
+  if (!item) return;
+  const img = document.getElementById('rulesPrLightboxImg');
+  const counter = document.getElementById('rulesPrLightboxCounter');
+  const caption = document.getElementById('rulesPrLightboxCaption');
+  const prevBtn = document.getElementById('rulesPrLightboxPrevBtn');
+  const nextBtn = document.getElementById('rulesPrLightboxNextBtn');
+  const mobileNav = document.getElementById('rulesPrLightboxMobileNav');
+
+  if (img) {
+    img.src = item.src;
+    img.alt = item.caption || `ภาพประชาสัมพันธ์ ${activePrLightboxIndex + 1}`;
+  }
+  if (counter) {
+    counter.textContent = `${activePrLightboxIndex + 1} / ${activePrGalleryItems.length}`;
+  }
+  if (caption) {
+    caption.textContent = item.caption;
+    caption.classList.toggle('hidden', !item.caption);
+  }
+  const hasMany = activePrGalleryItems.length > 1;
+  if (prevBtn) prevBtn.style.display = hasMany ? '' : 'none';
+  if (nextBtn) nextBtn.style.display = hasMany ? '' : 'none';
+  if (mobileNav) mobileNav.classList.toggle('hidden', !hasMany);
+}
+
+function openPrLightbox(idx) {
+  if (!activePrGalleryItems.length) return;
+  const modal = document.getElementById('rulesPrLightboxModal');
+  if (!modal) return;
+  activePrLightboxIndex = Math.max(0, Math.min(idx, activePrGalleryItems.length - 1));
+  updatePrLightboxView();
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePrLightbox() {
+  const modal = document.getElementById('rulesPrLightboxModal');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+function stepPrLightbox(delta) {
+  if (activePrGalleryItems.length <= 1) return;
+  activePrLightboxIndex = (activePrLightboxIndex + delta + activePrGalleryItems.length) % activePrGalleryItems.length;
+  updatePrLightboxView();
+}
+
+function openPrLightboxOriginal() {
+  const item = activePrGalleryItems[activePrLightboxIndex];
+  if (!item) return;
+  const openUrl = item.rawUrl && !item.rawUrl.startsWith('data:') ? item.rawUrl : item.src;
+  if (typeof openDataPdfSafely === 'function') {
+    openDataPdfSafely(null, openUrl, `pr-poster-${activePrLightboxIndex + 1}.jpg`);
+  } else {
+    window.open(openUrl, '_blank', 'noopener,noreferrer');
+  }
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('rulesPrLightboxModal');
+    if (!modal || modal.classList.contains('hidden')) return;
+    if (e.key === 'Escape') closePrLightbox();
+    else if (e.key === 'ArrowLeft') stepPrLightbox(-1);
+    else if (e.key === 'ArrowRight') stepPrLightbox(1);
+  });
 }
 
 // ดักจับการเปลี่ยนแปลง Storage จากหน้าต่าง/แท็บอื่น

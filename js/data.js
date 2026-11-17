@@ -81,10 +81,13 @@ function formatCardHeadingPrefix(template, num, fallback = 'ลำดับท�
 }
 
 // ฟังก์ชันตรวจสอบและจัดรูปแบบลิงก์ไฟล์ PDF ให้ปลอดภัยและเปิดได้จริง
-function sanitizePdfHref(rawUrl) {
+function sanitizePdfHref(rawUrl, allowImageData = false) {
   const s = String(rawUrl || '').trim();
   if (!s) return '';
   if (/^(javascript|vbscript|data:text\/html):/i.test(s)) return '';
+  if (allowImageData && /^data:image\/(png|jpeg|jpg|webp|gif|svg\+xml);/i.test(s)) {
+    return s;
+  }
   if (/^(https?:\/\/|\/|\.\/|\.\.\/|assets\/|data:application\/pdf)/i.test(s)) {
     return s;
   }
@@ -93,6 +96,23 @@ function sanitizePdfHref(rawUrl) {
     return 'https://' + s;
   }
   return s;
+}
+
+// แปลง URL รูปภาพประชาสัมพันธ์ (รองรับลิงก์ Google Drive / URL ทั่วไป / Base64 Data URL)
+function resolvePrImageSrc(rawSrc) {
+  const clean = sanitizePdfHref(rawSrc, true);
+  if (!clean) return '';
+  if (clean.startsWith('data:')) return clean;
+  // แปลงลิงก์ Google Drive (file/d/ID/view, open?id=ID, uc?id=ID) เป็น Direct Image URL ที่แสดงบนเว็บได้ทันที
+  const driveFileMatch = clean.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
+  if (driveFileMatch) {
+    return `https://drive.google.com/thumbnail?id=${driveFileMatch[1]}&sz=w1600`;
+  }
+  const driveParamMatch = clean.match(/drive\.google\.com\/(?:open|uc|thumbnail)\?(?:[^#]*&)?id=([a-zA-Z0-9_-]+)/i);
+  if (driveParamMatch) {
+    return `https://drive.google.com/thumbnail?id=${driveParamMatch[1]}&sz=w1600`;
+  }
+  return clean;
 }
 
 // เปิดไฟล์ PDF ที่เก็บแบบ Data URL (Base64) ผ่าน Blob URL เพื่อไม่ให้ Chrome บล็อกการเปิดแท็บใหม่
@@ -351,6 +371,9 @@ const DEFAULT_SITE_CONFIG = {
   rulesColorPdfData: '',
   rulesColorPdfFileName: '',
   rulesColorPdfFileSize: '',
+  rulesPrTitle: 'สื่อประชาสัมพันธ์ (PR)',
+  rulesPrPosition: 'bottom',
+  rulesPrImages: [],
   applyHeaderTitle: 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570',
   applyHeaderSubtitle: 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย',
   applyCouncilIsOpen: true,
@@ -662,6 +685,12 @@ const WDSDB = {
       }
       if (merged.rulesDisplayMode !== 'pdf' && merged.rulesDisplayMode !== 'text') {
         merged.rulesDisplayMode = 'pdf';
+      }
+      if (!Array.isArray(merged.rulesPrImages)) {
+        merged.rulesPrImages = [];
+      }
+      if (!['top', 'bottom', 'hidden'].includes(merged.rulesPrPosition)) {
+        merged.rulesPrPosition = 'bottom';
       }
       if (!merged.rulesCouncilList || !Array.isArray(merged.rulesCouncilList) || merged.rulesCouncilList.length === 0) {
         merged.rulesCouncilList = DEFAULT_COUNCIL_RULES;
