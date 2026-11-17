@@ -1025,15 +1025,32 @@ let activePrLightboxIndex = 0;
 function getResolvedPrGalleryItems(cfg) {
   const list = cfg && Array.isArray(cfg.rulesPrImages) ? cfg.rulesPrImages : [];
   const resolveSrc = typeof resolvePrImageSrc === 'function' ? resolvePrImageSrc : (s) => String(s || '').trim();
+  const normBin = typeof normalizeCloudBinUrl === 'function' ? normalizeCloudBinUrl : () => '';
+  const getCached = typeof getCachedPrImage === 'function' ? getCachedPrImage : () => '';
+
   return list
     .map(item => {
       if (!item || typeof item !== 'object') return null;
+      const caption = String(item.caption || '').trim();
+      const binUrl = normBin(item.cloudBinUrl || (typeof item.src === 'string' && item.src.startsWith('cloudbin:') ? item.src : ''));
+      if (binUrl) {
+        const cachedData = getCached(binUrl) || (typeof item.src === 'string' && item.src.startsWith('data:image/') ? item.src : '');
+        return {
+          src: cachedData,
+          cloudBinUrl: binUrl,
+          rawUrl: '',
+          caption,
+          isLoading: !cachedData
+        };
+      }
       const src = resolveSrc(item.src || item.url || '');
       if (!src) return null;
       return {
         src,
+        cloudBinUrl: '',
         rawUrl: String(item.src || item.url || '').trim(),
-        caption: String(item.caption || '').trim()
+        caption,
+        isLoading: false
       };
     })
     .filter(Boolean);
@@ -1053,6 +1070,20 @@ function renderRulesPrGallery(cfg) {
 
   if (pos === 'hidden' || items.length === 0) return;
 
+  // หากมีรูปภาพจาก Cloud Bin ที่ยังไม่ได้โหลดเข้าแคช ให้ดึงแบบขนานแล้วอัปเดตหน้าจอทันที
+  if (items.some(i => i.isLoading && i.cloudBinUrl) && typeof hydratePrImagesList === 'function') {
+    hydratePrImagesList(cfg.rulesPrImages).then(loaded => {
+      if (loaded) {
+        const latestCfg = typeof WDSDB !== 'undefined' ? WDSDB.getConfig() : cfg;
+        renderRulesPrGallery(latestCfg);
+        const modal = document.getElementById('rulesPrLightboxModal');
+        if (modal && !modal.classList.contains('hidden')) {
+          updatePrLightboxView();
+        }
+      }
+    }).catch(() => {});
+  }
+
   const targetEl = pos === 'top' ? topEl : bottomEl;
   if (!targetEl) return;
 
@@ -1063,10 +1094,15 @@ function renderRulesPrGallery(cfg) {
         ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
         : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4');
 
-  const cardsHtml = items.map((item, idx) => `
-    <div class="group border border-slate-200 rounded-lg overflow-hidden bg-slate-50/70 hover:bg-white hover:border-[#16325c]/40 hover:shadow-md transition flex flex-col">
-      <button type="button" onclick="openPrLightbox(${idx})"
-        class="relative w-full bg-slate-100/80 flex items-center justify-center overflow-hidden cursor-zoom-in focus:outline-none">
+  const cardsHtml = items.map((item, idx) => {
+    const imgContent = item.isLoading
+      ? `
+        <div class="w-full h-56 flex flex-col items-center justify-center text-slate-400 text-xs gap-2">
+          <i class="fa-solid fa-spinner fa-spin text-2xl text-[#16325c]"></i>
+          <span>กำลังโหลดภาพประชาสัมพันธ์...</span>
+        </div>
+      `
+      : `
         <img src="${escapeHTML(item.src)}"
           alt="${escapeHTML(item.caption || `${sectionTitle} ภาพที่ ${idx + 1}`)}"
           loading="lazy"
@@ -1080,14 +1116,22 @@ function renderRulesPrGallery(cfg) {
         <span class="opacity-0 group-hover:opacity-100 transition absolute bottom-2.5 right-2.5 bg-[#0f2942]/85 text-white text-[11px] font-semibold px-2.5 py-1 rounded-md shadow flex items-center gap-1.5 pointer-events-none">
           <i class="fa-solid fa-magnifying-glass-plus"></i> ขยายดูภาพ
         </span>
-      </button>
-      ${item.caption ? `
-        <div class="px-3.5 py-2.5 bg-white border-t border-slate-200 text-xs sm:text-sm text-slate-700 font-medium leading-snug text-center">
-          ${escapeHTML(item.caption)}
-        </div>
-      ` : ''}
-    </div>
-  `).join('');
+      `;
+
+    return `
+      <div class="group border border-slate-200 rounded-lg overflow-hidden bg-slate-50/70 hover:bg-white hover:border-[#16325c]/40 hover:shadow-md transition flex flex-col">
+        <button type="button" onclick="openPrLightbox(${idx})"
+          class="relative w-full bg-slate-100/80 flex items-center justify-center overflow-hidden cursor-zoom-in focus:outline-none">
+          ${imgContent}
+        </button>
+        ${item.caption ? `
+          <div class="px-3.5 py-2.5 bg-white border-t border-slate-200 text-xs sm:text-sm text-slate-700 font-medium leading-snug text-center">
+            ${escapeHTML(item.caption)}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
 
   targetEl.innerHTML = `
     <div class="border border-slate-300 rounded-lg p-4 sm:p-6 md:p-7 bg-white space-y-3 sm:space-y-4 shadow-xs">

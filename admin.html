@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257046">
-  <script src="js/data.js?v=257046"></script>
-  <script src="js/app.js?v=257046"></script>
+  <link rel="stylesheet" href="css/style.css?v=257047">
+  <script src="js/data.js?v=257047"></script>
+  <script src="js/app.js?v=257047"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -1039,15 +1039,20 @@
                     </div>
                     <div class="flex flex-wrap gap-1.5">
                       <input type="file" id="rulesPrMultiFileInput" accept="image/*" multiple class="hidden" onchange="handlePrFilesUpload(this)">
-                      <button type="button" onclick="document.getElementById('rulesPrMultiFileInput').click()"
-                        class="gov-btn gov-btn-blue text-[11px] py-1.5 px-2.5 shadow-2xs flex items-center">
-                        <i class="fa-solid fa-images mr-1"></i> + อัปโหลดรูป PR (เลือกได้หลายรูป)
+                      <button type="button" id="btnPrUploadMulti" onclick="document.getElementById('rulesPrMultiFileInput').click()"
+                        class="gov-btn gov-btn-blue text-[11px] py-1.5 px-3 shadow-2xs flex items-center cursor-pointer">
+                        <i class="fa-solid fa-mobile-screen-button mr-1.5"></i> + เลือกรูปจากคอม / มือถือ / ไอแพด
                       </button>
                       <button type="button" onclick="addPrImageUrlRow()"
-                        class="gov-btn bg-amber-600 hover:bg-amber-700 text-white text-[11px] py-1.5 px-2.5 shadow-2xs flex items-center">
-                        <i class="fa-solid fa-link mr-1"></i> + เพิ่มด้วยลิงก์ URL (ไม่จำกัดรูป)
+                        class="gov-btn bg-amber-600 hover:bg-amber-700 text-white text-[11px] py-1.5 px-2.5 shadow-2xs flex items-center cursor-pointer">
+                        <i class="fa-solid fa-link mr-1"></i> + เพิ่มด้วยลิงก์ URL
                       </button>
                     </div>
+                  </div>
+
+                  <div id="rulesPrUploadProgress" class="hidden bg-blue-50 border border-blue-200 text-blue-900 text-xs rounded px-3 py-2 flex items-center gap-2 font-medium">
+                    <i class="fa-solid fa-spinner fa-spin text-blue-600"></i>
+                    <span id="rulesPrUploadProgressText">กำลังบีบอัดและอัปโหลดรูปภาพขึ้นคลาวด์...</span>
                   </div>
 
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1071,7 +1076,7 @@
 
                   <div class="text-[10.5px] text-slate-600 bg-slate-50 border border-slate-200 rounded p-2 leading-relaxed">
                     <i class="fa-solid fa-circle-info text-blue-600 mr-1"></i>
-                    <strong>เคล็ดลับ:</strong> สามารถกด <strong>"+ อัปโหลดรูป PR"</strong> (ระบบจะย่อบีบอัดให้อัตโนมัติเพื่อให้ซิงค์คลาวด์ได้) หรือหากมีรูปโปสเตอร์จำนวนมาก/ไฟล์ใหญ่ แนะนำให้อัปโหลดรูปลง Google Drive (แชร์: ทุกคนที่มีลิงก์) แล้วกด <strong>"+ เพิ่มด้วยลิงก์ URL"</strong> ได้ไม่จำกัดจำนวนรูปครับ
+                    <strong>ใช้งานได้ทันทีทุกอุปกรณ์:</strong> กด <strong>"+ เลือกรูปจากคอม / มือถือ / ไอแพด"</strong> เพื่อดึงภาพจากคลังรูปภาพหรือคอมพิวเตอร์ได้เลย (เลือกพร้อมกันหลายรูปได้) ระบบจะย่อขนาดและอัปโหลดขึ้นคลาวด์แยกอัตโนมัติ หรือเลือกใส่จากลิงก์ URL ก็ได้เช่นกัน
                   </div>
                 </div>
 
@@ -2261,12 +2266,20 @@
       const prPosEl = document.getElementById('cfg_rulesPrPosition');
       if (prPosEl) prPosEl.value = ['top', 'bottom', 'hidden'].includes(cfg.rulesPrPosition) ? cfg.rulesPrPosition : 'bottom';
       currentRulesPrImages = Array.isArray(cfg.rulesPrImages)
-        ? cfg.rulesPrImages.map((item, i) => ({
-            id: (item && item.id) || `pr_${Date.now()}_${i}`,
-            src: String((item && (item.src || item.url)) || ''),
-            caption: String((item && item.caption) || ''),
-            isLink: !(item && typeof item.src === 'string' && item.src.startsWith('data:'))
-          }))
+        ? cfg.rulesPrImages.map((item, i) => {
+            const binUrl = typeof normalizeCloudBinUrl === 'function'
+              ? normalizeCloudBinUrl((item && (item.cloudBinUrl || (typeof item.src === 'string' && item.src.startsWith('cloudbin:') ? item.src : ''))) || '')
+              : '';
+            const rawSrc = String((item && (item.src || item.url)) || '');
+            return {
+              id: (item && item.id) || `pr_${Date.now()}_${i}`,
+              cloudBinUrl: binUrl,
+              src: binUrl ? '' : rawSrc,
+              caption: String((item && item.caption) || ''),
+              approxSize: String((item && item.approxSize) || ''),
+              isLink: !binUrl && !rawSrc.startsWith('data:')
+            };
+          })
         : [];
       renderRulesPrAdminList();
 
@@ -3710,33 +3723,53 @@
           : 'bottom',
         rulesPrImages: (currentRulesPrImages || [])
           .map((item, idx) => {
+            const binUrl = typeof normalizeCloudBinUrl === 'function' ? normalizeCloudBinUrl(item.cloudBinUrl || '') : '';
+            if (binUrl) {
+              return {
+                id: item.id || `pr_${idx + 1}`,
+                cloudBinUrl: binUrl,
+                src: '',
+                caption: String(item.caption || '').trim(),
+                approxSize: String(item.approxSize || '')
+              };
+            }
             const cleanSrc = typeof sanitizePdfHref === 'function'
               ? sanitizePdfHref(item.src, true)
               : String(item.src || '').trim();
             return {
               id: item.id || `pr_${idx + 1}`,
               src: cleanSrc,
-              caption: String(item.caption || '').trim()
+              caption: String(item.caption || '').trim(),
+              approxSize: String(item.approxSize || '')
             };
           })
-          .filter(item => Boolean(item.src))
+          .filter(item => Boolean(item.cloudBinUrl || item.src))
       };
     }
 
     // ====== ฟังก์ชันจัดการรูปภาพประชาสัมพันธ์ (PR) แท็บที่ 2 ======
     const CLOUD_PR_SAFE_LIMIT = 88000;
+    const PR_CLOUD_BIN_MAX_LEN = 70000;
 
     function estimateCloudConfigPayloadBytes(overridePrImages = null) {
       try {
         const cur = WDSDB.getConfig();
         const savedImages = Array.isArray(overridePrImages) ? overridePrImages : currentRulesPrImages;
-        const previewCfg = {
+        const rawPreview = {
           ...cur,
           rulesCouncilPdfData: rulesPdfUploads.council.data || '',
           rulesColorPdfData: rulesPdfUploads.color.data || '',
-          rulesPrImages: (savedImages || []).map(x => ({ id: x.id, src: x.src, caption: x.caption }))
+          rulesPrImages: (savedImages || []).map(x => ({
+            id: x.id,
+            cloudBinUrl: x.cloudBinUrl || '',
+            src: x.cloudBinUrl ? '' : (x.src || ''),
+            caption: x.caption || ''
+          }))
         };
-        return JSON.stringify(previewCfg).length;
+        const safePayload = typeof buildCloudSafeConfigPayload === 'function'
+          ? buildCloudSafeConfigPayload(rawPreview, true)
+          : rawPreview;
+        return JSON.stringify(safePayload).length;
       } catch (e) {
         return 55000;
       }
@@ -3745,20 +3778,21 @@
     function updateRulesPrQuotaBadge() {
       const badge = document.getElementById('rulesPrQuotaBadge');
       if (!badge) return;
+      const count = currentRulesPrImages.length;
       const usedBytes = estimateCloudConfigPayloadBytes();
       const usedKb = (usedBytes / 1024).toFixed(1);
-      const limitKb = (CLOUD_PR_SAFE_LIMIT / 1024).toFixed(0);
-      const count = currentRulesPrImages.length;
-      if (usedBytes > CLOUD_PR_SAFE_LIMIT) {
-        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800 border border-red-300';
-        badge.textContent = `${count} รูป • พื้นที่คลาวด์เกิน (${usedKb} / ${limitKb} KB) แนะนำใช้ลิงก์ URL`;
-      } else if (usedBytes > CLOUD_PR_SAFE_LIMIT * 0.85) {
-        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300';
-        badge.textContent = `${count} รูป • พื้นที่คลาวด์ ${usedKb} / ${limitKb} KB (ใกล้เต็ม)`;
-      } else {
-        badge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200';
-        badge.textContent = `${count} รูป • พื้นที่คลาวด์ ${usedKb} / ${limitKb} KB`;
+      badge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200';
+      badge.textContent = `${count} รูป • พร้อมดึงรูปจากเครื่อง & ซิงค์คลาวด์ (Config ${usedKb} KB)`;
+    }
+
+    function resolveAdminPrItemPreview(item) {
+      if (!item) return '';
+      if (item.cloudBinUrl) {
+        const cached = typeof getCachedPrImage === 'function' ? getCachedPrImage(item.cloudBinUrl) : '';
+        return cached || '';
       }
+      const resolvePreview = typeof resolvePrImageSrc === 'function' ? resolvePrImageSrc : (s) => s;
+      return resolvePreview(item.src || '');
     }
 
     function renderRulesPrAdminList() {
@@ -3770,19 +3804,35 @@
         container.innerHTML = `
           <div class="md:col-span-2 p-5 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-xs">
             <i class="fa-regular fa-images text-2xl text-slate-300 mb-1.5 block"></i>
-            ยังไม่มีรูปภาพ PR ประชาสัมพันธ์ — กดปุ่ม <strong>"+ อัปโหลดรูป PR"</strong> หรือ <strong>"+ เพิ่มด้วยลิงก์ URL"</strong> ด้านบนได้เลยครับ
+            ยังไม่มีรูปภาพ PR ประชาสัมพันธ์ — กดปุ่ม <strong>"+ เลือกรูปจากคอม / มือถือ / ไอแพด"</strong> เพื่อดึงรูปได้เลยครับ
           </div>
         `;
         return;
       }
 
-      const resolvePreview = typeof resolvePrImageSrc === 'function' ? resolvePrImageSrc : (s) => s;
+      // หากมีรายการรูป Cloud Bin จากเครื่องอื่นที่ยังไม่อยู่ในแคช ให้โหลดมาแสดงตัวอย่างอัตโนมัติ
+      if (typeof hydratePrImagesList === 'function' && currentRulesPrImages.some(it => it.cloudBinUrl && !getCachedPrImage(it.cloudBinUrl))) {
+        hydratePrImagesList(currentRulesPrImages).then(loaded => {
+          if (loaded) renderRulesPrAdminList();
+        }).catch(() => {});
+      }
+
       container.innerHTML = currentRulesPrImages.map((item, idx) => {
-        const isData = typeof item.src === 'string' && item.src.startsWith('data:');
-        const previewSrc = resolvePreview(item.src);
-        const kbBadge = isData
-          ? `<span class="text-[9.5px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">ไฟล์อัปโหลด (${formatFileSize(item.src.length * 0.75)})</span>`
-          : `<span class="text-[9.5px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold">ลิงก์ URL / Drive</span>`;
+        const hasCloudBin = Boolean(item.cloudBinUrl);
+        const isLocalDeviceImg = hasCloudBin || (typeof item.src === 'string' && item.src.startsWith('data:'));
+        const previewSrc = resolveAdminPrItemPreview(item);
+        let kbBadge = '';
+        if (hasCloudBin) {
+          kbBadge = `<span class="text-[9.5px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-semibold"><i class="fa-solid fa-cloud mr-0.5"></i> รูปจากเครื่อง${item.approxSize ? ` (${escapeHTML(item.approxSize)})` : ''}</span>`;
+        } else if (isLocalDeviceImg) {
+          kbBadge = `<span class="text-[9.5px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">ไฟล์ในเครื่อง (${formatFileSize(item.src.length * 0.75)})</span>`;
+        } else {
+          kbBadge = `<span class="text-[9.5px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold">ลิงก์ URL / Drive</span>`;
+        }
+
+        const previewHtml = hasCloudBin && !previewSrc
+          ? `<div class="text-[9.5px] text-center text-slate-400 p-1"><i class="fa-solid fa-spinner fa-spin block mb-0.5"></i>กำลังโหลด...</div>`
+          : buildPrPreviewInnerHtml(previewSrc, idx);
 
         return `
           <div class="border border-slate-200 rounded-lg p-3 bg-slate-50/70 space-y-2.5 flex flex-col justify-between">
@@ -3809,16 +3859,16 @@
 
             <div class="flex gap-3 items-start">
               <div id="rulesPrPreviewBox_${idx}" class="w-24 h-24 sm:w-28 sm:h-28 rounded border border-slate-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
-                ${buildPrPreviewInnerHtml(previewSrc, idx)}
+                ${previewHtml}
               </div>
 
               <div class="flex-grow min-w-0 space-y-2">
-                ${isData ? `
+                ${isLocalDeviceImg ? `
                   <div>
                     <input type="file" id="rulesPrReplaceInput_${idx}" accept="image/*" class="hidden" onchange="replaceSinglePrFile(${idx}, this)">
                     <button type="button" onclick="document.getElementById('rulesPrReplaceInput_${idx}').click()"
-                      class="gov-btn bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] py-1 px-2.5">
-                      <i class="fa-solid fa-arrows-rotate mr-1"></i> เปลี่ยนรูปภาพใหม่
+                      class="gov-btn bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] py-1 px-2.5 cursor-pointer">
+                      <i class="fa-solid fa-arrows-rotate mr-1"></i> เปลี่ยนรูปจากเครื่อง
                     </button>
                   </div>
                 ` : `
@@ -3845,109 +3895,148 @@
       }).join('');
     }
 
-    function compressPrImageWithBudget(rawDataUrl, targetLen, onDone) {
-      const maxDim = targetLen >= 20000 ? 1080 : (targetLen >= 13000 ? 860 : 680);
-      const startQuality = targetLen >= 20000 ? 0.78 : 0.68;
-      if (typeof compressImageForStorage === 'function') {
-        compressImageForStorage(rawDataUrl, maxDim, startQuality, false, onDone, targetLen);
-      } else {
-        onDone(rawDataUrl);
-      }
-    }
-
-    function handlePrFilesUpload(input) {
-      const files = Array.from((input && input.files) || []);
-      if (files.length === 0) return;
-
-      const curBytes = estimateCloudConfigPayloadBytes();
-      const remainingBytes = Math.max(0, CLOUD_PR_SAFE_LIMIT - curBytes);
-      if (remainingBytes < 6000) {
-        alert(
-          'พื้นที่คลาวด์สำหรับอัปโหลดรูปโดยตรงเต็มแล้ว (ใกล้ขีดจำกัด ~88 KB)\n\n' +
-          'แนะนำ: ลบรูปเก่าที่ไม่ใช้ หรือนำรูปไปฝากไว้ใน Google Drive (แชร์: ทุกคนที่มีลิงก์) แล้วกดปุ่ม "+ เพิ่มด้วยลิงก์ URL" แทน (ใส่ได้ไม่จำกัดรูปครับ)'
-        );
-        input.value = '';
-        return;
-      }
-
-      const targetPerImg = Math.min(24000, Math.max(6000, Math.floor((remainingBytes - 1000) / files.length)));
-      let processedCount = 0;
-      let addedCount = 0;
-      let skippedCount = 0;
-
-      files.forEach((file, offset) => {
-        if (file.size > 15 * 1024 * 1024) {
-          skippedCount++;
-          processedCount++;
-          if (processedCount === files.length) finalizePrUploadBatch(addedCount, skippedCount, input);
-          return;
-        }
+    function readFileAsDataUrlPromise(file) {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = function(e) {
-          compressPrImageWithBudget(e.target.result, targetPerImg, (compressed) => {
-            const nextBytes = estimateCloudConfigPayloadBytes() + (compressed ? compressed.length : 0) + 60;
-            if (compressed && nextBytes <= CLOUD_PR_SAFE_LIMIT + 1500) {
-              currentRulesPrImages.push({
-                id: `pr_${Date.now()}_${offset}`,
-                src: compressed,
-                caption: '',
-                isLink: false
-              });
-              addedCount++;
-            } else {
-              skippedCount++;
-            }
-            processedCount++;
-            if (processedCount === files.length) finalizePrUploadBatch(addedCount, skippedCount, input);
-          });
-        };
-        reader.onerror = function() {
-          skippedCount++;
-          processedCount++;
-          if (processedCount === files.length) finalizePrUploadBatch(addedCount, skippedCount, input);
-        };
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => reject(new Error('ไม่สามารถอ่านไฟล์ภาพได้'));
         reader.readAsDataURL(file);
       });
     }
 
-    function finalizePrUploadBatch(addedCount, skippedCount, input) {
-      if (input) input.value = '';
-      if (addedCount > 0) {
-        markSettingsDirty();
-        renderRulesPrAdminList();
+    function compressPrImagePromise(rawDataUrl, maxDim, startQuality, targetLen) {
+      return new Promise((resolve) => {
+        if (typeof compressImageForStorage === 'function') {
+          compressImageForStorage(rawDataUrl, maxDim, startQuality, false, resolve, targetLen);
+        } else {
+          resolve(rawDataUrl);
+        }
+      });
+    }
+
+    function setPrUploadBusyState(isBusy, msg = '') {
+      const btn = document.getElementById('btnPrUploadMulti');
+      const box = document.getElementById('rulesPrUploadProgress');
+      const txt = document.getElementById('rulesPrUploadProgressText');
+      if (btn) btn.disabled = isBusy;
+      if (box) box.classList.toggle('hidden', !isBusy);
+      if (txt && msg) txt.textContent = msg;
+    }
+
+    async function processSinglePrDeviceFile(file) {
+      const rawData = await readFileAsDataUrlPromise(file);
+      const compressed = await compressPrImagePromise(rawData, 1280, 0.80, PR_CLOUD_BIN_MAX_LEN);
+      if (!compressed || typeof compressed !== 'string') {
+        return { ok: false, error: 'ไม่สามารถบีบอัดไฟล์ภาพได้' };
       }
-      if (skippedCount > 0 && addedCount === 0) {
-        alert('ไม่สามารถเพิ่มรูปภาพได้ เนื่องจากพื้นที่คลาวด์เต็ม แนะนำให้ใช้ปุ่ม "+ เพิ่มด้วยลิงก์ URL (Google Drive)" แทนครับ');
-      } else if (skippedCount > 0) {
-        showToast(`เพิ่มรูปภาพสำเร็จ ${addedCount} รูป (ข้าม ${skippedCount} รูปเพราะพื้นที่คลาวด์เต็ม แนะนำใช้ลิงก์ URL)`, 'warning');
-      } else if (addedCount > 0) {
-        showToast(`เพิ่มรูปภาพ PR สำเร็จ ${addedCount} รูป! กดบันทึกเพื่อแสดงบนหน้าเว็บ`, 'success');
+
+      // 1) อัปโหลดขึ้น Cloud Media Bin ส่วนตัวทันที (รูปละ ~70 KB ไม่จำกัดจำนวนรูปในเว็บ!)
+      if (typeof uploadPrImageToCloudBin === 'function') {
+        const upRes = await uploadPrImageToCloudBin(compressed);
+        if (upRes && upRes.ok && upRes.uri) {
+          return {
+            ok: true,
+            item: {
+              id: `pr_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+              cloudBinUrl: upRes.uri,
+              src: '',
+              caption: '',
+              approxSize: formatFileSize(compressed.length * 0.75),
+              isLink: false
+            }
+          };
+        }
+      }
+
+      // 2) Fallback: หากสร้าง Cloud Bin แยกไม่ได้ ให้บีบอัดลงพอดี Config หลัก (ถ้ายังมีพื้นที่ว่าง)
+      const compact = await compressPrImagePromise(compressed, 720, 0.65, 18000);
+      const projectedBytes = estimateCloudConfigPayloadBytes() + (compact ? compact.length : 0) + 80;
+      if (compact && projectedBytes <= CLOUD_PR_SAFE_LIMIT) {
+        return {
+          ok: true,
+          item: {
+            id: `pr_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+            cloudBinUrl: '',
+            src: compact,
+            caption: '',
+            approxSize: formatFileSize(compact.length * 0.75),
+            isLink: false
+          }
+        };
+      }
+      return { ok: false, error: 'ไม่สามารถอัปโหลดขึ้นคลาวด์ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่' };
+    }
+
+    async function handlePrFilesUpload(input) {
+      const files = Array.from((input && input.files) || []);
+      if (files.length === 0) return;
+
+      setPrUploadBusyState(true, `กำลังเตรียมและอัปโหลดรูปภาพขึ้นคลาวด์ (0/${files.length})...`);
+      let addedCount = 0;
+      let failedCount = 0;
+
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          setPrUploadBusyState(true, `กำลังบีบอัดและอัปโหลดภาพที่ ${i + 1}/${files.length}: ${file.name}...`);
+          if (file.size > 20 * 1024 * 1024) {
+            failedCount++;
+            continue;
+          }
+          try {
+            const res = await processSinglePrDeviceFile(file);
+            if (res.ok && res.item) {
+              currentRulesPrImages.push(res.item);
+              addedCount++;
+            } else {
+              failedCount++;
+            }
+          } catch (err) {
+            failedCount++;
+          }
+        }
+      } finally {
+        if (input) input.value = '';
+        setPrUploadBusyState(false);
+        if (addedCount > 0) {
+          markSettingsDirty();
+          renderRulesPrAdminList();
+        }
+        if (failedCount === 0 && addedCount > 0) {
+          showToast(`✅ ดึงรูปและอัปโหลดขึ้นคลาวด์สำเร็จ ${addedCount} รูป! กดปุ่มบันทึกเพื่อแสดงบนหน้าเว็บ`, 'success');
+        } else if (addedCount > 0 && failedCount > 0) {
+          showToast(`เพิ่มรูปสำเร็จ ${addedCount} รูป (ไม่สำเร็จ ${failedCount} รูป)`, 'warning');
+        } else if (failedCount > 0) {
+          showToast('ไม่สามารถอัปโหลดรูปขึ้นคลาวด์ได้ กรุณาลองใหม่อีกครั้ง', 'error');
+        }
       }
     }
 
-    function replaceSinglePrFile(idx, input) {
+    async function replaceSinglePrFile(idx, input) {
       if (!currentRulesPrImages[idx] || !input.files || !input.files[0]) return;
       const file = input.files[0];
-      const withoutThis = currentRulesPrImages.filter((_, i) => i !== idx);
-      const remainingBytes = Math.max(6000, CLOUD_PR_SAFE_LIMIT - estimateCloudConfigPayloadBytes(withoutThis));
-      const targetLen = Math.min(24000, remainingBytes - 500);
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        compressPrImageWithBudget(e.target.result, targetLen, (compressed) => {
-          currentRulesPrImages[idx].src = compressed;
-          currentRulesPrImages[idx].isLink = false;
-          input.value = '';
+      setPrUploadBusyState(true, `กำลังเปลี่ยนรูปภาพที่ ${idx + 1}...`);
+      try {
+        const res = await processSinglePrDeviceFile(file);
+        if (res.ok && res.item) {
+          res.item.caption = currentRulesPrImages[idx].caption || '';
+          currentRulesPrImages[idx] = res.item;
           markSettingsDirty();
           renderRulesPrAdminList();
-          showToast('เปลี่ยนรูปภาพ PR เรียบร้อยแล้ว', 'success');
-        });
-      };
-      reader.readAsDataURL(file);
+          showToast('เปลี่ยนรูปภาพ PR เรียบร้อยแล้ว กดบันทึกเพื่อเผยแพร่', 'success');
+        } else {
+          showToast(res.error || 'เปลี่ยนรูปภาพไม่สำเร็จ', 'error');
+        }
+      } finally {
+        if (input) input.value = '';
+        setPrUploadBusyState(false);
+      }
     }
 
     function addPrImageUrlRow() {
       currentRulesPrImages.push({
         id: `pr_${Date.now()}`,
+        cloudBinUrl: '',
         src: '',
         caption: '',
         isLink: true

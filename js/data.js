@@ -115,6 +115,180 @@ function resolvePrImageSrc(rawSrc) {
   return clean;
 }
 
+// ====== ระบบฝากและดึงรูปภาพ PR แยก Bin บนคลาวด์ (ไม่จำกัดจำนวนรูป และไม่เบียดพื้นที่ Config หลัก) ======
+const PR_CLOUD_BIN_ENDPOINT = 'https://extendsclass.com/api/json-storage/bin';
+const prCloudMediaMemory = new Map();
+const inFlightPrBinFetches = new Map();
+
+function normalizeCloudBinUrl(rawBinOrId) {
+  const s = String(rawBinOrId || '').trim();
+  if (!s) return '';
+  if (s.startsWith('cloudbin:')) {
+    const id = s.slice('cloudbin:'.length).trim();
+    return id ? `${PR_CLOUD_BIN_ENDPOINT}/${id}` : '';
+  }
+  if (/^http:\/\/extendsclass\.com\//i.test(s)) {
+    return s.replace(/^http:\/\//i, 'https://');
+  }
+  if (/^https:\/\/(www\.)?extendsclass\.com\/api\/json-storage\/bin\/[a-z0-9_-]+$/i.test(s)) {
+    return s;
+  }
+  if (/^[a-z0-9]{5,12}$/i.test(s)) {
+    return `${PR_CLOUD_BIN_ENDPOINT}/${s}`;
+  }
+  return '';
+}
+
+function extractCloudBinId(binUrl) {
+  const norm = normalizeCloudBinUrl(binUrl);
+  const m = norm.match(/\/bin\/([a-z0-9_-]+)$/i);
+  return m ? m[1] : '';
+}
+
+function getCachedPrImage(binUrl) {
+  const norm = normalizeCloudBinUrl(binUrl);
+  if (!norm) return '';
+  if (prCloudMediaMemory.has(norm)) return prCloudMediaMemory.get(norm);
+  const id = extractCloudBinId(norm);
+  if (id && typeof localStorage !== 'undefined') {
+    try {
+      const cached = localStorage.getItem(`wds_pr_media_${id}`);
+      if (cached && cached.startsWith('data:image/')) {
+        prCloudMediaMemory.set(norm, cached);
+        return cached;
+      }
+    } catch (e) {}
+  }
+  return '';
+}
+
+function setCachedPrImage(binUrl, dataUrl) {
+  const norm = normalizeCloudBinUrl(binUrl);
+  if (!norm || !dataUrl || typeof dataUrl !== 'string') return;
+  prCloudMediaMemory.set(norm, dataUrl);
+  const id = extractCloudBinId(norm);
+  if (id && typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem(`wds_pr_media_${id}`, dataUrl);
+    } catch (e) {
+      // หาก localStorage เต็ม ให้เก็บเฉพาะใน memory cache เพื่อไม่ให้ error
+    }
+  }
+}
+
+async function uploadPrImageToCloudBin(dataUrl) {
+  if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
+    return { ok: false, error: 'รูปแบบไฟล์รูปภาพไม่ถูกต้อง' };
+  }
+  if (typeof fetch === 'undefined') {
+    return { ok: false, error: 'เบราว์เซอร์ไม่รองรับการอัปโหลด' };
+  }
+  try {
+    const res = await fetch(PR_CLOUD_BIN_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: dataUrl, createdAt: new Date().toISOString() })
+    });
+    let text = await res.text();
+    const docIdx = text.indexOf('<!doctype');
+    if (docIdx !== -1) text = text.substring(0, docIdx).trim();
+    const htmlIdx = text.indexOf('<html');
+    if (htmlIdx !== -1) text = text.substring(0, htmlIdx).trim();
+    const lastBrace = text.lastIndexOf('}');
+    if (lastBrace !== -1 && lastBrace < text.length - 1) {
+      text = text.substring(0, lastBrace + 1).trim();
+    }
+    const parsed = text ? JSON.parse(text) : null;
+    if (res.ok && parsed && parsed.uri) {
+      const cleanUri = normalizeCloudBinUrl(parsed.uri) || parsed.uri;
+      setCachedPrImage(cleanUri, dataUrl);
+      return { ok: true, uri: cleanUri, id: parsed.id || extractCloudBinId(cleanUri) };
+    }
+    return {
+      ok: false,
+      error: res.status === 413
+        ? 'ไฟล์รูปภาพหลังบีบอัดยังมีขนาดใหญ่เกินเพดาน 100 KB ต่อภาพ'
+        : `เซิร์ฟเวอร์อัปโหลดตอบกลับ HTTP ${res.status}`
+    };
+  } catch (err) {
+    return { ok: false, error: err.message || 'ไม่สามารถเชื่อมต่อคลาวด์อัปโหลดรูปภาพได้' };
+  }
+}
+
+async function fetchPrImageFromCloudBin(binUrl) {
+  const norm = normalizeCloudBinUrl(binUrl);
+  if (!norm || typeof fetch === 'undefined') return '';
+  const cached = getCachedPrImage(norm);
+  if (cached) return cached;
+  if (inFlightPrBinFetches.has(norm)) return inFlightPrBinFetches.get(norm);
+
+  const p = (async () => {
+    try {
+      const parsed = await fetchCleanJson(norm);
+      const img = parsed && typeof parsed.image === 'string' ? parsed.image : '';
+      if (img && img.startsWith('data:image/')) {
+        setCachedPrImage(norm, img);
+        return img;
+      }
+      return '';
+    } catch (e) {
+      return '';
+    } finally {
+      inFlightPrBinFetches.delete(norm);
+    }
+  })();
+
+  inFlightPrBinFetches.set(norm, p);
+  return p;
+}
+
+async function hydratePrImagesList(imagesList) {
+  if (!Array.isArray(imagesList) || imagesList.length === 0) return false;
+  const pending = imagesList
+    .map(item => normalizeCloudBinUrl((item && (item.cloudBinUrl || item.src)) || ''))
+    .filter(uri => uri && !getCachedPrImage(uri));
+  if (pending.length === 0) return false;
+  const results = await Promise.all(pending.map(uri => fetchPrImageFromCloudBin(uri)));
+  return results.some(Boolean);
+}
+
+function buildCloudSafeConfigPayload(mergedCfg, aggressiveDocsStrip = false) {
+  const payload = JSON.parse(JSON.stringify(mergedCfg || {}));
+  if (Array.isArray(payload.documentsList)) {
+    payload.documentsList = payload.documentsList.map(doc => {
+      const d = { ...doc };
+      if (aggressiveDocsStrip) {
+        if (d.fileData && d.fileData.length > 15000) delete d.fileData;
+      } else if (d.fileData && d.fileData.length > 50000 && d.fileUrl) {
+        delete d.fileData;
+      }
+      return d;
+    });
+  }
+  if (Array.isArray(payload.rulesPrImages)) {
+    payload.rulesPrImages = payload.rulesPrImages.map(item => {
+      if (!item || typeof item !== 'object') return item;
+      const binUrl = normalizeCloudBinUrl(item.cloudBinUrl || '');
+      if (binUrl) {
+        return {
+          id: item.id || '',
+          cloudBinUrl: binUrl,
+          src: '',
+          caption: item.caption || '',
+          approxSize: item.approxSize || ''
+        };
+      }
+      return {
+        id: item.id || '',
+        src: item.src || '',
+        caption: item.caption || '',
+        approxSize: item.approxSize || ''
+      };
+    });
+  }
+  return payload;
+}
+
 // เปิดไฟล์ PDF ที่เก็บแบบ Data URL (Base64) ผ่าน Blob URL เพื่อไม่ให้ Chrome บล็อกการเปิดแท็บใหม่
 function openDataPdfSafely(event, dataUrl, fileName = 'announcement.pdf') {
   if (event && typeof event.preventDefault === 'function') event.preventDefault();
@@ -882,16 +1056,7 @@ const WDSDB = {
       let cloudSyncError = '';
       if (syncToCloud && CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
         cloudSyncOk = false;
-        const cloudPayload = JSON.parse(JSON.stringify(merged));
-        if (Array.isArray(cloudPayload.documentsList)) {
-          cloudPayload.documentsList = cloudPayload.documentsList.map(doc => {
-            const d = { ...doc };
-            if (d.fileData && d.fileData.length > 50000 && d.fileUrl) {
-              delete d.fileData;
-            }
-            return d;
-          });
-        }
+        let cloudPayload = buildCloudSafeConfigPayload(merged, false);
         try {
           let payloadStr = JSON.stringify(cloudPayload);
           let putRes = await fetch(CLOUD_SYNC.CONFIG_URL, {
@@ -901,14 +1066,8 @@ const WDSDB = {
           });
 
           // หากติด 413 เพราะไฟล์เอกสารแนบขนาดใหญ่ ให้ตัด fileData เฉพาะเอกสารก่อนเพื่อรักษารูปแบนเนอร์/โลโก้ไว้
-          if (putRes.status === 413 && Array.isArray(cloudPayload.documentsList)) {
-            cloudPayload.documentsList = cloudPayload.documentsList.map(doc => {
-              const d = { ...doc };
-              if (d.fileData && d.fileData.length > 15000) {
-                delete d.fileData;
-              }
-              return d;
-            });
+          if (putRes.status === 413) {
+            cloudPayload = buildCloudSafeConfigPayload(merged, true);
             payloadStr = JSON.stringify(cloudPayload);
             putRes = await fetch(CLOUD_SYNC.CONFIG_URL, {
               method: 'PUT',
