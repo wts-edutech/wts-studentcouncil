@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257045">
-  <script src="js/data.js?v=257045"></script>
-  <script src="js/app.js?v=257045"></script>
+  <link rel="stylesheet" href="css/style.css?v=257046">
+  <script src="js/data.js?v=257046"></script>
+  <script src="js/app.js?v=257046"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -784,11 +784,6 @@
                     <label class="block font-semibold text-slate-700 mb-1">ช่วงเวลาเปิดรับสมัคร</label>
                     <input type="text" id="cfg_regPeriod" oninput="updateLivePreview()" class="gov-input w-full">
                   </div>
-
-                  <div class="sm:col-span-3">
-                    <label class="block font-semibold text-slate-700 mb-1">ข้อความแถบประกาศสำคัญหน้าเว็บไซต์</label>
-                    <textarea id="cfg_announcementText" rows="2" oninput="updateLivePreview()" class="gov-input w-full"></textarea>
-                  </div>
                 </div>
               </div>
 
@@ -1313,12 +1308,6 @@
                     </div>
                   </div>
 
-                  <!-- Preview Announcement -->
-                  <div class="bg-amber-50 border border-amber-300 p-2 rounded text-[11px] text-amber-900">
-                    <span class="bg-amber-600 text-white text-[9px] font-bold px-1 py-0.5 rounded mr-1">ประกาศ</span>
-                    <span id="previewLiveNotice">ข้อความประกาศ...</span>
-                  </div>
-
                   <!-- Preview Detail Info -->
                   <div class="text-[11px] text-slate-600 space-y-1 bg-white p-2.5 rounded border border-slate-200">
                     <div><strong>สังกัด:</strong> <span id="previewLiveAffil">-</span></div>
@@ -1525,10 +1514,6 @@
             <div>
               <label class="block font-semibold text-slate-700 mb-1">คำอธิบายย่อยใต้หัวข้อหลัก (Subtitle)</label>
               <input type="text" id="applyMgr_headerSubtitle" oninput="renderApplyManagerPreview()" class="gov-input w-full text-slate-700" placeholder="กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย">
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block font-semibold text-slate-700 mb-1">ข้อความในแถบประกาศสีส้มด้านบน (Announcement Banner)</label>
-              <input type="text" id="applyMgr_announcementText" oninput="renderApplyManagerPreview()" class="gov-input w-full" placeholder="เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569">
             </div>
           </div>
         </div>
@@ -2219,7 +2204,8 @@
       document.getElementById('cfg_councilAgreementYear').value = cfg.councilAgreementYear || '';
       document.getElementById('cfg_colorAgreementYear').value = cfg.colorAgreementYear || '';
       document.getElementById('cfg_regPeriod').value = cfg.regPeriod || '';
-      document.getElementById('cfg_announcementText').value = cfg.announcementText || '';
+      const announceInputEl = document.getElementById('cfg_announcementText');
+      if (announceInputEl) announceInputEl.value = cfg.announcementText || '';
       document.getElementById('cfg_minBehaviorScore').value = cfg.minBehaviorScore || 80;
       document.getElementById('cfg_minGpaPresident').value = cfg.minGpaPresident || 2.75;
       document.getElementById('cfg_minGpaMember').value = cfg.minGpaMember || 2.50;
@@ -2510,7 +2496,6 @@
 
       const headerTitle = (document.getElementById('applyMgr_headerTitle')?.value || 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570').trim();
       const headerSub = (document.getElementById('applyMgr_headerSubtitle')?.value || 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย').trim();
-      const announceText = (document.getElementById('applyMgr_announcementText')?.value || 'เปิดรับสมัครเลือกตั้ง...').trim();
 
       const cTitle = (document.getElementById('applyMgr_councilTitle')?.value || '1. สมัครเลือกตั้งประธานสภานักเรียน').trim();
       const cBadge = (document.getElementById('applyMgr_councilBadge')?.value || 'ทีมพรรค 10 คน').trim();
@@ -2545,22 +2530,6 @@
       }
 
       box.innerHTML = `
-        <!-- แถบประกาศสีส้มจำลอง -->
-        <div class="bg-amber-50/90 border border-amber-200/90 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-950 text-xs sm:text-sm shadow-xs">
-          <div class="flex items-center space-x-2.5">
-            <span class="w-7 h-7 rounded-full bg-amber-500/20 text-amber-800 flex items-center justify-center flex-shrink-0 text-xs">
-              <i class="fa-solid fa-bullhorn text-amber-700"></i>
-            </span>
-            <div class="font-bold text-amber-900 flex items-center gap-1.5 flex-wrap">
-              <span class="bg-amber-600 text-white px-2 py-0.5 rounded text-[11px] font-bold">ประกาศ</span>
-              <span>${escapeHTML(announceText)}</span>
-            </div>
-          </div>
-          <span class="bg-amber-200/70 hover:bg-amber-300/80 text-amber-950 text-xs font-semibold px-3 py-1 rounded-md border border-amber-300 flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
-            <i class="fa-solid fa-book-open text-amber-800"></i> อ่านคู่มือระบบ
-          </span>
-        </div>
-
         <!-- หัวข้อหน้าและคำอธิบายย่อยจำลอง -->
         <div class="border-b border-slate-200 pb-3">
           <h2 class="text-base sm:text-lg md:text-xl font-bold text-[#16325c] flex items-center gap-2">
@@ -2725,7 +2694,8 @@
       document.getElementById('applyMgr_colorCloseNotice').value = 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานคณะสีแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร';
       document.getElementById('applyMgr_headerTitle').value = 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570';
       document.getElementById('applyMgr_headerSubtitle').value = 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย';
-      document.getElementById('applyMgr_announcementText').value = 'เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569';
+      const applyMgrAnnEl = document.getElementById('applyMgr_announcementText');
+      if (applyMgrAnnEl) applyMgrAnnEl.value = '';
       document.getElementById('applyMgr_councilTitle').value = '1. สมัครเลือกตั้งประธานสภานักเรียน';
       document.getElementById('applyMgr_councilBadge').value = 'ทีมพรรค 10 คน';
       document.getElementById('applyMgr_councilDesc').value = `ผู้สมัครรับเลือกตั้งเป็นประธานนักเรียนต้องจัดตั้งพรรคโดยให้มีสมาชิกภายในพรรค จำนวน 10 คน และมีผู้แทนพรรคเพื่อดำรงตำแหน่ง\nดังต่อไปนี้  ประธานพรรคลงสมัครประธานสภานักเรียน 1 คน , รองประธานพรรค 1 คน , สมาชิกพรรคฝ่ายวิชาการ 2 คน , สมาชิกพรรคฝ่ายสันทนาการ 2 คน, สมาชิกพรรคฝ่ายทั่วไป 1 คน, สมาชิกพรรคฝ่ายประชาสัมพันธ์ 2 คน, เลขานุการสภานักเรียน 1 คน`;
@@ -4253,7 +4223,7 @@
       const name = document.getElementById('cfg_schoolName').value || 'โรงเรียนตัวอย่าง';
       const year = document.getElementById('cfg_academicYear').value || '2570';
       const dept = document.getElementById('cfg_departmentName').value || 'กลุ่มบริหารกิจการนักเรียน';
-      const notice = document.getElementById('cfg_announcementText').value || 'เปิดรับสมัครเลือกตั้ง...';
+      const notice = document.getElementById('cfg_announcementText')?.value || '';
       const affil = document.getElementById('cfg_affiliation').value || 'สพฐ.';
       const dates = document.getElementById('cfg_regPeriod').value || '-';
       const phone = document.getElementById('cfg_schoolPhone').value || '-';
@@ -4287,7 +4257,8 @@
       document.getElementById('previewLiveSchool').innerText = name;
       document.getElementById('previewLiveYear').innerText = year;
       document.getElementById('previewLiveDept').innerText = dept;
-      document.getElementById('previewLiveNotice').innerText = notice;
+      const previewNoticeEl = document.getElementById('previewLiveNotice');
+      if (previewNoticeEl) previewNoticeEl.innerText = notice;
       document.getElementById('previewLiveAffil').innerText = affil;
       document.getElementById('previewLiveDates').innerText = dates;
       document.getElementById('previewLivePhone').innerText = contactPerson ? `${phone} (${contactPerson})` : phone;
@@ -4580,7 +4551,8 @@
       document.getElementById('cfg_councilAgreementYear').value = '2569';
       document.getElementById('cfg_colorAgreementYear').value = '2568';
       document.getElementById('cfg_regPeriod').value = '15 - 25 พฤศจิกายน 2570';
-      document.getElementById('cfg_announcementText').value = 'ขอเชิญชวนนักเรียนยื่นใบสมัครรับเลือกตั้งผู้นำนักเรียน ประจำปีการศึกษา 2571 ได้ทางระบบออนไลน์';
+      const cfgAnnEl = document.getElementById('cfg_announcementText');
+      if (cfgAnnEl) cfgAnnEl.value = 'ขอเชิญชวนนักเรียนยื่นใบสมัครรับเลือกตั้งผู้นำนักเรียน ประจำปีการศึกษา 2571 ได้ทางระบบออนไลน์';
       if (currentTimeline.length > 0) {
         currentTimeline[0].date = '15 - 25 พฤศจิกายน 2570';
         renderTimelineAdminTable();
@@ -4700,7 +4672,9 @@
           councilAgreementYear: getTrimmed('cfg_councilAgreementYear'),
           colorAgreementYear: getTrimmed('cfg_colorAgreementYear'),
           regPeriod: getTrimmed('cfg_regPeriod'),
-          announcementText: getTrimmed('cfg_announcementText'),
+          announcementText: document.getElementById('cfg_announcementText')
+            ? getTrimmed('cfg_announcementText')
+            : (currentCfg.announcementText || ''),
           minBehaviorScore: getParsedFloat('cfg_minBehaviorScore', 80),
           minGpaPresident: getParsedFloat('cfg_minGpaPresident', 2.75),
           minGpaMember: getParsedFloat('cfg_minGpaMember', 2.50),

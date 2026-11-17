@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257045">
-  <script src="js/data.js?v=257045"></script>
-  <script src="js/app.js?v=257045"></script>
+  <link rel="stylesheet" href="css/style.css?v=257046">
+  <script src="js/data.js?v=257046"></script>
+  <script src="js/app.js?v=257046"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -338,10 +338,6 @@
             <label class="block font-semibold text-slate-700 mb-1">คำอธิบายย่อยใต้หัวข้อหลัก (Subtitle)</label>
             <input type="text" id="pageHeaderSubtitle" oninput="renderPreview()" class="gov-input w-full text-slate-700">
           </div>
-          <div class="sm:col-span-2">
-            <label class="block font-semibold text-slate-700 mb-1">ข้อความในแถบประกาศสีส้มด้านบน (Announcement Banner)</label>
-            <input type="text" id="pageAnnouncementText" oninput="renderPreview()" class="gov-input w-full">
-          </div>
         </div>
       </div>
 
@@ -537,7 +533,8 @@
 
       document.getElementById('pageHeaderTitle').value = cfg.applyHeaderTitle || 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570';
       document.getElementById('pageHeaderSubtitle').value = cfg.applyHeaderSubtitle || 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย';
-      document.getElementById('pageAnnouncementText').value = cfg.announcementText || 'เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569';
+      const pageAnnounceEl = document.getElementById('pageAnnouncementText');
+      if (pageAnnounceEl) pageAnnounceEl.value = cfg.announcementText || '';
 
       document.getElementById('councilTitle').value = cfg.applyCouncilTitle || '1. สมัครเลือกตั้งประธานสภานักเรียน';
       document.getElementById('councilBadge').value = cfg.applyCouncilBadge || 'ทีมพรรค 10 คน';
@@ -586,7 +583,6 @@
 
       const headerTitle = (document.getElementById('pageHeaderTitle')?.value || 'เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570').trim();
       const headerSub = (document.getElementById('pageHeaderSubtitle')?.value || 'กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย').trim();
-      const announceText = (document.getElementById('pageAnnouncementText')?.value || 'เปิดรับสมัครเลือกตั้ง...').trim();
 
       const cTitle = (document.getElementById('councilTitle')?.value || '1. สมัครเลือกตั้งประธานสภานักเรียน').trim();
       const cBadge = (document.getElementById('councilBadge')?.value || 'ทีมพรรค 10 คน').trim();
@@ -613,21 +609,6 @@
       ];
 
       box.innerHTML = `
-        <div class="bg-amber-50/90 border border-amber-200/90 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-950 text-xs sm:text-sm shadow-xs">
-          <div class="flex items-center space-x-2.5">
-            <span class="w-7 h-7 rounded-full bg-amber-500/20 text-amber-800 flex items-center justify-center flex-shrink-0 text-xs">
-              <i class="fa-solid fa-bullhorn text-amber-700"></i>
-            </span>
-            <div class="font-bold text-amber-900 flex items-center gap-1.5 flex-wrap">
-              <span class="bg-amber-600 text-white px-2 py-0.5 rounded text-[11px] font-bold">ประกาศ</span>
-              <span>${escapeHTML(announceText)}</span>
-            </div>
-          </div>
-          <span class="bg-amber-200/70 hover:bg-amber-300/80 text-amber-950 text-xs font-semibold px-3 py-1 rounded-md border border-amber-300 flex items-center gap-1.5 flex-shrink-0">
-            <i class="fa-solid fa-book-open text-amber-800"></i> อ่านคู่มือระบบ
-          </span>
-        </div>
-
         <div class="border-b border-slate-200 pb-3">
           <h2 class="text-base sm:text-lg md:text-xl font-bold text-[#16325c]">
             ${escapeHTML(headerTitle)}
