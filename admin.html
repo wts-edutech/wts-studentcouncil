@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257050">
-  <script src="js/data.js?v=257050"></script>
-  <script src="js/app.js?v=257050"></script>
+  <link rel="stylesheet" href="css/style.css?v=257051">
+  <script src="js/data.js?v=257051"></script>
+  <script src="js/app.js?v=257051"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -145,6 +145,28 @@
       }
     }
   </style>
+  <script>
+    var currentContactList = [];
+    function _ctEsc(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+    function renderContactListAdmin() {
+      const box = document.getElementById('contactListAdmin');
+      if (!box) return;
+      if (!currentContactList.length) { box.innerHTML = '<div class="text-xs text-slate-400 italic py-2 text-center">ยังไม่มีรายชื่อครู กด "เพิ่มครู"</div>'; return; }
+      box.innerHTML = currentContactList.map((c, i) => `
+        <div class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1.4fr_auto] gap-2 items-end bg-white border border-slate-200 rounded p-2">
+          <div><label class="block text-[10.5px] font-semibold text-slate-600">ชื่อครู</label>
+            <input type="text" class="gov-input w-full text-sm" value="${_ctEsc(c.name)}" placeholder="คุณครู..." oninput="updateContactTeacher(${i},'name',this.value)"></div>
+          <div><label class="block text-[10.5px] font-semibold text-slate-600">เบอร์โทร</label>
+            <input type="text" class="gov-input w-full text-sm" value="${_ctEsc(c.phone)}" placeholder="08x-xxx-xxxx" oninput="updateContactTeacher(${i},'phone',this.value)"></div>
+          <div><label class="block text-[10.5px] font-semibold text-slate-600">ตำแหน่งงาน</label>
+            <input type="text" class="gov-input w-full text-sm" value="${_ctEsc(c.position)}" placeholder="เช่น หัวหน้างานกิจการนักเรียน" oninput="updateContactTeacher(${i},'position',this.value)"></div>
+          <button type="button" onclick="removeContactTeacher(${i})" class="px-2.5 py-2 rounded border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 text-xs" title="ลบ"><i class="fa-solid fa-trash-can"></i></button>
+        </div>`).join('');
+    }
+    function addContactTeacher() { currentContactList.push({ name: '', phone: '', position: '' }); renderContactListAdmin(); if (typeof markSettingsDirty === 'function') markSettingsDirty(); }
+    function removeContactTeacher(i) { currentContactList.splice(i, 1); renderContactListAdmin(); if (typeof markSettingsDirty === 'function') markSettingsDirty(); }
+    function updateContactTeacher(i, k, v) { if (currentContactList[i]) currentContactList[i][k] = v; if (typeof markSettingsDirty === 'function') markSettingsDirty(); }
+  </script>
 </head>
 <body class="flex flex-col min-h-screen bg-slate-100 font-formal">
 
@@ -700,6 +722,18 @@
                     <input type="text" id="cfg_contactPerson" oninput="updateLivePreview()" class="gov-input w-full" placeholder="คุณครูสีวลี ยืนยาว">
                   </div>
                   <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ตำแหน่งงานของครูผู้ติดต่อ (แสดงหน้าแรก)</label>
+                    <input type="text" id="cfg_contactPosition" class="gov-input w-full" placeholder="ครูผู้รับผิดชอบงานส่งเสริมประชาธิปไตยในโรงเรียน">
+                  </div>
+                  <div class="col-span-full border border-amber-200 bg-amber-50/50 rounded-lg p-3 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <label class="font-bold text-slate-800"><i class="fa-solid fa-address-book text-amber-600 mr-1"></i>รายชื่อครูสำหรับติดต่อสอบถาม (แสดงหน้าแรก)</label>
+                      <button type="button" onclick="addContactTeacher()" class="gov-btn bg-[#1a365d] hover:bg-[#16325c] text-white text-xs py-1.5 px-3"><i class="fa-solid fa-plus mr-1"></i>เพิ่มครู</button>
+                    </div>
+                    <p class="text-[11px] text-slate-500">ถ้าไม่เพิ่มรายชื่อ หน้าแรกจะแสดงครูผู้ประสานงานด้านบนแทน</p>
+                    <div id="contactListAdmin" class="space-y-2"></div>
+                  </div>
+                  <div>
                     <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ (แสดงท้ายเว็บ)</label>
                     <input type="text" id="cfg_schoolPhone" oninput="updateLivePreview()" class="gov-input w-full" placeholder="0990499597">
                   </div>
@@ -1074,7 +1108,7 @@
                     </div>
                   </div>
 
-                  <div id="rulesPrAdminList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div id="rulesPrAdminList" class="grid grid-cols-1 gap-3">
                     <!-- รายการภาพ PR เรนเดอร์อัตโนมัติ -->
                   </div>
 
@@ -2220,6 +2254,9 @@
       document.getElementById('cfg_minGpaMember').value = cfg.minGpaMember || 2.50;
       document.getElementById('cfg_schoolAddress').value = cfg.schoolAddress || '';
       document.getElementById('cfg_contactPerson').value = cfg.contactPerson || 'คุณครูสีวลี ยืนยาว';
+      document.getElementById('cfg_contactPosition').value = cfg.contactPosition || '';
+      currentContactList = Array.isArray(cfg.contactList) ? cfg.contactList.map(c => ({ ...c })) : [];
+      renderContactListAdmin();
       document.getElementById('cfg_schoolPhone').value = cfg.schoolPhone || '0990499597';
       document.getElementById('cfg_councilPhone').value = cfg.councilPhone || '';
       document.getElementById('cfg_councilEmail').value = cfg.councilEmail || '';
@@ -3896,10 +3933,11 @@
 
                 <div>
                   <label class="block text-[10.5px] font-semibold text-slate-700 mb-0.5">คำบรรยายใต้ภาพ (ใส่หรือไม่ใส่ก็ได้)</label>
-                  <input type="text" value="${escapeHTML(item.caption || '')}"
-                    oninput="updatePrField(${idx}, 'caption', this.value)"
+                  <textarea rows="4"
+                    oninput="updatePrField(${idx}, 'caption', this.value); this.style.height='auto'; this.style.height=this.scrollHeight+'px'"
+                    onfocus="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"
                     placeholder="เช่น กำหนดการรับสมัคร / คุณสมบัติผู้สมัคร"
-                    class="gov-input w-full text-xs bg-white py-1 px-2">
+                    class="gov-input w-full text-sm bg-white py-2 px-3 leading-relaxed resize-y" style="min-height:96px">${escapeHTML(item.caption || '')}</textarea>
                 </div>
               </div>
             </div>
@@ -4815,6 +4853,8 @@
           minGpaMember: getParsedFloat('cfg_minGpaMember', 2.50),
           schoolAddress: getTrimmed('cfg_schoolAddress'),
           contactPerson: getTrimmed('cfg_contactPerson'),
+          contactPosition: getTrimmed('cfg_contactPosition'),
+          contactList: currentContactList.map(c => ({ name: (c.name || '').trim(), phone: (c.phone || '').trim(), position: (c.position || '').trim() })).filter(c => c.name || c.phone),
           schoolPhone: getTrimmed('cfg_schoolPhone'),
           councilPhone: getTrimmed('cfg_councilPhone'),
           councilEmail: getTrimmed('cfg_councilEmail'),

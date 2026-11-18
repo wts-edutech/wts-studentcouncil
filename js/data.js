@@ -540,6 +540,7 @@ const DEFAULT_SITE_CONFIG = {
   schoolAddress: 'เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
   contactPerson: 'คุณครูสีวลี ยืนยาว',
   schoolPhone: '0990499597',
+  contactPosition: 'ครูผู้รับผิดชอบงานส่งเสริมประชาธิปไตยในโรงเรียน',
   councilOfficeHours: 'กรุณาติดต่อในวันและเวลาราชการ (วันจันทร์ ถึง วันศุกร์ | ตั้งแต่เวลา 08.30 - 16.30 น.)',
   councilEmail: 'wtstudentcouncil@gclass.wt.ac.th',
   councilPhone: '084-3530359 (ประธานสภานักเรียน)',
