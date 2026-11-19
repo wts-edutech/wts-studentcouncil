@@ -925,6 +925,180 @@ function handleImageUpload(inputElement, previewImgElement, hiddenInputElement, 
   }
 }
 
+// ====== ระบบอัปโหลดและบีบอัดรูปถ่ายนักเรียนสำหรับมือถือทุกรุ่น (iOS Safari / Android / LINE In-App Browser) ======
+window._wdsUploadedPhotos = window._wdsUploadedPhotos || {};
+window._wdsPhotoUploading = false;
+
+function handleStudentPhotoSelect(input, key) {
+  if (!input || !input.files || !input.files[0]) return;
+  const file = input.files[0];
+
+  if (file.size > 20 * 1024 * 1024) {
+    alert('ไฟล์รูปภาพมีขนาดใหญ่เกิน 20MB กรุณาเลือกรูปภาพขนาดเล็กลง');
+    try { input.value = ''; } catch (e) {}
+    return;
+  }
+
+  window._wdsPhotoUploading = true;
+
+  const placeholderNow = document.getElementById(`placeholder_${key}`);
+  const origPlaceholderHtml = placeholderNow ? placeholderNow.innerHTML : '';
+  if (placeholderNow) {
+    placeholderNow.classList.remove('hidden');
+    placeholderNow.innerHTML = `
+      <i class="fa-solid fa-spinner fa-spin text-xl text-blue-600 mb-1"></i>
+      <div class="text-[11px] font-semibold text-blue-700">กำลังโหลดรูป...</div>
+    `;
+  }
+
+  const encodeImageSource = (source, origW, origH) => {
+    const maxDim = 280;
+    let w = origW || 240;
+    let h = origH || 300;
+    if (w > maxDim || h > maxDim) {
+      if (w > h) {
+        h = Math.max(1, Math.round((h * maxDim) / w));
+        w = maxDim;
+      } else {
+        w = Math.max(1, Math.round((w * maxDim) / h));
+        h = maxDim;
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(source, 0, 0, w, h);
+
+    let out = canvas.toDataURL('image/jpeg', 0.72);
+    if (out.length > 26000) {
+      out = canvas.toDataURL('image/jpeg', 0.58);
+    }
+    return out;
+  };
+
+  const applyCompressedPhoto = (compressedData) => {
+    window._wdsPhotoUploading = false;
+    try { input.value = ''; } catch (e) {}
+
+    if (!compressedData || typeof compressedData !== 'string' || !compressedData.startsWith('data:image/') || compressedData.length < 100) {
+      const ph = document.getElementById(`placeholder_${key}`);
+      if (ph && origPlaceholderHtml) ph.innerHTML = origPlaceholderHtml;
+      alert('ไม่สามารถอ่านไฟล์รูปภาพนี้ได้ กรุณาเลือกรูปภาพชนิด JPG หรือ PNG หรือใช้กล้องถ่ายรูปใหม่ค่ะ');
+      return;
+    }
+
+    window._wdsUploadedPhotos[key] = compressedData;
+
+    const img = document.getElementById(`preview_${key}`);
+    const ph = document.getElementById(`placeholder_${key}`);
+    const hiddenInput = document.getElementById(`photoData_${key}`);
+    const btnSpan = document.getElementById(`photoBtnText_${key}`);
+
+    if (ph) {
+      if (origPlaceholderHtml) ph.innerHTML = origPlaceholderHtml;
+      ph.classList.add('hidden');
+    }
+    if (img) {
+      img.src = compressedData;
+      img.classList.remove('hidden');
+    }
+    if (hiddenInput) {
+      hiddenInput.value = compressedData;
+    }
+    if (btnSpan) {
+      btnSpan.innerHTML = '<i class="fa-solid fa-check text-emerald-600 mr-1"></i> เปลี่ยนรูปถ่าย';
+    }
+    if (typeof showToast === 'function') {
+      showToast('แนบรูปถ่ายเรียบร้อยแล้ว', 'success');
+    }
+  };
+
+  const fallbackWithFileReader = () => {
+    try {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const rawData = e.target?.result || '';
+        if (!rawData) {
+          applyCompressedPhoto('');
+          return;
+        }
+        const img = new Image();
+        img.onload = function () {
+          try {
+            const out = encodeImageSource(img, img.naturalWidth || img.width, img.naturalHeight || img.height);
+            applyCompressedPhoto(out);
+          } catch (err) {
+            applyCompressedPhoto(rawData.startsWith('data:image/') ? rawData : '');
+          }
+        };
+        img.onerror = function () {
+          applyCompressedPhoto('');
+        };
+        img.src = rawData;
+      };
+      reader.onerror = function () {
+        applyCompressedPhoto('');
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      applyCompressedPhoto('');
+    }
+  };
+
+  const fallbackWithImageBitmap = () => {
+    if (typeof createImageBitmap === 'function') {
+      createImageBitmap(file).then(bitmap => {
+        try {
+          const out = encodeImageSource(bitmap, bitmap.width, bitmap.height);
+          if (typeof bitmap.close === 'function') bitmap.close();
+          applyCompressedPhoto(out);
+        } catch (err) {
+          fallbackWithFileReader();
+        }
+      }).catch(() => {
+        fallbackWithFileReader();
+      });
+    } else {
+      fallbackWithFileReader();
+    }
+  };
+
+  // วิธีที่ 1: ใช้ Blob Object URL (ประหยัดหน่วยความจำบนมือถือ iOS/Android สูงสุด ไม่ค้างเมื่อถ่ายรูปความละเอียดสูง)
+  if (typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+    try {
+      const objUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = function () {
+        try {
+          const out = encodeImageSource(img, img.naturalWidth || img.width, img.naturalHeight || img.height);
+          URL.revokeObjectURL(objUrl);
+          applyCompressedPhoto(out);
+        } catch (err) {
+          URL.revokeObjectURL(objUrl);
+          fallbackWithImageBitmap();
+        }
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(objUrl);
+        fallbackWithImageBitmap();
+      };
+      img.src = objUrl;
+      return;
+    } catch (e) {
+      fallbackWithImageBitmap();
+      return;
+    }
+  }
+
+  fallbackWithImageBitmap();
+}
+window.handleStudentPhotoSelect = handleStudentPhotoSelect;
+
 // ฟังก์ชันแสดง Toast Notification ทางการ
 function showToast(message, type = 'success') {
   const oldToast = document.getElementById('govToast');

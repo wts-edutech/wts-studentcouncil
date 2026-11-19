@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257052">
+  <link rel="stylesheet" href="css/style.css?v=257053">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -215,8 +215,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257052"></script>
-  <script src="js/app.js?v=257052"></script>
+  <script src="js/data.js?v=257053"></script>
+  <script src="js/app.js?v=257053"></script>
   <script>
     let lastRenderedCouncilSig = '';
 
@@ -260,6 +260,9 @@
         schoolName: cfg.schoolName,
         councilAgreementYear: cfg.councilAgreementYear
       });
+      if (window._wdsPhotoUploading) {
+        return;
+      }
       if (lastRenderedCouncilSig === currentSig && container.children.length > 0) {
         return;
       }
@@ -274,7 +277,7 @@
           behaviorScore: document.getElementById(`behaviorScore_${key}`)?.value || '',
           gpax: document.getElementById(`gpax_${key}`)?.value || '',
           phone: document.getElementById(`phone_${key}`)?.value || '',
-          photoData: document.getElementById(`photoData_${key}`)?.value || '',
+          photoData: document.getElementById(`photoData_${key}`)?.value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos[key]) || '',
           agreed: document.getElementById(`agreed_${key}`)?.checked || false
         };
       });
@@ -304,20 +307,21 @@
 
             <div class="p-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-start text-xs sm:text-sm">
               <div class="md:col-span-3 flex flex-col items-center">
-                <div class="photo-box">
-                  <img id="preview_${pos.key}" src="" class="hidden w-full h-full object-cover">
-                  <div id="placeholder_${pos.key}" class="p-2 text-center text-slate-500 text-xs">
-                    <i class="fa-solid fa-user text-2xl text-slate-400 mb-1"></i>
-                    <div>รูปถ่าย 1.5 นิ้ว</div>
-                    <div class="text-[10px] text-slate-400">ชุดนักเรียน</div>
-                  </div>
-                </div>
-                <input type="file" id="file_${pos.key}" accept="image/*" class="hidden" onchange="previewMemberPhoto(this, '${pos.key}')">
+                <input type="file" id="file_${pos.key}" accept="image/*" class="sr-only" onchange="previewMemberPhoto(this, '${pos.key}')">
                 <input type="hidden" id="photoData_${pos.key}" value="">
-                <button type="button" onclick="document.getElementById('file_${pos.key}').click()" 
-                  class="btn-gov-outline text-xs mt-2 py-1 px-2.5">
-                  <i class="fa-solid fa-camera mr-1"></i> แนบไฟล์รูป
-                </button>
+                <label for="file_${pos.key}" class="flex flex-col items-center cursor-pointer select-none group">
+                  <div class="photo-box group-hover:border-[#16325c] transition">
+                    <img id="preview_${pos.key}" src="" class="hidden w-full h-full object-cover">
+                    <div id="placeholder_${pos.key}" class="p-2 text-center text-slate-500 text-xs">
+                      <i class="fa-solid fa-user text-2xl text-slate-400 mb-1"></i>
+                      <div>รูปถ่าย 1.5 นิ้ว</div>
+                      <div class="text-[10px] text-slate-400">ชุดนักเรียน</div>
+                    </div>
+                  </div>
+                  <span id="photoBtnText_${pos.key}" class="btn-gov-outline text-xs mt-2 py-1.5 px-3 inline-flex items-center justify-center group-active:scale-95 transition">
+                    <i class="fa-solid fa-camera mr-1"></i> แนบไฟล์รูป
+                  </span>
+                </label>
               </div>
 
               <div class="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -394,27 +398,27 @@
     }
 
     function previewMemberPhoto(input, key) {
+      if (typeof handleStudentPhotoSelect === 'function') {
+        handleStudentPhotoSelect(input, key);
+        return;
+      }
       if (input.files && input.files[0]) {
         const file = input.files[0];
-        const img = document.getElementById(`preview_${key}`);
-        const placeholder = document.getElementById(`placeholder_${key}`);
-        const hiddenInput = document.getElementById(`photoData_${key}`);
-        
         const reader = new FileReader();
         reader.onload = function(e) {
           const rawData = e.target.result;
+          const finish = (data) => {
+            const img = document.getElementById(`preview_${key}`);
+            const placeholder = document.getElementById(`placeholder_${key}`);
+            const hiddenInput = document.getElementById(`photoData_${key}`);
+            if (img) { img.src = data; img.classList.remove('hidden'); }
+            if (placeholder) placeholder.classList.add('hidden');
+            if (hiddenInput) hiddenInput.value = data;
+          };
           if (typeof compressImageForStorage === 'function') {
-            compressImageForStorage(rawData, 240, 0.65, false, (compressedData) => {
-              img.src = compressedData;
-              img.classList.remove('hidden');
-              placeholder.classList.add('hidden');
-              hiddenInput.value = compressedData;
-            });
+            compressImageForStorage(rawData, 240, 0.65, false, finish);
           } else {
-            img.src = rawData;
-            img.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            hiddenInput.value = rawData;
+            finish(rawData);
           }
         };
         reader.readAsDataURL(file);
@@ -442,7 +446,7 @@
         const behaviorScore = parseFloat(document.getElementById(`behaviorScore_${key}`).value);
         const gpax = document.getElementById(`gpax_${key}`).value.trim();
         const phone = document.getElementById(`phone_${key}`).value.trim();
-        const photo = document.getElementById(`photoData_${key}`).value;
+        const photo = document.getElementById(`photoData_${key}`).value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos[key]) || '';
         const agreed = document.getElementById(`agreed_${key}`).checked;
         const minGpa = (pos.isLeader || idx === 0 || key === 'president' || key === 'secretary') ? cfg.minGpaPresident : cfg.minGpaMember;
 
