@@ -1874,6 +1874,13 @@ const WDSDB = {
     list = list.filter(x => x.id !== id);
     localStorage.setItem(key, JSON.stringify(list));
 
+    try {
+      const delKey = 'wds_deleted_app_ids';
+      const delSet = new Set(JSON.parse(localStorage.getItem(delKey) || '[]'));
+      delSet.add(id);
+      localStorage.setItem(delKey, JSON.stringify(Array.from(delSet)));
+    } catch (e) {}
+
     // ซิงค์การลบข้อมูลขึ้นคลาวด์ทันที โดยใช้ pushApplicationsToCloud เพื่อป้องกันขนาดเกิน 413 และรอให้เสร็จจริง
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
       try {
