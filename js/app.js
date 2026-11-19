@@ -952,32 +952,34 @@ function handleStudentPhotoSelect(input, key) {
   }
 
   const encodeImageSource = (source, origW, origH) => {
-    const maxDim = 280;
-    let w = origW || 240;
-    let h = origH || 300;
-    if (w > maxDim || h > maxDim) {
-      if (w > h) {
-        h = Math.max(1, Math.round((h * maxDim) / w));
-        w = maxDim;
-      } else {
-        w = Math.max(1, Math.round((w * maxDim) / h));
-        h = maxDim;
+    const drawAt = (dimLimit, q) => {
+      let w = origW || 160;
+      let h = origH || 200;
+      if (w > dimLimit || h > dimLimit) {
+        if (w > h) {
+          h = Math.max(1, Math.round((h * dimLimit) / w));
+          w = dimLimit;
+        } else {
+          w = Math.max(1, Math.round((w * dimLimit) / h));
+          h = dimLimit;
+        }
       }
-    }
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, w, h);
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(source, 0, 0, w, h);
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(source, 0, 0, w, h);
+      return canvas.toDataURL('image/jpeg', q);
+    };
 
-    let out = canvas.toDataURL('image/jpeg', 0.72);
-    if (out.length > 26000) {
-      out = canvas.toDataURL('image/jpeg', 0.58);
-    }
+    // ย่อขนาดรูปถ่ายนักเรียนให้เล็กกะทัดรัด (~4-7KB/รูป) เพื่อไม่ให้เปลืองพื้นที่คลาวด์และซิงค์ได้ครบทุกคน
+    let out = drawAt(180, 0.58);
+    if (out.length > 8500) out = drawAt(150, 0.50);
+    if (out.length > 6500) out = drawAt(130, 0.44);
     return out;
   };
 
