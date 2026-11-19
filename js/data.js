@@ -1149,6 +1149,12 @@ const WDSDB = {
     }
     if (!storedColor || storedColor.includes('unsplash.com')) {
       localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify([]));
+    } else if (storedColor.includes('COLOR-2570-00')) {
+      try {
+        const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
+        const cleanedColor = (JSON.parse(storedColor) || []).filter(item => item && !DEMO_COLOR_IDS.has(item.id));
+        localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(cleanedColor));
+      } catch (e) {}
     }
   },
 
@@ -1595,7 +1601,7 @@ const WDSDB = {
 
       if (Array.isArray(rColor)) {
         const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
-        const cleanRemoteColor = rColor.filter(item => item && item.id);
+        const cleanRemoteColor = rColor.filter(item => item && item.id && !DEMO_COLOR_IDS.has(item.id));
         const localColor = this.getColorList();
         const mapColor = new Map();
         cleanRemoteColor.forEach(item => mapColor.set(item.id, item));
