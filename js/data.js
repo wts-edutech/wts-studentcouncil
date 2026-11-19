@@ -1867,16 +1867,13 @@ const WDSDB = {
     list = list.filter(x => x.id !== id);
     localStorage.setItem(key, JSON.stringify(list));
 
-    // ซิงค์การลบข้อมูลขึ้นคลาวด์ทันที เพื่อให้อุปกรณ์อื่น (มือถือ) ลบตามทันที
+    // ซิงค์การลบข้อมูลขึ้นคลาวด์ทันที โดยใช้ pushApplicationsToCloud เพื่อป้องกันขนาดเกิน 413 และรอให้เสร็จจริง
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
-      const url = type === 'council' ? CLOUD_SYNC.COUNCIL_URL : CLOUD_SYNC.COLOR_URL;
-      fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(list)
-      }).then(r => {
-        if (r.ok) console.log(`WDSDB: ${type} deletion synced to Cloud!`);
-      }).catch(err => console.warn('WDSDB deleteApplication Cloud Error:', err));
+      try {
+        await this.pushApplicationsToCloud(type, list);
+      } catch (err) {
+        console.warn('WDSDB deleteApplication Cloud Error:', err);
+      }
     }
     return true;
   },
