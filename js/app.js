@@ -1203,9 +1203,64 @@ window.addEventListener('pageshow', (event) => {
 // รันผูกค่าการตั้งค่าอัตโนมัติเมื่อเอกสารโหลด พร้อมซิงค์ข้อมูลล่าสุดจากคลาวด์
 window.addEventListener('DOMContentLoaded', () => {
   initTopLiveClockBar();
+  initHomeLiveStatsAndCountdown();
   applySiteConfig();
   triggerAutoSync();
 });
+
+let _wdsHomeCountdownInterval = null;
+function updateHomeLiveStats() {
+  const cEl = document.getElementById('homeStatCouncilCount');
+  const kEl = document.getElementById('homeStatColorCount');
+  const tEl = document.getElementById('homeStatTotalCount');
+  if (!cEl || !kEl || !tEl || typeof WDSDB === 'undefined') return;
+  const councilCount = (WDSDB.getCouncilList() || []).length;
+  const colorCount = (WDSDB.getColorList() || []).length;
+  cEl.textContent = councilCount;
+  kEl.textContent = colorCount;
+  tEl.textContent = councilCount + colorCount;
+}
+window.updateHomeLiveStats = updateHomeLiveStats;
+
+function initHomeLiveStatsAndCountdown() {
+  updateHomeLiveStats();
+  window.addEventListener('wds-apps-synced', updateHomeLiveStats);
+  window.addEventListener('wds-cloud-synced', updateHomeLiveStats);
+
+  const dEl = document.getElementById('cdDays');
+  const hEl = document.getElementById('cdHours');
+  const mEl = document.getElementById('cdMins');
+  const sEl = document.getElementById('cdSecs');
+  if (!dEl || !hEl || !mEl || !sEl) return;
+
+  // เป้าหมาย: 2 ธันวาคม 2569 (2026-12-02) เวลา 23:59:59 น. (เวลาไทย +07:00)
+  const targetMs = new Date('2026-12-02T23:59:59+07:00').getTime();
+
+  const tick = () => {
+    const diff = targetMs - Date.now();
+    if (diff <= 0) {
+      dEl.textContent = '00';
+      hEl.textContent = '00';
+      mEl.textContent = '00';
+      sEl.textContent = '00';
+      const lbl = document.getElementById('homeCountdownLabel');
+      if (lbl) lbl.textContent = 'ปิดรับสมัครออนไลน์แล้ว';
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    dEl.textContent = String(days).padStart(2, '0');
+    hEl.textContent = String(hours).padStart(2, '0');
+    mEl.textContent = String(mins).padStart(2, '0');
+    sEl.textContent = String(secs).padStart(2, '0');
+  };
+
+  tick();
+  if (_wdsHomeCountdownInterval) clearInterval(_wdsHomeCountdownInterval);
+  _wdsHomeCountdownInterval = setInterval(tick, 1000);
+}
 
 // ========================================================
 // แถบแสดงวันที่และเวลาปัจจุบันแบบ Real-time ด้านบนสุดของเว็บไซต์
