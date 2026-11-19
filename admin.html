@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257053">
-  <script src="js/data.js?v=257053"></script>
-  <script src="js/app.js?v=257053"></script>
+  <link rel="stylesheet" href="css/style.css?v=257054">
+  <script src="js/data.js?v=257054"></script>
+  <script src="js/app.js?v=257054"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -1224,6 +1224,30 @@
                 </div>
               </div>
 
+              <!-- กล่อง: คุณสมบัติผู้สมัคร หน้าคู่มือ (manual.html ขั้นตอนที่ 1) -->
+              <div class="border border-slate-300 rounded p-4 bg-slate-50/70 space-y-4">
+                <div class="border-b border-slate-200 pb-2">
+                  <h4 class="font-bold text-[#1a365d] flex items-center">
+                    <i class="fa-solid fa-list-check mr-2 text-slate-600"></i> แก้ไขกล่องคุณสมบัติผู้สมัคร (หน้าคู่มือ ขั้นตอนที่ 1)
+                  </h4>
+                  <p class="text-[11px] text-slate-500 mt-1">บรรทัดละ 1 ข้อ • ใช้ <code class="bg-slate-200 px-1 rounded">**ข้อความ**</code> เพื่อทำตัวหนา • ใช้ <code class="bg-slate-200 px-1 rounded">{gpaPresident}</code> <code class="bg-slate-200 px-1 rounded">{gpaMember}</code> <code class="bg-slate-200 px-1 rounded">{behavior}</code> <code class="bg-slate-200 px-1 rounded">{school}</code> แทนค่าจากเกณฑ์อัตโนมัติ</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="space-y-2">
+                    <label class="block font-semibold text-emerald-800">หัวข้อกล่องสภานักเรียน</label>
+                    <input type="text" id="cfg_manualCouncilTitle" oninput="markSettingsDirty()" class="gov-input w-full">
+                    <label class="block font-semibold text-emerald-800">รายการคุณสมบัติสภานักเรียน</label>
+                    <textarea id="cfg_manualCouncilItems" rows="7" oninput="markSettingsDirty()" class="gov-input w-full text-xs"></textarea>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="block font-semibold text-amber-800">หัวข้อกล่องประธานคณะสี</label>
+                    <input type="text" id="cfg_manualColorTitle" oninput="markSettingsDirty()" class="gov-input w-full">
+                    <label class="block font-semibold text-amber-800">รายการคุณสมบัติประธานคณะสี</label>
+                    <textarea id="cfg_manualColorItems" rows="7" oninput="markSettingsDirty()" class="gov-input w-full text-xs"></textarea>
+                  </div>
+                </div>
+              </div>
+
               <!-- กล่องที่ 7: แก้ไขหน้าแบบฟอร์มเอกสารประกอบการรับสมัคร (documents.html) -->
               <div class="border border-slate-300 rounded p-4 bg-slate-50/70 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-2">
@@ -2338,6 +2362,10 @@
       document.getElementById('cfg_applyColorHousesText').value = cfg.applyColorHousesText || '';
       document.getElementById('cfg_applyColorBullets').value = (cfg.applyColorBullets || []).join('\n');
       document.getElementById('cfg_applyColorBtnText').value = cfg.applyColorBtnText || '';
+      document.getElementById('cfg_manualCouncilTitle').value = cfg.manualCouncilTitle || DEFAULT_SITE_CONFIG.manualCouncilTitle;
+      document.getElementById('cfg_manualCouncilItems').value = (cfg.manualCouncilItems || DEFAULT_SITE_CONFIG.manualCouncilItems).join('\n');
+      document.getElementById('cfg_manualColorTitle').value = cfg.manualColorTitle || DEFAULT_SITE_CONFIG.manualColorTitle;
+      document.getElementById('cfg_manualColorItems').value = (cfg.manualColorItems || DEFAULT_SITE_CONFIG.manualColorItems).join('\n');
 
       // โหลดค่าหน้าแบบฟอร์มเอกสารประกอบการรับสมัคร (documents.html)
       document.getElementById('cfg_docsPageHeaderTitle').value = cfg.docsPageHeaderTitle || 'แบบฟอร์มเอกสารประกอบการรับสมัคร ประจำปีการศึกษา 2570';
@@ -4959,6 +4987,10 @@
           applyColorHousesText: getTrimmed('cfg_applyColorHousesText'),
           applyColorBullets: getTrimmed('cfg_applyColorBullets').split('\n').map(s => s.trim()).filter(Boolean),
           applyColorBtnText: getTrimmed('cfg_applyColorBtnText'),
+          manualCouncilTitle: getTrimmed('cfg_manualCouncilTitle'),
+          manualCouncilItems: getTrimmed('cfg_manualCouncilItems').split('\n').map(s => s.trim()).filter(Boolean),
+          manualColorTitle: getTrimmed('cfg_manualColorTitle'),
+          manualColorItems: getTrimmed('cfg_manualColorItems').split('\n').map(s => s.trim()).filter(Boolean),
           applyCouncilIsOpen: currentCfg.applyCouncilIsOpen !== false,
           applyCouncilCloseNotice: currentCfg.applyCouncilCloseNotice || 'ขณะนี้ปิดรับสมัครเลือกตั้งประธานสภานักเรียนแล้ว หรือยังไม่ถึงช่วงเวลารับสมัคร',
           applyColorIsOpen: currentCfg.applyColorIsOpen !== false,

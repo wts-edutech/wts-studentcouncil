@@ -12,7 +12,7 @@
   <!-- FontAwesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257053">
+  <link rel="stylesheet" href="css/style.css?v=257054">
   <style>
     /* ตกแต่งพิเศษสำหรับหน้าคู่มือ */
     .manual-step-badge {
@@ -383,9 +383,9 @@
             <!-- กล่องสภานักเรียน -->
             <div class="border border-emerald-300 rounded-lg p-3.5 bg-emerald-50/40 space-y-2">
               <h4 class="font-bold text-emerald-900 text-xs sm:text-sm flex items-center">
-                <i class="fa-solid fa-building-columns mr-1.5 text-emerald-700"></i> สภานักเรียน (พรรค 10 คน)
+                <i class="fa-solid fa-building-columns mr-1.5 text-emerald-700"></i> <span id="manualCouncilTitle">สภานักเรียน (พรรค 10 คน)</span>
               </h4>
-              <ul class="list-disc pl-5 space-y-1 text-xs text-slate-700">
+              <ul id="manualCouncilList" class="list-disc pl-5 space-y-1 text-xs text-slate-700">
                 <li>กำลังศึกษาอยู่ในระดับชั้น <strong>มัธยมศึกษาปีที่ 4</strong> <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></li>
                 <li>ต้องมีจำนวนสมาชิกในพรรคครบ <strong>10 ตำแหน่ง</strong> (ประธาน, รองประธาน, ฝ่ายวิชาการ 2 คน, ฝ่ายสันทนาการ 2 คน, ฝ่ายทั่วไป, ฝ่ายประชาสัมพันธ์ 2 คน, เลขานุการ)</li>
                 <li>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):
@@ -402,9 +402,9 @@
             <!-- กล่องประธานคณะสี -->
             <div class="border border-amber-300 rounded-lg p-3.5 bg-amber-50/40 space-y-2">
               <h4 class="font-bold text-amber-900 text-xs sm:text-sm flex items-center">
-                <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> ประธานคณะสี 5 สี (ผู้สมัคร 1 คน/ใบสมัคร)
+                <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> <span id="manualColorTitle">ประธานคณะสี 5 สี (ผู้สมัคร 1 คน/ใบสมัคร)</span>
               </h4>
-              <ul class="list-disc pl-5 space-y-1 text-xs text-slate-700">
+              <ul id="manualColorList" class="list-disc pl-5 space-y-1 text-xs text-slate-700">
                 <li>กำลังศึกษาอยู่ในระดับชั้น <strong>มัธยมศึกษาปีที่ 4</strong> และสังกัดในคณะสีนั้นจริง</li>
                 <li>คณะสี 5 สี: <strong>คณะสีอัญชัน (น้ำเงิน), คณะสีนนทรี (เหลือง), คณะปาริชาต (แดง), คณะสีเอื้องช่อแสด (แสด), คณะสีอินทนิล (เขียว)</strong></li>
                 <li>สมัครในนาม <strong>ผู้ลงสมัครประธานคณะสี 1 ตำแหน่ง</strong> (เมื่อชนะการเลือกตั้งแล้วจึงจัดตั้งคณะกรรมการคณะสีภายหลัง)</li>
@@ -842,8 +842,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257053"></script>
-  <script src="js/app.js?v=257053"></script>
+  <script src="js/data.js?v=257054"></script>
+  <script src="js/app.js?v=257054"></script>
   <script>
     // ตั้งค่าวันที่พิมพ์เอกสาร
     document.addEventListener('DOMContentLoaded', () => {
@@ -913,6 +913,31 @@
         if (secFaq) secFaq.scrollIntoView({ behavior: 'smooth' });
       }
     }
+  </script>
+
+  <script>
+    function renderManualQualifications() {
+      if (typeof WDSDB === 'undefined') return;
+      const cfg = WDSDB.getConfig();
+      const esc = (typeof escapeHTML === 'function') ? escapeHTML : (x => String(x));
+      const num = (v, d) => String(Number(v || d));
+      const fmt = (line) => esc(line)
+        .replace(/\{gpaPresident\}/g, num(cfg.minGpaPresident, 2.8))
+        .replace(/\{gpaMember\}/g, num(cfg.minGpaMember, 2.5))
+        .replace(/\{behavior\}/g, esc(cfg.minBehaviorScore))
+        .replace(/\{school\}/g, esc(cfg.schoolName || ''))
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      const set = (titleId, listId, title, items) => {
+        const t = document.getElementById(titleId);
+        if (t && title) t.textContent = title;
+        const l = document.getElementById(listId);
+        if (l && Array.isArray(items) && items.length) l.innerHTML = items.map(i => '<li>' + fmt(i) + '</li>').join('');
+      };
+      set('manualCouncilTitle', 'manualCouncilList', cfg.manualCouncilTitle, cfg.manualCouncilItems || DEFAULT_SITE_CONFIG.manualCouncilItems);
+      set('manualColorTitle', 'manualColorList', cfg.manualColorTitle, cfg.manualColorItems || DEFAULT_SITE_CONFIG.manualColorItems);
+    }
+    window.addEventListener('DOMContentLoaded', renderManualQualifications);
+    window.addEventListener('wds-cloud-synced', renderManualQualifications);
   </script>
 </body>
 </html>
