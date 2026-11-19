@@ -1133,11 +1133,11 @@ const WDSDB = {
     let storedCouncil = localStorage.getItem(STORAGE_KEYS.COUNCIL);
     const storedColor = localStorage.getItem(STORAGE_KEYS.COLOR);
     
-    // กรองและล้างข้อมูลทดสอบ COUNCIL-2570-001 ออกจากเครื่องผู้ใช้โดยอัตโนมัติ
-    if (storedCouncil && (storedCouncil.includes('COUNCIL-2570-001') || storedCouncil.includes('พรรคก้าวใหม่ วชิรธรรม'))) {
+    // กรองและล้างข้อมูลทดสอบ COUNCIL-2570-001 และ COUNCIL-2570-002 ออกจากเครื่องผู้ใช้โดยอัตโนมัติ
+    if (storedCouncil && (storedCouncil.includes('COUNCIL-2570-001') || storedCouncil.includes('COUNCIL-2570-002') || storedCouncil.includes('พรรคก้าวใหม่ วชิรธรรม'))) {
       try {
         const cleaned = (JSON.parse(storedCouncil) || []).filter(item => 
-          item && item.id !== 'COUNCIL-2570-001' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม'
+          item && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม'
         );
         localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(cleaned));
         storedCouncil = JSON.stringify(cleaned);
@@ -1564,7 +1564,7 @@ const WDSDB = {
       if (Array.isArray(rCouncil)) {
         // กรองข้อมูลตัวอย่าง COUNCIL-2570-001 ออกถาวร และยึดคลาวด์เป็นหลัก
         const cleanRemote = rCouncil.filter(item => 
-          item && item.id && item.id !== 'COUNCIL-2570-001' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม'
+          item && item.id && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม'
         );
         const localCouncil = this.getCouncilList();
         const map = new Map();
