@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257051">
-  <script src="js/data.js?v=257051"></script>
-  <script src="js/app.js?v=257051"></script>
+  <link rel="stylesheet" href="css/style.css?v=257052">
+  <script src="js/data.js?v=257052"></script>
+  <script src="js/app.js?v=257052"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -2347,19 +2347,27 @@
       const srcDocs = (cfg.documentsList && Array.isArray(cfg.documentsList) && cfg.documentsList.length > 0)
         ? cfg.documentsList
         : DEFAULT_DOCUMENTS_LIST;
-      currentDocuments = srcDocs.map((item, idx) => ({
-        id: idx + 1,
-        title: item.title || '',
-        desc: item.desc || '',
-        signer: item.signer || '',
-        btnText: item.btnText || 'เปิดพิมพ์ A4',
-        actionType: item.actionType || 'consent',
-        fileData: item.fileData || '',
-        fileName: item.fileName || '',
-        fileSize: item.fileSize || '',
-        fileUrl: item.fileUrl || '',
-        customContent: item.customContent || ''
-      }));
+      currentDocuments = srcDocs.map((item, idx) => {
+        let act = item.actionType || 'consent';
+        if (act === 'download') act = 'custom_file';
+        if (act === 'consent' && (item.btnText === 'เปิดอ่านคู่มือ' || (item.title && item.title.includes('คู่มือการใช้งาน')))) {
+          act = 'manual';
+        }
+        return {
+          id: idx + 1,
+          title: item.title || '',
+          desc: item.desc || '',
+          signer: item.signer || '',
+          btnText: item.btnText || 'เปิดพิมพ์ A4',
+          actionType: act,
+          fileData: item.fileData || '',
+          cloudBinRef: item.cloudBinRef || ((typeof isCloudBinsRef === 'function' && isCloudBinsRef(item.fileData)) ? item.fileData : ((typeof isCloudBinsRef === 'function' && isCloudBinsRef(item.fileUrl)) ? item.fileUrl : '')),
+          fileName: item.fileName || '',
+          fileSize: item.fileSize || '',
+          fileUrl: item.fileUrl || '',
+          customContent: item.customContent || ''
+        };
+      });
       renderDocumentsAdminTable();
 
       // โหลดการตั้งค่าช่องลงนามผู้เซ็นเอกสาร (Signatures)
@@ -3348,24 +3356,35 @@
 
       tbody.innerHTML = currentDocuments.map((doc, idx) => {
         let extraInputHtml = '';
-        if (doc.actionType === 'custom_file') {
+        const isFileMode = (doc.actionType === 'custom_file' || doc.actionType === 'download');
+        const hasCustomUpload = Boolean(
+          (doc.fileData && (doc.fileData.startsWith('data:') || doc.fileData.startsWith('cloudbins:'))) ||
+          (doc.cloudBinRef && doc.cloudBinRef.startsWith('cloudbins:')) ||
+          (doc.fileUrl && doc.fileUrl.startsWith('cloudbins:'))
+        );
+        const hasDefaultFile = Boolean(!hasCustomUpload && doc.fileUrl && !doc.fileUrl.startsWith('cloudbins:'));
+        const hasAnyFile = hasCustomUpload || hasDefaultFile;
+
+        if (isFileMode) {
           extraInputHtml = `
             <div class="mt-1.5 p-2 bg-blue-50/80 border border-blue-200 rounded text-left space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="text-[10px] font-bold text-blue-900"><i class="fa-solid fa-file-arrow-up mr-1 text-blue-600"></i> ไฟล์ที่อัปโหลด:</span>
-                ${doc.fileData 
-                  ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded border border-emerald-300">✓ แนบไฟล์แล้ว (${doc.fileSize || 'มีข้อมูล'})</span>` 
-                  : `<span class="text-[9px] bg-amber-100 text-amber-800 font-semibold px-1.5 py-0.5 rounded border border-amber-300">ยังไม่ได้แนบไฟล์</span>`}
+                ${hasCustomUpload 
+                  ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded border border-emerald-300">✓ อัปโหลดไฟล์ใหม่แล้ว (${doc.fileSize || 'ซิงค์คลาวด์แล้ว'})</span>` 
+                  : (hasDefaultFile
+                    ? `<span class="text-[9px] bg-sky-100 text-sky-800 font-semibold px-1.5 py-0.5 rounded border border-sky-300">ไฟล์เริ่มต้นระบบ (${doc.fileSize || 'PDF'})</span>`
+                    : `<span class="text-[9px] bg-amber-100 text-amber-800 font-semibold px-1.5 py-0.5 rounded border border-amber-300">ยังไม่ได้แนบไฟล์</span>`)}
               </div>
               <input type="file" id="docFileInput_${idx}" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.zip" class="hidden" onchange="handleDocFileUpload(${idx}, this)">
               <div class="flex gap-1 items-center">
-                <button type="button" onclick="document.getElementById('docFileInput_${idx}').click()" class="gov-btn gov-btn-blue text-[10.5px] py-1 px-2 flex-grow shadow-sm">
-                  <i class="fa-solid fa-cloud-arrow-up mr-1"></i> ${doc.fileData ? 'เปลี่ยนไฟล์เอกสาร' : 'เลือกไฟล์จากคอมพิวเตอร์ (PDF/Word)'}
+                <button type="button" id="docUploadBtn_${idx}" onclick="document.getElementById('docFileInput_${idx}').click()" class="gov-btn gov-btn-blue text-[10.5px] py-1 px-2 flex-grow shadow-sm">
+                  <i class="fa-solid fa-cloud-arrow-up mr-1"></i> ${hasAnyFile ? 'เปลี่ยนไฟล์เอกสารใหม่' : 'เลือกไฟล์จากคอมพิวเตอร์ (PDF/Word)'}
                 </button>
-                ${doc.fileData ? `
-                  <a href="${doc.fileData}" target="_blank" download="${doc.fileName || 'document.pdf'}" class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] py-1 px-2 border border-slate-300" title="ทดสอบดาวน์โหลด">
-                    <i class="fa-solid fa-download"></i>
-                  </a>
+                ${hasAnyFile ? `
+                  <button type="button" onclick="openOrDownloadDocFile(event, currentDocuments[${idx}], '${escapeHTML(doc.fileName || 'document.pdf')}', false)" class="gov-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] py-1 px-2 border border-slate-300" title="ทดสอบเปิด/ดาวน์โหลดไฟล์">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
                   <button type="button" onclick="clearDocFile(${idx})" class="gov-btn bg-red-50 hover:bg-red-100 text-red-700 text-[10px] py-1 px-2 border border-red-200" title="ลบไฟล์แนบ">
                     <i class="fa-solid fa-xmark"></i>
                   </button>
@@ -3373,14 +3392,15 @@
               </div>
               ${doc.fileName 
                 ? `<div class="text-[10px] text-slate-700 font-medium truncate bg-white p-1 rounded border border-blue-100">📄 ${escapeHTML(doc.fileName)}</div>` 
-                : `<div class="text-[9.5px] text-slate-500">รองรับ PDF, Word, รูปภาพ (แนะนำขนาดไม่เกิน 3MB)</div>`}
+                : `<div class="text-[9.5px] text-slate-500">รองรับ PDF, Word, รูปภาพ (ซิงค์ขึ้น Cloud Bins อัตโนมัติ ไม่เกิน 3.5MB)</div>`}
             </div>
           `;
         } else if (doc.actionType === 'custom_link') {
+          const linkVal = (doc.fileUrl && !doc.fileUrl.startsWith('cloudbins:')) ? doc.fileUrl : '';
           extraInputHtml = `
             <div class="mt-1.5 p-2 bg-amber-50/80 border border-amber-200 rounded text-left space-y-1">
               <span class="text-[10px] font-bold text-amber-900 block"><i class="fa-solid fa-link mr-1 text-amber-700"></i> ลิงก์ดาวน์โหลด (Google Drive / OneDrive / URL):</span>
-              <input type="url" value="${escapeHTML(doc.fileUrl || '')}"
+              <input type="url" value="${escapeHTML(linkVal)}"
                 oninput="updateDocField(${idx}, 'fileUrl', this.value)"
                 placeholder="https://drive.google.com/file/d/..."
                 class="gov-input w-full text-[10.5px] py-1 px-2 bg-white font-mono">
@@ -3399,6 +3419,7 @@
           `;
         }
 
+        const selType = doc.actionType === 'download' ? 'custom_file' : doc.actionType;
         return `
           <tr class="hover:bg-slate-50 align-top">
             <td class="p-2 text-center font-bold text-[#1a365d] pt-3">${idx + 1}</td>
@@ -3426,14 +3447,15 @@
                   class="doc-input-btn gov-input w-full text-xs py-1 px-2 font-medium">
               </div>
               <select onchange="onDocActionTypeChange(${idx}, this.value)" class="doc-select-action gov-select w-full text-[11px] py-1 px-1.5 font-semibold text-slate-800 bg-white">
-                <option value="consent" ${doc.actionType === 'consent' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: หนังสือยินยอมผู้ปกครอง</option>
-                <option value="behavior" ${doc.actionType === 'behavior' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: ใบรับรองคะแนนพฤติกรรม</option>
-                <option value="regulation" ${doc.actionType === 'regulation' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: แบบรับทราบระเบียบการ</option>
-                <option value="print_council" ${doc.actionType === 'print_council' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์มเปล่า: สภานักเรียน</option>
-                <option value="print_color" ${doc.actionType === 'print_color' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์มเปล่า: ประธานคณะสี</option>
-                <option value="custom_file" ${doc.actionType === 'custom_file' ? 'selected' : ''}>📁 อัปโหลดไฟล์เอกสารเอง (PDF / Word / รูป)</option>
-                <option value="custom_link" ${doc.actionType === 'custom_link' ? 'selected' : ''}>🔗 ลิงก์ดาวน์โหลดภายนอก (Google Drive)</option>
-                <option value="custom_text" ${doc.actionType === 'custom_text' ? 'selected' : ''}>📝 สร้างแบบฟอร์ม A4 กำหนดเนื้อหาเอง</option>
+                <option value="custom_file" ${selType === 'custom_file' ? 'selected' : ''}>📁 อัปโหลดไฟล์เอกสารเอง (PDF / Word / รูป)</option>
+                <option value="custom_link" ${selType === 'custom_link' ? 'selected' : ''}>🔗 ลิงก์ดาวน์โหลดภายนอก (Google Drive)</option>
+                <option value="consent" ${selType === 'consent' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: หนังสือยินยอมผู้ปกครอง</option>
+                <option value="behavior" ${selType === 'behavior' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: ใบรับรองคะแนนพฤติกรรม</option>
+                <option value="regulation" ${selType === 'regulation' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์ม: แบบรับทราบระเบียบการ</option>
+                <option value="print_council" ${selType === 'print_council' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์มเปล่า: สภานักเรียน</option>
+                <option value="print_color" ${selType === 'print_color' ? 'selected' : ''}>📋 พิมพ์แบบฟอร์มเปล่า: ประธานคณะสี</option>
+                <option value="manual" ${selType === 'manual' ? 'selected' : ''}>📖 เปิดหน้าคู่มือการใช้งานระบบ (manual.html)</option>
+                <option value="custom_text" ${selType === 'custom_text' ? 'selected' : ''}>📝 สร้างแบบฟอร์ม A4 กำหนดเนื้อหาเอง</option>
               </select>
               ${extraInputHtml}
             </td>
@@ -3451,13 +3473,17 @@
 
     function onDocActionTypeChange(idx, val) {
       if (!currentDocuments[idx]) return;
+      scrapeDocumentsFromDOM();
+      markSettingsDirty();
       currentDocuments[idx].actionType = val;
       if (val === 'custom_file' && (!currentDocuments[idx].btnText || currentDocuments[idx].btnText === 'เปิดพิมพ์ A4')) {
-        currentDocuments[idx].btnText = 'ดาวน์โหลดไฟล์';
+        currentDocuments[idx].btnText = 'ดาวน์โหลด PDF';
       } else if (val === 'custom_link' && (!currentDocuments[idx].btnText || currentDocuments[idx].btnText === 'เปิดพิมพ์ A4')) {
         currentDocuments[idx].btnText = 'ดาวน์โหลดเอกสาร';
       } else if (val === 'custom_text' && (!currentDocuments[idx].btnText || currentDocuments[idx].btnText === 'ดาวน์โหลดไฟล์')) {
         currentDocuments[idx].btnText = 'เปิดพิมพ์ A4';
+      } else if (val === 'manual') {
+        currentDocuments[idx].btnText = 'เปิดอ่านคู่มือ';
       }
       renderDocumentsAdminTable();
     }
@@ -3471,15 +3497,41 @@
         input.value = '';
         return;
       }
+      scrapeDocumentsFromDOM();
+      markSettingsDirty();
+      const upBtn = document.getElementById(`docUploadBtn_${idx}`);
+      if (upBtn) {
+        upBtn.disabled = true;
+        upBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปโหลดขึ้นคลาวด์...';
+      }
       const reader = new FileReader();
-      reader.onload = function(e) {
-        currentDocuments[idx].fileData = e.target.result;
+      reader.onload = async function(e) {
+        const dataUrl = e.target.result || '';
+        const sizeLabel = formatFileSize(file.size);
+        showToast(`⏳ กำลังอัปโหลดไฟล์ "${file.name}" (${sizeLabel}) ขึ้นระบบคลาวด์...`, 'info');
+        let ref = dataUrl;
+        if (typeof uploadDocDataToCloudBins === 'function') {
+          const up = await uploadDocDataToCloudBins(dataUrl, file.name);
+          if (up && up.ok && up.ref) {
+            ref = up.ref;
+          }
+        }
+        currentDocuments[idx].actionType = 'custom_file';
+        currentDocuments[idx].fileData = ref;
+        currentDocuments[idx].cloudBinRef = ref.startsWith('cloudbins:') ? ref : '';
+        // ล้าง fileUrl เดิมที่เป็น assets/documents/... ทันที เพื่อให้หน้าเว็บใช้ไฟล์ใหม่ที่อัปโหลด 100%
+        currentDocuments[idx].fileUrl = ref.startsWith('cloudbins:') ? ref : '';
         currentDocuments[idx].fileName = file.name;
-        currentDocuments[idx].fileSize = formatFileSize(file.size);
+        currentDocuments[idx].fileSize = sizeLabel;
         renderDocumentsAdminTable();
-        showToast(`แนบไฟล์ "${file.name}" เรียบร้อยแล้ว`, 'success');
+        // บันทึกและซิงค์ขึ้นคลาวด์ให้อัตโนมัติทันทีหลังเลือกไฟล์เสร็จ
+        await handleSaveDocumentsAdmin();
       };
       reader.onerror = function() {
+        if (upBtn) {
+          upBtn.disabled = false;
+          upBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-1"></i> เลือกไฟล์จากคอมพิวเตอร์ (PDF/Word)';
+        }
         showToast('เกิดข้อผิดพลาดในการอ่านไฟล์', 'error');
       };
       reader.readAsDataURL(file);
@@ -3487,28 +3539,36 @@
 
     function clearDocFile(idx) {
       if (!currentDocuments[idx]) return;
+      scrapeDocumentsFromDOM();
+      markSettingsDirty();
       currentDocuments[idx].fileData = '';
+      currentDocuments[idx].cloudBinRef = '';
+      currentDocuments[idx].fileUrl = '';
       currentDocuments[idx].fileName = '';
       currentDocuments[idx].fileSize = '';
       renderDocumentsAdminTable();
-      showToast('ยกเลิกไฟล์แนบเรียบร้อยแล้ว', 'info');
+      showToast('ยกเลิกไฟล์แนบแล้ว กด "บันทึกรายการเอกสาร" เพื่อยืนยัน', 'info');
     }
 
     function updateDocField(index, field, val) {
       if (!currentDocuments[index]) return;
+      markSettingsDirty();
       currentDocuments[index][field] = val;
     }
 
     function addDocumentAdminRow() {
+      scrapeDocumentsFromDOM();
+      markSettingsDirty();
       const nextId = currentDocuments.length + 1;
       currentDocuments.push({
         id: nextId,
         title: `แบบฟอร์มเอกสารดาวน์โหลด ${nextId}`,
         desc: 'เอกสารทางการประกอบการรับสมัคร',
         signer: 'ผู้สมัครและครูที่ปรึกษา',
-        btnText: 'ดาวน์โหลดไฟล์',
+        btnText: 'ดาวน์โหลด PDF',
         actionType: 'custom_file',
         fileData: '',
+        cloudBinRef: '',
         fileName: '',
         fileSize: '',
         fileUrl: '',
@@ -3518,7 +3578,7 @@
       showToast(`เพิ่มรายการเอกสารลำดับที่ ${nextId} แล้ว สามารถเลือกไฟล์เอกสารได้ทันที`, 'info');
     }
 
-        // ดึงค่าสดๆ จากตารางในหน้าเว็บ 100% ป้องกันกรณีพิมพ์แล้วค่าในหน่วยความจำไม่ตรง
+    // ดึงค่าสดๆ จากตารางในหน้าเว็บ 100% ป้องกันกรณีพิมพ์แล้วค่าในหน่วยความจำไม่ตรง
     function scrapeDocumentsFromDOM() {
       const tbody = document.getElementById('documentsAdminTbody');
       if (!tbody) return currentDocuments;
@@ -3531,6 +3591,7 @@
         const signerEl = row.querySelector('.doc-input-signer');
         const btnEl = row.querySelector('.doc-input-btn');
         const actionEl = row.querySelector('.doc-select-action');
+        if (!titleEl && !actionEl) return;
         scraped.push({
           ...orig,
           id: idx + 1,
@@ -3571,10 +3632,18 @@
         };
 
         const ok = await WDSDB.saveConfig(updated, true);
-        if (ok) {
-          showToast('✅ บันทึกรายการเอกสารสำเร็จ! เชื่อมโยงไปหน้าดาวน์โหลดและคลาวด์แล้ว', 'success');
-        } else {
-          showToast('บันทึกข้อมูลเรียบร้อยแล้ว', 'info');
+        if (ok && Array.isArray(ok.documentsList)) {
+          currentDocuments = ok.documentsList.map((item, idx) => ({
+            ...item,
+            id: idx + 1,
+            actionType: item.actionType === 'download' ? 'custom_file' : (item.actionType || 'consent')
+          }));
+          renderDocumentsAdminTable();
+        }
+        if (ok && ok._cloudSyncOk !== false) {
+          showToast('✅ บันทึกและอัปเดตไฟล์เอกสารขึ้นหน้าเว็บและคลาวด์สำเร็จ!', 'success');
+        } else if (ok) {
+          showToast('⚠️ บันทึกในเครื่องแล้ว แต่คลาวด์ขัดข้อง: ' + (ok._cloudSyncError || ''), 'error');
         }
       } catch (err) {
         console.error('Save docs error:', err);
@@ -3592,6 +3661,8 @@
         showToast('ต้องมีรายการเอกสารอย่างน้อย 1 รายการ', 'error');
         return;
       }
+      scrapeDocumentsFromDOM();
+      markSettingsDirty();
       currentDocuments.splice(index, 1);
       currentDocuments.forEach((item, i) => { item.id = i + 1; });
       renderDocumentsAdminTable();
@@ -3667,25 +3738,35 @@
       const meta = RULES_PDF_META[key];
       if (!meta || !input.files || !input.files[0]) return;
       const file = input.files[0];
-      const maxDirectBytes = 35 * 1024; // ~35KB raw => ~47KB Base64 เพื่อไม่ให้ชนเพดานคลาวด์ ~95KB
+      const maxDirectBytes = 3.5 * 1024 * 1024; // รองรับไฟล์ PDF สูงสุด 3.5MB ผ่านระบบ Chunked Cloud Bins
       if (file.size > maxDirectBytes) {
         alert(
-          `ไฟล์ "${file.name}" มีขนาด ${formatFileSize(file.size)} เกินพื้นที่คลาวด์สำหรับไฟล์แนบตรง (~35 KB)\n\n` +
+          `ไฟล์ "${file.name}" มีขนาด ${formatFileSize(file.size)} เกิน 3.5 MB\n\n` +
           `แนะนำ: ให้นำไฟล์ PDF ไปอัปโหลดลง Google Drive (ตั้งค่าแชร์: ทุกคนที่มีลิงก์) แล้วนำลิงก์มาวางในช่อง URL ด้านบนแทน เพื่อให้เปิดอ่านได้จากทุกเครื่องครับ`
         );
         input.value = '';
         return;
       }
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
+        const rawData = e.target.result || '';
+        const sizeLabel = formatFileSize(file.size);
+        showToast(`⏳ กำลังอัปโหลดไฟล์ "${file.name}" (${sizeLabel}) ขึ้นระบบคลาวด์...`, 'info');
+        let storedRef = rawData;
+        if (typeof uploadDocDataToCloudBins === 'function') {
+          const up = await uploadDocDataToCloudBins(rawData, file.name);
+          if (up && up.ok && up.ref) {
+            storedRef = up.ref;
+          }
+        }
         rulesPdfUploads[key] = {
-          data: e.target.result || '',
+          data: storedRef,
           fileName: file.name,
-          fileSize: formatFileSize(file.size)
+          fileSize: sizeLabel
         };
         markSettingsDirty();
         renderRulesPdfAdminStatus(key);
-        showToast(`แนบไฟล์ "${file.name}" สำเร็จ! กดปุ่ม "บันทึกประกาศรับสมัคร (PDF)" เพื่อเผยแพร่`, 'success');
+        showToast(`✅ อัปโหลดไฟล์ "${file.name}" สำเร็จ! กดปุ่ม "บันทึกประกาศรับสมัคร (PDF)" เพื่อเผยแพร่`, 'success');
       };
       reader.onerror = function() {
         showToast('เกิดข้อผิดพลาดในการอ่านไฟล์ PDF', 'error');
@@ -4893,6 +4974,7 @@
             btnText: (doc.btnText || 'เปิดพิมพ์ A4').trim(),
             actionType: doc.actionType || 'consent',
             fileData: doc.fileData || '',
+            cloudBinRef: doc.cloudBinRef || '',
             fileName: doc.fileName || '',
             fileSize: doc.fileSize || '',
             fileUrl: (doc.fileUrl || '').trim(),

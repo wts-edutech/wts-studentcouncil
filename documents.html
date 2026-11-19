@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257051">
+  <link rel="stylesheet" href="css/style.css?v=257052">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -343,8 +343,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257051"></script>
-  <script src="js/app.js?v=257051"></script>
+  <script src="js/data.js?v=257052"></script>
+  <script src="js/app.js?v=257052"></script>
   <script>
     function closeDocModal() {
       document.getElementById('docModal').classList.add('hidden');
@@ -697,6 +697,25 @@
       modal.classList.remove('hidden');
     }
 
+    function handleDocumentDownloadClick(event, idx) {
+      let cfg = {};
+      try {
+        if (typeof WDSDB !== 'undefined' && typeof WDSDB.getConfig === 'function') {
+          cfg = WDSDB.getConfig();
+        }
+      } catch (e) {}
+      const list = Array.isArray(cfg.documentsList) && cfg.documentsList.length > 0
+        ? cfg.documentsList
+        : DEFAULT_DOCUMENTS_LIST;
+      const doc = list[idx];
+      if (!doc) return false;
+      if (typeof openOrDownloadDocFile === 'function') {
+        openOrDownloadDocFile(event, doc, doc.fileName || ((doc.title || 'document') + '.pdf'), true);
+        return false;
+      }
+      return true;
+    }
+
     function renderDocumentsPage() {
       let cfg = {};
       try {
@@ -730,21 +749,43 @@
         tbody.innerHTML = list.map((doc, idx) => {
           let actionBtnHtml = '';
           const btnText = doc.btnText || 'เปิดพิมพ์ A4';
-          const fileSrc = doc.fileUrl || doc.fileData;
+          const fileSrc = (typeof resolveDocumentUploadSource === 'function')
+            ? resolveDocumentUploadSource(doc)
+            : (doc.fileData || doc.cloudBinRef || doc.fileUrl || '');
+          const isCloudOrData = fileSrc && (fileSrc.startsWith('cloudbins:') || fileSrc.startsWith('data:'));
+          const actType = (doc.actionType === 'consent' && (doc.btnText === 'เปิดอ่านคู่มือ' || (doc.title && doc.title.includes('คู่มือการใช้งาน'))))
+            ? 'manual'
+            : doc.actionType;
 
-          if (doc.actionType === 'download' || (fileSrc && (doc.actionType === 'custom_file' || doc.actionType === 'consent' || doc.actionType === 'behavior' || doc.actionType === 'regulation'))) {
-            actionBtnHtml = `
-              <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
-                <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
-              </a>
-            `;
-          } else if (doc.actionType === 'custom_file') {
-            if (fileSrc) {
+          if (actType === 'download' || (fileSrc && (actType === 'custom_file' || actType === 'consent' || actType === 'behavior' || actType === 'regulation'))) {
+            if (isCloudOrData) {
               actionBtnHtml = `
-                <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary text-xs py-1.5 px-3 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
-                  <i class="fa-solid fa-file-arrow-down mr-1"></i> ${btnText}
+                <button type="button" onclick="handleDocumentDownloadClick(event, ${idx})" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+                  <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
+                </button>
+              `;
+            } else {
+              actionBtnHtml = `
+                <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+                  <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
                 </a>
               `;
+            }
+          } else if (actType === 'custom_file') {
+            if (fileSrc) {
+              if (isCloudOrData) {
+                actionBtnHtml = `
+                  <button type="button" onclick="handleDocumentDownloadClick(event, ${idx})" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
+                  </button>
+                `;
+              } else {
+                actionBtnHtml = `
+                  <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary text-xs py-1.5 px-3 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-file-arrow-down mr-1"></i> ${btnText}
+                  </a>
+                `;
+              }
             } else {
               actionBtnHtml = `
                 <button type="button" onclick="alert('เอกสารนี้ยังไม่ได้แนบไฟล์ในระบบหลังบ้าน');" class="btn-gov-outline text-xs sm:text-sm md:text-base py-2 px-3 text-slate-400 border-dashed whitespace-nowrap">
@@ -752,43 +793,43 @@
                 </button>
               `;
             }
-          } else if (doc.actionType === 'custom_link') {
+          } else if (actType === 'custom_link') {
             actionBtnHtml = `
               <a href="${escapeHTML(doc.fileUrl || '#')}" target="_blank" rel="noopener noreferrer" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
                 <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> ${btnText}
               </a>
             `;
-          } else if (doc.actionType === 'custom_text') {
+          } else if (actType === 'custom_text') {
             actionBtnHtml = `
               <button type="button" onclick="previewCustomDoc(${idx})" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 whitespace-nowrap shadow-sm">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </button>
             `;
-          } else if (doc.actionType === 'consent' || doc.actionType === 'behavior') {
+          } else if (actType === 'consent' || actType === 'behavior') {
             actionBtnHtml = `
-              <button onclick="previewDocument('${doc.actionType}')" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 whitespace-nowrap shadow-sm">
+              <button onclick="previewDocument('${actType}')" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 whitespace-nowrap shadow-sm">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </button>
             `;
-          } else if (doc.actionType === 'regulation') {
+          } else if (actType === 'regulation') {
             actionBtnHtml = `
               <button onclick="previewDocument('regulation')" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 whitespace-nowrap shadow-sm">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </button>
             `;
-          } else if (doc.actionType === 'print_council') {
+          } else if (actType === 'print_council') {
             actionBtnHtml = `
               <a href="print-application.html?type=council&blank=1" target="_blank" class="btn-gov-outline text-xs sm:text-sm md:text-base py-2 px-3.5 inline-block whitespace-nowrap">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </a>
             `;
-          } else if (doc.actionType === 'print_color') {
+          } else if (actType === 'print_color') {
             actionBtnHtml = `
               <a href="print-application.html?type=color&blank=1" target="_blank" class="btn-gov-outline text-xs sm:text-sm md:text-base py-2 px-3.5 inline-block whitespace-nowrap">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </a>
             `;
-          } else if (doc.actionType === 'manual') {
+          } else if (actType === 'manual') {
             actionBtnHtml = `
               <a href="manual.html" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2 px-3.5 inline-flex items-center justify-center whitespace-nowrap shadow-sm">
                 <i class="fa-solid fa-book-open mr-1.5"></i> ${btnText}
@@ -820,21 +861,43 @@
         mobileCards.innerHTML = list.map((doc, idx) => {
           let actionBtnHtml = '';
           const btnText = doc.btnText || 'เปิดพิมพ์ A4';
-          const fileSrc = doc.fileUrl || doc.fileData;
+          const fileSrc = (typeof resolveDocumentUploadSource === 'function')
+            ? resolveDocumentUploadSource(doc)
+            : (doc.fileData || doc.cloudBinRef || doc.fileUrl || '');
+          const isCloudOrData = fileSrc && (fileSrc.startsWith('cloudbins:') || fileSrc.startsWith('data:'));
+          const actType = (doc.actionType === 'consent' && (doc.btnText === 'เปิดอ่านคู่มือ' || (doc.title && doc.title.includes('คู่มือการใช้งาน'))))
+            ? 'manual'
+            : doc.actionType;
 
-          if (doc.actionType === 'download' || (fileSrc && (doc.actionType === 'custom_file' || doc.actionType === 'consent' || doc.actionType === 'behavior' || doc.actionType === 'regulation'))) {
-            actionBtnHtml = `
-              <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary w-full text-xs sm:text-sm py-2.5 px-3 text-center flex items-center justify-center shadow-sm">
-                <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
-              </a>
-            `;
-          } else if (doc.actionType === 'custom_file') {
-            if (fileSrc) {
+          if (actType === 'download' || (fileSrc && (actType === 'custom_file' || actType === 'consent' || actType === 'behavior' || actType === 'regulation'))) {
+            if (isCloudOrData) {
               actionBtnHtml = `
-                <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
-                  <i class="fa-solid fa-file-arrow-down mr-1.5"></i> ${btnText}
-                </a>
+                <button type="button" onclick="handleDocumentDownloadClick(event, ${idx})" class="btn-gov-primary w-full text-xs sm:text-sm py-2.5 px-3 text-center flex items-center justify-center shadow-sm">
+                  <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
+                </button>
               `;
+            } else {
+              actionBtnHtml = `
+                <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary w-full text-xs sm:text-sm py-2.5 px-3 text-center flex items-center justify-center shadow-sm">
+                  <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
+                </a >
+              `;
+            }
+          } else if (actType === 'custom_file') {
+            if (fileSrc) {
+              if (isCloudOrData) {
+                actionBtnHtml = `
+                  <button type="button" onclick="handleDocumentDownloadClick(event, ${idx})" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-file-pdf mr-1.5"></i> ${btnText}
+                  </button>
+                `;
+              } else {
+                actionBtnHtml = `
+                  <a href="${encodeURI(fileSrc)}" download="${escapeHTML(doc.fileName || (doc.title + '.pdf'))}" target="_blank" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-file-arrow-down mr-1.5"></i> ${btnText}
+                  </a>
+                `;
+              }
             } else {
               actionBtnHtml = `
                 <button type="button" onclick="alert('เอกสารนี้ยังไม่ได้แนบไฟล์ในระบบหลังบ้าน');" class="btn-gov-outline w-full text-xs py-2 px-3 text-center flex items-center justify-center text-slate-400 border-dashed">
@@ -842,43 +905,43 @@
                 </button>
               `;
             }
-          } else if (doc.actionType === 'custom_link') {
+          } else if (actType === 'custom_link') {
             actionBtnHtml = `
               <a href="${escapeHTML(doc.fileUrl || '#')}" target="_blank" rel="noopener noreferrer" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
                 <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> ${btnText}
               </a>
             `;
-          } else if (doc.actionType === 'custom_text') {
+          } else if (actType === 'custom_text') {
             actionBtnHtml = `
               <button type="button" onclick="previewCustomDoc(${idx})" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </button>
             `;
-          } else if (doc.actionType === 'consent' || doc.actionType === 'behavior') {
+          } else if (actType === 'consent' || actType === 'behavior') {
             actionBtnHtml = `
-              <button onclick="previewDocument('${doc.actionType}')" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center">
+              <button onclick="previewDocument('${actType}')" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </button>
             `;
-          } else if (doc.actionType === 'regulation') {
+          } else if (actType === 'regulation') {
             actionBtnHtml = `
               <button onclick="previewDocument('regulation')" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </button>
             `;
-          } else if (doc.actionType === 'print_council') {
+          } else if (actType === 'print_council') {
             actionBtnHtml = `
               <a href="print-application.html?type=council&blank=1" target="_blank" class="btn-gov-outline w-full text-xs py-2 px-3 text-center flex items-center justify-center">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </a>
             `;
-          } else if (doc.actionType === 'print_color') {
+          } else if (actType === 'print_color') {
             actionBtnHtml = `
               <a href="print-application.html?type=color&blank=1" target="_blank" class="btn-gov-outline w-full text-xs py-2 px-3 text-center flex items-center justify-center">
                 <i class="fa-solid fa-print mr-1.5"></i> ${btnText}
               </a>
             `;
-          } else if (doc.actionType === 'manual') {
+          } else if (actType === 'manual') {
             actionBtnHtml = `
               <a href="manual.html" class="btn-gov-primary w-full text-xs py-2 px-3 text-center flex items-center justify-center shadow-sm">
                 <i class="fa-solid fa-book-open mr-1.5"></i> ${btnText}

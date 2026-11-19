@@ -32,11 +32,11 @@ async function fetchCleanJson(url, options = {}) {
     let text = await res.text();
     text = (text || '').trim();
     if (!text) return null;
-    const doctypeIdx = text.indexOf('<!doctype');
+    const doctypeIdx = text.toLowerCase().indexOf('<!doctype');
     if (doctypeIdx !== -1) {
       text = text.substring(0, doctypeIdx).trim();
     }
-    const htmlIdx = text.indexOf('<html');
+    const htmlIdx = text.toLowerCase().indexOf('<html');
     if (htmlIdx !== -1) {
       text = text.substring(0, htmlIdx).trim();
     }
@@ -270,14 +270,308 @@ function resolveCloudMediaImage(rawVal, onCloudReady) {
   return s;
 }
 
+// ====== ระบบฝากและดึงไฟล์เอกสาร PDF / Word แยก Bin แบบแบ่งส่วน (Chunked Cloud Bins) รองรับไฟล์ใหญ่โดยไม่ติด 413 ======
+const docCloudMediaMemory = new Map();
+const inFlightDocBinFetches = new Map();
+
+function isCloudBinsRef(val) {
+  return typeof val === 'string' && val.trim().startsWith('cloudbins:');
+}
+
+function parseCloudBinsIds(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) {
+    return val.map(v => extractCloudBinId(v) || String(v || '').trim()).filter(Boolean);
+  }
+  const s = String(val || '').trim();
+  if (s.startsWith('cloudbins:')) {
+    return s.slice('cloudbins:'.length).split(',').map(x => x.trim()).filter(Boolean);
+  }
+  const singleId = extractCloudBinId(s);
+  return singleId ? [singleId] : [];
+}
+
+function getCachedDocDataUrl(refOrIds) {
+  const ids = parseCloudBinsIds(refOrIds);
+  if (ids.length === 0) return '';
+  const key = 'cloudbins:' + ids.join(',');
+  if (docCloudMediaMemory.has(key)) return docCloudMediaMemory.get(key);
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const cached = localStorage.getItem(`wds_doc_bin_${ids[0]}`);
+      if (cached && cached.startsWith('data:')) {
+        docCloudMediaMemory.set(key, cached);
+        return cached;
+      }
+    } catch (e) {}
+  }
+  return '';
+}
+
+function setCachedDocDataUrl(refOrIds, dataUrl) {
+  const ids = parseCloudBinsIds(refOrIds);
+  if (ids.length === 0 || !dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) return;
+  const key = 'cloudbins:' + ids.join(',');
+  docCloudMediaMemory.set(key, dataUrl);
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem(`wds_doc_bin_${ids[0]}`, dataUrl);
+    } catch (e) {
+      // หาก localStorage เต็ม ให้เก็บเฉพาะใน memory cache
+    }
+  }
+}
+
+async function uploadDocDataToCloudBins(dataUrl, fileName = '') {
+  if (!dataUrl || typeof dataUrl !== 'string') {
+    return { ok: false, error: 'ไม่มีข้อมูลไฟล์สำหรับอัปโหลด' };
+  }
+  if (isCloudBinsRef(dataUrl)) {
+    return { ok: true, ref: dataUrl.trim(), ids: parseCloudBinsIds(dataUrl) };
+  }
+  if (!dataUrl.startsWith('data:')) {
+    return { ok: false, error: 'รูปแบบข้อมูลไฟล์ไม่ใช่ Data URL' };
+  }
+  if (typeof fetch === 'undefined') {
+    return { ok: false, error: 'เบราว์เซอร์ไม่รองรับการอัปโหลดคลาวด์' };
+  }
+
+  try {
+    const CHUNK_SIZE = 78000; // ~78KB ต่อ 1 Bin (ปลอดภัยต่ำกว่าเพดาน 95KB ของ ExtendsClass)
+    const chunks = [];
+    for (let i = 0; i < dataUrl.length; i += CHUNK_SIZE) {
+      chunks.push(dataUrl.slice(i, i + CHUNK_SIZE));
+    }
+
+    const ids = new Array(chunks.length);
+    const BATCH_SIZE = 4;
+    for (let start = 0; start < chunks.length; start += BATCH_SIZE) {
+      const slice = chunks.slice(start, start + BATCH_SIZE);
+      await Promise.all(slice.map(async (chunkStr, offset) => {
+        const idx = start + offset;
+        const res = await fetch(PR_CLOUD_BIN_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chunk: chunkStr,
+            idx,
+            total: chunks.length,
+            fileName: fileName || '',
+            createdAt: new Date().toISOString()
+          })
+        });
+        if (!res.ok) {
+          throw new Error(`Cloud Bin chunk ${idx + 1}/${chunks.length} HTTP ${res.status}`);
+        }
+        let text = (await res.text() || '').trim();
+        const dIdx = text.toLowerCase().indexOf('<!doctype');
+        if (dIdx !== -1) text = text.substring(0, dIdx).trim();
+        const hIdx = text.toLowerCase().indexOf('<html');
+        if (hIdx !== -1) text = text.substring(0, hIdx).trim();
+        const lastBrace = text.lastIndexOf('}');
+        if (lastBrace !== -1 && lastBrace < text.length - 1) {
+          text = text.substring(0, lastBrace + 1).trim();
+        }
+        const parsed = JSON.parse(text);
+        const binId = parsed.id || extractCloudBinId(parsed.uri || '');
+        if (!binId) throw new Error('ไม่ได้รับรหัส Bin จากเซิร์ฟเวอร์คลาวด์');
+        ids[idx] = binId;
+      }));
+    }
+
+    const ref = 'cloudbins:' + ids.join(',');
+    setCachedDocDataUrl(ref, dataUrl);
+    return { ok: true, ref, ids };
+  } catch (err) {
+    console.warn('uploadDocDataToCloudBins error:', err);
+    return { ok: false, error: err.message || 'อัปโหลดไฟล์ขึ้นคลาวด์ไม่สำเร็จ' };
+  }
+}
+
+async function fetchDocDataFromCloudBins(refOrIds) {
+  const ids = parseCloudBinsIds(refOrIds);
+  if (ids.length === 0) return '';
+  const key = 'cloudbins:' + ids.join(',');
+  const cached = getCachedDocDataUrl(key);
+  if (cached) return cached;
+  if (inFlightDocBinFetches.has(key)) return inFlightDocBinFetches.get(key);
+
+  const promise = (async () => {
+    try {
+      const parts = await Promise.all(ids.map(async (id) => {
+        const url = `${PR_CLOUD_BIN_ENDPOINT}/${id}`;
+        const data = await fetchCleanJson(getFreshCloudUrl(url), { cache: 'no-store' });
+        if (!data || typeof data.chunk !== 'string') {
+          throw new Error(`ไม่พบข้อมูลส่วนไฟล์ในคลาวด์ (${id})`);
+        }
+        return data.chunk;
+      }));
+      const fullDataUrl = parts.join('');
+      if (fullDataUrl && fullDataUrl.startsWith('data:')) {
+        setCachedDocDataUrl(key, fullDataUrl);
+        return fullDataUrl;
+      }
+      return '';
+    } catch (err) {
+      console.warn('fetchDocDataFromCloudBins error:', err);
+      return '';
+    } finally {
+      inFlightDocBinFetches.delete(key);
+    }
+  })();
+
+  inFlightDocBinFetches.set(key, promise);
+  return promise;
+}
+
+function triggerDataUrlBlobAction(dataUrl, fileName = 'document.pdf', forceDownload = false) {
+  if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) return false;
+  try {
+    const commaIdx = dataUrl.indexOf(',');
+    if (commaIdx === -1) return false;
+    const header = dataUrl.substring(0, commaIdx);
+    const base64 = dataUrl.substring(commaIdx + 1);
+    const mimeMatch = header.match(/data:([^;]+)/i);
+    const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mime });
+    const blobUrl = URL.createObjectURL(blob);
+
+    if (forceDownload && typeof document !== 'undefined') {
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = fileName || 'document.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } else {
+      const opened = typeof window !== 'undefined' && typeof window.open === 'function'
+        ? window.open(blobUrl, '_blank', 'noopener')
+        : null;
+      if (!opened && typeof document !== 'undefined') {
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName || 'document.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+    }
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+    return true;
+  } catch (err) {
+    console.warn('triggerDataUrlBlobAction error:', err);
+    return false;
+  }
+}
+
+function resolveDocumentUploadSource(doc) {
+  if (!doc) return '';
+  if (typeof doc === 'string') return doc.trim();
+  // ให้ความสำคัญกับไฟล์ที่อัปโหลดใหม่ (fileData / cloudBinRef / cloudbins: ใน fileUrl) ก่อนลิงก์ไฟล์เริ่มต้นเสมอ
+  if (doc.fileData && (doc.fileData.startsWith('data:') || isCloudBinsRef(doc.fileData))) {
+    return doc.fileData.trim();
+  }
+  if (doc.cloudBinRef && isCloudBinsRef(doc.cloudBinRef)) {
+    return doc.cloudBinRef.trim();
+  }
+  if (Array.isArray(doc.cloudBinUrls) && doc.cloudBinUrls.length > 0) {
+    const ids = parseCloudBinsIds(doc.cloudBinUrls);
+    if (ids.length > 0) return 'cloudbins:' + ids.join(',');
+  }
+  if (doc.fileUrl && isCloudBinsRef(doc.fileUrl)) {
+    return doc.fileUrl.trim();
+  }
+  return (doc.fileUrl || doc.fileData || '').trim();
+}
+
+async function openOrDownloadDocFile(event, docOrSrc, fallbackFileName = 'document.pdf', forceDownload = false) {
+  if (event && typeof event.preventDefault === 'function') event.preventDefault();
+  const docObj = (docOrSrc && typeof docOrSrc === 'object') ? docOrSrc : null;
+  const rawSrc = resolveDocumentUploadSource(docOrSrc);
+  const fileName = (docObj && (docObj.fileName || (docObj.title ? docObj.title + '.pdf' : ''))) || fallbackFileName || 'document.pdf';
+
+  if (!rawSrc) {
+    alert('เอกสารนี้ยังไม่ได้แนบไฟล์ในระบบหลังบ้าน');
+    return false;
+  }
+
+  if (isCloudBinsRef(rawSrc)) {
+    const btn = event && (event.currentTarget || event.target?.closest('button,a'));
+    const origHtml = btn ? btn.innerHTML : '';
+    const cached = getCachedDocDataUrl(rawSrc);
+    if (cached) {
+      return triggerDataUrlBlobAction(cached, fileName, forceDownload);
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> กำลังดาวน์โหลด...';
+    }
+    try {
+      const dataUrl = await fetchDocDataFromCloudBins(rawSrc);
+      if (!dataUrl) {
+        alert('ไม่สามารถดึงไฟล์เอกสารจากคลาวด์ได้ กรุณาลองใหม่อีกครั้ง');
+        return false;
+      }
+      return triggerDataUrlBlobAction(dataUrl, fileName, forceDownload);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+      }
+    }
+  }
+
+  if (rawSrc.startsWith('data:')) {
+    return triggerDataUrlBlobAction(rawSrc, fileName, forceDownload);
+  }
+
+  const safeUrl = sanitizePdfHref(rawSrc);
+  if (safeUrl) {
+    if (forceDownload && typeof document !== 'undefined' && !/^https?:\/\//i.test(safeUrl)) {
+      const a = document.createElement('a');
+      a.href = encodeURI(safeUrl);
+      a.download = fileName;
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return true;
+    }
+    if (typeof window !== 'undefined' && typeof window.open === 'function') {
+      window.open(encodeURI(safeUrl), '_blank', 'noopener,noreferrer');
+      return true;
+    }
+  }
+  return false;
+}
+
 function buildCloudSafeConfigPayload(mergedCfg, aggressiveDocsStrip = false) {
   const payload = JSON.parse(JSON.stringify(mergedCfg || {}));
   if (Array.isArray(payload.documentsList)) {
     payload.documentsList = payload.documentsList.map(doc => {
       const d = { ...doc };
-      if (aggressiveDocsStrip) {
-        if (d.fileData && d.fileData.length > 15000) delete d.fileData;
-      } else if (d.fileData && d.fileData.length > 50000 && d.fileUrl) {
+      // หากไฟล์ถูกอัปโหลดขึ้น Cloud Bins แล้ว (cloudbins:...) ให้เก็บเฉพาะรหัสอ้างอิงสั้นๆ
+      if (isCloudBinsRef(d.cloudBinRef)) {
+        d.fileData = d.cloudBinRef;
+        if (!d.fileUrl || d.fileUrl.startsWith('assets/documents/')) {
+          d.fileUrl = d.cloudBinRef;
+        }
+      } else if (isCloudBinsRef(d.fileData)) {
+        d.cloudBinRef = d.fileData;
+        if (!d.fileUrl || d.fileUrl.startsWith('assets/documents/')) {
+          d.fileUrl = d.fileData;
+        }
+      } else if (isCloudBinsRef(d.fileUrl)) {
+        d.cloudBinRef = d.fileUrl;
+        d.fileData = d.fileUrl;
+      } else if (aggressiveDocsStrip) {
+        if (d.fileData && d.fileData.startsWith('data:') && d.fileData.length > 15000) delete d.fileData;
+      } else if (d.fileData && d.fileData.startsWith('data:') && d.fileData.length > 50000 && d.fileUrl && !d.fileUrl.startsWith('assets/documents/')) {
         delete d.fileData;
       }
       return d;
@@ -307,10 +601,14 @@ function buildCloudSafeConfigPayload(mergedCfg, aggressiveDocsStrip = false) {
   return payload;
 }
 
-// เปิดไฟล์ PDF ที่เก็บแบบ Data URL (Base64) ผ่าน Blob URL เพื่อไม่ให้ Chrome บล็อกการเปิดแท็บใหม่
+// เปิดไฟล์ PDF ที่เก็บแบบ Data URL (Base64) หรือ Cloud Bins (cloudbins:...) ผ่าน Blob URL เพื่อไม่ให้ Chrome บล็อกการเปิดแท็บใหม่
 function openDataPdfSafely(event, dataUrl, fileName = 'announcement.pdf') {
   if (event && typeof event.preventDefault === 'function') event.preventDefault();
   if (!dataUrl || typeof dataUrl !== 'string') return false;
+  if (isCloudBinsRef(dataUrl)) {
+    openOrDownloadDocFile(event, dataUrl, fileName, false);
+    return false;
+  }
   if (!dataUrl.startsWith('data:')) {
     const safeUrl = sanitizePdfHref(dataUrl);
     if (safeUrl && typeof window !== 'undefined' && typeof window.open === 'function') {
@@ -318,38 +616,7 @@ function openDataPdfSafely(event, dataUrl, fileName = 'announcement.pdf') {
     }
     return false;
   }
-  try {
-    const commaIdx = dataUrl.indexOf(',');
-    if (commaIdx === -1) return false;
-    const header = dataUrl.substring(0, commaIdx);
-    const base64 = dataUrl.substring(commaIdx + 1);
-    const mimeMatch = header.match(/data:([^;]+)/i);
-    const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    const blob = new Blob([bytes], { type: mime });
-    const blobUrl = URL.createObjectURL(blob);
-    const opened = typeof window !== 'undefined' && typeof window.open === 'function'
-      ? window.open(blobUrl, '_blank', 'noopener')
-      : null;
-    if (!opened && typeof document !== 'undefined') {
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = fileName || 'announcement.pdf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-  } catch (err) {
-    console.warn('openDataPdfSafely fallback:', err);
-    if (typeof window !== 'undefined' && typeof window.open === 'function') {
-      window.open(dataUrl, '_blank');
-    }
-  }
+  triggerDataUrlBlobAction(dataUrl, fileName, false);
   return false;
 }
 
@@ -940,6 +1207,12 @@ const WDSDB = {
               btnText: 'เปิดพิมพ์ A4'
             };
           }
+          if (doc.actionType === 'consent' && (doc.btnText === 'เปิดอ่านคู่มือ' || (doc.title && doc.title.includes('คู่มือการใช้งาน')))) {
+            return {
+              ...doc,
+              actionType: 'manual'
+            };
+          }
           return doc;
         });
         const hasManual = merged.documentsList.some(d => d.actionType === 'manual' || (d.title && d.title.includes('คู่มือ')));
@@ -1062,6 +1335,52 @@ const WDSDB = {
       if (Array.isArray(merged.colorPositions) && merged.colorPositions.length > 0) {
         COLOR_MEMBER_POSITIONS = merged.colorPositions.filter((p, idx) => idx > 0 && !p.isLeader);
       }
+
+      // อัปโหลดไฟล์เอกสาร Base64 ขึ้น Dedicated Chunked Cloud Bins อัตโนมัติ เพื่อให้ซิงค์ได้ทุกเครื่องโดยไม่ติด HTTP 413
+      if (syncToCloud && CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
+        if (Array.isArray(merged.documentsList)) {
+          merged.documentsList = await Promise.all(merged.documentsList.map(async (doc) => {
+            const d = { ...doc };
+            if (d.actionType === 'consent' && (d.btnText === 'เปิดอ่านคู่มือ' || (d.title && d.title.includes('คู่มือการใช้งาน')))) {
+              d.actionType = 'manual';
+            }
+            if (d.fileData && typeof d.fileData === 'string' && d.fileData.startsWith('data:')) {
+              const up = await uploadDocDataToCloudBins(d.fileData, d.fileName || d.title || 'document.pdf');
+              if (up && up.ok && up.ref) {
+                d.cloudBinRef = up.ref;
+                d.fileData = up.ref;
+                d.fileUrl = up.ref;
+              } else if (d.fileUrl && d.fileUrl.startsWith('assets/documents/')) {
+                d.fileUrl = '';
+              }
+            } else if (isCloudBinsRef(d.fileData)) {
+              d.cloudBinRef = d.fileData;
+              if (!d.fileUrl || d.fileUrl.startsWith('assets/documents/')) {
+                d.fileUrl = d.fileData;
+              }
+            } else if (isCloudBinsRef(d.cloudBinRef)) {
+              d.fileData = d.cloudBinRef;
+              if (!d.fileUrl || d.fileUrl.startsWith('assets/documents/')) {
+                d.fileUrl = d.cloudBinRef;
+              }
+            }
+            return d;
+          }));
+        }
+        if (merged.rulesCouncilPdfData && typeof merged.rulesCouncilPdfData === 'string' && merged.rulesCouncilPdfData.startsWith('data:')) {
+          const up = await uploadDocDataToCloudBins(merged.rulesCouncilPdfData, merged.rulesCouncilPdfFileName || 'council-rules.pdf');
+          if (up && up.ok && up.ref) {
+            merged.rulesCouncilPdfData = up.ref;
+          }
+        }
+        if (merged.rulesColorPdfData && typeof merged.rulesColorPdfData === 'string' && merged.rulesColorPdfData.startsWith('data:')) {
+          const up = await uploadDocDataToCloudBins(merged.rulesColorPdfData, merged.rulesColorPdfFileName || 'color-rules.pdf');
+          if (up && up.ok && up.ref) {
+            merged.rulesColorPdfData = up.ref;
+          }
+        }
+      }
+
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(merged));
       if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
         window.dispatchEvent(new CustomEvent('wds-cloud-synced', { detail: merged }));
@@ -1133,6 +1452,24 @@ const WDSDB = {
       const local = stored ? JSON.parse(stored) : null;
       const remoteTime = new Date(remote._lastUpdated || 0).getTime();
       const localTime = new Date(local?._lastUpdated || 0).getTime();
+
+      // ตรวจสอบว่าในเครื่องมีไฟล์เอกสารที่เพิ่งอัปโหลดไว้ใน localStorage แต่ยังไม่ถูกย้ายขึ้น Cloud Bins หรือไม่
+      let hasUnmigratedLocalDocs = false;
+      if (local && Array.isArray(local.documentsList)) {
+        hasUnmigratedLocalDocs = local.documentsList.some(d => d && typeof d.fileData === 'string' && d.fileData.startsWith('data:'));
+      }
+      if (!hasUnmigratedLocalDocs && local) {
+        if ((typeof local.rulesCouncilPdfData === 'string' && local.rulesCouncilPdfData.startsWith('data:')) ||
+            (typeof local.rulesColorPdfData === 'string' && local.rulesColorPdfData.startsWith('data:'))) {
+          hasUnmigratedLocalDocs = true;
+        }
+      }
+
+      if (hasUnmigratedLocalDocs) {
+        // อัปโหลดไฟล์เอกสารที่ค้างอยู่ในเครื่องขึ้น Cloud Bins ทันทีและซิงค์ขึ้นคลาวด์
+        const migrated = await this.saveConfig(local, true);
+        return migrated || local;
+      }
 
       // ดึงข้อมูลคลาวด์มาแสดงผลเมื่อคลาวด์ใหม่กว่า หรือเมื่อยังไม่มีข้อมูลในเครื่อง
       const isCloudNewer = !local || !local._lastUpdated || (remoteTime > localTime);
