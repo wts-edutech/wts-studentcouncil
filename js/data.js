@@ -1148,7 +1148,7 @@ const WDSDB = {
       localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(DEFAULT_COUNCIL_APPLICATIONS));
     }
     if (!storedColor || storedColor.includes('unsplash.com')) {
-      localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(DEFAULT_COLOR_APPLICATIONS));
+      localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify([]));
     }
   },
 
@@ -1594,6 +1594,7 @@ const WDSDB = {
       }
 
       if (Array.isArray(rColor)) {
+        const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
         const cleanRemoteColor = rColor.filter(item => item && item.id);
         const localColor = this.getColorList();
         const mapColor = new Map();
@@ -1601,7 +1602,7 @@ const WDSDB = {
 
         let needPushColor = false;
         localColor.forEach(locItem => {
-          if (locItem && locItem.id) {
+          if (locItem && locItem.id && !DEMO_COLOR_IDS.has(locItem.id)) {
             if (!mapColor.has(locItem.id)) {
               mapColor.set(locItem.id, locItem);
               needPushColor = true;
