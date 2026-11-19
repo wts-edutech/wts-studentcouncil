@@ -22,11 +22,11 @@ function renderTimeline() {
 
   const hasAnyHighlight = list.some(item => Boolean(item.highlight));
   const isManySteps = list.length > 5;
-  const cardMinW = isManySteps ? 'min-w-[120px] lg:min-w-0 xl:min-w-[135px]' : 'min-w-[160px]';
-  const cardPad = isManySteps ? 'p-2.5 sm:p-3 xl:p-3.5' : 'p-2.5 sm:p-4 md:p-5';
-  const dateSize = isManySteps ? 'text-[10px] sm:text-[11px] xl:text-xs' : 'text-[10.5px] sm:text-xs md:text-sm';
-  const titleSize = isManySteps ? 'text-xs sm:text-[13px] xl:text-[14.5px]' : 'text-xs sm:text-sm md:text-base lg:text-[16.5px]';
-  const subSize = isManySteps ? 'text-[9.5px] sm:text-[11px] xl:text-xs' : 'text-[10px] sm:text-xs md:text-[13.5px] lg:text-sm';
+  const cardMinW = isManySteps ? 'min-w-0 lg:min-w-0 xl:min-w-[135px]' : 'min-w-0';
+  const cardPad = isManySteps ? 'p-2 sm:p-3 xl:p-3.5' : 'p-2.5 sm:p-4 md:p-5';
+  const dateSize = isManySteps ? 'text-[9.5px] sm:text-[11px] xl:text-xs' : 'text-[10px] sm:text-xs md:text-sm';
+  const titleSize = isManySteps ? 'text-[11px] sm:text-[13px] xl:text-[14.5px]' : 'text-xs sm:text-sm md:text-base lg:text-[16.5px]';
+  const subSize = isManySteps ? 'text-[9px] sm:text-[11px] xl:text-xs' : 'text-[9.5px] sm:text-xs md:text-[13.5px] lg:text-sm';
   const connClass = isManySteps ? 'w-1 xl:w-2' : 'w-3 xl:w-4';
 
   timelineCardsContainer.innerHTML = list.map((item, index) => {
@@ -146,33 +146,31 @@ function applySiteConfig() {
   const homeCL = document.getElementById('homeContactList');
   if (homeCL && Array.isArray(cfg.contactList) && cfg.contactList.length) {
     const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    homeCL.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5';
+    homeCL.className = 'grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5';
     homeCL.innerHTML = cfg.contactList.map(c => {
       const cleanPhone = String(c.phone || '').replace(/[^0-9+]/g, '');
       const hasPhone = !!cleanPhone;
       return `
-      <div class="bg-slate-50 hover:bg-emerald-50/40 rounded-lg p-2.5 sm:p-3 border border-slate-200/80 hover:border-emerald-300 transition-all flex items-start gap-2.5 shadow-sm hover:shadow ${hasPhone ? 'cursor-pointer' : ''}"
+      <div class="bg-slate-50 hover:bg-emerald-50/40 rounded-lg px-2.5 py-2 sm:p-3 border border-slate-200/80 hover:border-emerald-300 transition-all flex items-center justify-between gap-2 shadow-2xs hover:shadow ${hasPhone ? 'cursor-pointer' : ''}"
         ${hasPhone ? `onclick="if(!event.target.closest('a')) window.location.href='tel:${cleanPhone}';"` : ''}
         title="${hasPhone ? 'กดเพื่อโทรออก: ' + esc(c.phone) : ''}">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ${hasPhone ? 'bg-emerald-700' : 'bg-[#16325c]'} text-white flex items-center justify-center flex-shrink-0 text-sm sm:text-base shadow-xs">
-          <i class="fa-solid fa-user-tie"></i>
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full ${hasPhone ? 'bg-emerald-700' : 'bg-[#16325c]'} text-white flex items-center justify-center flex-shrink-0 text-xs sm:text-sm shadow-xs">
+            <i class="fa-solid fa-user-tie"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-[#16325c] text-xs sm:text-sm leading-tight truncate">${esc(c.name)}</div>
+            ${c.position ? `<div class="text-slate-500 text-[10px] sm:text-xs leading-tight truncate">${esc(c.position)}</div>` : ''}
+          </div>
         </div>
-        <div class="min-w-0 flex-1">
-          <div class="font-bold text-[#16325c] text-xs sm:text-sm leading-tight">${esc(c.name)}</div>
-          ${c.position ? `<div class="text-slate-500 text-[11px] sm:text-xs mt-0.5 leading-tight"><i class="fa-solid fa-briefcase mr-1 text-slate-400 text-[10px]"></i>${esc(c.position)}</div>` : ''}
-          ${hasPhone ? `
-            <div class="mt-1.5">
-              <a href="tel:${cleanPhone}" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-md text-[11px] sm:text-xs font-semibold shadow-xs transition active:scale-95" onclick="event.stopPropagation()">
-                <i class="fa-solid fa-phone-volume text-[10px]"></i>
-                <span>กดโทรออก <strong>${esc(c.phone)}</strong></span>
-              </a>
-            </div>
-          ` : `
-            <div class="mt-1 text-[11px] text-slate-400 italic">
-              <i class="fa-solid fa-circle-info mr-0.5 text-[10px]"></i>ยังไม่มีเบอร์ติดต่อ
-            </div>
-          `}
-        </div>
+        ${hasPhone ? `
+          <a href="tel:${cleanPhone}" class="inline-flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-md text-[10px] sm:text-xs font-semibold shadow-xs transition active:scale-95 flex-shrink-0 whitespace-nowrap" onclick="event.stopPropagation()">
+            <i class="fa-solid fa-phone-volume text-[9px] sm:text-[10px]"></i>
+            <span>${esc(c.phone)}</span>
+          </a>
+        ` : `
+          <span class="text-[10px] text-slate-400 italic flex-shrink-0">ไม่มีเบอร์</span>
+        `}
       </div>`;
     }).join('');
   }
@@ -1485,8 +1483,8 @@ function renderRulesPrGallery(cfg) {
   const gridClass = items.length === 1
     ? 'grid grid-cols-1 max-w-2xl mx-auto gap-4'
     : (items.length === 2
-      ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
-      : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4');
+      ? 'grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4'
+      : 'grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4');
 
   const cardsHtml = items.map((item, idx) => {
     const imgContent = item.isLoading
