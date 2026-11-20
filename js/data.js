@@ -424,6 +424,95 @@ async function fetchDocDataFromCloudBins(refOrIds) {
   return promise;
 }
 
+function showMobilePdfActionModal(blob, blobUrl, fileName = 'document.pdf', mime = 'application/pdf') {
+  if (typeof document === 'undefined') return;
+  const old = document.getElementById('wdsMobilePdfModal');
+  if (old) old.remove();
+
+  const safeName = String(fileName || 'document.pdf');
+  const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  let canWebShare = false;
+  let shareFile = null;
+  try {
+    if (typeof navigator !== 'undefined' && typeof File !== 'undefined' && navigator.share && navigator.canShare) {
+      shareFile = new File([blob], safeName, { type: mime || 'application/pdf' });
+      canWebShare = navigator.canShare({ files: [shareFile] });
+    }
+  } catch (e) {}
+
+  const modal = document.createElement('div');
+  modal.id = 'wdsMobilePdfModal';
+  modal.className = 'fixed inset-0 bg-slate-900/70 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-formal';
+  modal.innerHTML = `
+    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-xl shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
+      <div class="bg-[#16325c] text-white px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2 font-bold text-sm">
+          <i class="fa-solid fa-file-pdf text-amber-300"></i>
+          <span>เปิดอ่าน / ดาวน์โหลดเอกสาร</span>
+        </div>
+        <button type="button" id="wdsMobilePdfCloseX" class="text-slate-300 hover:text-white px-2 py-1">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+      <div class="p-4 sm:p-5 space-y-3">
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-red-50 border border-red-200 text-red-600 flex items-center justify-center flex-shrink-0 text-lg">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-xs font-bold text-slate-800 truncate">${esc(safeName)}</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">เลือกวิธีเปิดอ่านหรือบันทึกลงมือถือ</div>
+          </div>
+        </div>
+
+        <a href="${blobUrl}" download="${esc(safeName)}"
+          class="w-full py-3 px-4 rounded-lg bg-[#16325c] hover:bg-[#1e437a] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition">
+          <i class="fa-solid fa-download"></i>
+          <span>ดาวน์โหลดไฟล์ลงเครื่อง (PDF)</span>
+        </a>
+
+        <a href="${blobUrl}" target="_blank" rel="noopener"
+          class="w-full py-2.5 px-4 rounded-lg bg-white hover:bg-slate-50 text-[#16325c] border border-slate-300 font-semibold text-sm flex items-center justify-center gap-2 transition">
+          <i class="fa-solid fa-up-right-from-square"></i>
+          <span>เปิดอ่านเอกสารเต็มหน้าจอ</span>
+        </a>
+
+        ${canWebShare ? `
+          <button type="button" id="wdsMobilePdfShareBtn"
+            class="w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-share-from-square"></i>
+            <span>บันทึกลงแอปไฟล์ / แชร์ (มือถือ)</span>
+          </button>
+        ` : ''}
+
+        <button type="button" id="wdsMobilePdfCloseBtn"
+          class="w-full py-2 px-4 rounded-lg text-slate-500 hover:bg-slate-100 text-xs font-medium transition">
+          ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  `;
+
+  const closeModal = () => modal.remove();
+  modal.addEventListener('click', closeModal);
+  document.body.appendChild(modal);
+
+  const closeX = document.getElementById('wdsMobilePdfCloseX');
+  const closeBtn = document.getElementById('wdsMobilePdfCloseBtn');
+  if (closeX) closeX.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+  const shareBtn = document.getElementById('wdsMobilePdfShareBtn');
+  if (shareBtn && shareFile) {
+    shareBtn.addEventListener('click', async () => {
+      try {
+        await navigator.share({ files: [shareFile], title: safeName });
+      } catch (e) {}
+    });
+  }
+}
+
 function triggerDataUrlBlobAction(dataUrl, fileName = 'document.pdf', forceDownload = false) {
   if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) return false;
   try {
@@ -440,6 +529,24 @@ function triggerDataUrlBlobAction(dataUrl, fileName = 'document.pdf', forceDownl
     }
     const blob = new Blob([bytes], { type: mime });
     const blobUrl = URL.createObjectURL(blob);
+    const ua = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : '';
+    const isMobile = /Android|iPhone|iPad|iPod|Line|FBAN|FBAV|Mobile/i.test(ua);
+    const isIosOrInApp = /iPhone|iPad|iPod|Line|FBAN|FBAV/i.test(ua);
+
+    if (isMobile) {
+      if (forceDownload && !isIosOrInApp && typeof document !== 'undefined') {
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName || 'document.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+      // แสดงหน้าต่างช่วยเปิด/ดาวน์โหลดบนมือถือเสมอ เพื่อกัน Popup Blocker หรือ In-App Browser (เช่น LINE / iOS Safari)
+      showMobilePdfActionModal(blob, blobUrl, fileName, mime);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 300000);
+      return true;
+    }
 
     if (forceDownload && typeof document !== 'undefined') {
       const a = document.createElement('a');
@@ -453,15 +560,10 @@ function triggerDataUrlBlobAction(dataUrl, fileName = 'document.pdf', forceDownl
         ? window.open(blobUrl, '_blank', 'noopener')
         : null;
       if (!opened && typeof document !== 'undefined') {
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = fileName || 'document.pdf';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        showMobilePdfActionModal(blob, blobUrl, fileName, mime);
       }
     }
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 120000);
     return true;
   } catch (err) {
     console.warn('triggerDataUrlBlobAction error:', err);
@@ -602,21 +704,32 @@ function buildCloudSafeConfigPayload(mergedCfg, aggressiveDocsStrip = false) {
 }
 
 // เปิดไฟล์ PDF ที่เก็บแบบ Data URL (Base64) หรือ Cloud Bins (cloudbins:...) ผ่าน Blob URL เพื่อไม่ให้ Chrome บล็อกการเปิดแท็บใหม่
-function openDataPdfSafely(event, dataUrl, fileName = 'announcement.pdf') {
+function openDataPdfSafely(event, dataUrl, fileName = 'announcement.pdf', forceDownload = false) {
   if (event && typeof event.preventDefault === 'function') event.preventDefault();
   if (!dataUrl || typeof dataUrl !== 'string') return false;
   if (isCloudBinsRef(dataUrl)) {
-    openOrDownloadDocFile(event, dataUrl, fileName, false);
+    openOrDownloadDocFile(event, dataUrl, fileName, forceDownload);
     return false;
   }
   if (!dataUrl.startsWith('data:')) {
     const safeUrl = sanitizePdfHref(dataUrl);
-    if (safeUrl && typeof window !== 'undefined' && typeof window.open === 'function') {
-      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+    if (safeUrl) {
+      if (forceDownload && typeof document !== 'undefined') {
+        const a = document.createElement('a');
+        a.href = safeUrl;
+        a.download = fileName || 'announcement.pdf';
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else if (typeof window !== 'undefined' && typeof window.open === 'function') {
+        window.open(safeUrl, '_blank', 'noopener,noreferrer');
+      }
     }
     return false;
   }
-  triggerDataUrlBlobAction(dataUrl, fileName, false);
+  triggerDataUrlBlobAction(dataUrl, fileName, forceDownload);
   return false;
 }
 

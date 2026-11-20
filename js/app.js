@@ -411,12 +411,19 @@ function renderRulesAndApplyContent(cfg) {
         </div>
       `;
       actionHtml = `
-        <a href="${escapeHTML(extUrl)}" target="_blank" rel="noopener noreferrer"
-          class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-4 sm:px-6 inline-flex items-center justify-center whitespace-nowrap shadow-sm flex-shrink-0">
-          <i class="fa-solid fa-file-pdf mr-2"></i>
-          <span>${escapeHTML(btnText)}</span>
-          <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-[11px] opacity-80"></i>
-        </a>
+        <div class="flex flex-wrap items-center justify-end gap-2">
+          <a href="${escapeHTML(extUrl)}" target="_blank" rel="noopener noreferrer"
+            class="btn-gov-primary text-xs sm:text-sm py-2.5 px-4 inline-flex items-center justify-center whitespace-nowrap shadow-sm flex-shrink-0">
+            <i class="fa-solid fa-file-pdf mr-2"></i>
+            <span>${escapeHTML(btnText)}</span>
+            <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-[11px] opacity-80"></i>
+          </a>
+          <a href="${escapeHTML(extUrl)}" download="${escapeHTML(fileName)}" target="_blank" rel="noopener noreferrer"
+            class="btn-gov-outline text-xs sm:text-sm py-2.5 px-3.5 inline-flex items-center justify-center whitespace-nowrap flex-shrink-0">
+            <i class="fa-solid fa-download mr-1.5"></i>
+            <span>ดาวน์โหลด PDF</span>
+          </a>
+        </div>
       `;
     } else if (fileData) {
       statusBadgeHtml = `
@@ -426,12 +433,19 @@ function renderRulesAndApplyContent(cfg) {
         </div>
       `;
       actionHtml = `
-        <a href="#open-pdf-${sec.key}" onclick="return openRulesSectionPdf(event, '${sec.key}')"
-          class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-4 sm:px-6 inline-flex items-center justify-center whitespace-nowrap shadow-sm flex-shrink-0">
-          <i class="fa-solid fa-file-pdf mr-2"></i>
-          <span>${escapeHTML(btnText)}</span>
-          <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-[11px] opacity-80"></i>
-        </a>
+        <div class="flex flex-wrap items-center justify-end gap-2">
+          <a href="#open-pdf-${sec.key}" onclick="return openRulesSectionPdf(event, '${sec.key}', false)"
+            class="btn-gov-primary text-xs sm:text-sm py-2.5 px-4 inline-flex items-center justify-center whitespace-nowrap shadow-sm flex-shrink-0">
+            <i class="fa-solid fa-file-pdf mr-2"></i>
+            <span>${escapeHTML(btnText)}</span>
+            <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-[11px] opacity-80"></i>
+          </a>
+          <button type="button" onclick="return openRulesSectionPdf(event, '${sec.key}', true)"
+            class="btn-gov-outline text-xs sm:text-sm py-2.5 px-3.5 inline-flex items-center justify-center whitespace-nowrap flex-shrink-0">
+            <i class="fa-solid fa-download mr-1.5"></i>
+            <span>ดาวน์โหลด PDF</span>
+          </button>
+        </div>
       `;
     } else {
       statusBadgeHtml = `
@@ -1385,7 +1399,7 @@ function notifyRealtimeSync(type = 'config', detail = null) {
 window.notifyRealtimeSync = notifyRealtimeSync;
 
 // เปิดลิงก์หรือไฟล์ PDF ประกาศรับสมัครประจำหมวดจาก Config อย่างปลอดภัย
-function openRulesSectionPdf(event, sectionKey) {
+function openRulesSectionPdf(event, sectionKey, forceDownload = false) {
   if (event && typeof event.preventDefault === 'function') event.preventDefault();
   if (typeof WDSDB === 'undefined') return false;
   const cfg = WDSDB.getConfig();
@@ -1400,7 +1414,7 @@ function openRulesSectionPdf(event, sectionKey) {
     return false;
   }
   if (typeof openDataPdfSafely === 'function') {
-    return openDataPdfSafely(event, target, fileName || `announcement_${sectionKey}.pdf`);
+    return openDataPdfSafely(event, target, fileName || `announcement_${sectionKey}.pdf`, forceDownload);
   }
   window.open(target, '_blank', 'noopener,noreferrer');
   return false;
