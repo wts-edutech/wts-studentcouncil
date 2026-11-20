@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257064">
+  <link rel="stylesheet" href="css/style.css?v=257065">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -215,8 +215,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257064"></script>
-  <script src="js/app.js?v=257064"></script>
+  <script src="js/data.js?v=257065"></script>
+  <script src="js/app.js?v=257065"></script>
   <script>
     let lastRenderedCouncilSig = '';
 
@@ -425,7 +425,7 @@
       }
     }
 
-    function handleSubmitCouncil(e) {
+    async function handleSubmitCouncil(e) {
       e.preventDefault();
       const cfg = WDSDB.getConfig();
 
@@ -484,7 +484,7 @@
         members: membersData
       };
 
-      const result = WDSDB.saveCouncilApplication(payload);
+      const result = await WDSDB.saveCouncilApplication(payload);
 
       document.getElementById('modalAppId').innerText = result.id;
       document.getElementById('modalPartyName').innerText = result.partyName;

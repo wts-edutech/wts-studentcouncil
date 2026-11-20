@@ -1667,11 +1667,12 @@ const WDSDB = {
     }
   },
 
-  saveCouncilApplication(data) {
+  async saveCouncilApplication(data) {
     this.init();
     const cfg = this.getConfig();
     const list = this.getCouncilList();
-    const id = `COUNCIL-${cfg.academicYear}-` + String(list.length + 1).padStart(3, '0');
+    const uniq = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const id = `COUNCIL-${cfg.academicYear}-` + String(list.length + 1).padStart(3, '0') + '-' + uniq;
     const newEntry = {
       ...data,
       id,
@@ -1690,30 +1691,32 @@ const WDSDB = {
       notifyRealtimeSync('applications');
     }
 
-    // ซิงค์ใบสมัครขึ้นคลาวด์ทันที พร้อมระบบบีบอัดป้องกัน 413 เพื่อให้หน้าหลังบ้านเห็นทันที
+    // ซิงค์ใบสมัครขึ้นคลาวด์ทันทีและรอให้เสร็จจริง เพื่อไม่ให้ข้อมูลหายเมื่อนักเรียนปิดหน้าเว็บ
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
-      const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
-      fetchCleanJson(bustUrl, { cache: 'no-store' })
-        .then(async remoteList => {
-          const arr = Array.isArray(remoteList)
-            ? remoteList.filter(item => item && item.id !== 'COUNCIL-2570-001' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม')
-            : [];
-          if (!arr.some(item => item.id === newEntry.id)) {
-            arr.unshift(newEntry);
-            await WDSDB.pushApplicationsToCloud('council', arr);
-          }
-        })
-        .catch(err => console.warn('Cloud council sync:', err));
+      try {
+        const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
+        const remoteList = await fetchCleanJson(bustUrl, { cache: 'no-store' });
+        const arr = Array.isArray(remoteList)
+          ? remoteList.filter(item => item && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม')
+          : [];
+        if (!arr.some(item => item.id === newEntry.id)) {
+          arr.unshift(newEntry);
+          await WDSDB.pushApplicationsToCloud('council', arr);
+        }
+      } catch (err) {
+        console.warn('Cloud council sync:', err);
+      }
     }
 
     return newEntry;
   },
 
-  saveColorApplication(data) {
+  async saveColorApplication(data) {
     this.init();
     const cfg = this.getConfig();
     const list = this.getColorList();
-    const id = `COLOR-${cfg.academicYear}-` + String(list.length + 1).padStart(3, '0');
+    const uniq = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const id = `COLOR-${cfg.academicYear}-` + String(list.length + 1).padStart(3, '0') + '-' + uniq;
     const colorObj = COLOR_HOUSES.find(c => c.id === data.colorId) || {};
     const newEntry = {
       ...data,
@@ -1734,18 +1737,20 @@ const WDSDB = {
       notifyRealtimeSync('applications');
     }
 
-    // ซิงค์ใบสมัครขึ้นคลาวด์ทันที พร้อมระบบบีบอัดป้องกัน 413 เพื่อให้หน้าหลังบ้านเห็นทันที
+    // ซิงค์ใบสมัครขึ้นคลาวด์ทันทีและรอให้เสร็จจริง เพื่อไม่ให้ข้อมูลหายเมื่อนักเรียนปิดหน้าเว็บ
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
-      const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
-      fetchCleanJson(bustUrl, { cache: 'no-store' })
-        .then(async remoteList => {
-          const arr = Array.isArray(remoteList) ? remoteList : [];
-          if (!arr.some(item => item.id === newEntry.id)) {
-            arr.unshift(newEntry);
-            await WDSDB.pushApplicationsToCloud('color', arr);
-          }
-        })
-        .catch(err => console.warn('Cloud color sync:', err));
+      try {
+        const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
+        const remoteList = await fetchCleanJson(bustUrl, { cache: 'no-store' });
+        const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
+        const arr = Array.isArray(remoteList) ? remoteList.filter(item => item && !DEMO_COLOR_IDS.has(item.id)) : [];
+        if (!arr.some(item => item.id === newEntry.id)) {
+          arr.unshift(newEntry);
+          await WDSDB.pushApplicationsToCloud('color', arr);
+        }
+      } catch (err) {
+        console.warn('Cloud color sync:', err);
+      }
     }
 
     return newEntry;

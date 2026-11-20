@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257064">
+  <link rel="stylesheet" href="css/style.css?v=257065">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -341,8 +341,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257064"></script>
-  <script src="js/app.js?v=257064"></script>
+  <script src="js/data.js?v=257065"></script>
+  <script src="js/app.js?v=257065"></script>
   <script>
     function previewLeaderPhoto(input) {
       if (typeof handleStudentPhotoSelect === 'function') {
@@ -590,7 +590,7 @@
       });
     }
 
-    function handleSubmitColor(e) {
+    async function handleSubmitColor(e) {
       e.preventDefault();
       const cfg = WDSDB.getConfig();
 
@@ -686,7 +686,7 @@
         members
       };
 
-      const result = WDSDB.saveColorApplication(payload);
+      const result = await WDSDB.saveColorApplication(payload);
 
       document.getElementById('modalColorAppId').innerText = result.id;
       document.getElementById('modalColorName').innerText = result.colorName;
