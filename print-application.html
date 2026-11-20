@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257070">
+  <link rel="stylesheet" href="css/style.css?v=257075">
   <style>
     @page {
       size: A4 portrait;
@@ -70,8 +70,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257070"></script>
-  <script src="js/app.js?v=257070"></script>
+  <script src="js/data.js?v=257075"></script>
+  <script src="js/app.js?v=257075"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -108,6 +108,43 @@
       }
     }
 
+    // ฟังก์ชันจัดรูปแบบบรรทัดลงชื่อให้ยืดหยุ่นอัตโนมัติ ไม่ล้นหรือแตกหลุดกรอบสี่เหลี่ยม
+    function formatSignatureLineHtml(rawLabel) {
+      if (!rawLabel) {
+        return `
+          <div class="flex items-center justify-between text-[10px] leading-tight w-full px-0.5 overflow-hidden">
+            <span class="shrink-0 whitespace-nowrap">ลงชื่อ</span>
+            <span class="border-b border-dotted border-black flex-1 mx-1.5 mb-[2px]"></span>
+          </div>
+        `;
+      }
+      const match = rawLabel.match(/^(ลงชื่อ[^\.]*?)\s*\.{3,}\s*(.*)$/);
+      if (match) {
+        const prefix = match[1].trim();
+        const suffix = match[2].trim();
+        return `
+          <div class="flex items-center justify-between text-[10px] leading-tight w-full px-0.5 overflow-hidden">
+            <span class="shrink-0 whitespace-nowrap">${escapeHTML(prefix)}</span>
+            <span class="border-b border-dotted border-black flex-1 mx-1 mb-[2px] min-w-[15px]"></span>
+            ${suffix ? `<span class="shrink-0 whitespace-nowrap font-medium">${escapeHTML(suffix)}</span>` : ''}
+          </div>
+        `;
+      }
+      if (rawLabel.includes('...')) {
+        const parts = rawLabel.split(/\.{3,}/);
+        const left = parts[0].trim();
+        const right = parts.slice(1).join('').trim();
+        return `
+          <div class="flex items-center justify-between text-[10px] leading-tight w-full px-0.5 overflow-hidden">
+            <span class="shrink-0 whitespace-nowrap">${escapeHTML(left)}</span>
+            <span class="border-b border-dotted border-black flex-1 mx-1 mb-[2px] min-w-[15px]"></span>
+            ${right ? `<span class="shrink-0 whitespace-nowrap font-medium">${escapeHTML(right)}</span>` : ''}
+          </div>
+        `;
+      }
+      return `<div class="leading-tight text-[10px] px-0.5 truncate">${escapeHTML(rawLabel)}</div>`;
+    }
+
     // ฟังก์ชันสร้างช่องผู้ลงนามแบบไดนามิก (Dynamic Signatures Grid)
     function renderSignaturesGrid(signatures, d, type, cfg) {
       if (!signatures || !signatures.length) return '';
@@ -123,17 +160,17 @@
       const year = cfg.academicYear ? (parseInt(cfg.academicYear, 10) - 1).toString() : '2569';
 
       const boxesHtml = signatures.map((sig, idx) => {
-        let displayName = '......................................................';
+        let displayName = '........................................';
         if (sig.signerType === 'applicant') {
           if (type === 'council') {
-            displayName = d?.members?.president?.fullname || '......................................................';
+            displayName = d?.members?.president?.fullname || '........................................';
           } else {
-            displayName = d?.leader?.fullname || '......................................................';
+            displayName = d?.leader?.fullname || '........................................';
           }
         } else if (sig.signerType === 'advisor') {
-          displayName = d?.advisorName || '......................................................';
+          displayName = d?.advisorName || '........................................';
         } else if (sig.signerType === 'custom') {
-          displayName = sig.signerName ? sig.signerName : '......................................................';
+          displayName = sig.signerName ? sig.signerName : '........................................';
         }
 
         const dateStr = sig.showDate ? (sig.dateText || `วันที่........เดือน...................พ.ศ. ${year}`) : '';
@@ -142,17 +179,17 @@
         const isApproved = d?.status === 'approved';
 
         return `
-          <div class="border border-black p-2 flex flex-col justify-between h-28 text-[11px] ${hasHeader ? 'bg-slate-50' : ''}">
-            ${hasHeader ? `<div class="font-bold text-[10px] leading-tight">${sig.headerText}</div>` : ''}
+          <div class="border border-black p-1.5 flex flex-col justify-between h-28 text-[11px] overflow-hidden ${hasHeader ? 'bg-slate-50' : ''}">
+            ${hasHeader ? `<div class="font-bold text-[9.5px] leading-tight truncate">${escapeHTML(sig.headerText)}</div>` : ''}
             ${hasStatus ? `
-              <div class="text-[10px] leading-tight">
-                [ ${isApproved ? '✓' : ' '} ] ${sig.statusLabel || 'ผ่านคุณสมบัติ'} &nbsp;&nbsp; [ ] ไม่ผ่าน
+              <div class="text-[9.5px] leading-tight whitespace-nowrap">
+                [ ${isApproved ? '✓' : ' '} ] ${escapeHTML(sig.statusLabel || 'ผ่านคุณสมบัติ')} &nbsp;&nbsp; [ ] ไม่ผ่าน
               </div>
             ` : ''}
-            <div class="leading-tight">${sig.signatureLabel || 'ลงชื่อ......................................................'}</div>
-            <div class="leading-tight">( ${displayName} )</div>
-            ${sig.positionText ? `<div class="text-[9px] leading-tight">(${sig.positionText})</div>` : ''}
-            ${sig.showDate ? `<div class="leading-tight text-[10px]">${dateStr}</div>` : ''}
+            ${formatSignatureLineHtml(sig.signatureLabel)}
+            <div class="leading-tight text-[10px] px-0.5 truncate">( ${escapeHTML(displayName)} )</div>
+            ${sig.positionText ? `<div class="text-[9px] leading-tight px-0.5 truncate">(${escapeHTML(sig.positionText)})</div>` : ''}
+            ${sig.showDate ? `<div class="leading-tight text-[9px] whitespace-nowrap px-0.5 overflow-hidden">${escapeHTML(dateStr)}</div>` : ''}
           </div>
         `;
       }).join('');
