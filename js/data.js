@@ -424,13 +424,90 @@ async function fetchDocDataFromCloudBins(refOrIds) {
   return promise;
 }
 
-function showMobilePdfActionModal(blob, blobUrl, fileName = 'document.pdf', mime = 'application/pdf') {
+function loadPdfJsLib() {
+  if (typeof window === 'undefined') return Promise.resolve(null);
+  if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    return Promise.resolve(window.pdfjsLib);
+  }
+  if (window._wdsPdfJsPromise) return window._wdsPdfJsPromise;
+  window._wdsPdfJsPromise = new Promise((resolve) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = () => {
+      if (window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        resolve(window.pdfjsLib);
+      } else {
+        resolve(null);
+      }
+    };
+    s.onerror = () => resolve(null);
+    document.head.appendChild(s);
+  });
+  return window._wdsPdfJsPromise;
+}
+
+async function renderPdfBytesIntoContainer(bytes, containerEl, statusEl) {
+  try {
+    const pdfjsLib = await loadPdfJsLib();
+    if (!pdfjsLib) {
+      if (statusEl) statusEl.textContent = 'ไม่สามารถโหลดตัวอ่าน PDF บนหน้าจอได้ กรุณากดปุ่มดาวน์โหลดด้านบน';
+      return false;
+    }
+    const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });
+    const pdf = await loadingTask.promise;
+    if (statusEl) statusEl.textContent = `ทั้งหมด ${pdf.numPages} หน้า (เลื่อนลงเพื่ออ่าน)`;
+    containerEl.innerHTML = '';
+
+    const containerWidth = Math.max(280, (containerEl.clientWidth || window.innerWidth || 360) - 24);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const baseVp = page.getViewport({ scale: 1 });
+      const cssScale = Math.min(2.0, containerWidth / baseVp.width);
+      const renderVp = page.getViewport({ scale: cssScale * dpr });
+
+      const wrap = document.createElement('div');
+      wrap.className = 'bg-white shadow-md rounded overflow-hidden mx-auto border border-slate-200';
+      wrap.style.width = `${Math.floor(baseVp.width * cssScale)}px`;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(renderVp.width);
+      canvas.height = Math.floor(renderVp.height);
+      canvas.style.width = '100%';
+      canvas.style.height = 'auto';
+      canvas.style.display = 'block';
+
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: renderVp }).promise;
+
+      const badge = document.createElement('div');
+      badge.className = 'text-[10px] text-slate-400 text-center py-1 bg-slate-50 border-t border-slate-100';
+      badge.textContent = `หน้า ${pageNum} / ${pdf.numPages}`;
+
+      wrap.appendChild(canvas);
+      wrap.appendChild(badge);
+      containerEl.appendChild(wrap);
+    }
+    return true;
+  } catch (err) {
+    console.warn('renderPdfBytesIntoContainer error:', err);
+    if (statusEl) statusEl.textContent = 'ไม่สามารถแสดงตัวอย่าง PDF บนหน้าจอได้ กรุณากดปุ่มดาวน์โหลดด้านบน';
+    return false;
+  }
+}
+
+function showMobilePdfActionModal(blob, blobUrl, fileName = 'document.pdf', mime = 'application/pdf', bytes = null) {
   if (typeof document === 'undefined') return;
   const old = document.getElementById('wdsMobilePdfModal');
   if (old) old.remove();
 
   const safeName = String(fileName || 'document.pdf');
   const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const isPdf = (mime || '').toLowerCase().includes('pdf') || safeName.toLowerCase().endsWith('.pdf');
+  const isImage = (mime || '').toLowerCase().startsWith('image/');
 
   let canWebShare = false;
   let shareFile = null;
@@ -443,65 +520,54 @@ function showMobilePdfActionModal(blob, blobUrl, fileName = 'document.pdf', mime
 
   const modal = document.createElement('div');
   modal.id = 'wdsMobilePdfModal';
-  modal.className = 'fixed inset-0 bg-slate-900/70 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-formal';
+  modal.className = 'fixed inset-0 bg-slate-900/80 z-[9999] flex flex-col font-formal';
   modal.innerHTML = `
-    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-xl shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
-      <div class="bg-[#16325c] text-white px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-2 font-bold text-sm">
-          <i class="fa-solid fa-file-pdf text-amber-300"></i>
-          <span>เปิดอ่าน / ดาวน์โหลดเอกสาร</span>
+    <div class="bg-[#16325c] text-white px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2 flex-shrink-0 shadow-md">
+      <div class="flex items-center gap-2 min-w-0">
+        <i class="fa-solid fa-file-pdf text-amber-300 text-base flex-shrink-0"></i>
+        <div class="min-w-0">
+          <div class="text-xs sm:text-sm font-bold truncate">${esc(safeName)}</div>
+          <div id="wdsMobilePdfStatus" class="text-[10px] text-slate-200 truncate">กำลังเตรียมเอกสาร...</div>
         </div>
-        <button type="button" id="wdsMobilePdfCloseX" class="text-slate-300 hover:text-white px-2 py-1">
-          <i class="fa-solid fa-xmark text-base"></i>
-        </button>
       </div>
-      <div class="p-4 sm:p-5 space-y-3">
-        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-red-50 border border-red-200 text-red-600 flex items-center justify-center flex-shrink-0 text-lg">
-            <i class="fa-solid fa-file-pdf"></i>
-          </div>
-          <div class="min-w-0">
-            <div class="text-xs font-bold text-slate-800 truncate">${esc(safeName)}</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">เลือกวิธีเปิดอ่านหรือบันทึกลงมือถือ</div>
-          </div>
-        </div>
-
+      <div class="flex items-center gap-1.5 flex-shrink-0">
         <a href="${blobUrl}" download="${esc(safeName)}"
-          class="w-full py-3 px-4 rounded-lg bg-[#16325c] hover:bg-[#1e437a] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition">
+          class="px-2.5 py-1.5 rounded bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold text-[11px] sm:text-xs inline-flex items-center gap-1 shadow-xs">
           <i class="fa-solid fa-download"></i>
-          <span>ดาวน์โหลดไฟล์ลงเครื่อง (PDF)</span>
+          <span>ดาวน์โหลด</span>
         </a>
-
-        <a href="${blobUrl}" target="_blank" rel="noopener"
-          class="w-full py-2.5 px-4 rounded-lg bg-white hover:bg-slate-50 text-[#16325c] border border-slate-300 font-semibold text-sm flex items-center justify-center gap-2 transition">
-          <i class="fa-solid fa-up-right-from-square"></i>
-          <span>เปิดอ่านเอกสารเต็มหน้าจอ</span>
-        </a>
-
         ${canWebShare ? `
           <button type="button" id="wdsMobilePdfShareBtn"
-            class="w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition">
+            class="px-2.5 py-1.5 rounded bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-[11px] sm:text-xs inline-flex items-center gap-1 shadow-xs">
             <i class="fa-solid fa-share-from-square"></i>
-            <span>บันทึกลงแอปไฟล์ / แชร์ (มือถือ)</span>
+            <span class="hidden sm:inline">บันทึก/แชร์</span>
           </button>
         ` : ''}
-
-        <button type="button" id="wdsMobilePdfCloseBtn"
-          class="w-full py-2 px-4 rounded-lg text-slate-500 hover:bg-slate-100 text-xs font-medium transition">
-          ปิดหน้าต่าง
+        <button type="button" id="wdsMobilePdfCloseX" class="text-slate-200 hover:text-white px-2 py-1 ml-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
+    </div>
+
+    <div id="wdsMobilePdfBody" class="flex-grow overflow-y-auto bg-slate-200 p-3 space-y-3">
+      ${isImage ? `
+        <div class="bg-white rounded shadow p-2 max-w-2xl mx-auto">
+          <img src="${blobUrl}" class="w-full h-auto rounded" alt="${esc(safeName)}">
+        </div>
+      ` : `
+        <div class="text-center py-10 text-slate-600 text-xs">
+          <i class="fa-solid fa-spinner fa-spin text-2xl text-[#16325c] mb-2 block"></i>
+          <div>กำลังเปิดอ่านเอกสารบนหน้าจอ...</div>
+        </div>
+      `}
     </div>
   `;
 
   const closeModal = () => modal.remove();
-  modal.addEventListener('click', closeModal);
   document.body.appendChild(modal);
 
   const closeX = document.getElementById('wdsMobilePdfCloseX');
-  const closeBtn = document.getElementById('wdsMobilePdfCloseBtn');
   if (closeX) closeX.addEventListener('click', closeModal);
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
   const shareBtn = document.getElementById('wdsMobilePdfShareBtn');
   if (shareBtn && shareFile) {
@@ -510,6 +576,16 @@ function showMobilePdfActionModal(blob, blobUrl, fileName = 'document.pdf', mime
         await navigator.share({ files: [shareFile], title: safeName });
       } catch (e) {}
     });
+  }
+
+  const bodyEl = document.getElementById('wdsMobilePdfBody');
+  const statusEl = document.getElementById('wdsMobilePdfStatus');
+  if (isImage) {
+    if (statusEl) statusEl.textContent = 'พร้อมแสดงผล';
+  } else if (isPdf && bytes && bodyEl) {
+    renderPdfBytesIntoContainer(bytes, bodyEl, statusEl);
+  } else if (statusEl) {
+    statusEl.textContent = 'พร้อมดาวน์โหลด';
   }
 }
 
@@ -542,8 +618,8 @@ function triggerDataUrlBlobAction(dataUrl, fileName = 'document.pdf', forceDownl
         a.click();
         a.remove();
       }
-      // แสดงหน้าต่างช่วยเปิด/ดาวน์โหลดบนมือถือเสมอ เพื่อกัน Popup Blocker หรือ In-App Browser (เช่น LINE / iOS Safari)
-      showMobilePdfActionModal(blob, blobUrl, fileName, mime);
+      // เปิดตัวอ่าน PDF บนหน้าจอ + ปุ่มดาวน์โหลด/แชร์บนมือถือทันที (ไม่โดนบล็อกและอ่านบน Android/iOS/LINE ได้เลย)
+      showMobilePdfActionModal(blob, blobUrl, fileName, mime, bytes);
       setTimeout(() => URL.revokeObjectURL(blobUrl), 300000);
       return true;
     }
@@ -560,7 +636,7 @@ function triggerDataUrlBlobAction(dataUrl, fileName = 'document.pdf', forceDownl
         ? window.open(blobUrl, '_blank', 'noopener')
         : null;
       if (!opened && typeof document !== 'undefined') {
-        showMobilePdfActionModal(blob, blobUrl, fileName, mime);
+        showMobilePdfActionModal(blob, blobUrl, fileName, mime, bytes);
       }
     }
     setTimeout(() => URL.revokeObjectURL(blobUrl), 120000);
