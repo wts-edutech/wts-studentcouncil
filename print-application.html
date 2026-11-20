@@ -35,13 +35,15 @@
 
   <!-- แถบควบคุมก่อนพิมพ์ (ซ่อนเมื่อกดพิมพ์) -->
   <div class="no-print max-w-4xl mx-auto mb-4 bg-slate-800 text-white p-3 rounded flex flex-wrap items-center justify-between gap-3 text-xs">
-    <div class="flex items-center space-x-3">
-      <a href="index.html" class="p-1.5 bg-slate-700 hover:bg-slate-600 rounded text-slate-200 transition">
-        <i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก
-      </a>
+    <div class="flex items-center space-x-2.5">
+      <div id="navBackButtons" class="flex items-center space-x-2">
+        <a id="mainBackBtn" href="index.html" onclick="handleBackNavigation(event)" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-slate-200 transition font-medium flex items-center">
+          <i class="fa-solid fa-arrow-left mr-1.5"></i> <span>กลับหน้าหลัก</span>
+        </a>
+      </div>
       <div>
         <span class="font-bold">พิมพ์แบบฟอร์มใบสมัครกระดาษ A4 ทางการ</span>
-        <span class="text-slate-400 ml-2">ขนาดมาตรฐาน A4 พอดี 1 หน้ากระดาษ</span>
+        <span class="text-slate-400 ml-2 hidden sm:inline">ขนาดมาตรฐาน A4 พอดี 1 หน้ากระดาษ</span>
       </div>
     </div>
 
@@ -495,10 +497,69 @@
       renderApplication();
     }
 
+    function initNavBackButton() {
+      const isFromAdmin = urlParams.get('from') === 'admin' || 
+                          document.referrer.includes('admin') || 
+                          (typeof WDSDB !== 'undefined' && WDSDB.isAdminLoggedIn && WDSDB.isAdminLoggedIn());
+      
+      const navContainer = document.getElementById('navBackButtons');
+      if (!navContainer) return;
+
+      if (isFromAdmin) {
+        const adminTab = appType === 'color' ? 'color' : 'council';
+        navContainer.innerHTML = `
+          <button type="button" onclick="handleBackNavigation(event)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-bold transition flex items-center shadow-xs cursor-pointer">
+            <i class="fa-solid fa-arrow-left mr-1.5"></i> กลับหน้าหลังบ้าน (CMS)
+          </button>
+          <a href="index.html" class="px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition flex items-center" title="ไปยังหน้าหลักเว็บไซต์นักเรียน">
+            <i class="fa-solid fa-house mr-1"></i> <span class="hidden sm:inline">หน้าหลัก</span>
+          </a>
+        `;
+      } else {
+        navContainer.innerHTML = `
+          <a href="index.html" onclick="handleBackNavigation(event)" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-slate-200 transition font-medium flex items-center">
+            <i class="fa-solid fa-arrow-left mr-1.5"></i> กลับหน้าหลัก
+          </a>
+        `;
+      }
+    }
+
+    function handleBackNavigation(e) {
+      if (e) e.preventDefault();
+      const isFromAdmin = urlParams.get('from') === 'admin' || 
+                          document.referrer.includes('admin') || 
+                          (typeof WDSDB !== 'undefined' && WDSDB.isAdminLoggedIn && WDSDB.isAdminLoggedIn());
+      
+      if (isFromAdmin) {
+        // หากเปิดเป็นแท็บใหม่ ให้ปิดแท็บเพื่อกลับสู่หน้าหลังบ้านเดิมได้ทันที
+        if (window.opener && !window.opener.closed) {
+          window.close();
+          setTimeout(() => {
+            const adminTab = appType === 'color' ? 'color' : 'council';
+            window.location.href = `admin.html?tab=${adminTab}`;
+          }, 150);
+          return;
+        }
+        const adminTab = appType === 'color' ? 'color' : 'council';
+        window.location.href = `admin.html?tab=${adminTab}`;
+      } else {
+        if (window.history.length > 1 && document.referrer && !document.referrer.includes('admin')) {
+          window.history.back();
+        } else {
+          window.location.href = 'index.html';
+        }
+      }
+    }
+    window.handleBackNavigation = handleBackNavigation;
+
     window.addEventListener('wds-apps-synced', () => { renderApplication(); });
     window.addEventListener('wds-cloud-synced', () => { renderApplication(); });
-    window.addEventListener('pageshow', () => { renderApplication(); });
+    window.addEventListener('pageshow', () => { 
+      renderApplication(); 
+      initNavBackButton();
+    });
     window.addEventListener('DOMContentLoaded', () => {
+      initNavBackButton();
       renderApplication();
     });
   </script>
