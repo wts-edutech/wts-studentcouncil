@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257075">
-  <script src="js/data.js?v=257075"></script>
-  <script src="js/app.js?v=257075"></script>
+  <link rel="stylesheet" href="css/style.css?v=257080">
+  <script src="js/data.js?v=257080"></script>
+  <script src="js/app.js?v=257080"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -2054,7 +2054,7 @@
 
   <!-- Review Modal -->
   <div id="reviewModal" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-3 hidden">
-    <div class="bg-white rounded border border-slate-300 max-w-2xl w-full max-h-[92vh] flex flex-col shadow-lg overflow-hidden font-formal">
+    <div class="bg-white rounded border border-slate-300 max-w-3xl w-full max-h-[92vh] flex flex-col shadow-lg overflow-hidden font-formal">
       <div class="bg-slate-800 text-white p-3 flex items-center justify-between flex-shrink-0 text-xs">
         <h4 class="font-bold flex items-center">
           <i class="fa-solid fa-clipboard-check mr-2 text-amber-400"></i> แบบบันทึกผลการตรวจสอบคุณสมบัติผู้สมัครรับเลือกตั้ง ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
@@ -2064,6 +2064,26 @@
         </button>
       </div>
       <div id="reviewModalContent" class="p-5 overflow-y-auto flex-grow space-y-4 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- Student Photo Preview Modal -->
+  <div id="photoPreviewModal" class="fixed inset-0 bg-slate-900/80 z-[60] flex items-center justify-center p-4 hidden" onclick="closePhotoPreviewModal()">
+    <div class="bg-white rounded-lg p-3 max-w-sm w-full shadow-2xl text-center font-formal" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200">
+        <h5 id="photoPreviewTitle" class="font-bold text-xs text-slate-800 truncate">รูปถ่ายนักเรียน</h5>
+        <button onclick="closePhotoPreviewModal()" class="text-slate-400 hover:text-slate-700 p-1">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+      <div class="w-48 h-64 mx-auto border border-slate-300 rounded overflow-hidden bg-slate-100 flex items-center justify-center shadow-inner">
+        <img id="photoPreviewImg" src="" class="w-full h-full object-cover">
+      </div>
+      <div class="mt-3">
+        <button onclick="closePhotoPreviewModal()" class="gov-btn gov-btn-gray w-full text-xs">
+          ปิดหน้าต่าง
+        </button>
+      </div>
     </div>
   </div>
 
@@ -5181,11 +5201,24 @@
         });
         const rows = displayList.map((entry, i) => {
           const m = entry.m || {};
+          let photoUrl = m.photo;
+          if (!photoUrl) {
+            if (entry.key === 'president' || i === 0 || (m.fullname && leader?.fullname && m.fullname.trim() === leader.fullname.trim())) {
+              photoUrl = leader?.photo || THAI_STUDENT_MALE_PHOTO;
+            } else {
+              photoUrl = (i % 2 === 0) ? THAI_STUDENT_MALE_PHOTO : THAI_STUDENT_FEMALE_PHOTO;
+            }
+          }
           return `
             <tr>
               <td class="text-center font-bold">${i + 1}</td>
+              <td class="text-center p-1">
+                <div class="w-8 h-10 border border-slate-300 rounded overflow-hidden bg-slate-100 mx-auto flex items-center justify-center cursor-pointer shadow-xs hover:border-[#16325c] hover:shadow-md transition" title="คลิกเพื่อดูรูปขยาย" onclick="showPhotoPreview('${escapeHTML(photoUrl)}', '${escapeHTML(m.fullname || entry.title)}')">
+                  <img src="${escapeHTML(photoUrl)}" class="w-full h-full object-cover" onerror="this.src='${THAI_STUDENT_MALE_PHOTO}'" alt="${escapeHTML(m.fullname || '')}">
+                </div>
+              </td>
               <td>${escapeHTML(m.role || entry.title)}</td>
-              <td class="font-semibold">${escapeHTML(m.fullname || '-')}</td>
+              <td class="font-semibold text-slate-800">${escapeHTML(m.fullname || '-')}</td>
               <td class="text-center">ม.4/${escapeHTML(m.room || '-')}</td>
               <td class="text-center font-mono">${escapeHTML(m.studentId || '-')}</td>
               <td class="text-center font-semibold">${escapeHTML(m.gpax || '-')}</td>
@@ -5198,11 +5231,12 @@
             <div class="bg-slate-100 px-3 py-1.5 font-bold text-slate-700 border-b border-slate-300">
               รายชื่อผู้สมัครในพรรค (${displayList.length} ตำแหน่ง)
             </div>
-            <div class="overflow-x-auto max-h-48">
+            <div class="overflow-x-auto max-h-56">
               <table class="gov-sys-table text-[11px]">
                 <thead>
                   <tr>
                     <th class="w-8">ที่</th>
+                    <th class="w-12 text-center">รูปถ่าย</th>
                     <th>ตำแหน่ง</th>
                     <th>ชื่อ-นามสกุล</th>
                     <th class="w-16">ห้อง</th>
@@ -5220,26 +5254,35 @@
         const memList = item.members || [];
         const configuredMemCount = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions().length : 0;
         if (memList.length > 0 || configuredMemCount > 0) {
-          const rows = memList.map((m, i) => `
+          const rows = memList.map((m, i) => {
+            const photoUrl = m.photo || ((i % 2 === 0) ? THAI_STUDENT_FEMALE_PHOTO : THAI_STUDENT_MALE_PHOTO);
+            return `
             <tr>
               <td class="text-center font-bold">${i + 1}</td>
+              <td class="text-center p-1">
+                <div class="w-8 h-10 border border-slate-300 rounded overflow-hidden bg-slate-100 mx-auto flex items-center justify-center cursor-pointer shadow-xs hover:border-[#16325c] hover:shadow-md transition" title="คลิกเพื่อดูรูปขยาย" onclick="showPhotoPreview('${escapeHTML(photoUrl)}', '${escapeHTML(m.fullname || m.role || 'สมาชิก')}')">
+                  <img src="${escapeHTML(photoUrl)}" class="w-full h-full object-cover" onerror="this.src='${THAI_STUDENT_MALE_PHOTO}'" alt="${escapeHTML(m.fullname || '')}">
+                </div>
+              </td>
               <td>${escapeHTML(m.role || 'คณะทำงาน')}</td>
-              <td class="font-semibold">${escapeHTML(m.fullname || '-')}</td>
+              <td class="font-semibold text-slate-800">${escapeHTML(m.fullname || '-')}</td>
               <td class="text-center">ม.4/${escapeHTML(m.room || '-')}</td>
               <td class="text-center font-mono">${escapeHTML(m.studentId || '-')}</td>
               <td class="text-center font-bold ${m.behaviorScore < cfg.minBehaviorScore ? 'text-red-600' : 'text-green-700'}">${m.behaviorScore !== undefined ? m.behaviorScore : '-'}</td>
             </tr>
-          `).join('');
+          `;
+          }).join('');
           membersTableHtml = `
             <div class="border border-slate-300 rounded overflow-hidden">
               <div class="bg-slate-100 px-3 py-1.5 font-bold text-slate-700 border-b border-slate-300">
                 รายชื่อคณะทำงานในทีม (${memList.length} คน)
               </div>
-              <div class="overflow-x-auto max-h-44">
+              <div class="overflow-x-auto max-h-56">
                 <table class="gov-sys-table text-[11px]">
                   <thead>
                     <tr>
                       <th class="w-8">ที่</th>
+                      <th class="w-12 text-center">รูปถ่าย</th>
                       <th>บทบาทหน้าที่</th>
                       <th>ชื่อ-นามสกุล</th>
                       <th class="w-16">ห้อง</th>
@@ -5247,7 +5290,7 @@
                       <th class="w-16">คะแนน</th>
                     </tr>
                   </thead>
-                  <tbody>${rows || '<tr><td colspan="6" class="text-center p-2 text-slate-400">ไม่มีข้อมูลคณะทำงานเพิ่มเติม</td></tr>'}</tbody>
+                  <tbody>${rows || '<tr><td colspan="7" class="text-center p-2 text-slate-400">ไม่มีข้อมูลคณะทำงานเพิ่มเติม</td></tr>'}</tbody>
                 </table>
               </div>
             </div>
@@ -5257,8 +5300,8 @@
 
       content.innerHTML = `
         <div class="border border-slate-300 p-3 bg-slate-50 rounded flex items-start space-x-4">
-          <div class="photo-box flex-shrink-0" style="width: 2.4cm; height: 3.0cm;">
-            ${leader?.photo ? `<img src="${leader.photo}" class="w-full h-full object-cover">` : '<div class="text-[10px] p-2 text-center text-slate-400">ไม่มีรูป</div>'}
+          <div class="photo-box flex-shrink-0 cursor-pointer" title="คลิกเพื่อดูรูปขยาย" onclick="showPhotoPreview('${escapeHTML(leader?.photo || THAI_STUDENT_MALE_PHOTO)}', '${escapeHTML(leader?.fullname || 'ผู้ลงสมัครประธาน')}')" style="width: 2.4cm; height: 3.0cm;">
+            ${leader?.photo ? `<img src="${leader.photo}" class="w-full h-full object-cover">` : `<img src="${THAI_STUDENT_MALE_PHOTO}" class="w-full h-full object-cover">`}
           </div>
           <div class="flex-grow space-y-1">
             <div class="flex items-center justify-between">
@@ -5318,6 +5361,21 @@
 
     function closeReviewModal() {
       document.getElementById('reviewModal').classList.add('hidden');
+    }
+
+    function showPhotoPreview(url, title) {
+      if (!url) return;
+      const modal = document.getElementById('photoPreviewModal');
+      const img = document.getElementById('photoPreviewImg');
+      const titleEl = document.getElementById('photoPreviewTitle');
+      if (img) img.src = url;
+      if (titleEl) titleEl.textContent = title ? `รูปถ่าย: ${title}` : 'รูปถ่ายนักเรียน';
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePhotoPreviewModal() {
+      const modal = document.getElementById('photoPreviewModal');
+      if (modal) modal.classList.add('hidden');
     }
 
     async function saveReview(e, id) {

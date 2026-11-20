@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257075">
+  <link rel="stylesheet" href="css/style.css?v=257080">
   <style>
     @page {
       size: A4 portrait;
@@ -28,6 +28,11 @@
       border-bottom: 1px dotted #333;
       display: inline-block;
       padding: 0 4px;
+    }
+    .print-doc .formal-table th,
+    .print-doc .formal-table td {
+      padding: 2.5px 3.5px !important;
+      line-height: 1.25 !important;
     }
   </style>
 </head>
@@ -70,8 +75,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257075"></script>
-  <script src="js/app.js?v=257075"></script>
+  <script src="js/data.js?v=257080"></script>
+  <script src="js/app.js?v=257080"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -306,18 +311,19 @@
               <table class="formal-table text-[11px]">
                 <thead>
                   <tr class="bg-slate-100">
-                    <th style="width: 5%;">ที่</th>
-                    <th style="width: 25%;">ตำแหน่งในสภานักเรียน</th>
-                    <th style="width: 25%;">ชื่อ - นามสกุล</th>
-                    <th style="width: 8%;">ห้อง</th>
+                    <th style="width: 4%;">ที่</th>
+                    <th style="width: 7%;">รูปถ่าย</th>
+                    <th style="width: 21%;">ตำแหน่งในสภานักเรียน</th>
+                    <th style="width: 23%;">ชื่อ - นามสกุล</th>
+                    <th style="width: 7%;">ห้อง</th>
                     <th style="width: 11%;">เลขประจำตัว</th>
-                    <th style="width: 9%;">คะแนนคงเหลือ</th>
-                    <th style="width: 8%;">เกรดเฉลี่ย</th>
-                    <th style="width: 9%;">ข้อตกลง</th>
+                    <th style="width: 9%;">คะแนน</th>
+                    <th style="width: 8%;">เกรด</th>
+                    <th style="width: 10%;">ข้อตกลง</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${displayList.map((entry, idx) => renderPositionRow(idx + 1, entry.title, entry.mem)).join('')}
+                  ${displayList.map((entry, idx) => renderPositionRow(idx + 1, entry.title, entry.mem, entry.key, d)).join('')}
                 </tbody>
               </table>
             `;
@@ -334,11 +340,14 @@
       `;
     }
 
-    function renderPositionRow(num, title, mem) {
+    function renderPositionRow(num, title, mem, posKey, appData) {
       if (!mem || !mem.fullname) {
         return `
           <tr>
             <td class="text-center">${num}</td>
+            <td class="text-center p-0.5">
+              <div class="w-6 h-7.5 border border-slate-300 mx-auto flex items-center justify-center text-[8px] text-slate-400 bg-slate-50">รูป</div>
+            </td>
             <td>${title}</td>
             <td>................................................</td>
             <td class="text-center">ม.4/..</td>
@@ -349,9 +358,22 @@
           </tr>
         `;
       }
+      let photoUrl = mem.photo;
+      if (!photoUrl) {
+        if (posKey === 'president' || num === 1 || (mem.fullname && appData?.leader?.fullname && mem.fullname.trim() === appData.leader.fullname.trim())) {
+          photoUrl = appData?.leader?.photo || THAI_STUDENT_MALE_PHOTO;
+        } else {
+          photoUrl = (num % 2 === 1) ? THAI_STUDENT_MALE_PHOTO : THAI_STUDENT_FEMALE_PHOTO;
+        }
+      }
       return `
         <tr>
           <td class="text-center font-bold">${num}</td>
+          <td class="text-center p-0.5">
+            <div class="w-6 h-7.5 border border-black mx-auto overflow-hidden bg-white flex items-center justify-center">
+              <img src="${photoUrl}" class="w-full h-full object-cover" onerror="this.src='${THAI_STUDENT_MALE_PHOTO}'" alt="">
+            </div>
+          </td>
           <td><strong>${title}</strong></td>
           <td>${mem.fullname}</td>
           <td class="text-center">ม.${mem.grade || '4'}/${mem.room}</td>
@@ -467,12 +489,13 @@
               <table class="formal-table text-[11px]">
                 <thead>
                   <tr class="bg-slate-100">
-                    <th style="width: 6%;">ที่</th>
-                    <th style="width: 28%;">ชื่อ - นามสกุล</th>
-                    <th style="width: 20%;">บทบาทหน้าที่ในคณะสี</th>
-                    <th style="width: 10%;">ห้อง</th>
-                    <th style="width: 14%;">เลขประจำตัว</th>
-                    <th style="width: 11%;">คะแนนพฤติกรรม</th>
+                    <th style="width: 5%;">ที่</th>
+                    <th style="width: 7%;">รูปถ่าย</th>
+                    <th style="width: 25%;">ชื่อ - นามสกุล</th>
+                    <th style="width: 21%;">บทบาทหน้าที่ในคณะสี</th>
+                    <th style="width: 8%;">ห้อง</th>
+                    <th style="width: 12%;">เลขประจำตัว</th>
+                    <th style="width: 11%;">คะแนน</th>
                     <th style="width: 11%;">เกรดเฉลี่ย</th>
                   </tr>
                 </thead>
@@ -503,6 +526,9 @@
         return colorMembers.map((pos, idx) => `
           <tr>
             <td class="text-center">${idx + 1}</td>
+            <td class="text-center p-0.5">
+              <div class="w-6 h-7.5 border border-slate-300 mx-auto flex items-center justify-center text-[8px] text-slate-400 bg-slate-50">รูป</div>
+            </td>
             <td>................................................</td>
             <td><strong>${pos.title}</strong></td>
             <td class="text-center">ม.4/..</td>
@@ -513,9 +539,16 @@
         `).join('');
       }
 
-      return members.map((mem, idx) => `
+      return members.map((mem, idx) => {
+        const photoUrl = mem.photo || ((idx % 2 === 0) ? THAI_STUDENT_FEMALE_PHOTO : THAI_STUDENT_MALE_PHOTO);
+        return `
         <tr>
           <td class="text-center font-bold">${idx + 1}</td>
+          <td class="text-center p-0.5">
+            <div class="w-6 h-7.5 border border-black mx-auto overflow-hidden bg-white flex items-center justify-center">
+              <img src="${photoUrl}" class="w-full h-full object-cover" onerror="this.src='${THAI_STUDENT_MALE_PHOTO}'" alt="">
+            </div>
+          </td>
           <td>${mem.fullname}</td>
           <td>${mem.role || colorMembers[idx]?.title || 'คณะทำงาน'}</td>
           <td class="text-center">ม.${mem.grade || '4'}/${mem.room}</td>
@@ -523,7 +556,8 @@
           <td class="text-center font-semibold text-green-800">${mem.behaviorScore}</td>
           <td class="text-center font-semibold">${mem.gpax}</td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function toggleBlankForm() {
