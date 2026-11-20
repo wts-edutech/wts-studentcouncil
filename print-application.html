@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257085">
+  <link rel="stylesheet" href="css/style.css?v=257080">
   <style>
     @page {
       size: A4 portrait;
@@ -29,6 +29,7 @@
       display: inline-block;
       padding: 0 4px;
     }
+    .print-doc .formal-table tr { page-break-inside: avoid; }
     .print-doc .formal-table th,
     .print-doc .formal-table td {
       padding: 2.5px 3.5px !important;
@@ -75,8 +76,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257085"></script>
-  <script src="js/app.js?v=257085"></script>
+  <script src="js/data.js?v=257080"></script>
+  <script src="js/app.js?v=257080"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -207,7 +208,7 @@
 
       return `
         <!-- Signatures (Dynamic ${colCount} Columns) -->
-        <div class="grid ${gridColsClass} gap-2 text-center text-[11px]">
+        <div class="grid ${gridColsClass} gap-2 text-center text-[11px]" style="break-inside: avoid; page-break-inside: avoid;">
           ${boxesHtml}
         </div>
       `;
@@ -352,7 +353,7 @@
           <tr>
             <td class="text-center">${num}</td>
             <td class="text-center p-0.5">
-              <div class="w-6 h-7.5 border border-slate-300 mx-auto flex items-center justify-center text-[8px] text-slate-400 bg-slate-50">รูป</div>
+              <div class="w-5 h-6 border border-slate-300 mx-auto flex items-center justify-center text-[8px] text-slate-400 bg-slate-50">รูป</div>
             </td>
             <td>${title}</td>
             <td>................................................</td>
@@ -376,13 +377,13 @@
         <tr>
           <td class="text-center font-bold">${num}</td>
           <td class="text-center p-0.5">
-            <div class="w-6 h-7.5 border border-black mx-auto overflow-hidden bg-white flex items-center justify-center">
+            <div class="w-5 h-6 border border-black mx-auto overflow-hidden bg-white flex items-center justify-center">
               <img src="${photoUrl}" class="w-full h-full object-cover" onerror="this.src='${THAI_STUDENT_MALE_PHOTO}'" alt="">
             </div>
           </td>
           <td><strong>${title}</strong></td>
           <td>${mem.fullname}</td>
-          <td class="text-center">ม.${mem.grade || '4'}/${mem.room}</td>
+          <td class="text-center">ม.${String(mem.grade || '4').replace(/^ม\.?/, '')}/${mem.room}</td>
           <td class="text-center font-mono">${mem.studentId}</td>
           <td class="text-center font-semibold text-green-800">${mem.behaviorScore}</td>
           <td class="text-center font-semibold">${mem.gpax}</td>
@@ -533,7 +534,7 @@
           <tr>
             <td class="text-center">${idx + 1}</td>
             <td class="text-center p-0.5">
-              <div class="w-6 h-7.5 border border-slate-300 mx-auto flex items-center justify-center text-[8px] text-slate-400 bg-slate-50">รูป</div>
+              <div class="w-5 h-6 border border-slate-300 mx-auto flex items-center justify-center text-[8px] text-slate-400 bg-slate-50">รูป</div>
             </td>
             <td>................................................</td>
             <td><strong>${pos.title}</strong></td>
@@ -551,13 +552,13 @@
         <tr>
           <td class="text-center font-bold">${idx + 1}</td>
           <td class="text-center p-0.5">
-            <div class="w-6 h-7.5 border border-black mx-auto overflow-hidden bg-white flex items-center justify-center">
+            <div class="w-5 h-6 border border-black mx-auto overflow-hidden bg-white flex items-center justify-center">
               <img src="${photoUrl}" class="w-full h-full object-cover" onerror="this.src='${THAI_STUDENT_MALE_PHOTO}'" alt="">
             </div>
           </td>
           <td>${mem.fullname}</td>
           <td>${mem.role || colorMembers[idx]?.title || 'คณะทำงาน'}</td>
-          <td class="text-center">ม.${mem.grade || '4'}/${mem.room}</td>
+          <td class="text-center">ม.${String(mem.grade || '4').replace(/^ม\.?/, '')}/${mem.room}</td>
           <td class="text-center font-mono">${mem.studentId}</td>
           <td class="text-center font-semibold text-green-800">${mem.behaviorScore}</td>
           <td class="text-center font-semibold">${mem.gpax}</td>
