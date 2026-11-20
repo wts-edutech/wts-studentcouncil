@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257080">
+  <link rel="stylesheet" href="css/style.css?v=257085">
   <style>
     @page {
       size: A4 portrait;
@@ -75,8 +75,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257080"></script>
-  <script src="js/app.js?v=257080"></script>
+  <script src="js/data.js?v=257085"></script>
+  <script src="js/app.js?v=257085"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -184,17 +184,23 @@
         const isApproved = d?.status === 'approved';
 
         return `
-          <div class="border border-black p-1.5 flex flex-col justify-between h-28 text-[11px] overflow-hidden ${hasHeader ? 'bg-slate-50' : ''}">
-            ${hasHeader ? `<div class="font-bold text-[9.5px] leading-tight truncate">${escapeHTML(sig.headerText)}</div>` : ''}
-            ${hasStatus ? `
-              <div class="text-[9.5px] leading-tight whitespace-nowrap">
-                [ ${isApproved ? '✓' : ' '} ] ${escapeHTML(sig.statusLabel || 'ผ่านคุณสมบัติ')} &nbsp;&nbsp; [ ] ไม่ผ่าน
+          <div class="border border-black p-2 flex flex-col justify-between h-[104px] text-[11px] overflow-hidden ${hasHeader ? 'bg-slate-50' : 'bg-white'}">
+            ${(hasHeader || hasStatus) ? `
+              <div class="space-y-0.5 pb-1 border-b border-dotted border-black/30">
+                ${hasHeader ? `<div class="font-bold text-[9.5px] leading-tight truncate">${escapeHTML(sig.headerText)}</div>` : ''}
+                ${hasStatus ? `
+                  <div class="text-[9.5px] leading-tight whitespace-nowrap">
+                    [ ${isApproved ? '✓' : ' '} ] ${escapeHTML(sig.statusLabel || 'ผ่านคุณสมบัติ')} &nbsp;&nbsp; [ ] ไม่ผ่าน
+                  </div>
+                ` : ''}
               </div>
             ` : ''}
-            ${formatSignatureLineHtml(sig.signatureLabel)}
-            <div class="leading-tight text-[10px] px-0.5 truncate">( ${escapeHTML(displayName)} )</div>
-            ${sig.positionText ? `<div class="text-[9px] leading-tight px-0.5 truncate">(${escapeHTML(sig.positionText)})</div>` : ''}
-            ${sig.showDate ? `<div class="leading-tight text-[9px] whitespace-nowrap px-0.5 overflow-hidden">${escapeHTML(dateStr)}</div>` : ''}
+            <div class="space-y-1.5 w-full text-center my-auto pt-0.5">
+              ${formatSignatureLineHtml(sig.signatureLabel)}
+              <div class="leading-tight text-[10px] px-0.5 truncate">( ${escapeHTML(displayName)} )</div>
+              ${sig.positionText ? `<div class="text-[9px] leading-tight px-0.5 truncate">(${escapeHTML(sig.positionText)})</div>` : ''}
+              ${sig.showDate ? `<div class="leading-tight text-[9px] whitespace-nowrap px-0.5 overflow-hidden pt-0.5">${escapeHTML(dateStr)}</div>` : ''}
+            </div>
           </div>
         `;
       }).join('');

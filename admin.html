@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257080">
-  <script src="js/data.js?v=257080"></script>
-  <script src="js/app.js?v=257080"></script>
+  <link rel="stylesheet" href="css/style.css?v=257085">
+  <script src="js/data.js?v=257085"></script>
+  <script src="js/app.js?v=257085"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -4487,17 +4487,23 @@
         })();
 
         return `
-          <div class="border border-black p-1.5 flex flex-col justify-between h-28 text-[11px] text-center overflow-hidden ${hasHeader ? 'bg-slate-50' : 'bg-white'}">
-            ${hasHeader ? `<div class="font-bold text-[9.5px] leading-tight text-slate-800 truncate">${escapeHTML(sig.headerText)}</div>` : ''}
-            ${hasStatus ? `
-              <div class="text-[9.5px] leading-tight text-slate-700 whitespace-nowrap">
-                [ ✓ ] ${escapeHTML(sig.statusLabel || 'ผ่านคุณสมบัติ')} &nbsp;&nbsp; [ ] ไม่ผ่าน
+          <div class="border border-black p-2 flex flex-col justify-between h-[104px] text-[11px] text-center overflow-hidden ${hasHeader ? 'bg-slate-50' : 'bg-white'}">
+            ${(hasHeader || hasStatus) ? `
+              <div class="space-y-0.5 pb-1 border-b border-dotted border-slate-300">
+                ${hasHeader ? `<div class="font-bold text-[9.5px] leading-tight text-slate-800 truncate">${escapeHTML(sig.headerText)}</div>` : ''}
+                ${hasStatus ? `
+                  <div class="text-[9.5px] leading-tight text-slate-700 whitespace-nowrap">
+                    [ ✓ ] ${escapeHTML(sig.statusLabel || 'ผ่านคุณสมบัติ')} &nbsp;&nbsp; [ ] ไม่ผ่าน
+                  </div>
+                ` : ''}
               </div>
             ` : ''}
-            ${sigLineHtml}
-            <div class="leading-tight text-slate-700 text-[10px] px-0.5 truncate">( ${escapeHTML(displayName)} )</div>
-            ${sig.positionText ? `<div class="text-[9px] leading-tight text-slate-600 px-0.5 truncate">(${escapeHTML(sig.positionText)})</div>` : ''}
-            ${sig.showDate ? `<div class="leading-tight text-[9px] text-slate-500 whitespace-nowrap px-0.5 overflow-hidden">${escapeHTML(sig.dateText || 'วันที่........เดือน...................พ.ศ. 2569')}</div>` : ''}
+            <div class="space-y-1.5 w-full text-center my-auto pt-0.5">
+              ${sigLineHtml}
+              <div class="leading-tight text-slate-700 text-[10px] px-0.5 truncate">( ${escapeHTML(displayName)} )</div>
+              ${sig.positionText ? `<div class="text-[9px] leading-tight text-slate-600 px-0.5 truncate">(${escapeHTML(sig.positionText)})</div>` : ''}
+              ${sig.showDate ? `<div class="leading-tight text-[9px] text-slate-500 whitespace-nowrap px-0.5 overflow-hidden pt-0.5">${escapeHTML(sig.dateText || 'วันที่........เดือน...................พ.ศ. 2569')}</div>` : ''}
+            </div>
           </div>
         `;
       }).join('');
