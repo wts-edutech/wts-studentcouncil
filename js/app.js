@@ -1225,6 +1225,13 @@ function initHomeLiveStatsAndCountdown() {
   window.addEventListener('wds-apps-synced', updateHomeLiveStats);
   window.addEventListener('wds-cloud-synced', updateHomeLiveStats);
 
+  // ดึงข้อมูลยอดผู้สมัครล่าสุดจากคลาวด์ทุก 12 วินาที เพื่อแสดงผลเรียลไทม์
+  setInterval(() => {
+    if (typeof WDSDB !== 'undefined' && typeof WDSDB.syncApplicationsFromCloud === 'function') {
+      WDSDB.syncApplicationsFromCloud().catch(() => {});
+    }
+  }, 12000);
+
   const dEl = document.getElementById('cdDays');
   const hEl = document.getElementById('cdHours');
   const mEl = document.getElementById('cdMins');

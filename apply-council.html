@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257065">
+  <link rel="stylesheet" href="css/style.css?v=257070">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -53,7 +53,7 @@
 
   <!-- Main Form -->
   <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
-    <form id="councilForm" onsubmit="handleSubmitCouncil(event)" class="space-y-6">
+    <form id="councilForm" novalidate onsubmit="handleSubmitCouncil(event)" class="space-y-6">
 
       <!-- ส่วนที่ 1: ข้อมูลพรรค -->
       <div class="gov-card">
@@ -140,7 +140,7 @@
         <a href="index.html" class="btn-gov-outline text-xs">
           <i class="fa-solid fa-arrow-left mr-1.5"></i> ยกเลิก / กลับหน้าหลัก
         </a>
-        <button type="submit" class="btn-gov-primary text-xs sm:text-sm">
+        <button type="submit" id="submitCouncilBtn" class="btn-gov-primary text-xs sm:text-sm">
           <i class="fa-solid fa-paper-plane mr-1.5"></i> บันทึกและส่งใบสมัครสภานักเรียน
         </button>
       </div>
@@ -215,8 +215,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257065"></script>
-  <script src="js/app.js?v=257065"></script>
+  <script src="js/data.js?v=257070"></script>
+  <script src="js/app.js?v=257070"></script>
   <script>
     let lastRenderedCouncilSig = '';
 
@@ -340,27 +340,27 @@
 
                 <div>
                   <label class="block font-semibold text-slate-700 mb-1">เลขประจำตัวนักเรียน <span class="text-red-600">*</span></label>
-                  <input type="text" id="studentId_${pos.key}" required pattern="[0-9]{5}" maxlength="5" placeholder="45xxx" class="gov-input w-full">
+                  <input type="text" id="studentId_${pos.key}" inputmode="numeric" maxlength="6" placeholder="45xxx (5 หลัก)" class="gov-input w-full">
                 </div>
 
                 <div>
                   <label class="block font-semibold text-slate-700 mb-1">คะแนนพฤติกรรมคงเหลือ <span class="text-red-600">*</span></label>
-                  <input type="number" id="behaviorScore_${pos.key}" required min="${cfg.minBehaviorScore}" max="100" placeholder="${cfg.minBehaviorScore}-100" class="gov-input w-full">
+                  <input type="number" id="behaviorScore_${pos.key}" min="${cfg.minBehaviorScore}" max="100" placeholder="${cfg.minBehaviorScore}-100" class="gov-input w-full">
                 </div>
 
                 <div>
                   <label class="block font-semibold text-slate-700 mb-1">เกรดเฉลี่ย ม.4 เทอม 1 <span class="text-red-600">*</span></label>
-                  <input type="number" step="0.01" min="${minGpa}" max="4.00" id="gpax_${pos.key}" required placeholder=">= ${minGpa}" class="gov-input w-full">
+                  <input type="number" step="any" min="${minGpa}" max="4.00" id="gpax_${pos.key}" placeholder=">= ${minGpa}" class="gov-input w-full">
                 </div>
 
                 <div class="sm:col-span-2">
                   <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ <span class="text-red-600">*</span></label>
-                  <input type="tel" id="phone_${pos.key}" required placeholder="เช่น 089-111-2233" class="gov-input w-full">
+                  <input type="tel" id="phone_${pos.key}" placeholder="เช่น 089-111-2233" class="gov-input w-full">
                 </div>
 
                 <div class="sm:col-span-2 md:col-span-3 pt-1">
                   <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" id="agreed_${pos.key}" required class="rounded text-[#16325c] border-slate-300">
+                    <input type="checkbox" id="agreed_${pos.key}" class="rounded text-[#16325c] border-slate-300">
                     <span class="text-xs text-slate-700">
                       ผู้สมัครตำแหน่งนี้ ยอมรับข้อตกลงของสภานักเรียน ${escapeHTML(cfg.schoolName)} ประจำปีการศึกษา ${escapeHTML(cfg.councilAgreementYear)}
                     </span>
@@ -425,81 +425,162 @@
       }
     }
 
+    function highlightAndFocusField(el, message) {
+      if (!el) return;
+      el.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      try { el.focus(); } catch (e) {}
+      showToast(message, 'warning');
+      const removeHighlight = () => {
+        el.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
+        el.removeEventListener('input', removeHighlight);
+        el.removeEventListener('change', removeHighlight);
+      };
+      el.addEventListener('input', removeHighlight);
+      el.addEventListener('change', removeHighlight);
+    }
+
     async function handleSubmitCouncil(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       const cfg = WDSDB.getConfig();
+      const submitBtn = document.getElementById('submitCouncilBtn');
 
-      const partyName = document.getElementById('partyName').value.trim();
-      const slogan = document.getElementById('slogan').value.trim();
-      const advisorName = document.getElementById('advisorName').value.trim();
-      const advisorPhone = document.getElementById('advisorPhone').value.trim();
+      // 1. ตรวจสอบข้อมูลพรรค
+      const partyNameEl = document.getElementById('partyName');
+      if (!partyNameEl || !partyNameEl.value.trim()) {
+        highlightAndFocusField(partyNameEl, 'กรุณากรอกชื่อพรรค');
+        return;
+      }
+      const sloganEl = document.getElementById('slogan');
+      if (!sloganEl || !sloganEl.value.trim()) {
+        highlightAndFocusField(sloganEl, 'กรุณากรอกสโลแกนหรือคำขวัญประจำพรรค');
+        return;
+      }
+      const advisorNameEl = document.getElementById('advisorName');
+      if (!advisorNameEl || !advisorNameEl.value.trim()) {
+        highlightAndFocusField(advisorNameEl, 'กรุณากรอกชื่อ-นามสกุล ครูที่ปรึกษาพรรค');
+        return;
+      }
+      const advisorPhoneEl = document.getElementById('advisorPhone');
+      if (!advisorPhoneEl || !advisorPhoneEl.value.trim()) {
+        highlightAndFocusField(advisorPhoneEl, 'กรุณากรอกเบอร์โทรศัพท์ครูที่ปรึกษาพรรค');
+        return;
+      }
 
-      const membersData = {};
+      // 2. ตรวจสอบสมาชิกทุกตำแหน่ง
       const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
+      const membersData = {};
 
       for (let idx = 0; idx < councilPositions.length; idx++) {
         const pos = councilPositions[idx];
         const key = pos.key;
-        const name = document.getElementById(`name_${key}`).value.trim();
-        const room = document.getElementById(`room_${key}`).value;
-        const studentId = document.getElementById(`studentId_${key}`).value.trim();
-        const behaviorScore = parseFloat(document.getElementById(`behaviorScore_${key}`).value);
-        const gpax = document.getElementById(`gpax_${key}`).value.trim();
-        const phone = document.getElementById(`phone_${key}`).value.trim();
-        const photo = document.getElementById(`photoData_${key}`).value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos[key]) || '';
-        const agreed = document.getElementById(`agreed_${key}`).checked;
-        const minGpa = (pos.isLeader || idx === 0 || key === 'president' || key === 'secretary') ? cfg.minGpaPresident : cfg.minGpaMember;
+        const posTitle = pos.title || `ตำแหน่งลำดับที่ ${idx + 1}`;
 
-        if (behaviorScore < cfg.minBehaviorScore) {
-          alert(`คะแนนพฤติกรรมของ ${pos.title} (${name}) ต่ำกว่าเกณฑ์ที่กำหนด (ต้องไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน)`);
+        const nameEl = document.getElementById(`name_${key}`);
+        if (!nameEl || !nameEl.value.trim()) {
+          highlightAndFocusField(nameEl, `กรุณากรอกชื่อ-นามสกุล ของ ${posTitle}`);
           return;
         }
 
-        if (parseFloat(gpax) < minGpa) {
-          alert(`เกรดเฉลี่ยของ ${pos.title} (${name}) ต่ำกว่าเกณฑ์ที่กำหนด (ต้องไม่ต่ำกว่า ${minGpa})`);
+        const roomEl = document.getElementById(`room_${key}`);
+        if (!roomEl || !roomEl.value) {
+          highlightAndFocusField(roomEl, `กรุณาเลือกห้องเรียน (ม.4/...) ของ ${posTitle}`);
           return;
         }
+
+        const studentIdEl = document.getElementById(`studentId_${key}`);
+        const cleanStudentId = (studentIdEl ? studentIdEl.value : '').replace(/\D/g, '').trim();
+        if (!cleanStudentId || cleanStudentId.length !== 5) {
+          highlightAndFocusField(studentIdEl, `กรุณากรอกเลขประจำตัวนักเรียน 5 หลัก (เช่น 45xxx) ของ ${posTitle}`);
+          return;
+        }
+
+        const behaviorScoreEl = document.getElementById(`behaviorScore_${key}`);
+        const rawBehavior = parseFloat(behaviorScoreEl ? behaviorScoreEl.value : '0');
+        if (isNaN(rawBehavior) || rawBehavior < cfg.minBehaviorScore) {
+          highlightAndFocusField(behaviorScoreEl, `คะแนนพฤติกรรมของ ${posTitle} (${nameEl.value.trim()}) ต่ำกว่าเกณฑ์ (ต้องไม่ต่ำกว่า ${cfg.minBehaviorScore} คะแนน)`);
+          return;
+        }
+
+        const minGpa = (pos.isLeader || idx === 0 || key === 'president' || key === 'secretary') ? Number(cfg.minGpaPresident || 2.80) : Number(cfg.minGpaMember || 2.50);
+        const gpaxEl = document.getElementById(`gpax_${key}`);
+        const rawGpax = parseFloat(gpaxEl ? gpaxEl.value : '0');
+        if (isNaN(rawGpax) || rawGpax < minGpa) {
+          highlightAndFocusField(gpaxEl, `เกรดเฉลี่ยของ ${posTitle} (${nameEl.value.trim()}) ต่ำกว่าเกณฑ์ (ต้องไม่ต่ำกว่า ${minGpa.toFixed(2)})`);
+          return;
+        }
+
+        const phoneEl = document.getElementById(`phone_${key}`);
+        if (!phoneEl || !phoneEl.value.trim()) {
+          highlightAndFocusField(phoneEl, `กรุณากรอกเบอร์โทรศัพท์ติดต่อของ ${posTitle}`);
+          return;
+        }
+
+        const photo = document.getElementById(`photoData_${key}`)?.value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos[key]) || '';
+        const agreedEl = document.getElementById(`agreed_${key}`);
+        const agreed = agreedEl ? agreedEl.checked : true;
 
         membersData[key] = {
           role: pos.title,
-          fullname: name,
+          fullname: nameEl.value.trim(),
           grade: 'ม.4',
-          room: room,
-          studentId: studentId,
-          behaviorScore: behaviorScore,
-          gpax: gpax,
-          phone: phone,
-          photo: photo || THAI_STUDENT_MALE_PHOTO,
+          room: roomEl.value,
+          studentId: cleanStudentId,
+          behaviorScore: rawBehavior,
+          gpax: rawGpax.toFixed(2),
+          phone: phoneEl.value.trim(),
+          photo: photo || ((idx % 2 === 0) ? THAI_STUDENT_MALE_PHOTO : THAI_STUDENT_FEMALE_PHOTO),
           agreed: agreed
         };
       }
 
-      const payload = {
-        partyName,
-        slogan,
-        advisorName,
-        advisorPhone,
-        agreementAccepted: true,
-        agreementYear: cfg.councilAgreementYear,
-        members: membersData
-      };
+      // 3. ตรวจสอบการยอมรับข้อตกลงรวม
+      const globalAgreementEl = document.getElementById('globalAgreement');
+      if (globalAgreementEl && !globalAgreementEl.checked) {
+        highlightAndFocusField(globalAgreementEl, 'กรุณาติ๊กยอมรับข้อตกลงและคำรับรองของสภานักเรียนด้านล่างก่อนส่งใบสมัคร');
+        return;
+      }
 
-      const result = await WDSDB.saveCouncilApplication(payload);
+      // ปรับปุ่มเป็นสถานะกำลังโหลด ป้องกันการกดย้ำ
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> กำลังบันทึกใบสมัครและส่งข้อมูล...';
+      }
 
-      document.getElementById('modalAppId').innerText = result.id;
-      document.getElementById('modalPartyName').innerText = result.partyName;
-      document.getElementById('modalPrintBtn').href = `print-application.html?type=council&id=${result.id}`;
+      try {
+        const payload = {
+          partyName: partyNameEl.value.trim(),
+          slogan: sloganEl.value.trim(),
+          advisorName: advisorNameEl.value.trim(),
+          advisorPhone: advisorPhoneEl.value.trim(),
+          agreementAccepted: true,
+          agreementYear: cfg.councilAgreementYear,
+          members: membersData
+        };
 
-      const lineUrl = cfg.lineGroupUrl || 'https://line.me/ti/g/KhLtg2M7vA';
-      const lineQr = cfg.lineGroupQr || 'assets/images/line-group-qr.jpg';
-      if (document.getElementById('modalLineLink')) document.getElementById('modalLineLink').href = lineUrl;
-      if (document.getElementById('modalLineQr')) document.getElementById('modalLineQr').src = lineQr;
-      if (document.getElementById('modalLineTitle') && cfg.lineGroupTitle) document.getElementById('modalLineTitle').innerText = cfg.lineGroupTitle;
-      if (document.getElementById('modalLineDesc') && cfg.lineGroupDesc) document.getElementById('modalLineDesc').innerText = cfg.lineGroupDesc;
+        const result = await WDSDB.saveCouncilApplication(payload);
 
-      document.getElementById('successModal').classList.remove('hidden');
+        document.getElementById('modalAppId').innerText = result.id;
+        document.getElementById('modalPartyName').innerText = result.partyName;
+        document.getElementById('modalPrintBtn').href = `print-application.html?type=council&id=${result.id}`;
 
-      showToast('บันทึกใบสมัครเรียบร้อยแล้ว', 'success');
+        const lineUrl = cfg.lineGroupUrl || 'https://line.me/ti/g/KhLtg2M7vA';
+        const lineQr = cfg.lineGroupQr || 'assets/images/line-group-qr.jpg';
+        if (document.getElementById('modalLineLink')) document.getElementById('modalLineLink').href = lineUrl;
+        if (document.getElementById('modalLineQr')) document.getElementById('modalLineQr').src = lineQr;
+        if (document.getElementById('modalLineTitle') && cfg.lineGroupTitle) document.getElementById('modalLineTitle').innerText = cfg.lineGroupTitle;
+        if (document.getElementById('modalLineDesc') && cfg.lineGroupDesc) document.getElementById('modalLineDesc').innerText = cfg.lineGroupDesc;
+
+        document.getElementById('successModal').classList.remove('hidden');
+        showToast('บันทึกใบสมัครสภานักเรียนเรียบร้อยแล้ว', 'success');
+      } catch (err) {
+        console.error('Submit Council Error:', err);
+        showToast('เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่อีกครั้ง: ' + err.message, 'error');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1.5"></i> บันทึกและส่งใบสมัครสภานักเรียน';
+        }
+      }
     }
 
     function fillDemoCouncilData() {
@@ -556,6 +637,16 @@
     });
     window.addEventListener('DOMContentLoaded', () => {
       renderPositionForms();
+      const ga = document.getElementById('globalAgreement');
+      if (ga) {
+        ga.addEventListener('change', function() {
+          const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
+          councilPositions.forEach(pos => {
+            const el = document.getElementById(`agreed_${pos.key}`);
+            if (el) el.checked = ga.checked;
+          });
+        });
+      }
       if (new URLSearchParams(window.location.search).get('testmodal') === '1') {
         const cfg = WDSDB.getConfig();
         document.getElementById('modalAppId').innerText = 'SC-2570-001';

@@ -1691,21 +1691,26 @@ const WDSDB = {
       notifyRealtimeSync('applications');
     }
 
-    // ซิงค์ใบสมัครขึ้นคลาวด์ทันทีและรอให้เสร็จจริง เพื่อไม่ให้ข้อมูลหายเมื่อนักเรียนปิดหน้าเว็บ
+    // ซิงค์ใบสมัครขึ้นคลาวด์ทันที (หากเน็ตช้า ให้รันต่อเบื้องหลังเพื่อให้ผู้สมัครเห็นหน้าต่างสำเร็จทันทีโดยไม่ค้าง)
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
-      try {
-        const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
-        const remoteList = await fetchCleanJson(bustUrl, { cache: 'no-store' });
-        const arr = Array.isArray(remoteList)
-          ? remoteList.filter(item => item && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม')
-          : [];
-        if (!arr.some(item => item.id === newEntry.id)) {
-          arr.unshift(newEntry);
-          await WDSDB.pushApplicationsToCloud('council', arr);
+      const syncPromise = (async () => {
+        try {
+          const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
+          const remoteList = await fetchCleanJson(bustUrl, { cache: 'no-store' });
+          const arr = Array.isArray(remoteList)
+            ? remoteList.filter(item => item && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม')
+            : [];
+          if (!arr.some(item => item.id === newEntry.id)) {
+            arr.unshift(newEntry);
+            await WDSDB.pushApplicationsToCloud('council', arr);
+          }
+        } catch (err) {
+          console.warn('Cloud council sync:', err);
         }
-      } catch (err) {
-        console.warn('Cloud council sync:', err);
-      }
+      })();
+      try {
+        await Promise.race([syncPromise, new Promise(r => setTimeout(r, 2500))]);
+      } catch (e) {}
     }
 
     return newEntry;
@@ -1737,20 +1742,25 @@ const WDSDB = {
       notifyRealtimeSync('applications');
     }
 
-    // ซิงค์ใบสมัครขึ้นคลาวด์ทันทีและรอให้เสร็จจริง เพื่อไม่ให้ข้อมูลหายเมื่อนักเรียนปิดหน้าเว็บ
+    // ซิงค์ใบสมัครขึ้นคลาวด์ทันที (หากเน็ตช้า ให้รันต่อเบื้องหลังเพื่อให้ผู้สมัครเห็นหน้าต่างสำเร็จทันทีโดยไม่ค้าง)
     if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
-      try {
-        const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
-        const remoteList = await fetchCleanJson(bustUrl, { cache: 'no-store' });
-        const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
-        const arr = Array.isArray(remoteList) ? remoteList.filter(item => item && !DEMO_COLOR_IDS.has(item.id)) : [];
-        if (!arr.some(item => item.id === newEntry.id)) {
-          arr.unshift(newEntry);
-          await WDSDB.pushApplicationsToCloud('color', arr);
+      const syncPromise = (async () => {
+        try {
+          const bustUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
+          const remoteList = await fetchCleanJson(bustUrl, { cache: 'no-store' });
+          const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
+          const arr = Array.isArray(remoteList) ? remoteList.filter(item => item && !DEMO_COLOR_IDS.has(item.id)) : [];
+          if (!arr.some(item => item.id === newEntry.id)) {
+            arr.unshift(newEntry);
+            await WDSDB.pushApplicationsToCloud('color', arr);
+          }
+        } catch (err) {
+          console.warn('Cloud color sync:', err);
         }
-      } catch (err) {
-        console.warn('Cloud color sync:', err);
-      }
+      })();
+      try {
+        await Promise.race([syncPromise, new Promise(r => setTimeout(r, 2500))]);
+      } catch (e) {}
     }
 
     return newEntry;

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,9 +12,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257065">
-  <script src="js/data.js?v=257065"></script>
-  <script src="js/app.js?v=257065"></script>
+  <link rel="stylesheet" href="css/style.css?v=257070">
+  <script src="js/data.js?v=257070"></script>
+  <script src="js/app.js?v=257070"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -452,7 +452,10 @@
           </button>
         </div>
 
-        <div class="pb-1.5 hidden" id="toolbarExportGroup">
+        <div class="pb-1.5 hidden flex items-center gap-2" id="toolbarExportGroup">
+          <button type="button" onclick="triggerManualSyncApplications()" class="gov-btn gov-btn-navy text-xs">
+            <i class="fa-solid fa-rotate mr-1"></i> ซิงค์ดึงข้อมูลล่าสุด
+          </button>
           <button onclick="exportCurrentTable()" class="gov-btn gov-btn-green text-xs">
             <i class="fa-solid fa-file-excel mr-1"></i> ส่งออก Excel (CSV)
           </button>
@@ -5554,6 +5557,21 @@
     }
 
     // เมื่อเปิดหน้าเว็บ ตรวจสอบสิทธิ์การเข้าใช้งานก่อนแสดงผล
+    async function triggerManualSyncApplications() {
+      showToast('☁️ กำลังซิงค์ดึงข้อมูลใบสมัครล่าสุดจากคลาวด์...', 'info');
+      try {
+        if (typeof WDSDB !== 'undefined' && typeof WDSDB.syncApplicationsFromCloud === 'function') {
+          await WDSDB.syncApplicationsFromCloud();
+          if (typeof renderTable === 'function') renderTable();
+          if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
+          showToast('ซิงค์ข้อมูลใบสมัครล่าสุดเรียบร้อยแล้ว', 'success');
+        }
+      } catch (err) {
+        showToast('เกิดข้อผิดพลาดในการซิงค์: ' + err.message, 'error');
+      }
+    }
+    window.triggerManualSyncApplications = triggerManualSyncApplications;
+
     window.addEventListener('DOMContentLoaded', async () => {
       const settingsForm = document.getElementById('settingsCmsForm');
       if (settingsForm) {
@@ -5578,6 +5596,16 @@
           console.warn('Admin DOMContentLoaded sync error:', e);
         }
       }
+
+      // ตรวจสอบและซิงค์ใบสมัครจากคลาวด์อัตโนมัติทุก 10 วินาที
+      setInterval(() => {
+        if (typeof WDSDB !== 'undefined' && typeof WDSDB.syncApplicationsFromCloud === 'function') {
+          WDSDB.syncApplicationsFromCloud().then(() => {
+            if (typeof updateStatsDashboard === 'function') updateStatsDashboard();
+            if (typeof renderTable === 'function' && (activeTab === 'council' || activeTab === 'color')) renderTable();
+          }).catch(() => {});
+        }
+      }, 10000);
     });
   </script>
 </body>
