@@ -1575,22 +1575,29 @@ const WDSDB = {
         deletedSet = new Set(JSON.parse(localStorage.getItem('wds_deleted_app_ids') || '[]'));
       } catch (e) {}
 
+      const now = Date.now();
+      const RECENT_PENDING_MS = 10 * 60 * 1000; // 10 นาทีสำหรับรายการที่เพิ่งสมัครจากเครื่องนี้และยังรออัปโหลด
+
       if (Array.isArray(rCouncil)) {
         // กรองข้อมูลตัวอย่างและรายการที่ถูกลบแล้วออกถาวร
         const cleanRemote = rCouncil.filter(item => 
           item && item.id && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม' && !deletedSet.has(item.id)
-        );
+        ).map(item => ({ ...item, _syncedToCloud: true }));
         const localCouncil = this.getCouncilList().filter(item => item && item.id && !deletedSet.has(item.id));
         const map = new Map();
         cleanRemote.forEach(item => map.set(item.id, item));
 
-        // ผสานใบสมัครในเครื่องนี้เข้ากับคลาวด์เสมอ (ยกเว้นรายการที่ถูกลบ) และซิงค์ขึ้นคลาวด์หากคลาวด์ยังไม่มี
+        // ยึดคลาวด์เป็นหลัก เพื่อให้มือถือและคอมพิวเตอร์ตรงกัน 100%
+        // เฉพาะรายการที่เพิ่งสร้างใหม่บนเครื่องนี้และยังไม่ได้ซิงค์ขึ้นคลาวด์เท่านั้นที่จะถูกผสานและส่งขึ้นคลาวด์
         let needPush = cleanRemote.length !== rCouncil.filter(item => item && item.id && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม').length;
         localCouncil.forEach(locItem => {
           if (locItem && locItem.id && locItem.id !== 'COUNCIL-2570-001' && locItem.partyName !== 'พรรคก้าวใหม่ วชิรธรรม') {
             if (!map.has(locItem.id)) {
-              map.set(locItem.id, locItem);
-              needPush = true;
+              const isUnsyncedRecent = locItem._syncedToCloud === false && locItem._createdTimestamp && (now - locItem._createdTimestamp < RECENT_PENDING_MS);
+              if (isUnsyncedRecent) {
+                map.set(locItem.id, locItem);
+                needPush = true;
+              }
             } else {
               // ดึงภาพจากเครื่องท้องถิ่นมาเสริมหากคลาวด์ลดทอนภาพไว้
               const remoteItem = map.get(locItem.id);
@@ -1609,13 +1616,17 @@ const WDSDB = {
         localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(mergedCouncil));
 
         if (needPush && CLOUD_SYNC.IS_ENABLED) {
-          this.pushApplicationsToCloud('council', mergedCouncil);
+          const ok = await this.pushApplicationsToCloud('council', mergedCouncil);
+          if (ok) {
+            localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(mergedCouncil.map(x => ({ ...x, _syncedToCloud: true }))));
+          }
         }
       }
 
       if (Array.isArray(rColor)) {
         const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
-        const cleanRemoteColor = rColor.filter(item => item && item.id && !DEMO_COLOR_IDS.has(item.id) && !deletedSet.has(item.id));
+        const cleanRemoteColor = rColor.filter(item => item && item.id && !DEMO_COLOR_IDS.has(item.id) && !deletedSet.has(item.id))
+          .map(item => ({ ...item, _syncedToCloud: true }));
         const localColor = this.getColorList().filter(item => item && item.id && !deletedSet.has(item.id));
         const mapColor = new Map();
         cleanRemoteColor.forEach(item => mapColor.set(item.id, item));
@@ -1624,8 +1635,11 @@ const WDSDB = {
         localColor.forEach(locItem => {
           if (locItem && locItem.id && !DEMO_COLOR_IDS.has(locItem.id)) {
             if (!mapColor.has(locItem.id)) {
-              mapColor.set(locItem.id, locItem);
-              needPushColor = true;
+              const isUnsyncedRecent = locItem._syncedToCloud === false && locItem._createdTimestamp && (now - locItem._createdTimestamp < RECENT_PENDING_MS);
+              if (isUnsyncedRecent) {
+                mapColor.set(locItem.id, locItem);
+                needPushColor = true;
+              }
             } else {
               const remoteItem = mapColor.get(locItem.id);
               if (locItem.leader?.photo && !remoteItem.leader?.photo) {
@@ -1639,7 +1653,10 @@ const WDSDB = {
         localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(mergedColor));
 
         if (needPushColor && CLOUD_SYNC.IS_ENABLED) {
-          this.pushApplicationsToCloud('color', mergedColor);
+          const ok = await this.pushApplicationsToCloud('color', mergedColor);
+          if (ok) {
+            localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(mergedColor.map(x => ({ ...x, _syncedToCloud: true }))));
+          }
         }
       }
 
@@ -1698,7 +1715,8 @@ const WDSDB = {
       candidateNumber: '',
       submittedAt: new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' น.',
       agreementYear: cfg.councilAgreementYear || '2568',
-      _createdTimestamp: Date.now()
+      _createdTimestamp: Date.now(),
+      _syncedToCloud: false
     };
     list.unshift(newEntry);
     localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(list));
@@ -1719,8 +1737,12 @@ const WDSDB = {
             ? remoteList.filter(item => item && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม')
             : [];
           if (!arr.some(item => item.id === newEntry.id)) {
-            arr.unshift(newEntry);
-            await WDSDB.pushApplicationsToCloud('council', arr);
+            arr.unshift({ ...newEntry, _syncedToCloud: true });
+            const ok = await WDSDB.pushApplicationsToCloud('council', arr);
+            if (ok) {
+              const cur = WDSDB.getCouncilList().map(x => x.id === newEntry.id ? { ...x, _syncedToCloud: true } : x);
+              localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(cur));
+            }
           }
         } catch (err) {
           console.warn('Cloud council sync:', err);
@@ -1749,7 +1771,8 @@ const WDSDB = {
       candidateNumber: '',
       submittedAt: new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' น.',
       agreementYear: cfg.colorAgreementYear || '2567',
-      _createdTimestamp: Date.now()
+      _createdTimestamp: Date.now(),
+      _syncedToCloud: false
     };
     list.unshift(newEntry);
     localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(list));
@@ -1769,8 +1792,12 @@ const WDSDB = {
           const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
           const arr = Array.isArray(remoteList) ? remoteList.filter(item => item && !DEMO_COLOR_IDS.has(item.id)) : [];
           if (!arr.some(item => item.id === newEntry.id)) {
-            arr.unshift(newEntry);
-            await WDSDB.pushApplicationsToCloud('color', arr);
+            arr.unshift({ ...newEntry, _syncedToCloud: true });
+            const ok = await WDSDB.pushApplicationsToCloud('color', arr);
+            if (ok) {
+              const cur = WDSDB.getColorList().map(x => x.id === newEntry.id ? { ...x, _syncedToCloud: true } : x);
+              localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(cur));
+            }
           }
         } catch (err) {
           console.warn('Cloud color sync:', err);
