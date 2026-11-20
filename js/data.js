@@ -1553,6 +1553,10 @@ const WDSDB = {
   // ซิงค์ใบสมัครจากคลาวด์เข้าหน้าหลังบ้านและหน้าตรวจสอบสถานะ
   async syncApplicationsFromCloud() {
     if (!CLOUD_SYNC.IS_ENABLED || typeof fetch === 'undefined') return;
+    if (this._isMutatingApps || (this._lastAppMutationAt && Date.now() - this._lastAppMutationAt < 10000)) {
+      return;
+    }
+    const syncStartedAt = Date.now();
     try {
       const councilUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
       const colorUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
@@ -1561,17 +1565,27 @@ const WDSDB = {
         fetchCleanJson(colorUrl, { cache: 'no-store' })
       ]);
 
+      // ป้องกันการเขียนทับข้อมูลหากมีการลบ/แก้ไขเกิดขึ้นระหว่างกำลังดึงข้อมูลจากคลาวด์
+      if (this._isMutatingApps || (this._lastAppMutationAt && this._lastAppMutationAt >= syncStartedAt)) {
+        return;
+      }
+
+      let deletedSet = new Set();
+      try {
+        deletedSet = new Set(JSON.parse(localStorage.getItem('wds_deleted_app_ids') || '[]'));
+      } catch (e) {}
+
       if (Array.isArray(rCouncil)) {
-        // กรองข้อมูลตัวอย่าง COUNCIL-2570-001 ออกถาวร และยึดคลาวด์เป็นหลัก
+        // กรองข้อมูลตัวอย่างและรายการที่ถูกลบแล้วออกถาวร
         const cleanRemote = rCouncil.filter(item => 
-          item && item.id && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม'
+          item && item.id && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม' && !deletedSet.has(item.id)
         );
-        const localCouncil = this.getCouncilList();
+        const localCouncil = this.getCouncilList().filter(item => item && item.id && !deletedSet.has(item.id));
         const map = new Map();
         cleanRemote.forEach(item => map.set(item.id, item));
 
-        // ผสานใบสมัครในเครื่องนี้เข้ากับคลาวด์เสมอ (ไม่ลบทิ้ง) และซิงค์ขึ้นคลาวด์หากคลาวด์ยังไม่มี
-        let needPush = false;
+        // ผสานใบสมัครในเครื่องนี้เข้ากับคลาวด์เสมอ (ยกเว้นรายการที่ถูกลบ) และซิงค์ขึ้นคลาวด์หากคลาวด์ยังไม่มี
+        let needPush = cleanRemote.length !== rCouncil.filter(item => item && item.id && item.id !== 'COUNCIL-2570-001' && item.id !== 'COUNCIL-2570-002' && item.partyName !== 'พรรคก้าวใหม่ วชิรธรรม').length;
         localCouncil.forEach(locItem => {
           if (locItem && locItem.id && locItem.id !== 'COUNCIL-2570-001' && locItem.partyName !== 'พรรคก้าวใหม่ วชิรธรรม') {
             if (!map.has(locItem.id)) {
@@ -1601,12 +1615,12 @@ const WDSDB = {
 
       if (Array.isArray(rColor)) {
         const DEMO_COLOR_IDS = new Set(['COLOR-2570-001', 'COLOR-2570-002', 'COLOR-2570-003', 'COLOR-2570-004', 'COLOR-2570-005']);
-        const cleanRemoteColor = rColor.filter(item => item && item.id && !DEMO_COLOR_IDS.has(item.id));
-        const localColor = this.getColorList();
+        const cleanRemoteColor = rColor.filter(item => item && item.id && !DEMO_COLOR_IDS.has(item.id) && !deletedSet.has(item.id));
+        const localColor = this.getColorList().filter(item => item && item.id && !deletedSet.has(item.id));
         const mapColor = new Map();
         cleanRemoteColor.forEach(item => mapColor.set(item.id, item));
 
-        let needPushColor = false;
+        let needPushColor = cleanRemoteColor.length !== rColor.filter(item => item && item.id && !DEMO_COLOR_IDS.has(item.id)).length;
         localColor.forEach(locItem => {
           if (locItem && locItem.id && !DEMO_COLOR_IDS.has(locItem.id)) {
             if (!mapColor.has(locItem.id)) {
@@ -1652,7 +1666,9 @@ const WDSDB = {
   getCouncilList() {
     this.init();
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEYS.COUNCIL)) || [];
+      const arr = JSON.parse(localStorage.getItem(STORAGE_KEYS.COUNCIL)) || [];
+      const delSet = new Set(JSON.parse(localStorage.getItem('wds_deleted_app_ids') || '[]'));
+      return delSet.size > 0 ? arr.filter(x => x && !delSet.has(x.id)) : arr;
     } catch (e) {
       return [];
     }
@@ -1661,7 +1677,9 @@ const WDSDB = {
   getColorList() {
     this.init();
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEYS.COLOR)) || [];
+      const arr = JSON.parse(localStorage.getItem(STORAGE_KEYS.COLOR)) || [];
+      const delSet = new Set(JSON.parse(localStorage.getItem('wds_deleted_app_ids') || '[]'));
+      return delSet.size > 0 ? arr.filter(x => x && !delSet.has(x.id)) : arr;
     } catch (e) {
       return [];
     }
@@ -1884,6 +1902,8 @@ const WDSDB = {
 
   async deleteApplication(type, id) {
     this.init();
+    this._isMutatingApps = true;
+    this._lastAppMutationAt = Date.now();
     const key = type === 'council' ? STORAGE_KEYS.COUNCIL : STORAGE_KEYS.COLOR;
     let list = type === 'council' ? this.getCouncilList() : this.getColorList();
     list = list.filter(x => x.id !== id);
@@ -1896,13 +1916,20 @@ const WDSDB = {
       localStorage.setItem(delKey, JSON.stringify(Array.from(delSet)));
     } catch (e) {}
 
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      window.dispatchEvent(new CustomEvent('wds-apps-synced'));
+    }
+
     // ซิงค์การลบข้อมูลขึ้นคลาวด์ทันที โดยใช้ pushApplicationsToCloud เพื่อป้องกันขนาดเกิน 413 และรอให้เสร็จจริง
-    if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
-      try {
+    try {
+      if (CLOUD_SYNC.IS_ENABLED && typeof fetch !== 'undefined') {
         await this.pushApplicationsToCloud(type, list);
-      } catch (err) {
-        console.warn('WDSDB deleteApplication Cloud Error:', err);
       }
+    } catch (err) {
+      console.warn('WDSDB deleteApplication Cloud Error:', err);
+    } finally {
+      this._isMutatingApps = false;
+      this._lastAppMutationAt = Date.now();
     }
     return true;
   },
