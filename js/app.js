@@ -527,7 +527,7 @@ function renderRulesAndApplyContent(cfg) {
       'bg-yellow-50 text-yellow-800 border-yellow-300',
       'bg-red-50 text-red-800 border-red-200',
       'bg-orange-50 text-orange-800 border-orange-200',
-      'bg-green-50 text-green-800 border-green-200'
+      'bg-purple-50 text-purple-800 border-purple-200'
     ];
     const items = cfg.applyColorHousesText.split(',').map(s => s.trim()).filter(Boolean);
     applyColorTagsEl.innerHTML = items.map((t, i) => {
