@@ -1745,7 +1745,11 @@ const WDSDB = {
     if (this._isMutatingApps || (this._lastAppMutationAt && Date.now() - this._lastAppMutationAt < 10000)) {
       return;
     }
+    if (this._inFlightAppsSyncPromise) {
+      return this._inFlightAppsSyncPromise;
+    }
     const syncStartedAt = Date.now();
+    this._inFlightAppsSyncPromise = (async () => {
     try {
       const councilUrl = getFreshCloudUrl(CLOUD_SYNC.COUNCIL_URL);
       const colorUrl = getFreshCloudUrl(CLOUD_SYNC.COLOR_URL);
@@ -1854,7 +1858,11 @@ const WDSDB = {
       }
     } catch (e) {
       console.warn('WDSDB syncApplicationsFromCloud:', e.message);
+    } finally {
+      this._inFlightAppsSyncPromise = null;
     }
+    })();
+    return this._inFlightAppsSyncPromise;
   },
 
   resetConfig() {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -6,13 +6,13 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>แบบฟอร์มใบสมัครเลือกตั้ง A4 | โรงเรียนวชิรธรรมสาธิต</title>
+  <title>à¹à¸šà¸šà¸Ÿà¸­à¸£à¹Œà¸¡à¹ƒà¸šà¸ªà¸¡à¸±à¸„à¸£à¹€à¸¥à¸·à¸­à¸à¸•à¸±à¹‰à¸‡ A4 | à¹‚à¸£à¸‡à¹€à¸£à¸µà¸¢à¸™à¸§à¸Šà¸´à¸£à¸˜à¸£à¸£à¸¡à¸ªà¸²à¸˜à¸´à¸•</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257100">
+  <link rel="stylesheet" href="css/style.css?v=257101">
   <style>
     @page {
       size: A4 portrait;
@@ -40,26 +40,26 @@
 </head>
 <body class="bg-slate-200 min-h-screen py-6 print:py-0 print:bg-white font-formal">
 
-  <!-- แถบควบคุมก่อนพิมพ์ (ซ่อนเมื่อกดพิมพ์) -->
+  <!-- à¹à¸–à¸šà¸„à¸§à¸šà¸„à¸¸à¸¡à¸à¹ˆà¸­à¸™à¸žà¸´à¸¡à¸žà¹Œ (à¸‹à¹ˆà¸­à¸™à¹€à¸¡à¸·à¹ˆà¸­à¸à¸”à¸žà¸´à¸¡à¸žà¹Œ) -->
   <div class="no-print max-w-4xl mx-auto mb-4 bg-slate-800 text-white p-3 rounded flex flex-wrap items-center justify-between gap-3 text-xs">
     <div class="flex items-center space-x-2.5">
       <div id="navBackButtons" class="flex items-center space-x-2">
         <a id="mainBackBtn" href="index.html" onclick="handleBackNavigation(event)" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-slate-200 transition font-medium flex items-center">
-          <i class="fa-solid fa-arrow-left mr-1.5"></i> <span>กลับหน้าหลัก</span>
+          <i class="fa-solid fa-arrow-left mr-1.5"></i> <span>à¸à¸¥à¸±à¸šà¸«à¸™à¹‰à¸²à¸«à¸¥à¸±à¸</span>
         </a>
       </div>
       <div>
-        <span class="font-bold">พิมพ์แบบฟอร์มใบสมัครกระดาษ A4 ทางการ</span>
-        <span class="text-slate-400 ml-2 hidden sm:inline">ขนาดมาตรฐาน A4 (1-2 หน้ากระดาษ)</span>
+        <span class="font-bold">à¸žà¸´à¸¡à¸žà¹Œà¹à¸šà¸šà¸Ÿà¸­à¸£à¹Œà¸¡à¹ƒà¸šà¸ªà¸¡à¸±à¸„à¸£à¸à¸£à¸°à¸”à¸²à¸© A4 à¸—à¸²à¸‡à¸à¸²à¸£</span>
+        <span class="text-slate-400 ml-2 hidden sm:inline">à¸‚à¸™à¸²à¸”à¸¡à¸²à¸•à¸£à¸à¸²à¸™ A4 (1-2 à¸«à¸™à¹‰à¸²à¸à¸£à¸°à¸”à¸²à¸©)</span>
       </div>
     </div>
 
     <div class="flex items-center space-x-2">
       <button onclick="window.print()" class="gov-btn gov-btn-navy">
-        <i class="fa-solid fa-print mr-1.5"></i> พิมพ์ / บันทึก PDF
+        <i class="fa-solid fa-print mr-1.5"></i> à¸žà¸´à¸¡à¸žà¹Œ / à¸šà¸±à¸™à¸—à¸¶à¸ PDF
       </button>
       <button onclick="toggleBlankForm()" id="blankToggleBtn" class="gov-btn gov-btn-gray">
-        <i class="fa-solid fa-file mr-1.5"></i> สลับเป็นแบบฟอร์มเปล่า
+        <i class="fa-solid fa-file mr-1.5"></i> à¸ªà¸¥à¸±à¸šà¹€à¸›à¹‡à¸™à¹à¸šà¸šà¸Ÿà¸­à¸£à¹Œà¸¡à¹€à¸›à¸¥à¹ˆà¸²
       </button>
     </div>
   </div>
@@ -70,15 +70,15 @@
       <div id="documentContent">
         <div class="text-center py-20 text-slate-400">
           <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
-          <p>กำลังจัดเตรียมแบบฟอร์ม A4...</p>
+          <p>à¸à¸³à¸¥à¸±à¸‡à¸ˆà¸±à¸”à¹€à¸•à¸£à¸µà¸¢à¸¡à¹à¸šà¸šà¸Ÿà¸­à¸£à¹Œà¸¡ A4...</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257100"></script>
-  <script src="js/app.js?v=257100"></script>
+  <script src="js/data.js?v=257101"></script>
+  <script src="js/app.js?v=257101"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const appType = urlParams.get('type') || 'council';
@@ -94,13 +94,13 @@
       let data = null;
       if (!currentIsBlank && appId) {
         data = WDSDB.getById(appType, appId);
-        // ถ้าเปิดลิงก์มาครั้งแรกบนคอมพิวเตอร์ ข้อมูลอาจยังไม่โหลดมาจากคลาวด์ ให้ดึงจากคลาวด์ทันที
+        // à¸–à¹‰à¸²à¹€à¸›à¸´à¸”à¸¥à¸´à¸‡à¸à¹Œà¸¡à¸²à¸„à¸£à¸±à¹‰à¸‡à¹à¸£à¸à¸šà¸™à¸„à¸­à¸¡à¸žà¸´à¸§à¹€à¸•à¸­à¸£à¹Œ à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸­à¸²à¸ˆà¸¢à¸±à¸‡à¹„à¸¡à¹ˆà¹‚à¸«à¸¥à¸”à¸¡à¸²à¸ˆà¸²à¸à¸„à¸¥à¸²à¸§à¸”à¹Œ à¹ƒà¸«à¹‰à¸”à¸¶à¸‡à¸ˆà¸²à¸à¸„à¸¥à¸²à¸§à¸”à¹Œà¸—à¸±à¸™à¸—à¸µ
         if (!data && typeof WDSDB.syncApplicationsFromCloud === 'function') {
           container.innerHTML = `
             <div class="p-12 text-center text-slate-500 font-sans">
               <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-700 mb-2 block"></i>
-              <div class="font-bold text-slate-700">กำลังเชื่อมโยงข้อมูลใบสมัครจากระบบคลาวด์...</div>
-              <div class="text-xs text-slate-400 mt-1">กรุณารอสักครู่ ระบบกำลังค้นหาใบสมัครรหัส ${escapeHTML(appId)}</div>
+              <div class="font-bold text-slate-700">à¸à¸³à¸¥à¸±à¸‡à¹€à¸Šà¸·à¹ˆà¸­à¸¡à¹‚à¸¢à¸‡à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¹ƒà¸šà¸ªà¸¡à¸±à¸„à¸£à¸ˆà¸²à¸à¸£à¸°à¸šà¸šà¸„à¸¥à¸²à¸§à¸”à¹Œ...</div>
+              <div class="text-xs text-slate-400 mt-1">à¸à¸£à¸¸à¸“à¸²à¸£à¸­à¸ªà¸±à¸à¸„à¸£à¸¹à¹ˆ à¸£à¸°à¸šà¸šà¸à¸³à¸¥à¸±à¸‡à¸„à¹‰à¸™à¸«à¸²à¹ƒà¸šà¸ªà¸¡à¸±à¸„à¸£à¸£à¸«à¸±à¸ª ${escapeHTML(appId)}</div>
             </div>
           `;
           await WDSDB.syncApplicationsFromCloud();
@@ -115,17 +115,17 @@
       }
     }
 
-    // ฟังก์ชันจัดรูปแบบบรรทัดลงชื่อให้ยืดหยุ่นอัตโนมัติ ไม่ล้นหรือแตกหลุดกรอบสี่เหลี่ยม
+    // à¸Ÿà¸±à¸‡à¸à¹Œà¸Šà¸±à¸™à¸ˆà¸±à¸”à¸£à¸¹à¸›à¹à¸šà¸šà¸šà¸£à¸£à¸—à¸±à¸”à¸¥à¸‡à¸Šà¸·à¹ˆà¸­à¹ƒà¸«à¹‰à¸¢à¸·à¸”à¸«à¸¢à¸¸à¹ˆà¸™à¸­à¸±à¸•à¹‚à¸™à¸¡à¸±à¸•à¸´ à¹„à¸¡à¹ˆà¸¥à¹‰à¸™à¸«à¸£à¸·à¸­à¹à¸•à¸à¸«à¸¥à¸¸à¸”à¸à¸£à¸­à¸šà¸ªà¸µà¹ˆà¹€à¸«à¸¥à¸µà¹ˆà¸¢à¸¡
     function formatSignatureLineHtml(rawLabel) {
       if (!rawLabel) {
         return `
           <div class="flex items-center justify-between text-[10px] leading-tight w-full px-0.5 overflow-hidden">
-            <span class="shrink-0 whitespace-nowrap">ลงชื่อ</span>
+            <span class="shrink-0 whitespace-nowrap">à¸¥à¸‡à¸Šà¸·à¹ˆà¸­</span>
             <span class="border-b border-dotted border-black flex-1 mx-1.5 mb-[2px]"></span>
           </div>
         `;
       }
-      const match = rawLabel.match(/^(ลงชื่อ[^\.]*?)\s*\.{3,}\s*(.*)$/);
+      const match = rawLabel.match(/^(à¸¥à¸‡à¸Šà¸·à¹ˆà¸­[^\.]*?)\s*\.{3,}\s*(.*)$/);
       if (match) {
         const prefix = match[1].trim();
         const suffix = match[2].trim();
@@ -152,7 +152,7 @@
       return `<div class="leading-tight text-[10px] px-0.5 truncate">${escapeHTML(rawLabel)}</div>`;
     }
 
-    // ฟังก์ชันสร้างช่องผู้ลงนามแบบไดนามิก (Dynamic Signatures Grid)
+    // à¸Ÿà¸±à¸‡à¸à¹Œà¸Šà¸±à¸™à¸ªà¸£à¹‰à¸²à¸‡à¸Šà¹ˆà¸­à¸‡à¸œà¸¹à¹‰à¸¥à¸‡à¸™à¸²à¸¡à¹à¸šà¸šà¹„à¸”à¸™à¸²à¸¡à¸´à¸ (Dynamic Signatures Grid)
     function renderSignaturesGrid(signatures, d, type, cfg) {
       if (!signatures || !signatures.length) return '';
 
@@ -180,7 +180,7 @@
           displayName = sig.signerName ? sig.signerName : '........................................';
         }
 
-        const dateStr = sig.showDate ? (sig.dateText || `วันที่........เดือน...................พ.ศ. ${year}`) : '';
+        const dateStr = sig.showDate ? (sig.dateText || `à¸§à¸±à¸™à¸—à¸µà¹ˆ........à¹€à¸”à¸·à¸­à¸™...................à¸ž.à¸¨. ${year}`) : '';
         const hasHeader = Boolean(sig.headerText);
         const hasStatus = Boolean(sig.hasStatusCheck);
         const isApproved = d?.status === 'approved';
@@ -192,7 +192,7 @@
                 ${hasHeader ? `<div class="font-bold text-[9.5px] leading-tight truncate">${escapeHTML(sig.headerText)}</div>` : ''}
                 ${hasStatus ? `
                   <div class="text-[9.5px] leading-tight whitespace-nowrap">
-                    [ ${isApproved ? '✓' : ' '} ] ${escapeHTML(sig.statusLabel || 'ผ่านคุณสมบัติ')} &nbsp;&nbsp; [ ] ไม่ผ่าน
+                    [ ${isApproved ? 'âœ“' : ' '} ] ${escapeHTML(sig.statusLabel || 'à¸œà¹ˆà¸²à¸™à¸„à¸¸à¸“à¸ªà¸¡à¸šà¸±à¸•à¸´')} &nbsp;&nbsp; [ ] à¹„à¸¡à¹ˆà¸œà¹ˆà¸²à¸™
                   </div>
                 ` : ''}
               </div>
@@ -215,7 +215,7 @@
       `;
     }
 
-    // ฟอร์มสภานักเรียน A4
+    // à¸Ÿà¸­à¸£à¹Œà¸¡à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ A4
     function renderCouncilDocument(container, d, cfg) {
       const isFilled = !!d;
       const m = d?.members || {};
@@ -228,7 +228,7 @@
       const logo3 = cfg.schoolLogo3 !== undefined ? cfg.schoolLogo3 : DEFAULT_LOGO_3;
       const logosHtml = [logo1, logo2, logo3].filter(Boolean).map(src => `
         <div class="w-15 h-15 flex items-center justify-center overflow-hidden" style="width: 3.8rem; height: 3.8rem;">
-          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
+          <img src="${src}" class="w-full h-full object-contain" alt="à¸•à¸£à¸²à¸ªà¸±à¸à¸¥à¸±à¸à¸©à¸“à¹Œ" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
         </div>
       `).join('');
 
@@ -240,14 +240,14 @@
           </div>
           <h2 class="text-lg font-bold">${cfg.schoolName}</h2>
           <p class="text-xs">${cfg.departmentName}</p>
-          <h3 class="text-base font-bold mt-1">ใบสมัครรับเลือกตั้งประธานสภานักเรียน ประจำปีการศึกษา ${cfg.academicYear}</h3>
+          <h3 class="text-base font-bold mt-1">à¹ƒà¸šà¸ªà¸¡à¸±à¸„à¸£à¸£à¸±à¸šà¹€à¸¥à¸·à¸­à¸à¸•à¸±à¹‰à¸‡à¸›à¸£à¸°à¸˜à¸²à¸™à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.academicYear}</h3>
           
           <div class="absolute right-0 top-0 text-right">
             <div class="border border-black p-1 text-center min-w-[90px] text-xs">
-              <div>หมายเลขพรรค</div>
-              <div class="text-xl font-bold font-mono">${d?.candidateNumber ? 'เบอร์ ' + d.candidateNumber : '_______'}</div>
+              <div>à¸«à¸¡à¸²à¸¢à¹€à¸¥à¸‚à¸žà¸£à¸£à¸„</div>
+              <div class="text-xl font-bold font-mono">${d?.candidateNumber ? 'à¹€à¸šà¸­à¸£à¹Œ ' + d.candidateNumber : '_______'}</div>
             </div>
-            <div class="text-[10px] text-slate-500 mt-1">รหัส: ${d?.id || 'COUNCIL-' + cfg.academicYear + '-XXX'}</div>
+            <div class="text-[10px] text-slate-500 mt-1">à¸£à¸«à¸±à¸ª: ${d?.id || 'COUNCIL-' + cfg.academicYear + '-XXX'}</div>
           </div>
         </div>
 
@@ -255,44 +255,44 @@
         <div class="mb-3 text-xs">
           <div class="grid grid-cols-12 gap-2 mb-1">
             <div class="col-span-8">
-              <strong>ชื่อพรรค:</strong> 
+              <strong>à¸Šà¸·à¹ˆà¸­à¸žà¸£à¸£à¸„:</strong> 
               <span class="dotted-line min-w-[250px] font-bold text-sm">${d?.partyName || '...................................................................................................'}</span>
             </div>
             <div class="col-span-4 text-right">
-              <strong>วันที่สมัคร:</strong> 
+              <strong>à¸§à¸±à¸™à¸—à¸µà¹ˆà¸ªà¸¡à¸±à¸„à¸£:</strong> 
               <span class="dotted-line min-w-[120px]">${d?.submittedAt || '......../......../........'}</span>
             </div>
           </div>
           <div>
-            <strong>สโลแกน / คำขวัญพรรค:</strong> 
+            <strong>à¸ªà¹‚à¸¥à¹à¸à¸™ / à¸„à¸³à¸‚à¸§à¸±à¸à¸žà¸£à¸£à¸„:</strong> 
             <span class="dotted-line w-10/12 italic">${d?.slogan || '..........................................................................................................................................................'}</span>
           </div>
           <div class="mt-1">
-            <strong>ครูที่ปรึกษาพรรค:</strong> 
+            <strong>à¸„à¸£à¸¹à¸—à¸µà¹ˆà¸›à¸£à¸¶à¸à¸©à¸²à¸žà¸£à¸£à¸„:</strong> 
             <span class="dotted-line min-w-[200px]">${d?.advisorName || '..............................................................'}</span>
-            <span class="ml-4"><strong>เบอร์โทรศัพท์:</strong> <span class="dotted-line min-w-[140px]">${d?.advisorPhone || '............................................'}</span></span>
+            <span class="ml-4"><strong>à¹€à¸šà¸­à¸£à¹Œà¹‚à¸—à¸£à¸¨à¸±à¸žà¸—à¹Œ:</strong> <span class="dotted-line min-w-[140px]">${d?.advisorPhone || '............................................'}</span></span>
           </div>
         </div>
 
         <!-- Leader Photo & Info Highlights -->
         <div class="flex gap-4 p-2 bg-slate-50 border border-black mb-3">
           <div class="photo-box border border-black flex-shrink-0 bg-white" style="width: 2.8cm; height: 3.5cm;">
-            ${pres.photo ? `<img src="${pres.photo}" class="w-full h-full object-cover">` : '<div class="text-[10px] p-2 text-center text-slate-500">ติดรูปถ่าย 1.5 นิ้ว<br>(สวมชุดนักเรียน)</div>'}
+            ${pres.photo ? `<img src="${pres.photo}" class="w-full h-full object-cover">` : '<div class="text-[10px] p-2 text-center text-slate-500">à¸•à¸´à¸”à¸£à¸¹à¸›à¸–à¹ˆà¸²à¸¢ 1.5 à¸™à¸´à¹‰à¸§<br>(à¸ªà¸§à¸¡à¸Šà¸¸à¸”à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™)</div>'}
           </div>
           <div class="flex-grow text-xs space-y-1">
             <div class="font-bold text-sm text-[#16325c] border-b border-slate-300 pb-1">
-              ข้อมูลผู้ลงสมัครประธานสภานักเรียน (หัวหน้าพรรค)
+              à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸œà¸¹à¹‰à¸¥à¸‡à¸ªà¸¡à¸±à¸„à¸£à¸›à¸£à¸°à¸˜à¸²à¸™à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ (à¸«à¸±à¸§à¸«à¸™à¹‰à¸²à¸žà¸£à¸£à¸„)
             </div>
             <div class="grid grid-cols-2 gap-2 pt-1">
-              <div><strong>ชื่อ-นามสกุล:</strong> <span class="dotted-line font-bold">${pres.fullname || '............................................................'}</span></div>
-              <div><strong>ระดับชั้น:</strong> ม.4 ห้อง <span class="dotted-line font-bold">${pres.room || '.......'}</span></div>
-              <div><strong>เลขประจำตัวนักเรียน:</strong> <span class="dotted-line font-mono font-bold">${pres.studentId || '....................'}</span></div>
-              <div><strong>เบอร์โทรศัพท์:</strong> <span class="dotted-line">${pres.phone || '..............................'}</span></div>
-              <div><strong>คะแนนพฤติกรรมคงเหลือ:</strong> <span class="dotted-line font-bold text-green-800">${pres.behaviorScore !== undefined ? pres.behaviorScore + ' คะแนน' : '............ คะแนน'}</span> (ขั้นต่ำ ${cfg.minBehaviorScore})</div>
-              <div><strong>เกรดเฉลี่ย ม.4 ภาคเรียนที่ 1:</strong> <span class="dotted-line font-bold text-green-800">${pres.gpax || '..........'}</span> (ขั้นต่ำ ${cfg.minGpaPresident})</div>
+              <div><strong>à¸Šà¸·à¹ˆà¸­-à¸™à¸²à¸¡à¸ªà¸à¸¸à¸¥:</strong> <span class="dotted-line font-bold">${pres.fullname || '............................................................'}</span></div>
+              <div><strong>à¸£à¸°à¸”à¸±à¸šà¸Šà¸±à¹‰à¸™:</strong> à¸¡.4 à¸«à¹‰à¸­à¸‡ <span class="dotted-line font-bold">${pres.room || '.......'}</span></div>
+              <div><strong>à¹€à¸¥à¸‚à¸›à¸£à¸°à¸ˆà¸³à¸•à¸±à¸§à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™:</strong> <span class="dotted-line font-mono font-bold">${pres.studentId || '....................'}</span></div>
+              <div><strong>à¹€à¸šà¸­à¸£à¹Œà¹‚à¸—à¸£à¸¨à¸±à¸žà¸—à¹Œ:</strong> <span class="dotted-line">${pres.phone || '..............................'}</span></div>
+              <div><strong>à¸„à¸°à¹à¸™à¸™à¸žà¸¤à¸•à¸´à¸à¸£à¸£à¸¡à¸„à¸‡à¹€à¸«à¸¥à¸·à¸­:</strong> <span class="dotted-line font-bold text-green-800">${pres.behaviorScore !== undefined ? pres.behaviorScore + ' à¸„à¸°à¹à¸™à¸™' : '............ à¸„à¸°à¹à¸™à¸™'}</span> (à¸‚à¸±à¹‰à¸™à¸•à¹ˆà¸³ ${cfg.minBehaviorScore})</div>
+              <div><strong>à¹€à¸à¸£à¸”à¹€à¸‰à¸¥à¸µà¹ˆà¸¢ à¸¡.4 à¸ à¸²à¸„à¹€à¸£à¸µà¸¢à¸™à¸—à¸µà¹ˆ 1:</strong> <span class="dotted-line font-bold text-green-800">${pres.gpax || '..........'}</span> (à¸‚à¸±à¹‰à¸™à¸•à¹ˆà¸³ ${cfg.minGpaPresident})</div>
             </div>
             <div class="text-[11px] text-slate-700 pt-1">
-              [ ✓ ] ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.councilAgreementYear}
+              [ âœ“ ] à¸¢à¸­à¸¡à¸£à¸±à¸šà¸‚à¹‰à¸­à¸•à¸à¸¥à¸‡à¸‚à¸­à¸‡à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ ${cfg.schoolName} à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.councilAgreementYear}
             </div>
           </div>
         </div>
@@ -310,24 +310,24 @@
                 displayList.push({ title: val.role || k, mem: val });
               }
             });
-            const rawS2Title = (cfg.councilSection2Title || 'รายชื่อผู้แทนพรรคเพื่อดำรงตำแหน่งคณะกรรมการสภานักเรียน').replace(/^ส่วนที่\s*\d+\s*:\s*/i, '').trim();
+            const rawS2Title = (cfg.councilSection2Title || 'à¸£à¸²à¸¢à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹à¸—à¸™à¸žà¸£à¸£à¸„à¹€à¸žà¸·à¹ˆà¸­à¸”à¸³à¸£à¸‡à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¸„à¸“à¸°à¸à¸£à¸£à¸¡à¸à¸²à¸£à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™').replace(/^à¸ªà¹ˆà¸§à¸™à¸—à¸µà¹ˆ\s*\d+\s*:\s*/i, '').trim();
             const finalS2Title = rawS2Title.includes('{count}')
               ? rawS2Title.replace(/\{count\}/g, displayList.length)
-              : (cfg.councilSection2ShowCount !== false ? `${rawS2Title} (${displayList.length} ตำแหน่ง)` : rawS2Title);
+              : (cfg.councilSection2ShowCount !== false ? `${rawS2Title} (${displayList.length} à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡)` : rawS2Title);
             return `
               <div class="text-xs font-bold mb-1">${finalS2Title}:</div>
               <table class="formal-table text-[11px]">
                 <thead>
                   <tr class="bg-slate-100">
-                    <th style="width: 4%;">ที่</th>
-                    <th style="width: 10%;">รูปถ่าย</th>
-                    <th style="width: 20%;">ตำแหน่งในสภานักเรียน</th>
-                    <th style="width: 22%;">ชื่อ - นามสกุล</th>
-                    <th style="width: 7%;">ห้อง</th>
-                    <th style="width: 11%;">เลขประจำตัว</th>
-                    <th style="width: 9%;">คะแนน</th>
-                    <th style="width: 7%;">เกรด</th>
-                    <th style="width: 10%;">ข้อตกลง</th>
+                    <th style="width: 4%;">à¸—à¸µà¹ˆ</th>
+                    <th style="width: 10%;">à¸£à¸¹à¸›à¸–à¹ˆà¸²à¸¢</th>
+                    <th style="width: 20%;">à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¹ƒà¸™à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™</th>
+                    <th style="width: 22%;">à¸Šà¸·à¹ˆà¸­ - à¸™à¸²à¸¡à¸ªà¸à¸¸à¸¥</th>
+                    <th style="width: 7%;">à¸«à¹‰à¸­à¸‡</th>
+                    <th style="width: 11%;">à¹€à¸¥à¸‚à¸›à¸£à¸°à¸ˆà¸³à¸•à¸±à¸§</th>
+                    <th style="width: 9%;">à¸„à¸°à¹à¸™à¸™</th>
+                    <th style="width: 7%;">à¹€à¸à¸£à¸”</th>
+                    <th style="width: 10%;">à¸‚à¹‰à¸­à¸•à¸à¸¥à¸‡</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -340,7 +340,7 @@
 
         <!-- Agreement statement -->
         <div class="border border-black p-2 text-[11px] mb-3 bg-slate-50">
-          <strong>คำรับรองและข้อตกลง:</strong> ข้าพเจ้าและสมาชิกพรรคทุกคน ขอรับรองว่ามีคุณสมบัติตรงตามระเบียบการเลือกตั้งประธานสภานักเรียน ประจำปีการศึกษา ${cfg.academicYear} และขอให้คำมั่นสัญญาว่าจะปฏิบัติหน้าที่ด้วยความซื่อสัตย์ สุจริต และ <strong>ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.councilAgreementYear}</strong> ทุกประการ
+          <strong>à¸„à¸³à¸£à¸±à¸šà¸£à¸­à¸‡à¹à¸¥à¸°à¸‚à¹‰à¸­à¸•à¸à¸¥à¸‡:</strong> à¸‚à¹‰à¸²à¸žà¹€à¸ˆà¹‰à¸²à¹à¸¥à¸°à¸ªà¸¡à¸²à¸Šà¸´à¸à¸žà¸£à¸£à¸„à¸—à¸¸à¸à¸„à¸™ à¸‚à¸­à¸£à¸±à¸šà¸£à¸­à¸‡à¸§à¹ˆà¸²à¸¡à¸µà¸„à¸¸à¸“à¸ªà¸¡à¸šà¸±à¸•à¸´à¸•à¸£à¸‡à¸•à¸²à¸¡à¸£à¸°à¹€à¸šà¸µà¸¢à¸šà¸à¸²à¸£à¹€à¸¥à¸·à¸­à¸à¸•à¸±à¹‰à¸‡à¸›à¸£à¸°à¸˜à¸²à¸™à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.academicYear} à¹à¸¥à¸°à¸‚à¸­à¹ƒà¸«à¹‰à¸„à¸³à¸¡à¸±à¹ˆà¸™à¸ªà¸±à¸à¸à¸²à¸§à¹ˆà¸²à¸ˆà¸°à¸›à¸à¸´à¸šà¸±à¸•à¸´à¸«à¸™à¹‰à¸²à¸—à¸µà¹ˆà¸”à¹‰à¸§à¸¢à¸„à¸§à¸²à¸¡à¸‹à¸·à¹ˆà¸­à¸ªà¸±à¸•à¸¢à¹Œ à¸ªà¸¸à¸ˆà¸£à¸´à¸• à¹à¸¥à¸° <strong>à¸¢à¸­à¸¡à¸£à¸±à¸šà¸‚à¹‰à¸­à¸•à¸à¸¥à¸‡à¸‚à¸­à¸‡à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ ${cfg.schoolName} à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.councilAgreementYear}</strong> à¸—à¸¸à¸à¸›à¸£à¸°à¸à¸²à¸£
         </div>
 
         <!-- Signatures (Dynamic Columns) -->
@@ -354,15 +354,15 @@
           <tr>
             <td class="text-center">${num}</td>
             <td class="text-center p-0.5">
-              <div class="w-12 h-16 border border-slate-300 mx-auto flex items-center justify-center text-[9px] text-slate-400 bg-slate-50">รูป 1.5"</div>
+              <div class="w-12 h-16 border border-slate-300 mx-auto flex items-center justify-center text-[9px] text-slate-400 bg-slate-50">à¸£à¸¹à¸› 1.5"</div>
             </td>
             <td>${title}</td>
             <td>................................................</td>
-            <td class="text-center">ม.4/..</td>
+            <td class="text-center">à¸¡.4/..</td>
             <td class="text-center">..........</td>
             <td class="text-center">.....</td>
             <td class="text-center">.....</td>
-            <td class="text-center">[ ] ยอมรับ</td>
+            <td class="text-center">[ ] à¸¢à¸­à¸¡à¸£à¸±à¸š</td>
           </tr>
         `;
       }
@@ -384,16 +384,16 @@
           </td>
           <td><strong>${title}</strong></td>
           <td>${mem.fullname}</td>
-          <td class="text-center">ม.${String(mem.grade || '4').replace(/^ม\.?/, '')}/${mem.room}</td>
+          <td class="text-center">à¸¡.${String(mem.grade || '4').replace(/^à¸¡\.?/, '')}/${mem.room}</td>
           <td class="text-center font-mono">${mem.studentId}</td>
           <td class="text-center font-semibold text-green-800">${mem.behaviorScore}</td>
           <td class="text-center font-semibold">${mem.gpax}</td>
-          <td class="text-center font-bold text-green-800">✓ ยอมรับ</td>
+          <td class="text-center font-bold text-green-800">âœ“ à¸¢à¸­à¸¡à¸£à¸±à¸š</td>
         </tr>
       `;
     }
 
-    // ฟอร์มประธานคณะสี A4
+    // à¸Ÿà¸­à¸£à¹Œà¸¡à¸›à¸£à¸°à¸˜à¸²à¸™à¸„à¸“à¸°à¸ªà¸µ A4
     function renderColorDocument(container, d, cfg) {
       const isFilled = !!d;
       const leader = d?.leader || {};
@@ -406,7 +406,7 @@
       const logo3 = cfg.schoolLogo3 !== undefined ? cfg.schoolLogo3 : DEFAULT_LOGO_3;
       const logosHtml = [logo1, logo2, logo3].filter(Boolean).map(src => `
         <div class="w-15 h-15 flex items-center justify-center overflow-hidden" style="width: 3.8rem; height: 3.8rem;">
-          <img src="${src}" class="w-full h-full object-contain" alt="ตราสัญลักษณ์" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
+          <img src="${src}" class="w-full h-full object-contain" alt="à¸•à¸£à¸²à¸ªà¸±à¸à¸¥à¸±à¸à¸©à¸“à¹Œ" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
         </div>
       `).join('');
 
@@ -418,17 +418,17 @@
           </div>
           <h2 class="text-lg font-bold">${cfg.schoolName}</h2>
           <p class="text-xs">${cfg.departmentName}</p>
-          <h3 class="text-base font-bold mt-1">ใบสมัครรับเลือกตั้งประธานคณะสี ประจำปีการศึกษา ${cfg.academicYear}</h3>
+          <h3 class="text-base font-bold mt-1">à¹ƒà¸šà¸ªà¸¡à¸±à¸„à¸£à¸£à¸±à¸šà¹€à¸¥à¸·à¸­à¸à¸•à¸±à¹‰à¸‡à¸›à¸£à¸°à¸˜à¸²à¸™à¸„à¸“à¸°à¸ªà¸µ à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.academicYear}</h3>
           <p class="text-xs font-semibold text-slate-700">
-            [ 1. คณะสีอัญชัน &nbsp; 2. คณะสีนนทรี &nbsp; 3. คณะปาริชาต &nbsp; 4. คณะสีเอื้องช่อแสด &nbsp; 5. คณะสีอินทนิล ]
+            [ 1. à¸„à¸“à¸°à¸ªà¸µà¸­à¸±à¸à¸Šà¸±à¸™ &nbsp; 2. à¸„à¸“à¸°à¸ªà¸µà¸™à¸™à¸—à¸£à¸µ &nbsp; 3. à¸„à¸“à¸°à¸›à¸²à¸£à¸´à¸Šà¸²à¸• &nbsp; 4. à¸„à¸“à¸°à¸ªà¸µà¹€à¸­à¸·à¹‰à¸­à¸‡à¸Šà¹ˆà¸­à¹à¸ªà¸” &nbsp; 5. à¸„à¸“à¸°à¸ªà¸µà¸­à¸´à¸™à¸—à¸™à¸´à¸¥ ]
           </p>
 
           <div class="absolute right-0 top-0 text-right">
             <div class="border border-black p-1 text-center min-w-[90px] text-xs">
-              <div>หมายเลขผู้สมัคร</div>
-              <div class="text-xl font-bold font-mono">${d?.candidateNumber ? 'เบอร์ ' + d.candidateNumber : '_______'}</div>
+              <div>à¸«à¸¡à¸²à¸¢à¹€à¸¥à¸‚à¸œà¸¹à¹‰à¸ªà¸¡à¸±à¸„à¸£</div>
+              <div class="text-xl font-bold font-mono">${d?.candidateNumber ? 'à¹€à¸šà¸­à¸£à¹Œ ' + d.candidateNumber : '_______'}</div>
             </div>
-            <div class="text-[10px] text-slate-500 mt-1">รหัส: ${d?.id || 'COLOR-' + cfg.academicYear + '-XXX'}</div>
+            <div class="text-[10px] text-slate-500 mt-1">à¸£à¸«à¸±à¸ª: ${d?.id || 'COLOR-' + cfg.academicYear + '-XXX'}</div>
           </div>
         </div>
 
@@ -436,27 +436,27 @@
         <div class="mb-3 text-xs">
           <div class="grid grid-cols-12 gap-2 mb-1">
             <div class="col-span-6">
-              <strong>สังกัดคณะสี:</strong> 
+              <strong>à¸ªà¸±à¸‡à¸à¸±à¸”à¸„à¸“à¸°à¸ªà¸µ:</strong> 
               <span class="dotted-line min-w-[160px] font-bold text-sm text-[#16325c]">${d?.colorName || '...................................................'}</span>
             </div>
             <div class="col-span-6 text-right">
-              <strong>วันที่สมัคร:</strong> 
+              <strong>à¸§à¸±à¸™à¸—à¸µà¹ˆà¸ªà¸¡à¸±à¸„à¸£:</strong> 
               <span class="dotted-line min-w-[120px]">${d?.submittedAt || '......../......../........'}</span>
             </div>
           </div>
           <div class="grid grid-cols-12 gap-2 mb-1">
             <div class="col-span-7">
-              <strong>ชื่อพรรค:</strong> 
+              <strong>à¸Šà¸·à¹ˆà¸­à¸žà¸£à¸£à¸„:</strong> 
               <span class="dotted-line min-w-[200px] font-bold">${d?.partyName || '....................................................................................'}</span>
             </div>
             <div class="col-span-5">
-              <strong>ครูที่ปรึกษาพรรค:</strong> 
+              <strong>à¸„à¸£à¸¹à¸—à¸µà¹ˆà¸›à¸£à¸¶à¸à¸©à¸²à¸žà¸£à¸£à¸„:</strong> 
               <span class="dotted-line min-w-[140px]">${d?.advisorName || '............................................'}</span>
             </div>
           </div>
           <div class="grid grid-cols-12 gap-2">
             <div class="col-span-12">
-              <strong>สโลแกน/คำขวัญประจำพรรค:</strong> 
+              <strong>à¸ªà¹‚à¸¥à¹à¸à¸™/à¸„à¸³à¸‚à¸§à¸±à¸à¸›à¸£à¸°à¸ˆà¸³à¸žà¸£à¸£à¸„:</strong> 
               <span class="dotted-line min-w-[320px]">${d?.slogan || '..........................................................................................................................'}</span>
             </div>
           </div>
@@ -465,27 +465,27 @@
         <!-- Leader Photo & Details -->
         <div class="flex gap-4 p-2.5 bg-slate-50 border border-black mb-3">
           <div class="photo-box border border-black flex-shrink-0 bg-white" style="width: 2.8cm; height: 3.5cm;">
-            ${leader.photo ? `<img src="${leader.photo}" class="w-full h-full object-cover">` : '<div class="text-[10px] p-2 text-center text-slate-500">ติดรูปถ่าย 1.5 นิ้ว<br>(สวมชุดนักเรียน)</div>'}
+            ${leader.photo ? `<img src="${leader.photo}" class="w-full h-full object-cover">` : '<div class="text-[10px] p-2 text-center text-slate-500">à¸•à¸´à¸”à¸£à¸¹à¸›à¸–à¹ˆà¸²à¸¢ 1.5 à¸™à¸´à¹‰à¸§<br>(à¸ªà¸§à¸¡à¸Šà¸¸à¸”à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™)</div>'}
           </div>
           <div class="flex-grow text-xs space-y-1">
             <div class="font-bold text-sm text-slate-900 border-b border-slate-300 pb-1">
-              ข้อมูล${((typeof WDSDB !== 'undefined' && WDSDB.getColorLeaderPosition) ? WDSDB.getColorLeaderPosition().title : (cfg.colorPositions?.[0]?.title || 'ผู้ลงสมัครประธานคณะสี (หัวหน้าทีม)'))}
+              à¸‚à¹‰à¸­à¸¡à¸¹à¸¥${((typeof WDSDB !== 'undefined' && WDSDB.getColorLeaderPosition) ? WDSDB.getColorLeaderPosition().title : (cfg.colorPositions?.[0]?.title || 'à¸œà¸¹à¹‰à¸¥à¸‡à¸ªà¸¡à¸±à¸„à¸£à¸›à¸£à¸°à¸˜à¸²à¸™à¸„à¸“à¸°à¸ªà¸µ (à¸«à¸±à¸§à¸«à¸™à¹‰à¸²à¸—à¸µà¸¡)'))}
             </div>
             <div class="grid grid-cols-2 gap-2 pt-1">
-              <div><strong>ชื่อ-นามสกุล:</strong> <span class="dotted-line font-bold">${leader.fullname || '............................................................'}</span></div>
-              <div><strong>ระดับชั้น:</strong> ม.4 ห้อง <span class="dotted-line font-bold">${leader.room || '.......'}</span></div>
-              <div><strong>เลขประจำตัวนักเรียน:</strong> <span class="dotted-line font-mono font-bold">${leader.studentId || '....................'}</span></div>
-              <div><strong>เบอร์โทรศัพท์ติดต่อ:</strong> <span class="dotted-line">${leader.phone || '..............................'}</span></div>
-              <div><strong>คะแนนพฤติกรรมคงเหลือ:</strong> <span class="dotted-line font-bold text-green-800">${leader.behaviorScore !== undefined ? leader.behaviorScore + ' คะแนน' : '............ คะแนน'}</span> (ขั้นต่ำ ${cfg.minBehaviorScore})</div>
-              <div><strong>เกรดเฉลี่ยสะสม (ม.4 เทอม 1):</strong> <span class="dotted-line font-bold text-green-800">${leader.gpax || '..........'}</span> (ขั้นต่ำ ${cfg.minGpaMember})</div>
+              <div><strong>à¸Šà¸·à¹ˆà¸­-à¸™à¸²à¸¡à¸ªà¸à¸¸à¸¥:</strong> <span class="dotted-line font-bold">${leader.fullname || '............................................................'}</span></div>
+              <div><strong>à¸£à¸°à¸”à¸±à¸šà¸Šà¸±à¹‰à¸™:</strong> à¸¡.4 à¸«à¹‰à¸­à¸‡ <span class="dotted-line font-bold">${leader.room || '.......'}</span></div>
+              <div><strong>à¹€à¸¥à¸‚à¸›à¸£à¸°à¸ˆà¸³à¸•à¸±à¸§à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™:</strong> <span class="dotted-line font-mono font-bold">${leader.studentId || '....................'}</span></div>
+              <div><strong>à¹€à¸šà¸­à¸£à¹Œà¹‚à¸—à¸£à¸¨à¸±à¸žà¸—à¹Œà¸•à¸´à¸”à¸•à¹ˆà¸­:</strong> <span class="dotted-line">${leader.phone || '..............................'}</span></div>
+              <div><strong>à¸„à¸°à¹à¸™à¸™à¸žà¸¤à¸•à¸´à¸à¸£à¸£à¸¡à¸„à¸‡à¹€à¸«à¸¥à¸·à¸­:</strong> <span class="dotted-line font-bold text-green-800">${leader.behaviorScore !== undefined ? leader.behaviorScore + ' à¸„à¸°à¹à¸™à¸™' : '............ à¸„à¸°à¹à¸™à¸™'}</span> (à¸‚à¸±à¹‰à¸™à¸•à¹ˆà¸³ ${cfg.minBehaviorScore})</div>
+              <div><strong>à¹€à¸à¸£à¸”à¹€à¸‰à¸¥à¸µà¹ˆà¸¢à¸ªà¸°à¸ªà¸¡ (à¸¡.4 à¹€à¸—à¸­à¸¡ 1):</strong> <span class="dotted-line font-bold text-green-800">${leader.gpax || '..........'}</span> (à¸‚à¸±à¹‰à¸™à¸•à¹ˆà¸³ ${cfg.minGpaMember})</div>
             </div>
             <div class="text-[11px] text-slate-700 pt-1">
-              [ ✓ ] ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.colorAgreementYear}
+              [ âœ“ ] à¸¢à¸­à¸¡à¸£à¸±à¸šà¸‚à¹‰à¸­à¸•à¸à¸¥à¸‡à¸‚à¸­à¸‡à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ ${cfg.schoolName} à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.colorAgreementYear}
             </div>
           </div>
         </div>
 
-        <!-- Team Members Table (แสดงเฉพาะเมื่อมีสมาชิกในทีมหรือมีการตั้งค่าตำแหน่งเพิ่มเติม) -->
+        <!-- Team Members Table (à¹à¸ªà¸”à¸‡à¹€à¸‰à¸žà¸²à¸°à¹€à¸¡à¸·à¹ˆà¸­à¸¡à¸µà¸ªà¸¡à¸²à¸Šà¸´à¸à¹ƒà¸™à¸—à¸µà¸¡à¸«à¸£à¸·à¸­à¸¡à¸µà¸à¸²à¸£à¸•à¸±à¹‰à¸‡à¸„à¹ˆà¸²à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¹€à¸žà¸´à¹ˆà¸¡à¹€à¸•à¸´à¸¡) -->
         ${(() => {
           const colorMemPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : (COLOR_MEMBER_POSITIONS || []);
           const hasMembersData = Array.isArray(members) && members.length > 0;
@@ -493,18 +493,18 @@
           if (memCount === 0) return '';
           return `
             <div class="mb-3">
-              <div class="text-xs font-bold mb-1">รายชื่อคณะทำงานและสมาชิกในพรรค/ทีมงานคณะสี (${memCount} ตำแหน่ง):</div>
+              <div class="text-xs font-bold mb-1">à¸£à¸²à¸¢à¸Šà¸·à¹ˆà¸­à¸„à¸“à¸°à¸—à¸³à¸‡à¸²à¸™à¹à¸¥à¸°à¸ªà¸¡à¸²à¸Šà¸´à¸à¹ƒà¸™à¸žà¸£à¸£à¸„/à¸—à¸µà¸¡à¸‡à¸²à¸™à¸„à¸“à¸°à¸ªà¸µ (${memCount} à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡):</div>
               <table class="formal-table text-[11px]">
                 <thead>
                   <tr class="bg-slate-100">
-                    <th style="width: 5%;">ที่</th>
-                    <th style="width: 10%;">รูปถ่าย</th>
-                    <th style="width: 23%;">ชื่อ - นามสกุล</th>
-                    <th style="width: 20%;">บทบาทหน้าที่ในคณะสี</th>
-                    <th style="width: 8%;">ห้อง</th>
-                    <th style="width: 12%;">เลขประจำตัว</th>
-                    <th style="width: 11%;">คะแนน</th>
-                    <th style="width: 11%;">เกรดเฉลี่ย</th>
+                    <th style="width: 5%;">à¸—à¸µà¹ˆ</th>
+                    <th style="width: 10%;">à¸£à¸¹à¸›à¸–à¹ˆà¸²à¸¢</th>
+                    <th style="width: 23%;">à¸Šà¸·à¹ˆà¸­ - à¸™à¸²à¸¡à¸ªà¸à¸¸à¸¥</th>
+                    <th style="width: 20%;">à¸šà¸—à¸šà¸²à¸—à¸«à¸™à¹‰à¸²à¸—à¸µà¹ˆà¹ƒà¸™à¸„à¸“à¸°à¸ªà¸µ</th>
+                    <th style="width: 8%;">à¸«à¹‰à¸­à¸‡</th>
+                    <th style="width: 12%;">à¹€à¸¥à¸‚à¸›à¸£à¸°à¸ˆà¸³à¸•à¸±à¸§</th>
+                    <th style="width: 11%;">à¸„à¸°à¹à¸™à¸™</th>
+                    <th style="width: 11%;">à¹€à¸à¸£à¸”à¹€à¸‰à¸¥à¸µà¹ˆà¸¢</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -517,7 +517,7 @@
 
         <!-- Agreement statement -->
         <div class="border border-black p-2 text-[11px] mb-3 bg-slate-50">
-          <strong>คำรับรองและข้อตกลง:</strong> ข้าพเจ้าและคณะทำงานทุกคน ขอรับรองว่ามีคุณสมบัติตรงตามระเบียบการเลือกตั้งประธานคณะสี ประจำปีการศึกษา ${cfg.academicYear} และขอให้คำมั่นสัญญาว่าจะส่งเสริมความสามัคคี พัฒนากิจกรรมคณะสี และ <strong>ยอมรับข้อตกลงของสภานักเรียน ${cfg.schoolName} ประจำปีการศึกษา ${cfg.colorAgreementYear}</strong> ทุกประการ
+          <strong>à¸„à¸³à¸£à¸±à¸šà¸£à¸­à¸‡à¹à¸¥à¸°à¸‚à¹‰à¸­à¸•à¸à¸¥à¸‡:</strong> à¸‚à¹‰à¸²à¸žà¹€à¸ˆà¹‰à¸²à¹à¸¥à¸°à¸„à¸“à¸°à¸—à¸³à¸‡à¸²à¸™à¸—à¸¸à¸à¸„à¸™ à¸‚à¸­à¸£à¸±à¸šà¸£à¸­à¸‡à¸§à¹ˆà¸²à¸¡à¸µà¸„à¸¸à¸“à¸ªà¸¡à¸šà¸±à¸•à¸´à¸•à¸£à¸‡à¸•à¸²à¸¡à¸£à¸°à¹€à¸šà¸µà¸¢à¸šà¸à¸²à¸£à¹€à¸¥à¸·à¸­à¸à¸•à¸±à¹‰à¸‡à¸›à¸£à¸°à¸˜à¸²à¸™à¸„à¸“à¸°à¸ªà¸µ à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.academicYear} à¹à¸¥à¸°à¸‚à¸­à¹ƒà¸«à¹‰à¸„à¸³à¸¡à¸±à¹ˆà¸™à¸ªà¸±à¸à¸à¸²à¸§à¹ˆà¸²à¸ˆà¸°à¸ªà¹ˆà¸‡à¹€à¸ªà¸£à¸´à¸¡à¸„à¸§à¸²à¸¡à¸ªà¸²à¸¡à¸±à¸„à¸„à¸µ à¸žà¸±à¸’à¸™à¸²à¸à¸´à¸ˆà¸à¸£à¸£à¸¡à¸„à¸“à¸°à¸ªà¸µ à¹à¸¥à¸° <strong>à¸¢à¸­à¸¡à¸£à¸±à¸šà¸‚à¹‰à¸­à¸•à¸à¸¥à¸‡à¸‚à¸­à¸‡à¸ªà¸ à¸²à¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™ ${cfg.schoolName} à¸›à¸£à¸°à¸ˆà¸³à¸›à¸µà¸à¸²à¸£à¸¨à¸¶à¸à¸©à¸² ${cfg.colorAgreementYear}</strong> à¸—à¸¸à¸à¸›à¸£à¸°à¸à¸²à¸£
         </div>
 
         <!-- Signatures (Dynamic Columns) -->
@@ -535,11 +535,11 @@
           <tr>
             <td class="text-center">${idx + 1}</td>
             <td class="text-center p-0.5">
-              <div class="w-12 h-16 border border-slate-300 mx-auto flex items-center justify-center text-[9px] text-slate-400 bg-slate-50">รูป 1.5"</div>
+              <div class="w-12 h-16 border border-slate-300 mx-auto flex items-center justify-center text-[9px] text-slate-400 bg-slate-50">à¸£à¸¹à¸› 1.5"</div>
             </td>
             <td>................................................</td>
             <td><strong>${pos.title}</strong></td>
-            <td class="text-center">ม.4/..</td>
+            <td class="text-center">à¸¡.4/..</td>
             <td class="text-center">..........</td>
             <td class="text-center">.....</td>
             <td class="text-center">.....</td>
@@ -558,8 +558,8 @@
             </div>
           </td>
           <td>${mem.fullname}</td>
-          <td>${mem.role || colorMembers[idx]?.title || 'คณะทำงาน'}</td>
-          <td class="text-center">ม.${String(mem.grade || '4').replace(/^ม\.?/, '')}/${mem.room}</td>
+          <td>${mem.role || colorMembers[idx]?.title || 'à¸„à¸“à¸°à¸—à¸³à¸‡à¸²à¸™'}</td>
+          <td class="text-center">à¸¡.${String(mem.grade || '4').replace(/^à¸¡\.?/, '')}/${mem.room}</td>
           <td class="text-center font-mono">${mem.studentId}</td>
           <td class="text-center font-semibold text-green-800">${mem.behaviorScore}</td>
           <td class="text-center font-semibold">${mem.gpax}</td>
@@ -571,8 +571,8 @@
     function toggleBlankForm() {
       currentIsBlank = !currentIsBlank;
       document.getElementById('blankToggleBtn').innerHTML = currentIsBlank 
-        ? '<i class="fa-solid fa-file-pen mr-1.5"></i> แสดงข้อมูลที่บันทึก' 
-        : '<i class="fa-solid fa-file mr-1.5"></i> สลับเป็นแบบฟอร์มเปล่า';
+        ? '<i class="fa-solid fa-file-pen mr-1.5"></i> à¹à¸ªà¸”à¸‡à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸—à¸µà¹ˆà¸šà¸±à¸™à¸—à¸¶à¸' 
+        : '<i class="fa-solid fa-file mr-1.5"></i> à¸ªà¸¥à¸±à¸šà¹€à¸›à¹‡à¸™à¹à¸šà¸šà¸Ÿà¸­à¸£à¹Œà¸¡à¹€à¸›à¸¥à¹ˆà¸²';
       renderApplication();
     }
 
@@ -588,16 +588,16 @@
         const adminTab = appType === 'color' ? 'color' : 'council';
         navContainer.innerHTML = `
           <button type="button" onclick="handleBackNavigation(event)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-bold transition flex items-center shadow-xs cursor-pointer">
-            <i class="fa-solid fa-arrow-left mr-1.5"></i> กลับหน้าหลังบ้าน (CMS)
+            <i class="fa-solid fa-arrow-left mr-1.5"></i> à¸à¸¥à¸±à¸šà¸«à¸™à¹‰à¸²à¸«à¸¥à¸±à¸‡à¸šà¹‰à¸²à¸™ (CMS)
           </button>
-          <a href="index.html" class="px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition flex items-center" title="ไปยังหน้าหลักเว็บไซต์นักเรียน">
-            <i class="fa-solid fa-house mr-1"></i> <span class="hidden sm:inline">หน้าหลัก</span>
+          <a href="index.html" class="px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition flex items-center" title="à¹„à¸›à¸¢à¸±à¸‡à¸«à¸™à¹‰à¸²à¸«à¸¥à¸±à¸à¹€à¸§à¹‡à¸šà¹„à¸‹à¸•à¹Œà¸™à¸±à¸à¹€à¸£à¸µà¸¢à¸™">
+            <i class="fa-solid fa-house mr-1"></i> <span class="hidden sm:inline">à¸«à¸™à¹‰à¸²à¸«à¸¥à¸±à¸</span>
           </a>
         `;
       } else {
         navContainer.innerHTML = `
           <a href="index.html" onclick="handleBackNavigation(event)" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-slate-200 transition font-medium flex items-center">
-            <i class="fa-solid fa-arrow-left mr-1.5"></i> กลับหน้าหลัก
+            <i class="fa-solid fa-arrow-left mr-1.5"></i> à¸à¸¥à¸±à¸šà¸«à¸™à¹‰à¸²à¸«à¸¥à¸±à¸
           </a>
         `;
       }
@@ -610,7 +610,7 @@
                           (typeof WDSDB !== 'undefined' && WDSDB.isAdminLoggedIn && WDSDB.isAdminLoggedIn());
       
       if (isFromAdmin) {
-        // หากเปิดเป็นแท็บใหม่ ให้ปิดแท็บเพื่อกลับสู่หน้าหลังบ้านเดิมได้ทันที
+        // à¸«à¸²à¸à¹€à¸›à¸´à¸”à¹€à¸›à¹‡à¸™à¹à¸—à¹‡à¸šà¹ƒà¸«à¸¡à¹ˆ à¹ƒà¸«à¹‰à¸›à¸´à¸”à¹à¸—à¹‡à¸šà¹€à¸žà¸·à¹ˆà¸­à¸à¸¥à¸±à¸šà¸ªà¸¹à¹ˆà¸«à¸™à¹‰à¸²à¸«à¸¥à¸±à¸‡à¸šà¹‰à¸²à¸™à¹€à¸”à¸´à¸¡à¹„à¸”à¹‰à¸—à¸±à¸™à¸—à¸µ
         if (window.opener && !window.opener.closed) {
           window.close();
           setTimeout(() => {

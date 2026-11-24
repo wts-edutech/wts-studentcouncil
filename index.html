@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257100">
+  <link rel="stylesheet" href="css/style.css?v=257101">
   <style>
     .grid-nav-group {
       display: grid !important;
@@ -762,8 +762,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257100"></script>
-  <script src="js/app.js?v=257100"></script>
+  <script src="js/data.js?v=257101"></script>
+  <script src="js/app.js?v=257101"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];
@@ -808,28 +808,14 @@
       }
     }
 
-    async function handleSearch() {
-      const q = document.getElementById('searchInput').value.trim();
+    let _hasSearchedOnce = false;
+    let _isRunningManualSearch = false;
+
+    function renderSearchResultsList(q, showResultToast = false) {
       const container = document.getElementById('searchResults');
-      
-      if (!q) {
-        showToast('กรุณากรอกคำค้นหา เช่น เลขประจำตัว หรือชื่อผู้สมัคร', 'warning');
-        return;
-      }
+      if (!container) return;
 
-      container.innerHTML = `
-        <div class="border border-slate-200 p-6 bg-slate-50 text-center text-slate-500 text-xs rounded">
-          <i class="fa-solid fa-spinner fa-spin text-lg text-[#16325c] mb-1.5 block"></i>
-          กำลังค้นหาและดึงข้อมูลล่าสุดจากระบบ...
-        </div>
-      `;
-      if (typeof WDSDB.syncApplicationsFromCloud === 'function') {
-        await WDSDB.syncApplicationsFromCloud();
-      }
-
-      let results = WDSDB.searchStudent(q);
-
-      
+      const results = WDSDB.searchStudent(q);
 
       if (results.length === 0) {
         container.innerHTML = `
@@ -874,7 +860,39 @@
       });
 
       container.innerHTML = html;
-      showToast(`พบข้อมูลใบสมัครจำนวน ${results.length} รายการ`, 'info');
+      if (showResultToast) {
+        showToast(`พบข้อมูลใบสมัครจำนวน ${results.length} รายการ`, 'info');
+      }
+    }
+
+    async function handleSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      const container = document.getElementById('searchResults');
+      
+      if (!q) {
+        showToast('กรุณากรอกคำค้นหา เช่น เลขประจำตัว หรือชื่อผู้สมัคร', 'warning');
+        return;
+      }
+
+      if (_isRunningManualSearch) return;
+      _isRunningManualSearch = true;
+      _hasSearchedOnce = true;
+
+      container.innerHTML = `
+        <div class="border border-slate-200 p-6 bg-slate-50 text-center text-slate-500 text-xs rounded">
+          <i class="fa-solid fa-spinner fa-spin text-lg text-[#16325c] mb-1.5 block"></i>
+          กำลังค้นหาและดึงข้อมูลล่าสุดจากระบบ...
+        </div>
+      `;
+      try {
+        if (typeof WDSDB.syncApplicationsFromCloud === 'function') {
+          await WDSDB.syncApplicationsFromCloud();
+        }
+      } finally {
+        _isRunningManualSearch = false;
+      }
+
+      renderSearchResultsList(q, true);
     }
 
     
@@ -883,9 +901,10 @@
       if (typeof renderTimeline === 'function') renderTimeline();
     });
     window.addEventListener('wds-apps-synced', () => {
+      if (_isRunningManualSearch || !_hasSearchedOnce) return;
       const searchInput = document.getElementById('searchInput');
       if (searchInput && searchInput.value.trim()) {
-        handleSearch();
+        renderSearchResultsList(searchInput.value.trim(), false);
       }
     });
     window.addEventListener('pageshow', () => {

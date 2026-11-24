@@ -1114,7 +1114,15 @@ function handleStudentPhotoSelect(input, key) {
 window.handleStudentPhotoSelect = handleStudentPhotoSelect;
 
 // ฟังก์ชันแสดง Toast Notification ทางการ
+let _govToastInTimer = null;
+let _govToastOutTimer = null;
+let _govToastRemoveTimer = null;
+
 function showToast(message, type = 'success') {
+  if (_govToastInTimer) { clearTimeout(_govToastInTimer); _govToastInTimer = null; }
+  if (_govToastOutTimer) { clearTimeout(_govToastOutTimer); _govToastOutTimer = null; }
+  if (_govToastRemoveTimer) { clearTimeout(_govToastRemoveTimer); _govToastRemoveTimer = null; }
+
   const oldToast = document.getElementById('govToast');
   if (oldToast) oldToast.remove();
 
@@ -1131,13 +1139,13 @@ function showToast(message, type = 'success') {
 
   document.body.appendChild(toast);
 
-  setTimeout(() => {
+  _govToastInTimer = setTimeout(() => {
     toast.classList.remove('translate-y-6', 'opacity-0');
   }, 30);
 
-  setTimeout(() => {
+  _govToastOutTimer = setTimeout(() => {
     toast.classList.add('translate-y-6', 'opacity-0');
-    setTimeout(() => toast.remove(), 300);
+    _govToastRemoveTimer = setTimeout(() => toast.remove(), 300);
   }, 4000);
 }
 
