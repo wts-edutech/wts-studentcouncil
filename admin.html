@@ -13,9 +13,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257100">
-  <script src="js/data.js?v=257100"></script>
-  <script src="js/app.js?v=257100"></script>
+  <link rel="stylesheet" href="css/style.css?v=257102">
+  <script src="js/data.js?v=257102"></script>
+  <script src="js/app.js?v=257102"></script>
   <script>
     function doDirectLogin() {
       try {
@@ -986,9 +986,14 @@
                         oninput="onAgreementYearChange('color', this.value)" class="gov-input w-full">
                     </div>
 
-                    <div class="sm:col-span-3">
-                      <label class="block font-semibold text-slate-700 mb-1">ช่วงเวลาเปิดรับสมัคร</label>
+                    <div class="sm:col-span-2">
+                      <label class="block font-semibold text-slate-700 mb-1">ช่วงเวลาเปิดรับสมัคร (ข้อความแสดงผล)</label>
                       <input type="text" id="cfg_regPeriod" oninput="updateLivePreview()" class="gov-input w-full">
+                    </div>
+
+                    <div>
+                      <label class="block font-semibold text-slate-700 mb-1">วัน-เวลานับถอยหลังปิดรับสมัคร</label>
+                      <input type="datetime-local" id="cfg_countdownDeadline" oninput="markSettingsDirty()" class="gov-input w-full">
                     </div>
                   </div>
                 </div>
@@ -2687,6 +2692,8 @@
       document.getElementById('cfg_councilAgreementYear').value = cfg.councilAgreementYear || '';
       document.getElementById('cfg_colorAgreementYear').value = cfg.colorAgreementYear || '';
       document.getElementById('cfg_regPeriod').value = cfg.regPeriod || '';
+      const cdInputEl = document.getElementById('cfg_countdownDeadline');
+      if (cdInputEl) cdInputEl.value = (cfg.countdownDeadline || '2026-12-02T23:59').slice(0, 16);
       const announceInputEl = document.getElementById('cfg_announcementText');
       if (announceInputEl) announceInputEl.value = cfg.announcementText || '';
       document.getElementById('cfg_minBehaviorScore').value = cfg.minBehaviorScore || 80;
@@ -5394,6 +5401,7 @@
           councilAgreementYear: getTrimmed('cfg_councilAgreementYear'),
           colorAgreementYear: getTrimmed('cfg_colorAgreementYear'),
           regPeriod: getTrimmed('cfg_regPeriod'),
+          countdownDeadline: getTrimmed('cfg_countdownDeadline') || (currentCfg.countdownDeadline || '2026-12-02T23:59'),
           announcementText: document.getElementById('cfg_announcementText')
             ? getTrimmed('cfg_announcementText')
             : (currentCfg.announcementText || ''),

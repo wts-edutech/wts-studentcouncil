@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257100">
+  <link rel="stylesheet" href="css/style.css?v=257102">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -341,8 +341,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257100"></script>
-  <script src="js/app.js?v=257100"></script>
+  <script src="js/data.js?v=257102"></script>
+  <script src="js/app.js?v=257102"></script>
   <script>
     function previewLeaderPhoto(input) {
       if (typeof handleStudentPhotoSelect === 'function') {
@@ -658,6 +658,13 @@
         highlightAndFocusField(leaderStudentIdEl, 'กรุณากรอกเลขประจำตัวนักเรียน 5 หลัก (เช่น 45xxx) ของประธานคณะสี');
         return;
       }
+      if (typeof WDSDB !== 'undefined' && typeof WDSDB.findExistingStudentApplication === 'function') {
+        const dupLeader = WDSDB.findExistingStudentApplication(cleanLeaderStudentId, 'color');
+        if (dupLeader) {
+          highlightAndFocusField(leaderStudentIdEl, `เลขประจำตัว ${cleanLeaderStudentId} มีชื่อสมัครใน "${dupLeader.colorName} - ${dupLeader.partyName}" (รหัส ${dupLeader.id}) ไปแล้ว`);
+          return;
+        }
+      }
       const leaderBehaviorScoreEl = document.getElementById('leaderBehaviorScore');
       const rawLeaderBehavior = parseFloat(leaderBehaviorScoreEl ? leaderBehaviorScoreEl.value : '0');
       if (isNaN(rawLeaderBehavior) || rawLeaderBehavior < cfg.minBehaviorScore) {
@@ -679,10 +686,11 @@
 
       const leaderPhoto = document.getElementById('photoData_leader')?.value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos['leader']) || '';
 
-      // 4. ตรวจสอบสมาชิกเพิ่มเติม (ถ้ามี)
+      // 4. ตรวจสอบสมาชิกเพิ่มเติม (ถ้ามี) + ป้องกันเลขประจำตัวซ้ำ
       const leaderPos = (typeof WDSDB !== 'undefined' && WDSDB.getColorLeaderPosition) ? WDSDB.getColorLeaderPosition() : DEFAULT_COLOR_POSITIONS[0];
       const memberPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : COLOR_MEMBER_POSITIONS;
       const members = [];
+      const seenColorIdsInForm = new Map([[cleanLeaderStudentId, leaderPos.title || 'ผู้ลงสมัครประธานคณะสี']]);
       for (let pos of memberPositions) {
         const key = pos.key;
         const posTitle = pos.title || 'สมาชิกคณะสี';
@@ -701,6 +709,18 @@
         if (!cleanSid || cleanSid.length !== 5) {
           highlightAndFocusField(studentIdEl, `กรุณากรอกเลขประจำตัวนักเรียน 5 หลักของ ${posTitle}`);
           return;
+        }
+        if (seenColorIdsInForm.has(cleanSid)) {
+          highlightAndFocusField(studentIdEl, `เลขประจำตัวนักเรียน ${cleanSid} ซ้ำกับ "${seenColorIdsInForm.get(cleanSid)}" ในใบสมัครเดียวกัน`);
+          return;
+        }
+        seenColorIdsInForm.set(cleanSid, posTitle);
+        if (typeof WDSDB !== 'undefined' && typeof WDSDB.findExistingStudentApplication === 'function') {
+          const dupMem = WDSDB.findExistingStudentApplication(cleanSid, 'color');
+          if (dupMem) {
+            highlightAndFocusField(studentIdEl, `เลขประจำตัว ${cleanSid} มีชื่อสมัครใน "${dupMem.colorName} - ${dupMem.partyName}" (รหัส ${dupMem.id}) ไปแล้ว`);
+            return;
+          }
         }
         const behaviorEl = document.getElementById(`behaviorScore_${key}`);
         const rawScore = parseFloat(behaviorEl ? behaviorEl.value : '0');
@@ -788,6 +808,7 @@
         if (document.getElementById('modalColorLineDesc') && cfg.lineGroupDesc) document.getElementById('modalColorLineDesc').innerText = cfg.lineGroupDesc;
 
         document.getElementById('successModalColor').classList.remove('hidden');
+        clearColorDraft(false);
         showToast('บันทึกใบสมัครคณะสีเรียบร้อยแล้ว', 'success');
       } catch (err) {
         console.error('Submit Color Error:', err);
@@ -798,6 +819,155 @@
         }
       }
     }
+
+    // ===== ระบบบันทึกข้อมูลร่างอัตโนมัติ (Auto-Save Draft) สำหรับใบสมัครประธานคณะสี =====
+    const COLOR_DRAFT_KEY = 'wds_draft_color_form_2570';
+    let _colorDraftTimer = null;
+
+    function saveColorDraft() {
+      try {
+        const selectedColor = document.querySelector('input[name="colorHouse"]:checked');
+        const memberPositions = (typeof WDSDB !== 'undefined' && WDSDB.getColorMemberPositions) ? WDSDB.getColorMemberPositions() : COLOR_MEMBER_POSITIONS;
+        const members = {};
+        memberPositions.forEach(pos => {
+          const k = pos.key;
+          members[k] = {
+            name: document.getElementById(`name_${k}`)?.value || '',
+            room: document.getElementById(`room_${k}`)?.value || '',
+            studentId: document.getElementById(`studentId_${k}`)?.value || '',
+            behaviorScore: document.getElementById(`behaviorScore_${k}`)?.value || '',
+            gpax: document.getElementById(`gpax_${k}`)?.value || '',
+            phone: document.getElementById(`phone_${k}`)?.value || '',
+            agreed: document.getElementById(`agreed_${k}`)?.checked || false,
+            photoData: document.getElementById(`photoData_${k}`)?.value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos[k]) || ''
+          };
+        });
+        const draft = {
+          colorHouse: selectedColor ? selectedColor.value : '',
+          colorPartyName: document.getElementById('colorPartyName')?.value || '',
+          colorSlogan: document.getElementById('colorSlogan')?.value || '',
+          advisorName: document.getElementById('advisorName')?.value || '',
+          advisorPhone: document.getElementById('advisorPhone')?.value || '',
+          leaderName: document.getElementById('leaderName')?.value || '',
+          leaderRoom: document.getElementById('leaderRoom')?.value || '',
+          leaderStudentId: document.getElementById('leaderStudentId')?.value || '',
+          leaderBehaviorScore: document.getElementById('leaderBehaviorScore')?.value || '',
+          leaderGpax: document.getElementById('leaderGpax')?.value || '',
+          leaderPhone: document.getElementById('leaderPhone')?.value || '',
+          leaderAgreed: document.getElementById('leaderAgreed')?.checked || false,
+          leaderPhoto: document.getElementById('photoData_leader')?.value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos['leader']) || '',
+          globalAgreementColor: document.getElementById('globalAgreementColor')?.checked || false,
+          members,
+          savedAt: Date.now()
+        };
+        localStorage.setItem(COLOR_DRAFT_KEY, JSON.stringify(draft));
+      } catch (e) {}
+    }
+
+    function scheduleSaveColorDraft() {
+      if (_colorDraftTimer) clearTimeout(_colorDraftTimer);
+      _colorDraftTimer = setTimeout(saveColorDraft, 350);
+    }
+
+    function restoreColorDraft() {
+      try {
+        const raw = localStorage.getItem(COLOR_DRAFT_KEY);
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (!draft || typeof draft !== 'object') return;
+        let hasAny = Boolean(draft.colorHouse || draft.colorPartyName || draft.leaderName || draft.leaderStudentId || draft.leaderPhoto);
+
+        if (draft.colorHouse) {
+          const radio = document.querySelector(`input[name="colorHouse"][value="${draft.colorHouse}"]`);
+          if (radio) radio.checked = true;
+        }
+        if (draft.colorPartyName && document.getElementById('colorPartyName')) document.getElementById('colorPartyName').value = draft.colorPartyName;
+        if (draft.colorSlogan && document.getElementById('colorSlogan')) document.getElementById('colorSlogan').value = draft.colorSlogan;
+        if (draft.advisorName && document.getElementById('advisorName')) document.getElementById('advisorName').value = draft.advisorName;
+        if (draft.advisorPhone && document.getElementById('advisorPhone')) document.getElementById('advisorPhone').value = draft.advisorPhone;
+        if (draft.leaderName && document.getElementById('leaderName')) document.getElementById('leaderName').value = draft.leaderName;
+        if (draft.leaderRoom && document.getElementById('leaderRoom')) document.getElementById('leaderRoom').value = draft.leaderRoom;
+        if (draft.leaderStudentId && document.getElementById('leaderStudentId')) document.getElementById('leaderStudentId').value = draft.leaderStudentId;
+        if (draft.leaderBehaviorScore && document.getElementById('leaderBehaviorScore')) document.getElementById('leaderBehaviorScore').value = draft.leaderBehaviorScore;
+        if (draft.leaderGpax && document.getElementById('leaderGpax')) document.getElementById('leaderGpax').value = draft.leaderGpax;
+        if (draft.leaderPhone && document.getElementById('leaderPhone')) document.getElementById('leaderPhone').value = draft.leaderPhone;
+        if (draft.leaderAgreed && document.getElementById('leaderAgreed')) document.getElementById('leaderAgreed').checked = true;
+        if (draft.globalAgreementColor && document.getElementById('globalAgreementColor')) document.getElementById('globalAgreementColor').checked = true;
+
+        if (draft.leaderPhoto && document.getElementById('photoData_leader')) {
+          document.getElementById('photoData_leader').value = draft.leaderPhoto;
+          if (window._wdsUploadedPhotos) window._wdsUploadedPhotos['leader'] = draft.leaderPhoto;
+          const img = document.getElementById('preview_leader');
+          const ph = document.getElementById('placeholder_leader');
+          if (img && ph) {
+            img.src = draft.leaderPhoto;
+            img.classList.remove('hidden');
+            ph.classList.add('hidden');
+          }
+        }
+
+        if (draft.members && typeof draft.members === 'object') {
+          Object.entries(draft.members).forEach(([k, val]) => {
+            if (!val) return;
+            if (val.name || val.studentId || val.photoData) hasAny = true;
+            if (val.name && document.getElementById(`name_${k}`)) document.getElementById(`name_${k}`).value = val.name;
+            if (val.room && document.getElementById(`room_${k}`)) document.getElementById(`room_${k}`).value = val.room;
+            if (val.studentId && document.getElementById(`studentId_${k}`)) document.getElementById(`studentId_${k}`).value = val.studentId;
+            if (val.behaviorScore && document.getElementById(`behaviorScore_${k}`)) document.getElementById(`behaviorScore_${k}`).value = val.behaviorScore;
+            if (val.gpax && document.getElementById(`gpax_${k}`)) document.getElementById(`gpax_${k}`).value = val.gpax;
+            if (val.phone && document.getElementById(`phone_${k}`)) document.getElementById(`phone_${k}`).value = val.phone;
+            if (val.agreed && document.getElementById(`agreed_${k}`)) document.getElementById(`agreed_${k}`).checked = true;
+            if (val.photoData && document.getElementById(`photoData_${k}`)) {
+              document.getElementById(`photoData_${k}`).value = val.photoData;
+              if (window._wdsUploadedPhotos) window._wdsUploadedPhotos[k] = val.photoData;
+              const img = document.getElementById(`preview_${k}`);
+              const ph = document.getElementById(`placeholder_${k}`);
+              if (img && ph) {
+                img.src = val.photoData;
+                img.classList.remove('hidden');
+                ph.classList.add('hidden');
+              }
+            }
+          });
+        }
+
+        if (hasAny) {
+          let banner = document.getElementById('colorDraftBanner');
+          const form = document.getElementById('colorForm');
+          if (!banner && form) {
+            banner = document.createElement('div');
+            banner.id = 'colorDraftBanner';
+            banner.className = 'p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 text-xs flex items-center justify-between gap-2';
+            banner.innerHTML = `
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-rotate-left text-emerald-600"></i>
+                <span>ระบบกู้คืนข้อมูลร่างที่คุณกรอกค้างไว้ล่าสุดให้อัตโนมัติแล้ว</span>
+              </div>
+              <button type="button" onclick="clearColorDraft(true)" class="px-2.5 py-1 bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 rounded font-semibold text-[11px] whitespace-nowrap transition">
+                <i class="fa-solid fa-trash-can mr-1"></i> ล้างฟอร์มเริ่มใหม่
+              </button>
+            `;
+            form.prepend(banner);
+          }
+        }
+      } catch (e) {}
+    }
+
+    function clearColorDraft(resetFormFields = true) {
+      try { localStorage.removeItem(COLOR_DRAFT_KEY); } catch (e) {}
+      const banner = document.getElementById('colorDraftBanner');
+      if (banner) banner.remove();
+      if (resetFormFields) {
+        const form = document.getElementById('colorForm');
+        if (form) form.reset();
+        window._wdsUploadedPhotos = {};
+        document.querySelectorAll('[id^="photoData_"]').forEach(el => { el.value = ''; });
+        document.querySelectorAll('[id^="preview_"]').forEach(el => { el.src = ''; el.classList.add('hidden'); });
+        document.querySelectorAll('[id^="placeholder_"]').forEach(el => { el.classList.remove('hidden'); });
+        showToast('ล้างข้อมูลร่างในแบบฟอร์มเรียบร้อยแล้ว', 'info');
+      }
+    }
+    window.clearColorDraft = clearColorDraft;
 
     function fillDemoColorData() {
       const radio = document.querySelector('input[value="anchan"]');
@@ -881,6 +1051,12 @@
         gInput.placeholder = `>= ${cfg.minGpaMember}`;
       }
       renderColorMemberForms();
+      restoreColorDraft();
+      const colorFormEl = document.getElementById('colorForm');
+      if (colorFormEl) {
+        colorFormEl.addEventListener('input', scheduleSaveColorDraft);
+        colorFormEl.addEventListener('change', scheduleSaveColorDraft);
+      }
       const ga = document.getElementById('globalAgreementColor');
       if (ga) {
         ga.addEventListener('change', function() {

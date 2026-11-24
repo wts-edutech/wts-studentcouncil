@@ -12,7 +12,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257100">
+  <link rel="stylesheet" href="css/style.css?v=257102">
 </head>
 <body class="flex flex-col min-h-screen font-formal bg-slate-100">
 
@@ -215,8 +215,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257100"></script>
-  <script src="js/app.js?v=257100"></script>
+  <script src="js/data.js?v=257102"></script>
+  <script src="js/app.js?v=257102"></script>
   <script>
     let lastRenderedCouncilSig = '';
 
@@ -467,9 +467,10 @@
         return;
       }
 
-      // 2. ตรวจสอบสมาชิกทุกตำแหน่ง
+      // 2. ตรวจสอบสมาชิกทุกตำแหน่ง + ป้องกันเลขประจำตัวซ้ำ
       const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
       const membersData = {};
+      const seenStudentIdsInForm = new Map();
 
       for (let idx = 0; idx < councilPositions.length; idx++) {
         const pos = councilPositions[idx];
@@ -493,6 +494,19 @@
         if (!cleanStudentId || cleanStudentId.length !== 5) {
           highlightAndFocusField(studentIdEl, `กรุณากรอกเลขประจำตัวนักเรียน 5 หลัก (เช่น 45xxx) ของ ${posTitle}`);
           return;
+        }
+        if (seenStudentIdsInForm.has(cleanStudentId)) {
+          highlightAndFocusField(studentIdEl, `เลขประจำตัวนักเรียน ${cleanStudentId} ซ้ำกับ "${seenStudentIdsInForm.get(cleanStudentId)}" ในใบสมัครเดียวกัน`);
+          return;
+        }
+        seenStudentIdsInForm.set(cleanStudentId, posTitle);
+
+        if (typeof WDSDB !== 'undefined' && typeof WDSDB.findExistingStudentApplication === 'function') {
+          const dupApp = WDSDB.findExistingStudentApplication(cleanStudentId, 'council');
+          if (dupApp) {
+            highlightAndFocusField(studentIdEl, `เลขประจำตัว ${cleanStudentId} มีชื่อสมัครในพรรค "${dupApp.partyName}" (รหัส ${dupApp.id}) ไปแล้ว`);
+            return;
+          }
         }
 
         const behaviorScoreEl = document.getElementById(`behaviorScore_${key}`);
@@ -572,6 +586,7 @@
         if (document.getElementById('modalLineDesc') && cfg.lineGroupDesc) document.getElementById('modalLineDesc').innerText = cfg.lineGroupDesc;
 
         document.getElementById('successModal').classList.remove('hidden');
+        clearCouncilDraft(false);
         showToast('บันทึกใบสมัครสภานักเรียนเรียบร้อยแล้ว', 'success');
       } catch (err) {
         console.error('Submit Council Error:', err);
@@ -582,6 +597,121 @@
         }
       }
     }
+
+    // ===== ระบบบันทึกข้อมูลร่างอัตโนมัติ (Auto-Save Draft) ป้องกันข้อมูลหายเมื่อรีเฟรชหรือสลับแอปบนมือถือ =====
+    const COUNCIL_DRAFT_KEY = 'wds_draft_council_form_2570';
+    let _councilDraftTimer = null;
+
+    function saveCouncilDraft() {
+      try {
+        const councilPositions = (typeof WDSDB !== 'undefined' && WDSDB.getCouncilPositions) ? WDSDB.getCouncilPositions() : COUNCIL_POSITIONS;
+        const members = {};
+        councilPositions.forEach(pos => {
+          const k = pos.key;
+          members[k] = {
+            name: document.getElementById(`name_${k}`)?.value || '',
+            room: document.getElementById(`room_${k}`)?.value || '',
+            studentId: document.getElementById(`studentId_${k}`)?.value || '',
+            behaviorScore: document.getElementById(`behaviorScore_${k}`)?.value || '',
+            gpax: document.getElementById(`gpax_${k}`)?.value || '',
+            phone: document.getElementById(`phone_${k}`)?.value || '',
+            agreed: document.getElementById(`agreed_${k}`)?.checked || false,
+            photoData: document.getElementById(`photoData_${k}`)?.value || (window._wdsUploadedPhotos && window._wdsUploadedPhotos[k]) || ''
+          };
+        });
+        const draft = {
+          partyName: document.getElementById('partyName')?.value || '',
+          slogan: document.getElementById('slogan')?.value || '',
+          advisorName: document.getElementById('advisorName')?.value || '',
+          advisorPhone: document.getElementById('advisorPhone')?.value || '',
+          globalAgreement: document.getElementById('globalAgreement')?.checked || false,
+          members,
+          savedAt: Date.now()
+        };
+        localStorage.setItem(COUNCIL_DRAFT_KEY, JSON.stringify(draft));
+      } catch (e) {}
+    }
+
+    function scheduleSaveCouncilDraft() {
+      if (_councilDraftTimer) clearTimeout(_councilDraftTimer);
+      _councilDraftTimer = setTimeout(saveCouncilDraft, 350);
+    }
+
+    function restoreCouncilDraft() {
+      try {
+        const raw = localStorage.getItem(COUNCIL_DRAFT_KEY);
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (!draft || typeof draft !== 'object') return;
+        let hasAnyText = Boolean(draft.partyName || draft.slogan || draft.advisorName || draft.advisorPhone);
+        if (draft.partyName && document.getElementById('partyName')) document.getElementById('partyName').value = draft.partyName;
+        if (draft.slogan && document.getElementById('slogan')) document.getElementById('slogan').value = draft.slogan;
+        if (draft.advisorName && document.getElementById('advisorName')) document.getElementById('advisorName').value = draft.advisorName;
+        if (draft.advisorPhone && document.getElementById('advisorPhone')) document.getElementById('advisorPhone').value = draft.advisorPhone;
+        if (draft.globalAgreement && document.getElementById('globalAgreement')) document.getElementById('globalAgreement').checked = true;
+
+        if (draft.members && typeof draft.members === 'object') {
+          Object.entries(draft.members).forEach(([k, val]) => {
+            if (!val) return;
+            if (val.name || val.studentId || val.photoData) hasAnyText = true;
+            if (val.name && document.getElementById(`name_${k}`)) document.getElementById(`name_${k}`).value = val.name;
+            if (val.room && document.getElementById(`room_${k}`)) document.getElementById(`room_${k}`).value = val.room;
+            if (val.studentId && document.getElementById(`studentId_${k}`)) document.getElementById(`studentId_${k}`).value = val.studentId;
+            if (val.behaviorScore && document.getElementById(`behaviorScore_${k}`)) document.getElementById(`behaviorScore_${k}`).value = val.behaviorScore;
+            if (val.gpax && document.getElementById(`gpax_${k}`)) document.getElementById(`gpax_${k}`).value = val.gpax;
+            if (val.phone && document.getElementById(`phone_${k}`)) document.getElementById(`phone_${k}`).value = val.phone;
+            if (val.agreed && document.getElementById(`agreed_${k}`)) document.getElementById(`agreed_${k}`).checked = true;
+            if (val.photoData && document.getElementById(`photoData_${k}`)) {
+              document.getElementById(`photoData_${k}`).value = val.photoData;
+              if (window._wdsUploadedPhotos) window._wdsUploadedPhotos[k] = val.photoData;
+              const img = document.getElementById(`preview_${k}`);
+              const ph = document.getElementById(`placeholder_${k}`);
+              if (img && ph) {
+                img.src = val.photoData;
+                img.classList.remove('hidden');
+                ph.classList.add('hidden');
+              }
+            }
+          });
+        }
+
+        if (hasAnyText) {
+          let banner = document.getElementById('councilDraftBanner');
+          const form = document.getElementById('councilForm');
+          if (!banner && form) {
+            banner = document.createElement('div');
+            banner.id = 'councilDraftBanner';
+            banner.className = 'p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 text-xs flex items-center justify-between gap-2';
+            banner.innerHTML = `
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-rotate-left text-emerald-600"></i>
+                <span>ระบบกู้คืนข้อมูลร่างที่คุณกรอกค้างไว้ล่าสุดให้อัตโนมัติแล้ว</span>
+              </div>
+              <button type="button" onclick="clearCouncilDraft(true)" class="px-2.5 py-1 bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 rounded font-semibold text-[11px] whitespace-nowrap transition">
+                <i class="fa-solid fa-trash-can mr-1"></i> ล้างฟอร์มเริ่มใหม่
+              </button>
+            `;
+            form.prepend(banner);
+          }
+        }
+      } catch (e) {}
+    }
+
+    function clearCouncilDraft(resetFormFields = true) {
+      try { localStorage.removeItem(COUNCIL_DRAFT_KEY); } catch (e) {}
+      const banner = document.getElementById('councilDraftBanner');
+      if (banner) banner.remove();
+      if (resetFormFields) {
+        const form = document.getElementById('councilForm');
+        if (form) form.reset();
+        window._wdsUploadedPhotos = {};
+        document.querySelectorAll('[id^="photoData_"]').forEach(el => { el.value = ''; });
+        document.querySelectorAll('[id^="preview_"]').forEach(el => { el.src = ''; el.classList.add('hidden'); });
+        document.querySelectorAll('[id^="placeholder_"]').forEach(el => { el.classList.remove('hidden'); });
+        showToast('ล้างข้อมูลร่างในแบบฟอร์มเรียบร้อยแล้ว', 'info');
+      }
+    }
+    window.clearCouncilDraft = clearCouncilDraft;
 
     function fillDemoCouncilData() {
       document.getElementById('partyName').value = 'พรรคพัฒนาวชิรธรรม';
@@ -637,6 +767,12 @@
     });
     window.addEventListener('DOMContentLoaded', () => {
       renderPositionForms();
+      restoreCouncilDraft();
+      const formEl = document.getElementById('councilForm');
+      if (formEl) {
+        formEl.addEventListener('input', scheduleSaveCouncilDraft);
+        formEl.addEventListener('change', scheduleSaveCouncilDraft);
+      }
       const ga = document.getElementById('globalAgreement');
       if (ga) {
         ga.addEventListener('change', function() {

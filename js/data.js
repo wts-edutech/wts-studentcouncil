@@ -988,6 +988,7 @@ const DEFAULT_SITE_CONFIG = {
   councilAgreementYear: '2568',
   colorAgreementYear: '2567',
   regPeriod: '16 - 30 พฤศจิกายน 2569',
+  countdownDeadline: '2026-12-02T23:59',
   announcementText: 'เปิดรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา 2570 ตั้งแต่วันที่ 16 - 30 พฤศจิกายน 2569',
   minBehaviorScore: 70,
   minGpaPresident: 2.80,
@@ -1480,26 +1481,122 @@ const WDSDB = {
     }
   },
 
+  // อัปโหลดรูปถ่ายผู้สมัครแยกเก็บใน Cloud Bin ย่อย เพื่อไม่ให้ข้อมูลรวมเกิน 150KB (ป้องกัน HTTP 413 และซิงค์รูปถ่ายครบ 100% ทุกเครื่อง)
+  async uploadApplicationPhotosToCloudBins(entry) {
+    if (!entry || typeof entry !== 'object' || !CLOUD_SYNC.IS_ENABLED || typeof fetch === 'undefined') return entry;
+    const isCustomDataPhoto = (p) => (
+      typeof p === 'string' &&
+      p.startsWith('data:image/') &&
+      (typeof THAI_STUDENT_MALE_PHOTO === 'undefined' || p !== THAI_STUDENT_MALE_PHOTO) &&
+      (typeof THAI_STUDENT_FEMALE_PHOTO === 'undefined' || p !== THAI_STUDENT_FEMALE_PHOTO)
+    );
+
+    const tasks = [];
+    if (entry.leader && isCustomDataPhoto(entry.leader.photo) && !entry.leader.photoBinUrl) {
+      tasks.push((async () => {
+        const up = await uploadPrImageToCloudBin(entry.leader.photo);
+        if (up && up.ok && up.uri) {
+          entry.leader.photoBinUrl = 'cloudbin:' + (up.id || extractCloudBinId(up.uri));
+          setCachedPrImage(entry.leader.photoBinUrl, entry.leader.photo);
+        }
+      })());
+    }
+    if (entry.members) {
+      const memList = Array.isArray(entry.members) ? entry.members : Object.values(entry.members);
+      memList.forEach(mem => {
+        if (mem && isCustomDataPhoto(mem.photo) && !mem.photoBinUrl) {
+          tasks.push((async () => {
+            const up = await uploadPrImageToCloudBin(mem.photo);
+            if (up && up.ok && up.uri) {
+              mem.photoBinUrl = 'cloudbin:' + (up.id || extractCloudBinId(up.uri));
+              setCachedPrImage(mem.photoBinUrl, mem.photo);
+            }
+          })());
+        }
+      });
+    }
+    if (tasks.length > 0) {
+      await Promise.allSettled(tasks);
+    }
+    return entry;
+  },
+
+  async hydrateApplicationPhotosFromCloudBins(list) {
+    if (!Array.isArray(list) || list.length === 0) return list;
+    const tasks = [];
+    const resolveMemberPhoto = (obj) => {
+      if (!obj || typeof obj !== 'object') return;
+      const binRef = obj.photoBinUrl || (typeof obj.photo === 'string' && (obj.photo.startsWith('cloudbin:') || obj.photo.includes('extendsclass.com/api/json-storage/bin/')) ? obj.photo : '');
+      if (!binRef) return;
+      const norm = normalizeCloudBinUrl(binRef);
+      if (!norm) return;
+      obj.photoBinUrl = 'cloudbin:' + extractCloudBinId(norm);
+      const cached = getCachedPrImage(norm);
+      if (cached) {
+        obj.photo = cached;
+        return;
+      }
+      if (!obj.photo || obj.photo.startsWith('cloudbin:') || obj.photo.includes('extendsclass.com')) {
+        tasks.push((async () => {
+          const dataUrl = await fetchPrImageFromCloudBin(norm);
+          if (dataUrl) obj.photo = dataUrl;
+        })());
+      }
+    };
+
+    list.forEach(item => {
+      if (!item) return;
+      if (item.leader) resolveMemberPhoto(item.leader);
+      if (item.members) {
+        const mems = Array.isArray(item.members) ? item.members : Object.values(item.members);
+        mems.forEach(resolveMemberPhoto);
+      }
+    });
+
+    if (tasks.length > 0) {
+      await Promise.allSettled(tasks);
+    }
+    return list;
+  },
+
   // ฟังก์ชันส่งข้อมูลใบสมัครขึ้นคลาวด์ พร้อมระบบบีบอัดรูปป้องกัน 413 Payload Too Large
   async pushApplicationsToCloud(type, list) {
     if (!CLOUD_SYNC.IS_ENABLED || typeof fetch === 'undefined') return false;
     const url = type === 'council' ? CLOUD_SYNC.COUNCIL_URL : CLOUD_SYNC.COLOR_URL;
 
+    // อัปโหลดรูปถ่ายที่ยังไม่มี Cloud Bin ย่อยขึ้นคลาวด์ก่อน เพื่อให้แทนที่ด้วยรหัส cloudbin:... ขนาดเล็กได้
+    await Promise.allSettled((list || []).map(item => this.uploadApplicationPhotosToCloudBins(item)));
+
     const sanitizeList = (origList, stripMemberPhotos = false, stripAllPhotos = false) => {
       return origList.map(item => {
         const copy = JSON.parse(JSON.stringify(item));
+        const compactPhoto = (obj, allowBase64) => {
+          if (!obj) return;
+          if (obj.photoBinUrl) {
+            obj.photo = obj.photoBinUrl;
+          } else if (!allowBase64 && typeof obj.photo === 'string' && obj.photo.startsWith('data:image/')) {
+            obj.photo = '';
+          }
+        };
         if (stripAllPhotos) {
-          if (copy.leader) copy.leader.photo = '';
+          compactPhoto(copy.leader, false);
           if (copy.members) {
-            if (Array.isArray(copy.members)) copy.members = copy.members.map(m => ({ ...m, photo: '' }));
-            else Object.keys(copy.members).forEach(k => { if (copy.members[k]) copy.members[k].photo = ''; });
+            if (Array.isArray(copy.members)) copy.members.forEach(m => compactPhoto(m, false));
+            else Object.keys(copy.members).forEach(k => compactPhoto(copy.members[k], false));
           }
         } else if (stripMemberPhotos) {
+          compactPhoto(copy.leader, true);
           if (copy.members) {
-            if (Array.isArray(copy.members)) copy.members = copy.members.map(m => ({ ...m, photo: '' }));
+            if (Array.isArray(copy.members)) copy.members.forEach(m => compactPhoto(m, false));
             else Object.keys(copy.members).forEach(k => {
-              if (k !== 'president' && k !== 'leader' && copy.members[k]) copy.members[k].photo = '';
+              compactPhoto(copy.members[k], k === 'president' || k === 'leader');
             });
+          }
+        } else {
+          compactPhoto(copy.leader, true);
+          if (copy.members) {
+            if (Array.isArray(copy.members)) copy.members.forEach(m => compactPhoto(m, true));
+            else Object.keys(copy.members).forEach(k => compactPhoto(copy.members[k], true));
           }
         }
         return copy;
@@ -1507,7 +1604,7 @@ const WDSDB = {
     };
 
     try {
-      let payload = JSON.stringify(list);
+      let payload = JSON.stringify(sanitizeList(list, false, false));
       // หากขนาดเกิน 150KB ให้ตัดรูปรองในคลาวด์ออกเพื่อป้องกัน 413 (ข้อมูลตัวหนังสือและรูปในเครื่องผู้สมัครยังอยู่ครบ 100%)
       if (payload.length > 150000) {
         payload = JSON.stringify(sanitizeList(list, true, false));
@@ -1812,6 +1909,7 @@ const WDSDB = {
         });
 
         const mergedCouncil = Array.from(map.values());
+        await this.hydrateApplicationPhotosFromCloudBins(mergedCouncil);
         localStorage.setItem(STORAGE_KEYS.COUNCIL, JSON.stringify(mergedCouncil));
 
         if (needPush && CLOUD_SYNC.IS_ENABLED) {
@@ -1841,7 +1939,7 @@ const WDSDB = {
               }
             } else {
               const remoteItem = mapColor.get(locItem.id);
-              if (locItem.leader?.photo && !remoteItem.leader?.photo) {
+              if (locItem.leader?.photo && (!remoteItem.leader?.photo || remoteItem.leader.photo.startsWith('cloudbin:'))) {
                 remoteItem.leader.photo = locItem.leader.photo;
               }
             }
@@ -1849,6 +1947,7 @@ const WDSDB = {
         });
 
         const mergedColor = Array.from(mapColor.values());
+        await this.hydrateApplicationPhotosFromCloudBins(mergedColor);
         localStorage.setItem(STORAGE_KEYS.COLOR, JSON.stringify(mergedColor));
 
         if (needPushColor && CLOUD_SYNC.IS_ENABLED) {
@@ -2020,6 +2119,62 @@ const WDSDB = {
     return list.find(item => item.id === id);
   },
 
+  // ตรวจสอบว่าเลขประจำตัวนักเรียนนี้เคยลงสมัครในใบสมัครอื่นแล้วหรือไม่
+  findExistingStudentApplication(studentId, checkType = null) {
+    this.init();
+    const sid = String(studentId || '').trim();
+    if (!sid) return null;
+
+    if (!checkType || checkType === 'council') {
+      const councils = this.getCouncilList();
+      for (const item of councils) {
+        if (!item || !item.members) continue;
+        for (const [posKey, mem] of Object.entries(item.members)) {
+          if (mem && String(mem.studentId || '').trim() === sid) {
+            return {
+              type: 'council',
+              id: item.id,
+              partyName: item.partyName,
+              fullname: mem.fullname,
+              role: mem.role || posKey
+            };
+          }
+        }
+      }
+    }
+
+    if (!checkType || checkType === 'color') {
+      const colors = this.getColorList();
+      for (const item of colors) {
+        if (!item) continue;
+        if (item.leader && String(item.leader.studentId || '').trim() === sid) {
+          return {
+            type: 'color',
+            id: item.id,
+            colorName: item.colorName,
+            partyName: item.partyName,
+            fullname: item.leader.fullname,
+            role: 'ผู้ลงสมัครประธานคณะสี'
+          };
+        }
+        for (const mem of (item.members || [])) {
+          if (mem && String(mem.studentId || '').trim() === sid) {
+            return {
+              type: 'color',
+              id: item.id,
+              colorName: item.colorName,
+              partyName: item.partyName,
+              fullname: mem.fullname,
+              role: mem.role || 'สมาชิกคณะสี'
+            };
+          }
+        }
+      }
+    }
+
+    return null;
+  },
+
   searchStudent(query) {
     this.init();
     const q = (query || '').trim().toLowerCase();
@@ -2050,6 +2205,8 @@ const WDSDB = {
           partyName: item.partyName,
           status: item.status,
           candidateNumber: item.candidateNumber,
+          notes: item.notes || '',
+          reviewedAt: item.reviewedAt || '',
           submittedAt: item.submittedAt,
           matchedRole: matchedRole || 'สมาชิกพรรค',
           student: student || item.members.president
@@ -2086,6 +2243,8 @@ const WDSDB = {
           partyName: item.partyName,
           status: item.status,
           candidateNumber: item.candidateNumber,
+          notes: item.notes || '',
+          reviewedAt: item.reviewedAt || '',
           submittedAt: item.submittedAt,
           matchedRole: matchedRole || 'คณะทำงาน',
           student: student || item.leader

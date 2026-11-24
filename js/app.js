@@ -1027,6 +1027,8 @@ function handleStudentPhotoSelect(input, key) {
     if (btnSpan) {
       btnSpan.innerHTML = '<i class="fa-solid fa-check text-emerald-600 mr-1"></i> เปลี่ยนรูปถ่าย';
     }
+    if (typeof scheduleSaveCouncilDraft === 'function') scheduleSaveCouncilDraft();
+    if (typeof scheduleSaveColorDraft === 'function') scheduleSaveColorDraft();
     if (typeof showToast === 'function') {
       showToast('แนบรูปถ่ายเรียบร้อยแล้ว', 'success');
     }
@@ -1260,19 +1262,50 @@ function initHomeLiveStatsAndCountdown() {
   const sEl = document.getElementById('cdSecs');
   if (!dEl || !hEl || !mEl || !sEl) return;
 
-  // เป้าหมาย: 2 ธันวาคม 2569 (2026-12-02) เวลา 23:59:59 น. (เวลาไทย +07:00)
-  const targetMs = new Date('2026-12-02T23:59:59+07:00').getTime();
+  const formatThaiDeadlineText = (dateObj) => {
+    try {
+      const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+      const d = dateObj.getDate();
+      const m = thaiMonths[dateObj.getMonth()];
+      const y = dateObj.getFullYear() + 543;
+      const hh = String(dateObj.getHours()).padStart(2, '0');
+      const mm = String(dateObj.getMinutes()).padStart(2, '0');
+      return `สิ้นสุด ${d} ${m} ${y} เวลา ${hh}:${mm} น.`;
+    } catch (e) {
+      return 'สิ้นสุด 2 ธันวาคม 2569 เวลา 23:59 น.';
+    }
+  };
+
+  const getTargetDeadlineMs = () => {
+    const cfg = (typeof WDSDB !== 'undefined' && WDSDB.getConfig) ? WDSDB.getConfig() : {};
+    const raw = (cfg && cfg.countdownDeadline) ? String(cfg.countdownDeadline).trim() : '2026-12-02T23:59';
+    const normalized = raw.includes('+') || raw.endsWith('Z')
+      ? raw
+      : (raw.length === 16 ? `${raw}:59+07:00` : `${raw}+07:00`);
+    const parsed = new Date(normalized);
+    const ms = parsed.getTime();
+    if (!isNaN(ms)) {
+      const targetTxtEl = document.getElementById('homeCountdownTargetText');
+      if (targetTxtEl) targetTxtEl.textContent = formatThaiDeadlineText(parsed);
+      return ms;
+    }
+    return new Date('2026-12-02T23:59:59+07:00').getTime();
+  };
 
   const tick = () => {
+    const targetMs = getTargetDeadlineMs();
     const diff = targetMs - Date.now();
+    const lbl = document.getElementById('homeCountdownLabel');
     if (diff <= 0) {
       dEl.textContent = '00';
       hEl.textContent = '00';
       mEl.textContent = '00';
       sEl.textContent = '00';
-      const lbl = document.getElementById('homeCountdownLabel');
       if (lbl) lbl.textContent = 'ปิดรับสมัครออนไลน์แล้ว';
       return;
+    }
+    if (lbl && lbl.textContent === 'ปิดรับสมัครออนไลน์แล้ว') {
+      lbl.textContent = 'นับถอยหลังปิดรับสมัครออนไลน์';
     }
     const days = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
