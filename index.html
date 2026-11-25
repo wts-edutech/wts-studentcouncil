@@ -296,38 +296,48 @@
       <div id="homePrSectionTop" class="hidden"></div>
 
       <div class="py-1 sm:py-2 space-y-3 sm:space-y-5">
-        <!-- แถบนับถอยหลังวันปิดรับสมัคร -->
-        <div id="homeLiveStatsBar" class="mb-4">
+        <!-- แถบนับถอยหลังวันปิดรับสมัคร (ดีไซน์ชัดเจน อ่านง่าย เด่นชัดทุกหน้าจอ) -->
+        <div id="homeLiveStatsBar" class="mb-5">
           <div
-            class="bg-gradient-to-r from-amber-50 to-orange-50/70 border border-amber-200 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5 min-w-0">
+            class="bg-gradient-to-r from-[#0f2942] via-[#16325c] to-[#0f2942] border-2 border-amber-400/90 rounded-2xl p-4 sm:px-6 sm:py-5 shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5 sm:gap-4 w-full md:w-auto">
               <div
-                class="w-9 h-9 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 text-base flex-shrink-0">
+                class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-amber-400 text-[#0f2942] flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-md">
                 <i class="fa-solid fa-hourglass-half"></i>
               </div>
               <div class="min-w-0">
-                <div class="text-[11px] sm:text-xs font-bold text-amber-900 truncate" id="homeCountdownLabel">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 mb-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>ระบบกำลังเปิดรับสมัครออนไลน์</span>
+                </div>
+                <div class="text-base sm:text-lg md:text-xl font-extrabold text-white leading-snug" id="homeCountdownLabel">
                   นับถอยหลังปิดรับสมัครออนไลน์</div>
-                <div class="text-[10px] sm:text-[11px] text-amber-700" id="homeCountdownTargetText">สิ้นสุด 2 ธันวาคม
-                  2569 เวลา 23:59 น.</div>
+                <div class="text-xs sm:text-sm font-semibold text-amber-300 mt-0.5 flex items-center gap-1.5">
+                  <i class="fa-regular fa-clock text-amber-300"></i>
+                  <span id="homeCountdownTargetText">สิ้นสุด 2 ธันวาคม 2569 เวลา 23:59 น.</span>
+                </div>
               </div>
             </div>
-            <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 text-center" id="homeCountdownBoxes">
-              <div class="bg-white border border-amber-200 rounded-md px-2 py-1 min-w-[40px] shadow-2xs">
-                <div id="cdDays" class="text-xs sm:text-sm font-bold text-[#0f2942] tabular-nums">--</div>
-                <div class="text-[9px] text-slate-500">วัน</div>
+
+            <div class="flex items-center justify-center gap-1.5 sm:gap-2.5 w-full md:w-auto flex-shrink-0 text-center" id="homeCountdownBoxes">
+              <div class="bg-white border-2 border-amber-300 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 min-w-[62px] sm:min-w-[76px] shadow-md flex-1 md:flex-initial">
+                <div id="cdDays" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#0f2942] tabular-nums leading-none">--</div>
+                <div class="text-[10px] sm:text-xs font-bold text-slate-600 mt-1">วัน</div>
               </div>
-              <div class="bg-white border border-amber-200 rounded-md px-2 py-1 min-w-[40px] shadow-2xs">
-                <div id="cdHours" class="text-xs sm:text-sm font-bold text-[#0f2942] tabular-nums">--</div>
-                <div class="text-[9px] text-slate-500">ชม.</div>
+              <span class="text-amber-300 font-extrabold text-lg sm:text-2xl select-none">:</span>
+              <div class="bg-white border-2 border-amber-300 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 min-w-[62px] sm:min-w-[76px] shadow-md flex-1 md:flex-initial">
+                <div id="cdHours" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#0f2942] tabular-nums leading-none">--</div>
+                <div class="text-[10px] sm:text-xs font-bold text-slate-600 mt-1">ชั่วโมง</div>
               </div>
-              <div class="bg-white border border-amber-200 rounded-md px-2 py-1 min-w-[40px] shadow-2xs">
-                <div id="cdMins" class="text-xs sm:text-sm font-bold text-[#0f2942] tabular-nums">--</div>
-                <div class="text-[9px] text-slate-500">นาที</div>
+              <span class="text-amber-300 font-extrabold text-lg sm:text-2xl select-none">:</span>
+              <div class="bg-white border-2 border-amber-300 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 min-w-[62px] sm:min-w-[76px] shadow-md flex-1 md:flex-initial">
+                <div id="cdMins" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#0f2942] tabular-nums leading-none">--</div>
+                <div class="text-[10px] sm:text-xs font-bold text-slate-600 mt-1">นาที</div>
               </div>
-              <div class="bg-white border border-amber-200 rounded-md px-2 py-1 min-w-[40px] shadow-2xs">
-                <div id="cdSecs" class="text-xs sm:text-sm font-bold text-rose-600 tabular-nums">--</div>
-                <div class="text-[9px] text-slate-500">วิ</div>
+              <span class="text-amber-300 font-extrabold text-lg sm:text-2xl select-none">:</span>
+              <div class="bg-white border-2 border-amber-300 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 min-w-[62px] sm:min-w-[76px] shadow-md flex-1 md:flex-initial">
+                <div id="cdSecs" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-rose-600 tabular-nums leading-none">--</div>
+                <div class="text-[10px] sm:text-xs font-bold text-rose-600 mt-1">วินาที</div>
               </div>
             </div>
           </div>
