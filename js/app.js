@@ -947,7 +947,7 @@ function handleStudentPhotoSelect(input, key) {
 
   if (file.size > 20 * 1024 * 1024) {
     alert('ไฟล์รูปภาพมีขนาดใหญ่เกิน 20MB กรุณาเลือกรูปภาพขนาดเล็กลง');
-    try { input.value = ''; } catch (e) {}
+    try { input.value = ''; } catch (e) { }
     return;
   }
 
@@ -997,7 +997,7 @@ function handleStudentPhotoSelect(input, key) {
 
   const applyCompressedPhoto = (compressedData) => {
     window._wdsPhotoUploading = false;
-    try { input.value = ''; } catch (e) {}
+    try { input.value = ''; } catch (e) { }
 
     if (!compressedData || typeof compressedData !== 'string' || !compressedData.startsWith('data:image/') || compressedData.length < 100) {
       const ph = document.getElementById(`placeholder_${key}`);
@@ -1249,12 +1249,15 @@ function initHomeLiveStatsAndCountdown() {
   window.addEventListener('wds-apps-synced', updateHomeLiveStats);
   window.addEventListener('wds-cloud-synced', updateHomeLiveStats);
 
-  // ดึงข้อมูลยอดผู้สมัครล่าสุดจากคลาวด์ทุก 12 วินาที เพื่อแสดงผลเรียลไทม์
+  // ดึงข้อมูลใบสมัครล่าสุดจากคลาวด์อัตโนมัติเฉพาะเมื่อเปิดแท็บตรวจสอบสถานะหรือหน้าแอดมิน
   setInterval(() => {
-    if (typeof WDSDB !== 'undefined' && typeof WDSDB.syncApplicationsFromCloud === 'function') {
-      WDSDB.syncApplicationsFromCloud().catch(() => {});
+    const statusTab = document.getElementById('contentStatus');
+    const isStatusVisible = statusTab && !statusTab.classList.contains('hidden');
+    const isAdminPage = typeof window !== 'undefined' && window.location && window.location.pathname.includes('admin');
+    if ((isStatusVisible || isAdminPage) && typeof WDSDB !== 'undefined' && typeof WDSDB.syncApplicationsFromCloud === 'function') {
+      WDSDB.syncApplicationsFromCloud().catch(() => { });
     }
-  }, 12000);
+  }, 15000);
 
   const dEl = document.getElementById('cdDays');
   const hEl = document.getElementById('cdHours');

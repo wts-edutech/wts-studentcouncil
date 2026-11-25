@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,13 +13,14 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css?v=257102">
+  <link rel="stylesheet" href="css/style.css?v=257101">
   <style>
     .grid-nav-group {
       display: grid !important;
       grid-template-columns: repeat(5, 1fr) !important;
       width: 100% !important;
     }
+
     @media (min-width: 768px) {
       .grid-nav-group {
         display: flex !important;
@@ -28,6 +30,7 @@
         gap: 6px !important;
       }
     }
+
     .portal-nav-btn {
       display: flex !important;
       flex-direction: column !important;
@@ -45,74 +48,101 @@
       overflow: hidden !important;
       box-sizing: border-box !important;
     }
+
     .portal-nav-btn i {
       font-size: 13px !important;
       margin-bottom: 2px !important;
       display: block !important;
     }
+
     .portal-nav-btn span,
     .nav-label-mobile,
     .nav-label-desktop {
       font-size: 11px !important;
       white-space: nowrap !important;
     }
-    .nav-label-mobile { display: inline !important; }
-    .nav-label-desktop { display: none !important; }
+
+    .nav-label-mobile {
+      display: inline !important;
+    }
+
+    .nav-label-desktop {
+      display: none !important;
+    }
+
     @media (min-width: 768px) {
-      .nav-label-mobile { display: none !important; }
-      .nav-label-desktop { display: inline !important; }
+      .nav-label-mobile {
+        display: none !important;
+      }
+
+      .nav-label-desktop {
+        display: inline !important;
+      }
+
       .portal-nav-btn,
       .portal-nav-btn span,
       .portal-nav-btn .nav-label-desktop {
         font-size: 14px !important;
         white-space: nowrap !important;
       }
+
       .portal-nav-btn {
         flex-direction: row !important;
         padding: 9px 12px !important;
         border-bottom-width: 3px !important;
         width: auto !important;
       }
+
       .portal-nav-btn i {
         margin-bottom: 0 !important;
         margin-right: 6px !important;
         font-size: 14px !important;
       }
     }
+
     @media (min-width: 1024px) {
+
       .portal-nav-btn,
       .portal-nav-btn span,
       .portal-nav-btn .nav-label-desktop {
         font-size: 15px !important;
       }
+
       .portal-nav-btn {
         padding: 11px 16px !important;
       }
+
       .portal-nav-btn i {
         font-size: 15px !important;
         margin-right: 8px !important;
       }
     }
+
     @media (min-width: 1280px) {
+
       .portal-nav-btn,
       .portal-nav-btn span,
       .portal-nav-btn .nav-label-desktop {
         font-size: 15.5px !important;
       }
+
       .portal-nav-btn {
         padding: 13px 20px !important;
       }
     }
+
     .portal-nav-btn:hover {
       color: #064e3b !important;
       background-color: #f8fafc !important;
     }
+
     .portal-nav-btn.active {
       color: #0f2942 !important;
       font-weight: 700 !important;
       border-bottom-color: #065f46 !important;
       background-color: #ffffff !important;
     }
+
     .hero-banner-bg {
       background-color: #0b2444;
       background-image: url('assets/images/hero-school-photo.jpg');
@@ -121,28 +151,35 @@
       background-repeat: no-repeat;
       position: relative;
     }
+
     .hero-banner-overlay {
       background: linear-gradient(90deg, #071d36 0%, rgba(7, 29, 54, 0.92) 38%, rgba(7, 29, 54, 0.48) 54%, rgba(7, 29, 54, 0) 68%);
     }
+
     @media (min-width: 768px) {
       .hero-banner-overlay {
         background: linear-gradient(90deg, #071d36 0%, rgba(7, 29, 54, 0.92) 30%, rgba(7, 29, 54, 0.42) 44%, rgba(7, 29, 54, 0) 56%);
       }
     }
+
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
+
     .no-scrollbar {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
   </style>
 </head>
+
 <body class="flex flex-col min-h-screen font-formal bg-[#f9fbfa] relative">
 
   <!-- แถบวันที่และเวลาปัจจุบันแบบ Real-time ด้านบนสุด -->
-  <div id="wdsLiveClockBar" class="w-full bg-white text-slate-700 border-b border-slate-200 h-8 flex items-center select-none no-print print:hidden relative z-40">
-    <div class="max-w-6xl w-full mx-auto px-3 sm:px-6 h-full flex items-center justify-center sm:justify-end gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-medium tracking-wide">
+  <div id="wdsLiveClockBar"
+    class="w-full bg-white text-slate-700 border-b border-slate-200 h-8 flex items-center select-none no-print print:hidden relative z-40">
+    <div
+      class="max-w-6xl w-full mx-auto px-3 sm:px-6 h-full flex items-center justify-center sm:justify-end gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-medium tracking-wide">
       <div class="flex items-center gap-1.5 text-slate-700">
         <i class="fa-regular fa-calendar text-slate-500 text-xs"></i>
         <span id="wdsLiveClockDate">กำลังโหลดวันที่...</span>
@@ -165,37 +202,53 @@
         <!-- แถวตราโรงเรียน + ชื่อโรงเรียน ไทย/อังกฤษ -->
         <div class="flex items-center space-x-2.5 sm:space-x-4">
           <div class="flex items-center space-x-2 flex-shrink-0">
-            <div class="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center overflow-hidden flex-shrink-0 drop-shadow-md" data-cfg-logo>
-              <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
+            <div
+              class="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center overflow-hidden flex-shrink-0 drop-shadow-md"
+              data-cfg-logo>
+              <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain"
+                alt="ตราประจำโรงเรียน"
+                onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
             </div>
-            <div class="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center overflow-hidden hidden" data-cfg-logo2>
+            <div
+              class="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center overflow-hidden hidden"
+              data-cfg-logo2>
               <!-- Logo 2 -->
             </div>
-            <div class="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center overflow-hidden hidden" data-cfg-logo3>
+            <div
+              class="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center overflow-hidden hidden"
+              data-cfg-logo3>
               <!-- Logo 3 -->
             </div>
           </div>
           <div class="border-l border-white/40 pl-2.5 sm:pl-3.5">
-            <div class="text-[12px] sm:text-base md:text-lg lg:text-xl font-bold tracking-wide text-white leading-tight drop-shadow-sm" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</div>
-            <div class="text-[8.5px] sm:text-[10.5px] md:text-xs lg:text-[13.5px] tracking-[0.1em] text-slate-200 font-medium uppercase mt-0.5" data-cfg="schoolNameEn">WACHIRATHAMSATIT SCHOOL</div>
+            <div
+              class="text-[12px] sm:text-base md:text-lg lg:text-xl font-bold tracking-wide text-white leading-tight drop-shadow-sm"
+              data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</div>
+            <div
+              class="text-[8.5px] sm:text-[10.5px] md:text-xs lg:text-[13.5px] tracking-[0.1em] text-slate-200 font-medium uppercase mt-0.5"
+              data-cfg="schoolNameEn">WACHIRATHAMSATIT SCHOOL</div>
           </div>
         </div>
 
         <!-- หัวข้อใหญ่ คณะกรรมการการจัดการเลือกตั้ง ประธานสภานักเรียน -->
         <div class="pt-1">
-          <h1 class="text-sm sm:text-xl md:text-2xl lg:text-3xl xl:text-[32px] font-extrabold tracking-tight text-amber-300 leading-snug drop-shadow-md">
+          <h1
+            class="text-sm sm:text-xl md:text-2xl lg:text-3xl xl:text-[32px] font-extrabold tracking-tight text-amber-300 leading-snug drop-shadow-md">
             คณะกรรมการการจัดการเลือกตั้ง<br class="hidden sm:inline">ประธานสภานักเรียน
           </h1>
-          <p class="text-[11px] sm:text-sm md:text-base lg:text-lg font-medium text-amber-100/90 mt-0.5 sm:mt-1 drop-shadow-sm">
+          <p
+            class="text-[11px] sm:text-sm md:text-base lg:text-lg font-medium text-amber-100/90 mt-0.5 sm:mt-1 drop-shadow-sm">
             และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
           </p>
           <div class="w-10 sm:w-14 h-[2px] sm:h-[3px] bg-amber-400 rounded-full mt-1.5 sm:mt-2 mb-1.5 sm:mb-2"></div>
         </div>
 
         <!-- กลุ่มงานด้านล่างแบนเนอร์ -->
-        <div class="text-[9px] sm:text-xs md:text-sm lg:text-[14.5px] text-slate-200/95 space-y-0.5 leading-snug drop-shadow-sm">
+        <div
+          class="text-[9px] sm:text-xs md:text-sm lg:text-[14.5px] text-slate-200/95 space-y-0.5 leading-snug drop-shadow-sm">
           <p data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</p>
-          <p class="hidden sm:block">ระบบรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา <span data-cfg="academicYear">2570</span></p>
+          <p class="hidden sm:block">ระบบรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี ประจำปีการศึกษา <span
+              data-cfg="academicYear">2570</span></p>
         </div>
       </div>
     </div>
@@ -239,46 +292,53 @@
 
     <!-- TAB 1: หน้าแรก (ภาพรวม กำหนดการ ไทม์ไลน์ 5 การ์ดแนวนอน + รูป PR) -->
     <div id="contentHome" class="space-y-4 sm:space-y-6">
-      
+
       <div id="homePrSectionTop" class="hidden"></div>
 
       <div class="py-1 sm:py-2 space-y-3 sm:space-y-5">
-        <!-- แถบแจ้งยอดผู้สมัครแบบเรียลไทม์ + นับถอยหลังวันปิดรับสมัคร -->
+        <!-- แถบสถานะการเปิดรับสมัครออนไลน์ + นับถอยหลังวันปิดรับสมัคร -->
         <div id="homeLiveStatsBar" class="grid grid-cols-1 lg:grid-cols-12 gap-3 mb-4">
-          <div class="lg:col-span-7 bg-gradient-to-r from-[#0f2942] to-[#163a5f] text-white rounded-xl p-3.5 sm:p-4 shadow-sm border border-[#1e4976] flex flex-wrap items-center justify-between gap-3">
+          <div
+            class="lg:col-span-7 bg-gradient-to-r from-[#0f2942] to-[#163a5f] text-white rounded-xl p-3.5 sm:p-4 shadow-sm border border-[#1e4976] flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2.5">
-              <div class="w-9 h-9 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center text-amber-300 text-base flex-shrink-0">
-                <i class="fa-solid fa-chart-column"></i>
+              <div
+                class="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 text-base flex-shrink-0">
+                <i class="fa-solid fa-check-to-slot"></i>
               </div>
               <div>
-                <div class="text-[11px] sm:text-xs text-slate-300 font-medium">ยอดผู้ยื่นใบสมัครออนไลน์ (อัปเดตเรียลไทม์)</div>
-                <div class="text-xs sm:text-sm font-bold text-white">ระบบรับสมัครเลือกตั้งผู้นำนักเรียน</div>
+                <div class="flex items-center gap-1.5 text-[11px] sm:text-xs text-emerald-300 font-semibold">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>เปิดรับสมัครออนไลน์ • <span data-cfg="regPeriod">16 - 30 พฤศจิกายน 2569</span></span>
+                </div>
+                <div class="text-xs sm:text-sm font-bold text-white">ระบบรับสมัครเลือกตั้งประธานสภานักเรียน และประธานคณะสี</div>
               </div>
             </div>
-            <div class="flex items-center gap-2 sm:gap-3 ml-auto">
-              <div class="bg-white/10 border border-white/15 rounded-lg px-3 py-1.5 text-center min-w-[78px]">
-                <div class="text-[10px] text-emerald-200">สภานักเรียน</div>
-                <div class="text-sm sm:text-base font-bold text-white"><span id="homeStatCouncilCount">0</span> <span class="text-[10px] font-normal text-slate-200">พรรค</span></div>
-              </div>
-              <div class="bg-white/10 border border-white/15 rounded-lg px-3 py-1.5 text-center min-w-[78px]">
-                <div class="text-[10px] text-amber-200">ประธานคณะสี</div>
-                <div class="text-sm sm:text-base font-bold text-white"><span id="homeStatColorCount">0</span> <span class="text-[10px] font-normal text-slate-200">คน</span></div>
-              </div>
-              <div class="bg-emerald-500/20 border border-emerald-400/40 rounded-lg px-3 py-1.5 text-center min-w-[72px]">
-                <div class="text-[10px] text-emerald-200">รวมทั้งหมด</div>
-                <div class="text-sm sm:text-base font-bold text-emerald-300"><span id="homeStatTotalCount">0</span></div>
-              </div>
+            <div class="flex items-center gap-2 ml-auto">
+              <button type="button" onclick="setActiveTab('rules')"
+                class="bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-regular fa-file-lines text-amber-300"></i>
+                <span>ระเบียบการ</span>
+              </button>
+              <button type="button" onclick="setActiveTab('apply')"
+                class="bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg px-3.5 py-1.5 text-xs font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <span>ยื่นใบสมัครออนไลน์</span>
+              </button>
             </div>
           </div>
 
-          <div class="lg:col-span-5 bg-gradient-to-r from-amber-50 to-orange-50/70 border border-amber-200 rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center justify-between gap-3">
+          <div
+            class="lg:col-span-5 bg-gradient-to-r from-amber-50 to-orange-50/70 border border-amber-200 rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center justify-between gap-3">
             <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-9 h-9 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 text-base flex-shrink-0">
+              <div
+                class="w-9 h-9 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 text-base flex-shrink-0">
                 <i class="fa-solid fa-hourglass-half"></i>
               </div>
               <div class="min-w-0">
-                <div class="text-[11px] sm:text-xs font-bold text-amber-900 truncate" id="homeCountdownLabel">นับถอยหลังปิดรับสมัครออนไลน์</div>
-                <div class="text-[10px] sm:text-[11px] text-amber-700" id="homeCountdownTargetText">สิ้นสุด 2 ธันวาคม 2569 เวลา 23:59 น.</div>
+                <div class="text-[11px] sm:text-xs font-bold text-amber-900 truncate" id="homeCountdownLabel">
+                  นับถอยหลังปิดรับสมัครออนไลน์</div>
+                <div class="text-[10px] sm:text-[11px] text-amber-700" id="homeCountdownTargetText">สิ้นสุด 2 ธันวาคม
+                  2569 เวลา 23:59 น.</div>
               </div>
             </div>
             <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 text-center" id="homeCountdownBoxes">
@@ -304,140 +364,187 @@
 
         <!-- หัวข้อกำหนดการ พร้อมไอคอนปฏิทินสีเขียวอ่อน -->
         <div class="flex items-start space-x-2.5 sm:space-x-4">
-          <div class="w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-[#e6f3ed] text-[#156548] flex items-center justify-center flex-shrink-0 text-sm sm:text-lg md:text-xl shadow-sm border border-[#cce6da] mt-0.5">
+          <div
+            class="w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-full bg-[#e6f3ed] text-[#156548] flex items-center justify-center flex-shrink-0 text-sm sm:text-lg md:text-xl shadow-sm border border-[#cce6da] mt-0.5">
             <i class="fa-regular fa-calendar-check"></i>
           </div>
           <div class="space-y-0.5 sm:space-y-1">
             <h2 class="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-[#0f2942] leading-snug">
-              กำหนดการเลือกตั้งผู้นำนักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="academicYear">2570</span>
+              กำหนดการเลือกตั้งผู้นำนักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา
+              <span data-cfg="academicYear">2570</span>
             </h2>
             <p class="text-[11px] sm:text-xs md:text-sm lg:text-[15px] text-slate-600 leading-relaxed">
-              <span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span> ขอประกาศกำหนดการรับสมัครและจัดการเลือกตั้งประธานสภานักเรียน และประธานคณะสี (5 คณะสี) ประจำปีการศึกษา <span data-cfg="academicYear">2570</span> เพื่อให้นักเรียนและครูที่ปรึกษาเตรียมความพร้อมในการดำเนินการตามลำดับขั้นตอน ดังนี้
+              <span data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span>
+              ขอประกาศกำหนดการรับสมัครและจัดการเลือกตั้งประธานสภานักเรียน และประธานคณะสี (5 คณะสี) ประจำปีการศึกษา <span
+                data-cfg="academicYear">2570</span>
+              เพื่อให้นักเรียนและครูที่ปรึกษาเตรียมความพร้อมในการดำเนินการตามลำดับขั้นตอน ดังนี้
             </p>
           </div>
         </div>
 
         <!-- การ์ด 7 ขั้นตอนเรียงแนวนอนพร้อมเส้นเชื่อม -->
-        <div id="timelineCardsGrid" class="grid grid-cols-2 lg:flex lg:flex-row items-stretch justify-between gap-2 lg:gap-0 pt-1 pb-1">
+        <div id="timelineCardsGrid"
+          class="grid grid-cols-2 lg:flex lg:flex-row items-stretch justify-between gap-2 lg:gap-0 pt-1 pb-1">
 
-      <div class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
-        <div>
-          <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-            <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">1</span>
-            <i class="fa-solid fa-laptop text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+          <div
+            class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+            <div>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span
+                  class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">1</span>
+                <i class="fa-solid fa-laptop text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+              </div>
+              <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">16 - 30
+                พฤศจิกายน 2569</div>
+              <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">
+                เปิดรับสมัครออนไลน์</div>
+              <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">
+                สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)</div>
+            </div>
           </div>
-          <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">16 - 30 พฤศจิกายน 2569</div>
-          <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">เปิดรับสมัครออนไลน์</div>
-          <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">สภานักเรียน (พรรค 10 คน) และประธานคณะสี (5 สี)</div>
+          <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
+            <div class="w-full h-[2px] bg-emerald-700/30"></div>
+          </div>
+
+          <div
+            class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+            <div>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span
+                  class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">2</span>
+                <i class="fa-solid fa-clipboard-check text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+              </div>
+              <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">4 ธันวาคม
+                2569</div>
+              <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">
+                ตรวจสอบคุณสมบัติผู้ลงสมัครประธานสภานักเรียนและประธานคณะสี</div>
+              <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">
+                ห้องประชุม Minting Room</div>
+            </div>
+          </div>
+          <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
+            <div class="w-full h-[2px] bg-emerald-700/30"></div>
+          </div>
+
+          <div
+            class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+            <div>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span
+                  class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">3</span>
+                <i class="fa-solid fa-bullhorn text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+              </div>
+              <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">9 ธันวาคม
+                2569</div>
+              <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">
+                ผู้ลงสมัคร จับสลากหมายเลขผู้สมัคร</div>
+              <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">
+                ประชุมชี้แจงระเบียบการหาเสียง</div>
+            </div>
+          </div>
+          <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
+            <div class="w-full h-[2px] bg-emerald-700/30"></div>
+          </div>
+
+          <div
+            class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#10b981] to-[#059669] text-white p-2.5 sm:p-3 xl:p-3.5 shadow-md shadow-emerald-600/25 border-2 border-emerald-300 flex flex-col justify-between relative transition-all ring-2 ring-emerald-400/20">
+            <div>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span
+                  class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#059669] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">4</span>
+                <i class="fa-solid fa-check-to-slot text-white text-sm sm:text-lg md:text-xl drop-shadow-xs"></i>
+              </div>
+              <div
+                class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#fef08a] mb-1 leading-snug drop-shadow-xs">
+                16 พฤศจิกายน 2569 - 2 กุมภาพันธ์ 2570</div>
+              <div
+                class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-white mb-0.5 sm:mb-1 drop-shadow-xs">
+                รณรงค์หาเสียง</div>
+              <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-emerald-50 leading-normal sm:leading-relaxed">
+                แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด</div>
+            </div>
+          </div>
+          <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
+            <div class="w-full h-[2px] bg-emerald-700/30"></div>
+          </div>
+
+          <div
+            class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+            <div>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span
+                  class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">5</span>
+                <i class="fa-solid fa-chart-simple text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+              </div>
+              <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">27 มกราคม
+                2570</div>
+              <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">
+                กิจกรรมดีเบตประธานสภานักเรียนและประธานคณะสี</div>
+              <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">
+                หอประชุมโรงเรียนวชิรธรรมสาธิต</div>
+            </div>
+          </div>
+          <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
+            <div class="w-full h-[2px] bg-emerald-700/30"></div>
+          </div>
+
+          <div
+            class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+            <div>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span
+                  class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">6</span>
+                <i class="fa-solid fa-laptop text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+              </div>
+              <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">3 กุมภาพันธ์
+                2570</div>
+              <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">
+                วันลงคะแนนเสียงเลือกตั้งใหญ่</div>
+              <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">
+                เปิดคูหาลงคะแนนเสียง เวลา 08.30 - 15.00 น.</div>
+            </div>
+          </div>
+          <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
+            <div class="w-full h-[2px] bg-emerald-700/30"></div>
+          </div>
+
+          <div
+            class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
+            <div>
+              <div class="flex items-start justify-between mb-1.5 sm:mb-2">
+                <span
+                  class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">7</span>
+                <i class="fa-solid fa-clipboard-check text-[#156548] text-sm sm:text-lg md:text-xl"></i>
+              </div>
+              <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">8 กุมภาพันธ์
+                2570</div>
+              <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">
+                ประกาศผลการเลือกตั้งอย่างเป็นทางการ</div>
+              <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">
+                เว็บไซต์โรงเรียนวชิรธรรมสาธิต</div>
+            </div>
+          </div>
+
+
         </div>
-      </div>
-      <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
-         <div class="w-full h-[2px] bg-emerald-700/30"></div>
-       </div>
-    
-    <div class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
-      <div>
-        <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-          <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">2</span>
-          <i class="fa-solid fa-clipboard-check text-[#156548] text-sm sm:text-lg md:text-xl"></i>
-        </div>
-        <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">4 ธันวาคม 2569</div>
-        <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">ตรวจสอบคุณสมบัติผู้ลงสมัครประธานสภานักเรียนและประธานคณะสี</div>
-        <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">ห้องประชุม Minting Room</div>
-      </div>
-    </div>
-    <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
-         <div class="w-full h-[2px] bg-emerald-700/30"></div>
-       </div>
-  
-    <div class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
-      <div>
-        <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-          <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">3</span>
-          <i class="fa-solid fa-bullhorn text-[#156548] text-sm sm:text-lg md:text-xl"></i>
-        </div>
-        <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">9 ธันวาคม 2569</div>
-        <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">ผู้ลงสมัคร จับสลากหมายเลขผู้สมัคร</div>
-        <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">ประชุมชี้แจงระเบียบการหาเสียง</div>
-      </div>
-    </div>
-    <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
-         <div class="w-full h-[2px] bg-emerald-700/30"></div>
-       </div>
-  
-    <div class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-gradient-to-b from-[#10b981] to-[#059669] text-white p-2.5 sm:p-3 xl:p-3.5 shadow-md shadow-emerald-600/25 border-2 border-emerald-300 flex flex-col justify-between relative transition-all ring-2 ring-emerald-400/20">
-      <div>
-        <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-          <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-[#059669] font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-sm">4</span>
-          <i class="fa-solid fa-check-to-slot text-white text-sm sm:text-lg md:text-xl drop-shadow-xs"></i>
-        </div>
-        <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#fef08a] mb-1 leading-snug drop-shadow-xs">16 พฤศจิกายน 2569 - 2 กุมภาพันธ์ 2570</div>
-        <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-white mb-0.5 sm:mb-1 drop-shadow-xs">รณรงค์หาเสียง</div>
-        <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-emerald-50 leading-normal sm:leading-relaxed">แถลงนโยบายหน้าเสาธง และประชาสัมพันธ์ตามจุดที่โรงเรียนกำหนด</div>
-      </div>
-    </div>
-    <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
-         <div class="w-full h-[2px] bg-emerald-700/30"></div>
-       </div>
-  
-    <div class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
-      <div>
-        <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-          <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">5</span>
-          <i class="fa-solid fa-chart-simple text-[#156548] text-sm sm:text-lg md:text-xl"></i>
-        </div>
-        <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">27 มกราคม 2570</div>
-        <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">กิจกรรมดีเบตประธานสภานักเรียนและประธานคณะสี</div>
-        <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">หอประชุมโรงเรียนวชิรธรรมสาธิต</div>
-      </div>
-    </div>
-    <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
-         <div class="w-full h-[2px] bg-emerald-700/30"></div>
-       </div>
-  
-    <div class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
-      <div>
-        <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-          <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">6</span>
-          <i class="fa-solid fa-laptop text-[#156548] text-sm sm:text-lg md:text-xl"></i>
-        </div>
-        <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">3 กุมภาพันธ์ 2570</div>
-        <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">วันลงคะแนนเสียงเลือกตั้งใหญ่</div>
-        <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">เปิดคูหาลงคะแนนเสียง เวลา 08.30 - 15.00 น.</div>
-      </div>
-    </div>
-    <div class="hidden lg:flex items-center justify-center w-1 xl:w-2 flex-shrink-0">
-         <div class="w-full h-[2px] bg-emerald-700/30"></div>
-       </div>
-  
-    <div class="flex-1 min-w-[120px] lg:min-w-0 xl:min-w-[135px] rounded-lg sm:rounded-xl bg-[#f8faf9] hover:bg-white transition p-2.5 sm:p-3 xl:p-3.5 shadow-sm border border-slate-200/90 flex flex-col justify-between relative">
-      <div>
-        <div class="flex items-start justify-between mb-1.5 sm:mb-2">
-          <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f2942] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center">7</span>
-          <i class="fa-solid fa-clipboard-check text-[#156548] text-sm sm:text-lg md:text-xl"></i>
-        </div>
-        <div class="text-[10px] sm:text-[11px] xl:text-xs font-bold text-[#b4690e] mb-1 leading-snug">8 กุมภาพันธ์ 2570</div>
-        <div class="font-bold text-xs sm:text-[13px] xl:text-[14.5px] leading-snug text-slate-900 mb-0.5 sm:mb-1">ประกาศผลการเลือกตั้งอย่างเป็นทางการ</div>
-        <div class="text-[9.5px] sm:text-[11px] xl:text-xs text-slate-600 leading-normal sm:leading-relaxed">เว็บไซต์โรงเรียนวชิรธรรมสาธิต</div>
-      </div>
-    </div>
-    
-  
-</div>
 
         <!-- แถบปุ่มด้านล่างกำหนดการ -->
-        <div class="pt-2 sm:pt-3 flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center justify-between">
+        <div
+          class="pt-2 sm:pt-3 flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center justify-between">
           <div class="text-[11px] sm:text-xs md:text-sm lg:text-[14.5px] text-slate-600">
             * ก่อนกรอกใบสมัคร กรุณาอ่านระเบียบคุณสมบัติ และเตรียมเอกสารยินยอมจากผู้ปกครอง
           </div>
           <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5">
-            <button onclick="setActiveTab('rules')" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-3.5 sm:px-4 md:px-5 py-2 sm:py-2.5 text-[11px] sm:text-xs md:text-sm lg:text-base font-semibold flex items-center justify-center shadow-sm transition">
+            <button onclick="setActiveTab('rules')"
+              class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-3.5 sm:px-4 md:px-5 py-2 sm:py-2.5 text-[11px] sm:text-xs md:text-sm lg:text-base font-semibold flex items-center justify-center shadow-sm transition">
               <i class="fa-regular fa-file-lines mr-1 sm:mr-1.5 text-slate-600"></i> อ่านระเบียบการ
             </button>
-            <a href="manual.html" class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-full px-3.5 sm:px-4 md:px-5 py-2 sm:py-2.5 text-[11px] sm:text-xs md:text-sm lg:text-base font-bold flex items-center justify-center shadow-sm transition">
+            <a href="manual.html"
+              class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-full px-3.5 sm:px-4 md:px-5 py-2 sm:py-2.5 text-[11px] sm:text-xs md:text-sm lg:text-base font-bold flex items-center justify-center shadow-sm transition">
               <i class="fa-solid fa-book-open mr-1 sm:mr-1.5 text-amber-800"></i> คู่มือการใช้งานระบบ
             </a>
-            <button onclick="setActiveTab('apply')" class="col-span-2 sm:col-span-1 bg-[#0e4838] hover:bg-[#093529] text-white rounded-full px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-[11px] sm:text-xs md:text-sm lg:text-base font-semibold flex items-center justify-center shadow-sm transition">
+            <button onclick="setActiveTab('apply')"
+              class="col-span-2 sm:col-span-1 bg-[#0e4838] hover:bg-[#093529] text-white rounded-full px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-[11px] sm:text-xs md:text-sm lg:text-base font-semibold flex items-center justify-center shadow-sm transition">
               <i class="fa-solid fa-paper-plane mr-1.5 text-xs sm:text-sm"></i> ไปที่หน้ากรอกใบสมัคร
             </button>
           </div>
@@ -449,24 +556,32 @@
       <!-- ติดต่อสอบถาม -->
       <section class="pt-2 sm:pt-4">
         <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 p-3.5 sm:p-5">
-          <h2 class="text-base sm:text-lg md:text-xl font-bold text-[#0f2942] text-center mb-3 sm:mb-4 flex items-center justify-center gap-1.5">
+          <h2
+            class="text-base sm:text-lg md:text-xl font-bold text-[#0f2942] text-center mb-3 sm:mb-4 flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-headset text-amber-500 text-sm sm:text-base"></i>
             <span>สามารถติดต่อสอบถามได้ที่</span>
           </h2>
           <div id="homeContactList" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-center">
             <div class="bg-slate-50 rounded-lg p-2.5 sm:p-3 border border-slate-100">
-              <div class="text-slate-500 text-[11px] sm:text-xs mb-0.5"><i class="fa-solid fa-user-tie mr-1"></i>ครู</div>
+              <div class="text-slate-500 text-[11px] sm:text-xs mb-0.5"><i class="fa-solid fa-user-tie mr-1"></i>ครู
+              </div>
               <div class="font-bold text-[#16325c] text-xs sm:text-sm" data-cfg="contactPerson">คุณครูสีวลี ยืนยาว</div>
             </div>
-            <div class="bg-slate-50 rounded-lg p-2.5 sm:p-3 border border-slate-100 flex flex-col items-center justify-center">
-              <div class="text-slate-500 text-[11px] sm:text-xs mb-0.5"><i class="fa-solid fa-phone mr-1"></i>เบอร์โทร</div>
-              <a href="tel:0990499597" id="homeContactPhoneLink" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-md font-bold text-[11px] sm:text-xs tracking-wide shadow-sm transition active:scale-95">
-                <i class="fa-solid fa-phone-volume text-[10px]"></i> กดโทรออก: <span data-cfg="schoolPhone">0990499597</span>
+            <div
+              class="bg-slate-50 rounded-lg p-2.5 sm:p-3 border border-slate-100 flex flex-col items-center justify-center">
+              <div class="text-slate-500 text-[11px] sm:text-xs mb-0.5"><i class="fa-solid fa-phone mr-1"></i>เบอร์โทร
+              </div>
+              <a href="tel:0990499597" id="homeContactPhoneLink"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-md font-bold text-[11px] sm:text-xs tracking-wide shadow-sm transition active:scale-95">
+                <i class="fa-solid fa-phone-volume text-[10px]"></i> กดโทรออก: <span
+                  data-cfg="schoolPhone">0990499597</span>
               </a>
             </div>
             <div class="bg-slate-50 rounded-lg p-2.5 sm:p-3 border border-slate-100">
-              <div class="text-slate-500 text-[11px] sm:text-xs mb-0.5"><i class="fa-solid fa-briefcase mr-1"></i>ตำแหน่งงาน</div>
-              <div class="font-bold text-[#16325c] text-[11px] sm:text-xs" data-cfg="contactPosition">ครูผู้รับผิดชอบงานส่งเสริมประชาธิปไตยในโรงเรียน</div>
+              <div class="text-slate-500 text-[11px] sm:text-xs mb-0.5"><i
+                  class="fa-solid fa-briefcase mr-1"></i>ตำแหน่งงาน</div>
+              <div class="font-bold text-[#16325c] text-[11px] sm:text-xs" data-cfg="contactPosition">
+                ครูผู้รับผิดชอบงานส่งเสริมประชาธิปไตยในโรงเรียน</div>
             </div>
           </div>
         </div>
@@ -479,17 +594,20 @@
             <i class="fa-solid fa-map-location-dot text-amber-500 text-sm sm:text-base"></i>
             <span>แผนที่โรงเรียน</span>
           </h2>
-          <p class="text-[11px] sm:text-xs text-slate-500"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> <span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span></p>
+          <p class="text-[11px] sm:text-xs text-slate-500"><span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
+            <span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร
+              10260</span>
+          </p>
         </div>
         <div class="rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-slate-100">
           <iframe
             src="https://www.google.com/maps?q=%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A7%E0%B8%8A%E0%B8%B4%E0%B8%A3%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%AA%E0%B8%B2%E0%B8%98%E0%B8%B4%E0%B8%95&output=embed"
-            class="w-full h-[200px] sm:h-[240px] md:h-[280px] border-0"
-            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-            title="แผนที่โรงเรียนวชิรธรรมสาธิต"></iframe>
+            class="w-full h-[200px] sm:h-[240px] md:h-[280px] border-0" allowfullscreen loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" title="แผนที่โรงเรียนวชิรธรรมสาธิต"></iframe>
         </div>
         <div class="flex justify-center">
-          <a href="https://www.google.com/maps/search/?api=1&query=%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A7%E0%B8%8A%E0%B8%B4%E0%B8%A3%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%AA%E0%B8%B2%E0%B8%98%E0%B8%B4%E0%B8%95" target="_blank" rel="noopener noreferrer"
+          <a href="https://www.google.com/maps/search/?api=1&query=%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A7%E0%B8%8A%E0%B8%B4%E0%B8%A3%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%AA%E0%B8%B2%E0%B8%98%E0%B8%B4%E0%B8%95"
+            target="_blank" rel="noopener noreferrer"
             class="inline-flex items-center gap-1.5 bg-[#1a73e8] hover:bg-[#1557b0] text-white text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-xs transition active:scale-95">
             <i class="fa-solid fa-diamond-turn-right text-[11px]"></i> เปิดเส้นทางใน Google Maps
           </a>
@@ -502,20 +620,26 @@
     <div id="contentRules" class="space-y-6 hidden">
       <div class="gov-card">
         <div class="gov-card-header text-sm sm:text-base md:text-lg lg:text-xl">
-          <span data-cfg="rulesHeaderTitle" class="font-bold">ประกาศและคุณสมบัติของผู้สมัครรับเลือกตั้ง ประจำปีการศึกษา 2570</span>
-          <span class="text-xs sm:text-sm md:text-base text-slate-500 font-normal" data-cfg="rulesHeaderSubtitle">ข้อบังคับกลุ่มบริหารกิจการนักเรียน</span>
+          <span data-cfg="rulesHeaderTitle" class="font-bold">ประกาศและคุณสมบัติของผู้สมัครรับเลือกตั้ง ประจำปีการศึกษา
+            2570</span>
+          <span class="text-xs sm:text-sm md:text-base text-slate-500 font-normal"
+            data-cfg="rulesHeaderSubtitle">ข้อบังคับกลุ่มบริหารกิจการนักเรียน</span>
         </div>
 
         <div class="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-5 text-xs sm:text-sm md:text-base text-slate-800">
-          
+
           <div class="border border-slate-300 rounded-lg p-4 sm:p-6 md:p-7 bg-white space-y-3 sm:space-y-4 shadow-xs">
-            <h3 class="font-bold text-sm sm:text-base md:text-lg lg:text-xl text-[#16325c] border-b border-slate-200 pb-2.5 sm:pb-3 flex items-center justify-between" data-cfg="rulesSection1Title">
+            <h3
+              class="font-bold text-sm sm:text-base md:text-lg lg:text-xl text-[#16325c] border-b border-slate-200 pb-2.5 sm:pb-3 flex items-center justify-between"
+              data-cfg="rulesSection1Title">
               หมวดที่ 1: เกณฑ์คุณสมบัติผู้สมัครประธานสภานักเรียน
             </h3>
             <div id="rulesCouncilPdfBox" class="pt-1">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 bg-slate-50/90 border border-slate-200 rounded-lg p-3.5 sm:p-4">
+              <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 bg-slate-50/90 border border-slate-200 rounded-lg p-3.5 sm:p-4">
                 <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center flex-shrink-0 text-red-600 text-lg sm:text-xl">
+                  <div
+                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center flex-shrink-0 text-red-600 text-lg sm:text-xl">
                     <i class="fa-solid fa-file-pdf"></i>
                   </div>
                   <div class="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -526,23 +650,39 @@
               </div>
             </div>
             <div id="rulesCouncilOl" class="hidden space-y-0.5 sm:space-y-1 text-slate-800">
-              <div class="py-1"><strong>ระดับชั้น:</strong> ผู้สมัครทุกคนต้องเป็นนักเรียนที่กำลังศึกษาอยู่ในระดับชั้นมัธยมศึกษาปีที่ 4 <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></div>
-              <div class="py-1"><strong>โครงสร้างพรรค:</strong> ต้องจัดตั้งเป็นพรรคการเมือง จำนวน 10 ตำแหน่งครบถ้วน (ประธาน, รองประธาน, วิชาการ 2 คน, สันทนาการ 2 คน, ฝ่ายทั่วไป, ประชาสัมพันธ์ 2 คน, เลขานุการ)</div>
-              <div class="py-1"><strong>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):</strong> ตำแหน่งประธานสภานักเรียน และเลขานุการ ไม่ต่ำกว่า <strong data-cfg="minGpaPresident">2.80</strong> | ตำแหน่งอื่นๆ ไม่ต่ำกว่า <strong data-cfg="minGpaMember">2.50</strong></div>
-              <div class="py-1"><strong>คะแนนความประพฤติ (คะแนนพฤติกรรม):</strong> ผู้สมัครทุกตำแหน่งต้องมีคะแนนความประพฤติคงเหลือ ณ วันสมัคร ไม่ต่ำกว่า <strong data-cfg="minBehaviorScore">70</strong> คะแนน (จากคะแนนเต็ม 100)</div>
-              <div class="py-1"><strong>ครูที่ปรึกษา:</strong> ต้องมีข้าราชการครูหรือครูอัตราจ้าง<span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> อย่างน้อย 1 ท่าน ลงนามรับรองเป็นครูที่ปรึกษาพรรค</div>
-              <div class="py-1"><strong>ความยินยอม:</strong> ต้องได้รับความยินยอมเป็นลายลักษณ์อักษรจากผู้ปกครอง และยอมรับ <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2570</span></strong></div>
+              <div class="py-1"><strong>ระดับชั้น:</strong>
+                ผู้สมัครทุกคนต้องเป็นนักเรียนที่กำลังศึกษาอยู่ในระดับชั้นมัธยมศึกษาปีที่ 4 <span
+                  data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span></div>
+              <div class="py-1"><strong>โครงสร้างพรรค:</strong> ต้องจัดตั้งเป็นพรรคการเมือง จำนวน 10 ตำแหน่งครบถ้วน
+                (ประธาน, รองประธาน, วิชาการ 2 คน, สันทนาการ 2 คน, ฝ่ายทั่วไป, ประชาสัมพันธ์ 2 คน, เลขานุการ)</div>
+              <div class="py-1"><strong>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):</strong> ตำแหน่งประธานสภานักเรียน
+                และเลขานุการ ไม่ต่ำกว่า <strong data-cfg="minGpaPresident">2.80</strong> | ตำแหน่งอื่นๆ ไม่ต่ำกว่า
+                <strong data-cfg="minGpaMember">2.50</strong>
+              </div>
+              <div class="py-1"><strong>คะแนนความประพฤติ (คะแนนพฤติกรรม):</strong>
+                ผู้สมัครทุกตำแหน่งต้องมีคะแนนความประพฤติคงเหลือ ณ วันสมัคร ไม่ต่ำกว่า <strong
+                  data-cfg="minBehaviorScore">70</strong> คะแนน (จากคะแนนเต็ม 100)</div>
+              <div class="py-1"><strong>ครูที่ปรึกษา:</strong> ต้องมีข้าราชการครูหรือครูอัตราจ้าง<span
+                  data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> อย่างน้อย 1 ท่าน ลงนามรับรองเป็นครูที่ปรึกษาพรรค
+              </div>
+              <div class="py-1"><strong>ความยินยอม:</strong> ต้องได้รับความยินยอมเป็นลายลักษณ์อักษรจากผู้ปกครอง
+                และยอมรับ <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
+                  ประจำปีการศึกษา <span data-cfg="councilAgreementYear">2570</span></strong></div>
             </div>
           </div>
 
           <div class="border border-slate-300 rounded-lg p-4 sm:p-6 md:p-7 bg-white space-y-3 sm:space-y-4 shadow-xs">
-            <h3 class="font-bold text-sm sm:text-base md:text-lg lg:text-xl text-[#16325c] border-b border-slate-200 pb-2.5 sm:pb-3 flex items-center justify-between" data-cfg="rulesSection2Title">
+            <h3
+              class="font-bold text-sm sm:text-base md:text-lg lg:text-xl text-[#16325c] border-b border-slate-200 pb-2.5 sm:pb-3 flex items-center justify-between"
+              data-cfg="rulesSection2Title">
               หมวดที่ 2: เกณฑ์คุณสมบัติผู้สมัครประธานคณะสี (5 คณะสี)
             </h3>
             <div id="rulesColorPdfBox" class="pt-1">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 bg-slate-50/90 border border-slate-200 rounded-lg p-3.5 sm:p-4">
+              <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 bg-slate-50/90 border border-slate-200 rounded-lg p-3.5 sm:p-4">
                 <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center flex-shrink-0 text-red-600 text-lg sm:text-xl">
+                  <div
+                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center flex-shrink-0 text-red-600 text-lg sm:text-xl">
                     <i class="fa-solid fa-file-pdf"></i>
                   </div>
                   <div class="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -553,16 +693,25 @@
               </div>
             </div>
             <div id="rulesColorOl" class="hidden space-y-0.5 sm:space-y-1 text-slate-800">
-              <div class="py-1"><strong>สังกัดคณะสี:</strong> ผู้สมัครต้องเป็นนักเรียนชั้น ม.4 ที่มีชื่อสังกัดในคณะสีที่สมัคร ได้แก่ คณะสีอัญชัน (น้ำเงิน), คณะสีนนทรี (เหลือง), คณะปาริชาต (แดง), คณะสีเอื้องช่อแสด (แสด), คณะสีอินทนิล (ม่วง)</div>
-              <div class="py-1"><strong>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):</strong> ไม่ต่ำกว่า <strong data-cfg="minGpaMember">2.50</strong></div>
-              <div class="py-1"><strong>คะแนนความประพฤติ:</strong> มีคะแนนคงเหลือ ณ วันสมัคร ไม่ต่ำกว่า <strong data-cfg="minBehaviorScore">70</strong> คะแนน</div>
-              <div class="py-1"><strong>ครูที่ปรึกษา:</strong> มีครูที่ปรึกษาประจำคณะสีลงนามรับรองคุณสมบัติและความประพฤติ</div>
-              <div class="py-1"><strong>ความยินยอม:</strong> ได้รับความยินยอมจากผู้ปกครอง และยอมรับ <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา <span data-cfg="colorAgreementYear">2570</span></strong></div>
+              <div class="py-1"><strong>สังกัดคณะสี:</strong> ผู้สมัครต้องเป็นนักเรียนชั้น ม.4
+                ที่มีชื่อสังกัดในคณะสีที่สมัคร ได้แก่ คณะสีอัญชัน (น้ำเงิน), คณะสีนนทรี (เหลือง), คณะปาริชาต (แดง),
+                คณะสีเอื้องช่อแสด (แสด), คณะสีอินทนิล (ม่วง)</div>
+              <div class="py-1"><strong>ผลการเรียนเฉลี่ยสะสม (GPAX ม.4 เทอม 1):</strong> ไม่ต่ำกว่า <strong
+                  data-cfg="minGpaMember">2.50</strong></div>
+              <div class="py-1"><strong>คะแนนความประพฤติ:</strong> มีคะแนนคงเหลือ ณ วันสมัคร ไม่ต่ำกว่า <strong
+                  data-cfg="minBehaviorScore">70</strong> คะแนน</div>
+              <div class="py-1"><strong>ครูที่ปรึกษา:</strong>
+                มีครูที่ปรึกษาประจำคณะสีลงนามรับรองคุณสมบัติและความประพฤติ</div>
+              <div class="py-1"><strong>ความยินยอม:</strong> ได้รับความยินยอมจากผู้ปกครอง และยอมรับ
+                <strong>ข้อตกลงของสภานักเรียน <span data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span> ประจำปีการศึกษา
+                  <span data-cfg="colorAgreementYear">2570</span></strong>
+              </div>
             </div>
           </div>
 
           <div class="text-right pt-2 sm:pt-4">
-            <button onclick="setActiveTab('apply')" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-5 sm:px-7 shadow-sm">
+            <button onclick="setActiveTab('apply')"
+              class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 px-5 sm:px-7 shadow-sm">
               <i class="fa-solid fa-arrow-right mr-2"></i> เข้าใจระเบียบแล้ว ไปยังหน้ากรอกใบสมัคร
             </button>
           </div>
@@ -576,7 +725,8 @@
         <h2 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-[#16325c]" data-cfg="applyHeaderTitle">
           เลือกประเภทตำแหน่งที่ต้องการยื่นใบสมัครออนไลน์ ประจำปีการศึกษา 2570
         </h2>
-        <p class="text-xs sm:text-sm md:text-base text-slate-600" data-cfg="applyHeaderSubtitle">กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย</p>
+        <p class="text-xs sm:text-sm md:text-base text-slate-600" data-cfg="applyHeaderSubtitle">
+          กรุณาเลือกประเภทการสมัครเพื่อเข้าสู่หน้ากรอกข้อมูลและแนบไฟล์รูปถ่าย</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -585,17 +735,21 @@
         <div class="gov-card flex flex-col justify-between">
           <div class="gov-card-header text-sm sm:text-base md:text-lg">
             <span class="font-bold text-[#16325c]">
-              <i class="fa-solid fa-landmark mr-1.5 text-[#16325c]"></i> <span data-cfg="applyCouncilTitle">1. สมัครเลือกตั้งประธานสภานักเรียน</span>
+              <i class="fa-solid fa-landmark mr-1.5 text-[#16325c]"></i> <span data-cfg="applyCouncilTitle">1.
+                สมัครเลือกตั้งประธานสภานักเรียน</span>
             </span>
-            <span class="text-xs sm:text-sm bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded font-semibold" data-cfg="applyCouncilBadge">ทีมพรรค 10 คน</span>
+            <span class="text-xs sm:text-sm bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded font-semibold"
+              data-cfg="applyCouncilBadge">ทีมพรรค 10 คน</span>
           </div>
 
           <div class="p-5 md:p-6 space-y-3.5 text-xs sm:text-sm md:text-base text-slate-700">
             <p class="leading-relaxed whitespace-pre-line" data-cfg="applyCouncilDesc">
-              สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่รวมกลุ่มจัดตั้งพรรคการเมือง จำนวน 10 ตำแหน่ง (ประธาน, รองประธาน, วิชาการ 2 คน, สันทนาการ 2 คน, ฝ่ายทั่วไป, ประชาสัมพันธ์ 2 คน, เลขานุการ)
+              สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่รวมกลุ่มจัดตั้งพรรคการเมือง จำนวน 10 ตำแหน่ง (ประธาน, รองประธาน,
+              วิชาการ 2 คน, สันทนาการ 2 คน, ฝ่ายทั่วไป, ประชาสัมพันธ์ 2 คน, เลขานุการ)
             </p>
 
-            <div id="applyCouncilBulletsBox" class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm md:text-[15px] text-slate-700 space-y-1.5">
+            <div id="applyCouncilBulletsBox"
+              class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm md:text-[15px] text-slate-700 space-y-1.5">
               <div>• GPAX ม.4 เทอม 1: ไม่ต่ำกว่า <span data-cfg="minGpaPresident">2.80</span></div>
               <div>• คะแนนพฤติกรรมคงเหลือไม่ต่ำกว่า <span data-cfg="minBehaviorScore">70</span> คะแนน</div>
               <div>• แนบไฟล์รูปถ่ายนักเรียนขนาด 1.5 นิ้ว ทุกตำแหน่ง</div>
@@ -604,8 +758,10 @@
           </div>
 
           <div class="p-4 md:p-5 bg-slate-50 border-t border-slate-200">
-            <a href="apply-council.html" class="btn-gov-primary w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm">
-              <i class="fa-solid fa-file-pen mr-2"></i> <span data-cfg="applyCouncilBtnText">เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)</span>
+            <a href="apply-council.html"
+              class="btn-gov-primary w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm">
+              <i class="fa-solid fa-file-pen mr-2"></i> <span
+                data-cfg="applyCouncilBtnText">เข้าสู่แบบฟอร์มสมัครสภานักเรียน (10 ตำแหน่ง)</span>
             </a>
           </div>
         </div>
@@ -614,25 +770,34 @@
         <div class="gov-card flex flex-col justify-between">
           <div class="gov-card-header text-sm sm:text-base md:text-lg">
             <span class="font-bold text-[#16325c]">
-              <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> <span data-cfg="applyColorTitle">2. สมัครเลือกตั้งประธานคณะสี (5 คณะสี)</span>
+              <i class="fa-solid fa-flag mr-1.5 text-amber-700"></i> <span data-cfg="applyColorTitle">2.
+                สมัครเลือกตั้งประธานคณะสี (5 คณะสี)</span>
             </span>
-            <span class="text-xs sm:text-sm bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded font-semibold" data-cfg="applyColorBadge">5 คณะสี</span>
+            <span class="text-xs sm:text-sm bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded font-semibold"
+              data-cfg="applyColorBadge">5 คณะสี</span>
           </div>
 
           <div class="p-5 md:p-6 space-y-3.5 text-xs sm:text-sm md:text-base text-slate-700">
             <p class="leading-relaxed whitespace-pre-line" data-cfg="applyColorDesc">
-              ผู้สมัครรับเลือกตั้งเป็นประธานคณะสีลงสมัครในนามผู้ลงสมัครประธานคณะสี (1 คน) เมื่อชนะการเลือกตั้งแล้วจึงจัดตั้งคณะกรรมการคณะสีในลำดับถัดไป
+              ผู้สมัครรับเลือกตั้งเป็นประธานคณะสีลงสมัครในนามผู้ลงสมัครประธานคณะสี (1 คน)
+              เมื่อชนะการเลือกตั้งแล้วจึงจัดตั้งคณะกรรมการคณะสีในลำดับถัดไป
             </p>
 
             <div id="applyColorTagsBox" class="flex flex-wrap gap-2 text-xs sm:text-sm py-1">
-              <span class="px-2.5 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded font-medium">1. คณะสีอัญชัน</span>
-              <span class="px-2.5 py-1 bg-yellow-50 text-yellow-800 border border-yellow-300 rounded font-medium">2. คณะสีนนทรี</span>
-              <span class="px-2.5 py-1 bg-red-50 text-red-800 border border-red-200 rounded font-medium">3. คณะปาริชาต</span>
-              <span class="px-2.5 py-1 bg-orange-50 text-orange-800 border border-orange-200 rounded font-medium">4. คณะสีเอื้องช่อแสด</span>
-              <span class="px-2.5 py-1 bg-purple-50 text-purple-800 border border-purple-200 rounded font-medium">5. คณะสีอินทนิล</span>
+              <span class="px-2.5 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded font-medium">1.
+                คณะสีอัญชัน</span>
+              <span class="px-2.5 py-1 bg-yellow-50 text-yellow-800 border border-yellow-300 rounded font-medium">2.
+                คณะสีนนทรี</span>
+              <span class="px-2.5 py-1 bg-red-50 text-red-800 border border-red-200 rounded font-medium">3.
+                คณะปาริชาต</span>
+              <span class="px-2.5 py-1 bg-orange-50 text-orange-800 border border-orange-200 rounded font-medium">4.
+                คณะสีเอื้องช่อแสด</span>
+              <span class="px-2.5 py-1 bg-purple-50 text-purple-800 border border-purple-200 rounded font-medium">5.
+                คณะสีอินทนิล</span>
             </div>
 
-            <div id="applyColorBulletsBox" class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm md:text-[15px] text-slate-700 space-y-1.5">
+            <div id="applyColorBulletsBox"
+              class="bg-slate-50 border border-slate-200 p-3.5 rounded text-xs sm:text-sm md:text-[15px] text-slate-700 space-y-1.5">
               <div>• นักเรียนชั้น ม.4 ที่สังกัดในคณะสีนั้นๆ</div>
               <div>• GPAX ม.4 เทอม 1 ไม่ต่ำกว่า <span data-cfg="minGpaMember">2.80</span></div>
               <div>• คะแนนพฤติกรรมคงเหลือไม่ต่ำกว่า <span data-cfg="minBehaviorScore">70</span> คะแนน</div>
@@ -641,8 +806,10 @@
           </div>
 
           <div class="p-4 md:p-5 bg-slate-50 border-t border-slate-200">
-            <a href="apply-color.html" class="btn-gov-gold w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm">
-              <i class="fa-solid fa-file-pen mr-2"></i> <span data-cfg="applyColorBtnText">เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)</span>
+            <a href="apply-color.html"
+              class="btn-gov-gold w-full text-center text-xs sm:text-sm md:text-base py-2.5 sm:py-3 shadow-sm">
+              <i class="fa-solid fa-file-pen mr-2"></i> <span
+                data-cfg="applyColorBtnText">เข้าสู่แบบฟอร์มสมัครประธานคณะสี (5 สี)</span>
             </a>
           </div>
         </div>
@@ -655,7 +822,8 @@
       <div class="gov-card">
         <div class="gov-card-header text-sm sm:text-base md:text-lg">
           <span class="font-bold">ตรวจสอบผลการสมัคร และ พิมพ์แบบฟอร์มใบสมัคร A4 ทางการ</span>
-          <a href="print-application.html?blank=1" target="_blank" class="text-xs sm:text-sm text-[#16325c] hover:underline flex items-center">
+          <a href="print-application.html?blank=1" target="_blank"
+            class="text-xs sm:text-sm text-[#16325c] hover:underline flex items-center">
             <i class="fa-solid fa-file-lines mr-1.5"></i> พิมพ์แบบฟอร์มเปล่าเพื่อเขียนด้วยมือ
           </a>
         </div>
@@ -666,8 +834,11 @@
               ค้นหาข้อมูลใบสมัคร: กรอกเลขประจำตัวนักเรียน 5 หลัก หรือ ชื่อ-นามสกุล หรือ ชื่อพรรค
             </label>
             <div class="flex flex-col sm:flex-row gap-2.5">
-              <input type="text" id="searchInput" placeholder="กรอกเลขประจำตัวนักเรียน หรือชื่อผู้สมัคร หรือชื่อพรรค/คณะสี" class="gov-input flex-grow text-xs sm:text-sm md:text-base py-2.5">
-              <button onclick="handleSearch()" class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 px-5 w-full sm:w-auto shadow-sm">
+              <input type="text" id="searchInput"
+                placeholder="กรอกเลขประจำตัวนักเรียน หรือชื่อผู้สมัคร หรือชื่อพรรค/คณะสี"
+                class="gov-input flex-grow text-xs sm:text-sm md:text-base py-2.5">
+              <button onclick="handleSearch()"
+                class="btn-gov-primary text-xs sm:text-sm md:text-base py-2.5 px-5 w-full sm:w-auto shadow-sm">
                 <i class="fa-solid fa-search mr-2"></i> ค้นหาใบสมัคร
               </button>
             </div>
@@ -676,8 +847,10 @@
           <div id="searchResults" class="mt-4 space-y-3">
             <div class="p-8 text-center text-slate-400 bg-slate-50/60 rounded-xl border border-dashed border-slate-300">
               <i class="fa-solid fa-magnifying-glass text-slate-300 text-3xl mb-2.5 block"></i>
-              <div class="font-semibold text-slate-600 text-xs sm:text-sm md:text-base">กรุณากรอกเลขประจำตัวนักเรียน ชื่อ-นามสกุล หรือชื่อพรรค/คณะสี เพื่อค้นหาสถานะใบสมัคร</div>
-              <div class="text-[11px] sm:text-xs text-slate-400 mt-1">ระบบจะแสดงผลการตรวจสอบคุณสมบัติและปุ่มพิมพ์ใบสมัคร A4 ทันที</div>
+              <div class="font-semibold text-slate-600 text-xs sm:text-sm md:text-base">กรุณากรอกเลขประจำตัวนักเรียน
+                ชื่อ-นามสกุล หรือชื่อพรรค/คณะสี เพื่อค้นหาสถานะใบสมัคร</div>
+              <div class="text-[11px] sm:text-xs text-slate-400 mt-1">ระบบจะแสดงผลการตรวจสอบคุณสมบัติและปุ่มพิมพ์ใบสมัคร
+                A4 ทันที</div>
             </div>
           </div>
         </div>
@@ -687,71 +860,95 @@
   </main>
 
   <!-- หน้าต่างขยายดูรูปภาพประชาสัมพันธ์ (PR Lightbox) -->
-  <div id="rulesPrLightboxModal" onclick="if(event.target===this) closePrLightbox()" class="hidden fixed inset-0 z-[999] bg-black/85 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
+  <div id="rulesPrLightboxModal" onclick="if(event.target===this) closePrLightbox()"
+    class="hidden fixed inset-0 z-[999] bg-black/85 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
     <div class="relative max-w-4xl w-full flex flex-col items-center">
       <div class="w-full flex items-center justify-between text-white mb-2.5 px-1">
-        <span id="rulesPrLightboxCounter" class="text-xs sm:text-sm font-semibold bg-white/15 px-3 py-1 rounded-full">1 / 1</span>
+        <span id="rulesPrLightboxCounter" class="text-xs sm:text-sm font-semibold bg-white/15 px-3 py-1 rounded-full">1
+          / 1</span>
         <div class="flex items-center gap-2">
-          <button type="button" onclick="openPrLightboxOriginal()" class="bg-white/15 hover:bg-white/25 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+          <button type="button" onclick="openPrLightboxOriginal()"
+            class="bg-white/15 hover:bg-white/25 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
             <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดภาพเต็ม
           </button>
-          <button type="button" onclick="closePrLightbox()" class="bg-white/15 hover:bg-red-600 text-white w-9 h-9 rounded-lg flex items-center justify-center transition" aria-label="ปิดหน้าต่างรูปภาพ">
+          <button type="button" onclick="closePrLightbox()"
+            class="bg-white/15 hover:bg-red-600 text-white w-9 h-9 rounded-lg flex items-center justify-center transition"
+            aria-label="ปิดหน้าต่างรูปภาพ">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
       </div>
 
-      <div class="relative w-full flex items-center justify-center bg-slate-900/60 rounded-xl border border-white/15 p-2 sm:p-3">
+      <div
+        class="relative w-full flex items-center justify-center bg-slate-900/60 rounded-xl border border-white/15 p-2 sm:p-3">
         <button type="button" id="rulesPrLightboxPrevBtn" onclick="stepPrLightbox(-1)"
-          class="hidden sm:flex absolute left-2 sm:left-3 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white items-center justify-center transition border border-white/20" aria-label="รูปก่อนหน้า">
+          class="hidden sm:flex absolute left-2 sm:left-3 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white items-center justify-center transition border border-white/20"
+          aria-label="รูปก่อนหน้า">
           <i class="fa-solid fa-chevron-left"></i>
         </button>
-        <img id="rulesPrLightboxImg" src="" alt="ภาพประชาสัมพันธ์" class="max-h-[75vh] max-w-full object-contain rounded-lg select-none">
+        <img id="rulesPrLightboxImg" src="" alt="ภาพประชาสัมพันธ์"
+          class="max-h-[75vh] max-w-full object-contain rounded-lg select-none">
         <button type="button" id="rulesPrLightboxNextBtn" onclick="stepPrLightbox(1)"
-          class="hidden sm:flex absolute right-2 sm:right-3 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white items-center justify-center transition border border-white/20" aria-label="รูปถัดไป">
+          class="hidden sm:flex absolute right-2 sm:right-3 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white items-center justify-center transition border border-white/20"
+          aria-label="รูปถัดไป">
           <i class="fa-solid fa-chevron-right"></i>
         </button>
       </div>
 
       <div id="rulesPrLightboxMobileNav" class="flex sm:hidden items-center justify-center gap-3 mt-2.5">
-        <button type="button" onclick="stepPrLightbox(-1)" class="bg-white/15 hover:bg-white/25 text-white text-xs px-4 py-1.5 rounded-lg">
+        <button type="button" onclick="stepPrLightbox(-1)"
+          class="bg-white/15 hover:bg-white/25 text-white text-xs px-4 py-1.5 rounded-lg">
           <i class="fa-solid fa-chevron-left mr-1"></i> ก่อนหน้า
         </button>
-        <button type="button" onclick="stepPrLightbox(1)" class="bg-white/15 hover:bg-white/25 text-white text-xs px-4 py-1.5 rounded-lg">
+        <button type="button" onclick="stepPrLightbox(1)"
+          class="bg-white/15 hover:bg-white/25 text-white text-xs px-4 py-1.5 rounded-lg">
           ถัดไป <i class="fa-solid fa-chevron-right ml-1"></i>
         </button>
       </div>
 
-      <p id="rulesPrLightboxCaption" class="hidden text-center text-white/95 text-xs sm:text-sm md:text-base mt-3 bg-white/10 px-4 py-2 rounded-lg max-w-2xl"></p>
+      <p id="rulesPrLightboxCaption"
+        class="hidden text-center text-white/95 text-xs sm:text-sm md:text-base mt-3 bg-white/10 px-4 py-2 rounded-lg max-w-2xl">
+      </p>
     </div>
   </div>
 
   <!-- ส่วนท้ายเว็บไซต์ -->
-  <footer class="bg-gradient-to-r from-[#0f2942] via-[#133b5c] to-[#0d4f49] text-slate-200 py-6 sm:py-7 border-t-2 border-emerald-400/50 shadow-inner mt-auto">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row justify-between items-center lg:items-start gap-5">
-      
+  <footer
+    class="bg-gradient-to-r from-[#0f2942] via-[#133b5c] to-[#0d4f49] text-slate-200 py-6 sm:py-7 border-t-2 border-emerald-400/50 shadow-inner mt-auto">
+    <div
+      class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row justify-between items-center lg:items-start gap-5">
+
       <!-- ฝั่งซ้าย: ตราโรงเรียน + ชื่อหน่วยงาน + ที่อยู่และผู้ประสานงาน -->
       <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3.5 sm:gap-4">
-        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/10 border border-white/15 p-1.5 flex items-center justify-center flex-shrink-0 shadow-sm" data-cfg-logo>
-          <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain" alt="ตราประจำโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
+        <div
+          class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/10 border border-white/15 p-1.5 flex items-center justify-center flex-shrink-0 shadow-sm"
+          data-cfg-logo>
+          <img src="assets/images/school-logo-transparent.png" class="w-full h-full object-contain"
+            alt="ตราประจำโรงเรียน" onerror="this.onerror=null; this.src='assets/images/school-logo-transparent.png';">
         </div>
         <div class="space-y-1.5">
           <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-            <span class="font-bold text-white text-sm sm:text-base tracking-wide" data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
+            <span class="font-bold text-white text-sm sm:text-base tracking-wide"
+              data-cfg="schoolName">โรงเรียนวชิรธรรมสาธิต</span>
             <span class="hidden sm:inline text-amber-400/70">•</span>
-            <span class="text-amber-300 font-semibold text-xs sm:text-sm" data-cfg="departmentName">กลุ่มบริหารบุคคล • งานส่งเสริมประชาธิปไตยในโรงเรียน</span>
+            <span class="text-amber-300 font-semibold text-xs sm:text-sm" data-cfg="departmentName">กลุ่มบริหารบุคคล •
+              งานส่งเสริมประชาธิปไตยในโรงเรียน</span>
           </div>
           <p class="text-slate-300 text-[11px] sm:text-xs leading-relaxed">
-            <i class="fa-solid fa-location-dot text-amber-400/90 mr-1.5"></i><span data-cfg="schoolAddress">เลขที่ 1253 ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span>
+            <i class="fa-solid fa-location-dot text-amber-400/90 mr-1.5"></i><span data-cfg="schoolAddress">เลขที่ 1253
+              ซอยวชิรธรรมสาธิต 57 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260</span>
           </p>
         </div>
       </div>
 
       <!-- ฝั่งขวา: ข้อมูลระบบ + ปุ่มผู้ดูแลระบบ -->
-      <div class="flex flex-col items-center lg:items-end justify-center gap-2 border-t border-white/10 lg:border-t-0 pt-3.5 lg:pt-0 w-full lg:w-auto">
-        <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-200 whitespace-nowrap">
+      <div
+        class="flex flex-col items-center lg:items-end justify-center gap-2 border-t border-white/10 lg:border-t-0 pt-3.5 lg:pt-0 w-full lg:w-auto">
+        <div
+          class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-200 whitespace-nowrap">
           <i class="fa-solid fa-check-to-slot text-amber-300"></i>
-          <span>ระบบรับสมัครเลือกตั้งผู้นำนักเรียน ปีการศึกษา <strong data-cfg="academicYear" class="text-amber-300 font-bold">2570</strong></span>
+          <span>ระบบรับสมัครเลือกตั้งผู้นำนักเรียน ปีการศึกษา <strong data-cfg="academicYear"
+              class="text-amber-300 font-bold">2570</strong></span>
         </div>
         <div class="text-[11px] sm:text-xs text-slate-300/90 font-normal">
           ออกแบบและพัฒนาเว็บโดย : <span class="text-emerald-200 font-medium">นางสาวสีวลี ยืนยาว</span>
@@ -762,8 +959,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=257102"></script>
-  <script src="js/app.js?v=257102"></script>
+  <script src="js/data.js?v=257101"></script>
+  <script src="js/app.js?v=257101"></script>
   <script>
     function setActiveTab(tabName) {
       const tabs = ['home', 'rules', 'apply', 'status'];
@@ -829,11 +1026,11 @@
       let html = '';
       results.forEach(res => {
         const isApproved = res.status === 'approved';
-        const statusBadge = isApproved 
+        const statusBadge = isApproved
           ? `<span class="badge-approved">ผ่านคุณสมบัติ ${res.candidateNumber ? '(หมายเลข ' + res.candidateNumber + ')' : ''}</span>`
-          : (res.status === 'pending' 
-              ? `<span class="badge-pending">รอการตรวจสอบคุณสมบัติ</span>` 
-              : `<span class="badge-rejected">เอกสารต้องแก้ไข</span>`);
+          : (res.status === 'pending'
+            ? `<span class="badge-pending">รอการตรวจสอบคุณสมบัติ</span>`
+            : `<span class="badge-rejected">เอกสารต้องแก้ไข</span>`);
 
         const printUrl = `print-application.html?type=${res.type}&id=${res.id}`;
         const notesHtml = res.notes
@@ -880,7 +1077,7 @@
     async function handleSearch() {
       const q = document.getElementById('searchInput').value.trim();
       const container = document.getElementById('searchResults');
-      
+
       if (!q) {
         showToast('กรุณากรอกคำค้นหา เช่น เลขประจำตัว หรือชื่อผู้สมัคร', 'warning');
         return;
@@ -907,7 +1104,7 @@
       renderSearchResultsList(q, true);
     }
 
-    
+
     window.addEventListener('wds-cloud-synced', () => {
       if (typeof applySiteConfig === 'function') applySiteConfig();
       if (typeof renderTimeline === 'function') renderTimeline();
@@ -923,7 +1120,7 @@
       if (typeof applySiteConfig === 'function') applySiteConfig();
       if (typeof renderTimeline === 'function') renderTimeline();
     });
-  
+
     document.addEventListener('DOMContentLoaded', () => {
       const hash = window.location.hash.replace('#', '');
       if (['rules', 'apply', 'status'].includes(hash)) {
@@ -932,13 +1129,5 @@
     });
   </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
